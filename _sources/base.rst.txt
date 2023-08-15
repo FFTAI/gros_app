@@ -1,0 +1,29 @@
+base package
+============
+
+Submodules
+----------
+
+base.i18n module
+----------------
+
+.. automodule:: base.i18n
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+base.singleton module
+---------------------
+
+.. automodule:: base.singleton
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: base
+   :members:
+   :undoc-members:
+   :show-inheritance:

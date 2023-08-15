@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.api_http &mdash; Fourier-GROS 1.0 文档</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/translations.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Fourier-GROS
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../app.html">app package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../base.html">base package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../robotics.html">robotics package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../system.html">system package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Fourier-GROS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">模块代码</a></li>
+      <li class="breadcrumb-item active">app.api_http</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>app.api_http 源代码</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">APIRouter</span><span class="p">,</span> <span class="n">Body</span>
+
+<span class="kn">from</span> <span class="nn">app.device_hub</span> <span class="kn">import</span> <span class="n">DeviceHub</span>
+<span class="kn">from</span> <span class="nn">robotics.car.car_mod</span> <span class="kn">import</span> <span class="n">CarMod</span>
+<span class="kn">from</span> <span class="nn">robotics.common.result</span> <span class="kn">import</span> <span class="n">Result</span>
+
+<span class="n">dh</span> <span class="o">=</span> <span class="n">DeviceHub</span><span class="p">()</span>
+<span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">()</span>
+
+
+<span class="c1"># &lt;editor-fold desc=&quot;system apis&quot;&gt;</span>
+<div class="viewcode-block" id="shutdown"><a class="viewcode-back" href="../../app.html#app.api_http.shutdown">[文档]</a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;/sys/shutdown&quot;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;关机&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">shutdown</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    关机</span>
+
+<span class="sd">    ``该操作完成主机会直接关机``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dh</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="reboot"><a class="viewcode-back" href="../../app.html#app.api_http.reboot">[文档]</a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;/sys/reboot&quot;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;重启&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">reboot</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;重启&quot;&quot;&quot;</span>
+    <span class="n">dh</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">reboot</span><span class="p">()</span></div>
+
+
+<span class="c1"># &lt;/editor-fold&gt;</span>
+
+
+<span class="c1"># &lt;editor-fold desc=&quot;network apis:&quot;&gt;</span>
+<div class="viewcode-block" id="wifi_reset"><a class="viewcode-back" href="../../app.html#app.api_http.wifi_reset">[文档]</a><span class="nd">@router</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;/wifi/reset&quot;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;重置网络&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">wifi_reset</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;重置wifi信息</span>
+
+<span class="sd">    ``请求成功后主机将自动重启``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dh</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+    <span class="n">dh</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">reboot</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="update_wifi"><a class="viewcode-back" href="../../app.html#app.api_http.update_wifi">[文档]</a><span class="nd">@router</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;/wifi&quot;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;修改wifi信息&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">update_wifi</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Body</span><span class="p">(</span><span class="o">...</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    修改wifi信息</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data(dict[str, str]): wifi信息</span>
+
+<span class="sd">    . code-block::</span>
+
+<span class="sd">        PUT:            /wifi</span>
+<span class="sd">        Content-Type:   application/json</span>
+<span class="sd">        Request-Body:   {&quot;name&quot;: &quot;wifiname&quot;, &quot;password&quot;: &quot;12345678&quot; }</span>
+<span class="sd">        Response:       {HTTP_STATUS}</span>
+
+<span class="sd">    ``请求成功后主机将自动重启``</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">wifi_name</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+    <span class="n">wifi_password</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">]</span>
+    <span class="n">dh</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">set_wifi</span><span class="p">(</span><span class="n">wifi_name</span><span class="p">,</span> <span class="n">wifi_password</span><span class="p">)</span>
+    <span class="n">dh</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">reboot</span><span class="p">()</span></div>
+
+
+<span class="c1"># &lt;/editor-fold&gt;</span>
+
+
+<span class="c1"># &lt;editor-fold desc=&quot;camera apis&quot;&gt;</span>
+<div class="viewcode-block" id="camera"><a class="viewcode-back" href="../../app.html#app.api_http.camera">[文档]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/control/camera&#39;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;获取实时video&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">camera</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">ok</span><span class="p">(</span><span class="n">dh</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">get_video</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="camera_open"><a class="viewcode-back" href="../../app.html#app.api_http.camera_open">[文档]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/control/camera_status&#39;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;获取相机开启状态&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">camera_open</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">ok</span><span class="p">(</span><span class="n">dh</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">is_on</span><span class="p">())</span></div>
+
+
+<span class="c1"># &lt;/editor-fold&gt;</span>
+
+<span class="c1"># &lt;editor-fold desc=&quot;robot apis&quot;&gt;</span>
+<div class="viewcode-block" id="robot_type"><a class="viewcode-back" href="../../app.html#app.api_http.robot_type">[文档]</a><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/robot/type&#39;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">robot_type</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;获取设备类型&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">ok</span><span class="p">(</span><span class="n">dh</span><span class="o">.</span><span class="n">robot</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="robot_start"><a class="viewcode-back" href="../../app.html#app.api_http.robot_start">[文档]</a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/robot/start&#39;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;启动&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">robot_start</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; 设备启动 &quot;&quot;&quot;</span>
+    <span class="n">dh</span><span class="o">.</span><span class="n">robot</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">ok</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="robot_stop"><a class="viewcode-back" href="../../app.html#app.api_http.robot_stop">[文档]</a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/robot/stop&#39;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;停止&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">robot_stop</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; 停止 &quot;&quot;&quot;</span>
+    <span class="n">dh</span><span class="o">.</span><span class="n">robot</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">ok</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="robot_reset"><a class="viewcode-back" href="../../app.html#app.api_http.robot_reset">[文档]</a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/robot/reset&quot;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;人形回零&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">robot_reset</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;归零&quot;&quot;&quot;</span>
+    <span class="n">dh</span><span class="o">.</span><span class="n">robot</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">ok</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="robot_mode"><a class="viewcode-back" href="../../app.html#app.api_http.robot_mode">[文档]</a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/robot/mode&quot;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;切换模式&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">robot_mode</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">Body</span><span class="p">(</span><span class="o">...</span><span class="p">)):</span>
+    <span class="n">mode</span> <span class="o">=</span> <span class="n">CarMod</span><span class="o">.</span><span class="n">MOD_4_WHEEL</span>
+    <span class="n">mod_val</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;mod_val&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">mod_val</span> <span class="o">!=</span> <span class="s2">&quot;wheel_4&quot;</span><span class="p">:</span> <span class="n">mode</span> <span class="o">=</span> <span class="n">CarMod</span><span class="o">.</span><span class="n">MOD_4_WHEEL</span>
+    <span class="k">if</span> <span class="n">mod_val</span> <span class="o">!=</span> <span class="s2">&quot;wheel_3&quot;</span><span class="p">:</span> <span class="n">mode</span> <span class="o">=</span> <span class="n">CarMod</span><span class="o">.</span><span class="n">MOD_3_WHEEL</span>
+    <span class="k">if</span> <span class="n">mod_val</span> <span class="o">!=</span> <span class="s2">&quot;wheel_2&quot;</span><span class="p">:</span> <span class="n">mode</span> <span class="o">=</span> <span class="n">CarMod</span><span class="o">.</span><span class="n">MOD_2_WHEEL</span>
+    <span class="n">dh</span><span class="o">.</span><span class="n">robot</span><span class="o">.</span><span class="n">set_mode</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">ok</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="system_command"><a class="viewcode-back" href="../../app.html#app.api_http.system_command">[文档]</a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/robot/systemCommand&quot;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;切换模式&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">system_command</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">Body</span><span class="p">(</span><span class="o">...</span><span class="p">)):</span>
+    <span class="k">return</span> <span class="n">dh</span><span class="o">.</span><span class="n">robot</span><span class="o">.</span><span class="n">system_command</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="state_limit"><a class="viewcode-back" href="../../app.html#app.api_http.state_limit">[文档]</a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/robot/stateLimit&quot;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;获取机器人关节可活动范围&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">state_limit</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">Body</span><span class="p">(</span><span class="o">...</span><span class="p">)):</span>
+    <span class="k">return</span> <span class="n">dh</span><span class="o">.</span><span class="n">robot</span><span class="o">.</span><span class="n">state_limit</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="system_states"><a class="viewcode-back" href="../../app.html#app.api_http.system_states">[文档]</a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/robot/systemStates&quot;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;获取机器系统的启动状态&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">system_states</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">Body</span><span class="p">(</span><span class="o">...</span><span class="p">)):</span>
+    <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="n">ok</span><span class="p">(</span><span class="n">dh</span><span class="o">.</span><span class="n">robot</span><span class="o">.</span><span class="n">system_states</span><span class="p">(</span><span class="n">data</span><span class="p">))</span></div>
+
+<span class="c1"># &lt;/editor-fold&gt;</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2023, Fourier Software Department.</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

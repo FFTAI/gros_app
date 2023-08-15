@@ -1,0 +1,22 @@
+robotics package
+================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   robotics.base
+   robotics.car
+   robotics.common
+   robotics.dog
+   robotics.human
+
+Module contents
+---------------
+
+.. automodule:: robotics
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,37 @@
+robotics.base package
+=====================
+
+Submodules
+----------
+
+robotics.base.robot\_type module
+--------------------------------
+
+.. automodule:: robotics.base.robot_type
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+robotics.base.robot\_udp module
+-------------------------------
+
+.. automodule:: robotics.base.robot_udp
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+robotics.base.robotic module
+----------------------------
+
+.. automodule:: robotics.base.robotic
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: robotics.base
+   :members:
+   :undoc-members:
+   :show-inheritance:

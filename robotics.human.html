@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>robotics.human package &mdash; Fourier-GROS 1.0 文档</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/translations.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="system package" href="system.html" />
+    <link rel="prev" title="robotics.dog package" href="robotics.dog.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Fourier-GROS
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="app.html">app package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="base.html">base package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="robotics.html">robotics package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="robotics.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="robotics.base.html">robotics.base package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="robotics.car.html">robotics.car package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="robotics.common.html">robotics.common package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="robotics.dog.html">robotics.dog package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">robotics.human package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-robotics.human.fgr_human_handler">robotics.human.fgr_human_handler module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-robotics.human.human">robotics.human.human module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-robotics.human.human_api">robotics.human.human_api module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-robotics.human.human_params_schema">robotics.human.human_params_schema module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-robotics.human">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="robotics.html#module-robotics">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="system.html">system package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Fourier-GROS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="robotics.html">robotics package</a></li>
+      <li class="breadcrumb-item active">robotics.human package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/robotics.human.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="robotics-human-package">
+<h1>robotics.human package<a class="headerlink" href="#robotics-human-package" title="此标题的永久链接"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="此标题的永久链接"></a></h2>
+</section>
+<section id="module-robotics.human.fgr_human_handler">
+<span id="robotics-human-fgr-human-handler-module"></span><h2>robotics.human.fgr_human_handler module<a class="headerlink" href="#module-robotics.human.fgr_human_handler" title="此标题的永久链接"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="robotics.human.fgr_human_handler.blocking_udp_receive">
+<span class="sig-prename descclassname"><span class="pre">robotics.human.fgr_human_handler.</span></span><span class="sig-name descname"><span class="pre">blocking_udp_receive</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/robotics/human/fgr_human_handler.html#blocking_udp_receive"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#robotics.human.fgr_human_handler.blocking_udp_receive" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="robotics.human.fgr_human_handler.handle">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">robotics.human.fgr_human_handler.</span></span><span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ws:</span> <span class="pre">~starlette.websockets.WebSocket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message:</span> <span class="pre">&lt;module</span> <span class="pre">'json'</span> <span class="pre">from</span> <span class="pre">'/Users/jax/.pyenv/versions/3.10.12/lib/python3.10/json/__init__.py'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robotics/human/fgr_human_handler.html#handle"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#robotics.human.fgr_human_handler.handle" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="robotics.human.fgr_human_handler.receive">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">robotics.human.fgr_human_handler.</span></span><span class="sig-name descname"><span class="pre">receive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ws</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">WebSocket</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robotics/human/fgr_human_handler.html#receive"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#robotics.human.fgr_human_handler.receive" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-robotics.human.human">
+<span id="robotics-human-human-module"></span><h2>robotics.human.human module<a class="headerlink" href="#module-robotics.human.human" title="此标题的永久链接"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="robotics.human.human.Human">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">robotics.human.human.</span></span><span class="sig-name descname"><span class="pre">Human</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#robotics.human.human_api.HumanAPI" title="robotics.human.human_api.HumanAPI"><span class="pre">HumanAPI</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">HumanAPI(zero_str='{\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&quot;function&quot;:</span> <span class="pre">&quot;SonnieCommand&quot;,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&quot;data&quot;:</span> <span class="pre">{\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&quot;zero&quot;:</span> <span class="pre">{}\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">}\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">}',</span> <span class="pre">system_states_str='{&quot;function&quot;:</span> <span class="pre">&quot;SonnieGetSystemStates&quot;,</span> <span class="pre">&quot;data&quot;:</span> <span class="pre">{}}',</span> <span class="pre">state_limit_str='{&quot;function&quot;:&quot;SonnieGetStatesLimit&quot;,</span> <span class="pre">&quot;data&quot;:{}}')</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robotics/human/human.html#Human"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#robotics.human.human.Human" title="永久链接至目标"></a></dt>
+<dd><p>基类：<a class="reference internal" href="robotics.base.html#robotics.base.robotic.Robotic" title="robotics.base.robotic.Robotic"><code class="xref py py-class docutils literal notranslate"><span class="pre">Robotic</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="robotics.human.human.Human.api">
+<span class="sig-name descname"><span class="pre">api</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#robotics.human.human_api.HumanAPI" title="robotics.human.human_api.HumanAPI"><span class="pre">HumanAPI</span></a></em><a class="headerlink" href="#robotics.human.human.Human.api" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="robotics.human.human.Human.estop">
+<span class="sig-name descname"><span class="pre">estop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/robotics/human/human.html#Human.estop"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#robotics.human.human.Human.estop" title="永久链接至目标"></a></dt>
+<dd><p>急停</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="robotics.human.human.Human.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#robotics.human.human.Human.model_config" title="永久链接至目标"></a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="robotics.human.human.Human.model_fields">
+<span class="sig-name descname"><span class="pre">model_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">FieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'api':</span> <span class="pre">FieldInfo(annotation=HumanAPI,</span> <span class="pre">required=False,</span> <span class="pre">default=HumanAPI(zero_str='{\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&quot;function&quot;:</span> <span class="pre">&quot;SonnieCommand&quot;,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&quot;data&quot;:</span> <span class="pre">{\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&quot;zero&quot;:</span> <span class="pre">{}\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">}\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">}',</span> <span class="pre">system_states_str='{&quot;function&quot;:</span> <span class="pre">&quot;SonnieGetSystemStates&quot;,</span> <span class="pre">&quot;data&quot;:</span> <span class="pre">{}}',</span> <span class="pre">state_limit_str='{&quot;function&quot;:&quot;SonnieGetStatesLimit&quot;,</span> <span class="pre">&quot;data&quot;:{}}')),</span> <span class="pre">'host_id':</span> <span class="pre">FieldInfo(annotation=int,</span> <span class="pre">required=False,</span> <span class="pre">default=0),</span> <span class="pre">'id':</span> <span class="pre">FieldInfo(annotation=str,</span> <span class="pre">required=False,</span> <span class="pre">default=''),</span> <span class="pre">'mode':</span> <span class="pre">FieldInfo(annotation=str,</span> <span class="pre">required=False,</span> <span class="pre">default=''),</span> <span class="pre">'status':</span> <span class="pre">FieldInfo(annotation=str,</span> <span class="pre">required=False,</span> <span class="pre">default='')}</span></em><a class="headerlink" href="#robotics.human.human.Human.model_fields" title="永久链接至目标"></a></dt>
+<dd><p>Metadata about the fields defined on the model,
+mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</p>
+<p>This replaces <cite>Model.__fields__</cite> from Pydantic V1.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="robotics.human.human.Human.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/robotics/human/human.html#Human.reset"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#robotics.human.human.Human.reset" title="永久链接至目标"></a></dt>
+<dd><p>归零</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="robotics.human.human.Human.stand">
+<span class="sig-name descname"><span class="pre">stand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data:</span> <span class="pre">dict[slice(&lt;class</span> <span class="pre">'str'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;,</span> <span class="pre">None)]</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robotics/human/human.html#Human.stand"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#robotics.human.human.Human.stand" title="永久链接至目标"></a></dt>
+<dd><p>站起</p>
+<p>如果data是空就原地不懂，如果data有值就控制头部运动</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong><strong>(</strong><strong>dict</strong><strong>[</strong><strong>str</strong> – float]): 消息体</p>
+</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">请求示例</span> <span class="p">{</span> <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="robotics.human.human.Human.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/robotics/human/human.html#Human.start"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#robotics.human.human.Human.start" title="永久链接至目标"></a></dt>
+<dd><p>正常启动</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="robotics.human.human.Human.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/robotics/human/human.html#Human.stop"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#robotics.human.human.Human.stop" title="永久链接至目标"></a></dt>
+<dd><p>正常停止</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="robotics.human.human.Human.walk">
+<span class="sig-name descname"><span class="pre">walk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data:</span> <span class="pre">dict[slice(&lt;class</span> <span class="pre">'str'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;,</span> <span class="pre">None)]</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robotics/human/human.html#Human.walk"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#robotics.human.human.Human.walk" title="永久链接至目标"></a></dt>
+<dd><p>走路</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong><strong>(</strong><strong>dict</strong><strong>[</strong><strong>str</strong> – float]): 消息体</p>
+</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">请求示例</span> <span class="p">{</span> <span class="s2">&quot;vx&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s2">&quot;vc&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-robotics.human.human_api">
+<span id="robotics-human-human-api-module"></span><h2>robotics.human.human_api module<a class="headerlink" href="#module-robotics.human.human_api" title="此标题的永久链接"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="robotics.human.human_api.HumanAPI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">robotics.human.human_api.</span></span><span class="sig-name descname"><span class="pre">HumanAPI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zero_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'{\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&quot;function&quot;:</span> <span class="pre">&quot;SonnieCommand&quot;,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&quot;data&quot;:</span> <span class="pre">{\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&quot;zero&quot;:</span> <span class="pre">{}\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">}\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_states_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'{&quot;function&quot;:</span> <span class="pre">&quot;SonnieGetSystemStates&quot;,</span> <span class="pre">&quot;data&quot;:</span> <span class="pre">{}}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_limit_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'{&quot;function&quot;:&quot;SonnieGetStatesLimit&quot;,</span> <span class="pre">&quot;data&quot;:{}}'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robotics/human/human_api.html#HumanAPI"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#robotics.human.human_api.HumanAPI" title="永久链接至目标"></a></dt>
+<dd><p>基类：<a class="reference internal" href="robotics.base.html#robotics.base.robot_udp.RobotUDP" title="robotics.base.robot_udp.RobotUDP"><code class="xref py py-class docutils literal notranslate"><span class="pre">RobotUDP</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="robotics.human.human_api.HumanAPI.mode">
+<span class="sig-name descname"><span class="pre">mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robotics/human/human_api.html#HumanAPI.mode"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#robotics.human.human_api.HumanAPI.mode" title="永久链接至目标"></a></dt>
+<dd><p>启动</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="robotics.human.human_api.HumanAPI.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#robotics.human.human_api.HumanAPI.model_config" title="永久链接至目标"></a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="robotics.human.human_api.HumanAPI.model_fields">
+<span class="sig-name descname"><span class="pre">model_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">FieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'state_limit_str':</span> <span class="pre">FieldInfo(annotation=str,</span> <span class="pre">required=False,</span> <span class="pre">default='{&quot;function&quot;:&quot;SonnieGetStatesLimit&quot;,</span> <span class="pre">&quot;data&quot;:{}}'),</span> <span class="pre">'system_states_str':</span> <span class="pre">FieldInfo(annotation=str,</span> <span class="pre">required=False,</span> <span class="pre">default='{&quot;function&quot;:</span> <span class="pre">&quot;SonnieGetSystemStates&quot;,</span> <span class="pre">&quot;data&quot;:</span> <span class="pre">{}}'),</span> <span class="pre">'zero_str':</span> <span class="pre">FieldInfo(annotation=str,</span> <span class="pre">required=False,</span> <span class="pre">default='{\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&quot;function&quot;:</span> <span class="pre">&quot;SonnieCommand&quot;,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&quot;data&quot;:</span> <span class="pre">{\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&quot;zero&quot;:</span> <span class="pre">{}\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">}\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">}')}</span></em><a class="headerlink" href="#robotics.human.human_api.HumanAPI.model_fields" title="永久链接至目标"></a></dt>
+<dd><p>Metadata about the fields defined on the model,
+mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</p>
+<p>This replaces <cite>Model.__fields__</cite> from Pydantic V1.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="robotics.human.human_api.HumanAPI.receive">
+<span class="sig-name descname"><span class="pre">receive</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/robotics/human/human_api.html#HumanAPI.receive"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#robotics.human.human_api.HumanAPI.receive" title="永久链接至目标"></a></dt>
+<dd><p>接收数据</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="robotics.human.human_api.HumanAPI.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/robotics/human/human_api.html#HumanAPI.reset"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#robotics.human.human_api.HumanAPI.reset" title="永久链接至目标"></a></dt>
+<dd><p>重置/回零指令</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="robotics.human.human_api.HumanAPI.stand">
+<span class="sig-name descname"><span class="pre">stand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data:</span> <span class="pre">dict[slice(&lt;class</span> <span class="pre">'str'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;,</span> <span class="pre">None)]</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robotics/human/human_api.html#HumanAPI.stand"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#robotics.human.human_api.HumanAPI.stand" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="robotics.human.human_api.HumanAPI.stand_up">
+<span class="sig-name descname"><span class="pre">stand_up</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robotics/human/human_api.html#HumanAPI.stand_up"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#robotics.human.human_api.HumanAPI.stand_up" title="永久链接至目标"></a></dt>
+<dd><p>站立</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="robotics.human.human_api.HumanAPI.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/robotics/human/human_api.html#HumanAPI.start"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#robotics.human.human_api.HumanAPI.start" title="永久链接至目标"></a></dt>
+<dd><p>启动</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="robotics.human.human_api.HumanAPI.state_limit">
+<span class="sig-name descname"><span class="pre">state_limit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robotics/human/human_api.html#HumanAPI.state_limit"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#robotics.human.human_api.HumanAPI.state_limit" title="永久链接至目标"></a></dt>
+<dd><p>系统就位状态</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="robotics.human.human_api.HumanAPI.state_limit_str">
+<span class="sig-name descname"><span class="pre">state_limit_str</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#robotics.human.human_api.HumanAPI.state_limit_str" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="robotics.human.human_api.HumanAPI.states">
+<span class="sig-name descname"><span class="pre">states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frequence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robotics/human/human_api.html#HumanAPI.states"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#robotics.human.human_api.HumanAPI.states" title="永久链接至目标"></a></dt>
+<dd><p>发送获取状态的指令</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="robotics.human.human_api.HumanAPI.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/robotics/human/human_api.html#HumanAPI.stop"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#robotics.human.human_api.HumanAPI.stop" title="永久链接至目标"></a></dt>
+<dd><p>停止</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="robotics.human.human_api.HumanAPI.system_command">
+<span class="sig-name descname"><span class="pre">system_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robotics/human/human_api.html#HumanAPI.system_command"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#robotics.human.human_api.HumanAPI.system_command" title="永久链接至目标"></a></dt>
+<dd><p>系统就位状态</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="robotics.human.human_api.HumanAPI.system_states">
+<span class="sig-name descname"><span class="pre">system_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robotics/human/human_api.html#HumanAPI.system_states"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#robotics.human.human_api.HumanAPI.system_states" title="永久链接至目标"></a></dt>
+<dd><p>获取机器系统的启动状态</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="robotics.human.human_api.HumanAPI.system_states_str">
+<span class="sig-name descname"><span class="pre">system_states_str</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#robotics.human.human_api.HumanAPI.system_states_str" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="robotics.human.human_api.HumanAPI.walk">
+<span class="sig-name descname"><span class="pre">walk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robotics/human/human_api.html#HumanAPI.walk"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#robotics.human.human_api.HumanAPI.walk" title="永久链接至目标"></a></dt>
+<dd><p>走路</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="robotics.human.human_api.HumanAPI.zero_str">
+<span class="sig-name descname"><span class="pre">zero_str</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#robotics.human.human_api.HumanAPI.zero_str" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="robotics.human.human_api.JointType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">robotics.human.human_api.</span></span><span class="sig-name descname"><span class="pre">JointType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robotics/human/human_api.html#JointType"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#robotics.human.human_api.JointType" title="永久链接至目标"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="robotics.human.human_api.JointType.LEFT_ELBOW">
+<span class="sig-name descname"><span class="pre">LEFT_ELBOW</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'elbow_Left'</span></em><a class="headerlink" href="#robotics.human.human_api.JointType.LEFT_ELBOW" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="robotics.human.human_api.JointType.LEFT_SHOULDER">
+<span class="sig-name descname"><span class="pre">LEFT_SHOULDER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'shoulder{mvmt}_Left'</span></em><a class="headerlink" href="#robotics.human.human_api.JointType.LEFT_SHOULDER" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="robotics.human.human_api.JointType.LEFT_WRIST">
+<span class="sig-name descname"><span class="pre">LEFT_WRIST</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'wrist{mvmt}_Left'</span></em><a class="headerlink" href="#robotics.human.human_api.JointType.LEFT_WRIST" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="robotics.human.human_api.JointType.NECK">
+<span class="sig-name descname"><span class="pre">NECK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'head{mvmt}'</span></em><a class="headerlink" href="#robotics.human.human_api.JointType.NECK" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="robotics.human.human_api.JointType.RIGHT_ELBOW">
+<span class="sig-name descname"><span class="pre">RIGHT_ELBOW</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'elbow_Right'</span></em><a class="headerlink" href="#robotics.human.human_api.JointType.RIGHT_ELBOW" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="robotics.human.human_api.JointType.RIGHT_SHOULDER">
+<span class="sig-name descname"><span class="pre">RIGHT_SHOULDER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'shoulder{mvmt}_Right'</span></em><a class="headerlink" href="#robotics.human.human_api.JointType.RIGHT_SHOULDER" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="robotics.human.human_api.JointType.RIGHT_WRIST">
+<span class="sig-name descname"><span class="pre">RIGHT_WRIST</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'wrist{mvmt}_Right'</span></em><a class="headerlink" href="#robotics.human.human_api.JointType.RIGHT_WRIST" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="robotics.human.human_api.JointType.WAIST">
+<span class="sig-name descname"><span class="pre">WAIST</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'waist{mvmt}'</span></em><a class="headerlink" href="#robotics.human.human_api.JointType.WAIST" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="robotics.human.human_api.RotateType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">robotics.human.human_api.</span></span><span class="sig-name descname"><span class="pre">RotateType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robotics/human/human_api.html#RotateType"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#robotics.human.human_api.RotateType" title="永久链接至目标"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="robotics.human.human_api.RotateType.PITCH">
+<span class="sig-name descname"><span class="pre">PITCH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Pitch'</span></em><a class="headerlink" href="#robotics.human.human_api.RotateType.PITCH" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="robotics.human.human_api.RotateType.ROLL">
+<span class="sig-name descname"><span class="pre">ROLL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Roll'</span></em><a class="headerlink" href="#robotics.human.human_api.RotateType.ROLL" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="robotics.human.human_api.RotateType.YAW">
+<span class="sig-name descname"><span class="pre">YAW</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Yaw'</span></em><a class="headerlink" href="#robotics.human.human_api.RotateType.YAW" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-robotics.human.human_params_schema">
+<span id="robotics-human-human-params-schema-module"></span><h2>robotics.human.human_params_schema module<a class="headerlink" href="#module-robotics.human.human_params_schema" title="此标题的永久链接"></a></h2>
+</section>
+<section id="module-robotics.human">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-robotics.human" title="此标题的永久链接"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="robotics.dog.html" class="btn btn-neutral float-left" title="robotics.dog package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="system.html" class="btn btn-neutral float-right" title="system package" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2023, Fourier Software Department.</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

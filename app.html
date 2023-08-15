@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app package &mdash; Fourier-GROS 1.0 文档</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/translations.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="base package" href="base.html" />
+    <link rel="prev" title="Welcome to gros’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Fourier-GROS
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">app package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.api_http">app.api_http module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.api_http.camera"><code class="docutils literal notranslate"><span class="pre">camera()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.api_http.camera_open"><code class="docutils literal notranslate"><span class="pre">camera_open()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.api_http.reboot"><code class="docutils literal notranslate"><span class="pre">reboot()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.api_http.robot_mode"><code class="docutils literal notranslate"><span class="pre">robot_mode()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.api_http.robot_reset"><code class="docutils literal notranslate"><span class="pre">robot_reset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.api_http.robot_start"><code class="docutils literal notranslate"><span class="pre">robot_start()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.api_http.robot_stop"><code class="docutils literal notranslate"><span class="pre">robot_stop()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.api_http.robot_type"><code class="docutils literal notranslate"><span class="pre">robot_type()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.api_http.shutdown"><code class="docutils literal notranslate"><span class="pre">shutdown()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.api_http.state_limit"><code class="docutils literal notranslate"><span class="pre">state_limit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.api_http.system_command"><code class="docutils literal notranslate"><span class="pre">system_command()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.api_http.system_states"><code class="docutils literal notranslate"><span class="pre">system_states()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.api_http.update_wifi"><code class="docutils literal notranslate"><span class="pre">update_wifi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.api_http.wifi_reset"><code class="docutils literal notranslate"><span class="pre">wifi_reset()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.api_param">app.api_param module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.api_websocket">app.api_websocket module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.api_websocket.do"><code class="docutils literal notranslate"><span class="pre">do()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.api_websocket.handle"><code class="docutils literal notranslate"><span class="pre">handle()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.api_websocket.states"><code class="docutils literal notranslate"><span class="pre">states()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.device_hub">app.device_hub module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.device_hub.DeviceHub"><code class="docutils literal notranslate"><span class="pre">DeviceHub</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#app.device_hub.DeviceHub.camera"><code class="docutils literal notranslate"><span class="pre">DeviceHub.camera</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.device_hub.DeviceHub.network"><code class="docutils literal notranslate"><span class="pre">DeviceHub.network</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.device_hub.DeviceHub.robot"><code class="docutils literal notranslate"><span class="pre">DeviceHub.robot</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.device_hub.DeviceHub.system"><code class="docutils literal notranslate"><span class="pre">DeviceHub.system</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.run">app.run module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.run.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.strategy_context">app.strategy_context module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app.websocket_schema">app.websocket_schema module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-app">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="base.html">base package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="robotics.html">robotics package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="system.html">system package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Fourier-GROS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">app package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/app.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="app-package">
+<h1>app package<a class="headerlink" href="#app-package" title="此标题的永久链接"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="此标题的永久链接"></a></h2>
+</section>
+<section id="module-app.api_http">
+<span id="app-api-http-module"></span><h2>app.api_http module<a class="headerlink" href="#module-app.api_http" title="此标题的永久链接"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api_http.camera">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api_http.</span></span><span class="sig-name descname"><span class="pre">camera</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api_http.html#camera"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#app.api_http.camera" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api_http.camera_open">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api_http.</span></span><span class="sig-name descname"><span class="pre">camera_open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api_http.html#camera_open"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#app.api_http.camera_open" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api_http.reboot">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api_http.</span></span><span class="sig-name descname"><span class="pre">reboot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api_http.html#reboot"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#app.api_http.reboot" title="永久链接至目标"></a></dt>
+<dd><p>重启</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api_http.robot_mode">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api_http.</span></span><span class="sig-name descname"><span class="pre">robot_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Body(PydanticUndefined)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api_http.html#robot_mode"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#app.api_http.robot_mode" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api_http.robot_reset">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api_http.</span></span><span class="sig-name descname"><span class="pre">robot_reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api_http.html#robot_reset"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#app.api_http.robot_reset" title="永久链接至目标"></a></dt>
+<dd><p>归零</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api_http.robot_start">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api_http.</span></span><span class="sig-name descname"><span class="pre">robot_start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api_http.html#robot_start"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#app.api_http.robot_start" title="永久链接至目标"></a></dt>
+<dd><p>设备启动</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api_http.robot_stop">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api_http.</span></span><span class="sig-name descname"><span class="pre">robot_stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api_http.html#robot_stop"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#app.api_http.robot_stop" title="永久链接至目标"></a></dt>
+<dd><p>停止</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api_http.robot_type">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api_http.</span></span><span class="sig-name descname"><span class="pre">robot_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api_http.html#robot_type"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#app.api_http.robot_type" title="永久链接至目标"></a></dt>
+<dd><p>获取设备类型</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api_http.shutdown">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api_http.</span></span><span class="sig-name descname"><span class="pre">shutdown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api_http.html#shutdown"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#app.api_http.shutdown" title="永久链接至目标"></a></dt>
+<dd><p>关机</p>
+<p><code class="docutils literal notranslate"><span class="pre">该操作完成主机会直接关机</span></code></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api_http.state_limit">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api_http.</span></span><span class="sig-name descname"><span class="pre">state_limit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Body(PydanticUndefined)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api_http.html#state_limit"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#app.api_http.state_limit" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api_http.system_command">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api_http.</span></span><span class="sig-name descname"><span class="pre">system_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Body(PydanticUndefined)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api_http.html#system_command"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#app.api_http.system_command" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api_http.system_states">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api_http.</span></span><span class="sig-name descname"><span class="pre">system_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Body(PydanticUndefined)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api_http.html#system_states"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#app.api_http.system_states" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api_http.update_wifi">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api_http.</span></span><span class="sig-name descname"><span class="pre">update_wifi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Body(PydanticUndefined)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api_http.html#update_wifi"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#app.api_http.update_wifi" title="永久链接至目标"></a></dt>
+<dd><p>修改wifi信息</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em>) – wifi信息</p>
+</dd>
+</dl>
+<p>. code-block:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PUT</span><span class="p">:</span>            <span class="o">/</span><span class="n">wifi</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type</span><span class="p">:</span>   <span class="n">application</span><span class="o">/</span><span class="n">json</span>
+<span class="n">Request</span><span class="o">-</span><span class="n">Body</span><span class="p">:</span>   <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;wifiname&quot;</span><span class="p">,</span> <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="s2">&quot;12345678&quot;</span> <span class="p">}</span>
+<span class="n">Response</span><span class="p">:</span>       <span class="p">{</span><span class="n">HTTP_STATUS</span><span class="p">}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">请求成功后主机将自动重启</span></code></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api_http.wifi_reset">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api_http.</span></span><span class="sig-name descname"><span class="pre">wifi_reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api_http.html#wifi_reset"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#app.api_http.wifi_reset" title="永久链接至目标"></a></dt>
+<dd><p>重置wifi信息</p>
+<p><code class="docutils literal notranslate"><span class="pre">请求成功后主机将自动重启</span></code></p>
+</dd></dl>
+
+</section>
+<section id="module-app.api_param">
+<span id="app-api-param-module"></span><h2>app.api_param module<a class="headerlink" href="#module-app.api_param" title="此标题的永久链接"></a></h2>
+</section>
+<section id="module-app.api_websocket">
+<span id="app-api-websocket-module"></span><h2>app.api_websocket module<a class="headerlink" href="#module-app.api_websocket" title="此标题的永久链接"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api_websocket.do">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api_websocket.</span></span><span class="sig-name descname"><span class="pre">do</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ws</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">WebSocket</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api_websocket.html#do"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#app.api_websocket.do" title="永久链接至目标"></a></dt>
+<dd><p>socket 处理器</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ws</strong> (<em>WebSocket</em>) – websocket 对象</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api_websocket.handle">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api_websocket.</span></span><span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ws:</span> <span class="pre">~starlette.websockets.WebSocket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message:</span> <span class="pre">&lt;module</span> <span class="pre">'json'</span> <span class="pre">from</span> <span class="pre">'/Users/jax/.pyenv/versions/3.10.12/lib/python3.10/json/__init__.py'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api_websocket.html#handle"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#app.api_websocket.handle" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api_websocket.states">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.api_websocket.</span></span><span class="sig-name descname"><span class="pre">states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ws</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">WebSocket</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api_websocket.html#states"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#app.api_websocket.states" title="永久链接至目标"></a></dt>
+<dd><p>socket 处理器</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ws</strong> (<em>WebSocket</em>) – websocket 对象</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-app.device_hub">
+<span id="app-device-hub-module"></span><h2>app.device_hub module<a class="headerlink" href="#module-app.device_hub" title="此标题的永久链接"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="app.device_hub.DeviceHub">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.device_hub.</span></span><span class="sig-name descname"><span class="pre">DeviceHub</span></span><a class="reference internal" href="_modules/app/device_hub.html#DeviceHub"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#app.device_hub.DeviceHub" title="永久链接至目标"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="app.device_hub.DeviceHub.camera">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">camera</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="robotics.common.html#robotics.common.camera.Camera" title="robotics.common.camera.Camera"><span class="pre">Camera</span></a></em><a class="headerlink" href="#app.device_hub.DeviceHub.camera" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="app.device_hub.DeviceHub.network">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">network</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="system.html#system.network.Network" title="system.network.Network"><span class="pre">Network</span></a></em><a class="headerlink" href="#app.device_hub.DeviceHub.network" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="app.device_hub.DeviceHub.robot">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">robot</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="robotics.base.html#robotics.base.robotic.Robotic" title="robotics.base.robotic.Robotic"><span class="pre">Robotic</span></a></em><a class="headerlink" href="#app.device_hub.DeviceHub.robot" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="app.device_hub.DeviceHub.system">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">system</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="system.html#system.system.System" title="system.system.System"><span class="pre">System</span></a></em><a class="headerlink" href="#app.device_hub.DeviceHub.system" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-app.run">
+<span id="app-run-module"></span><h2>app.run module<a class="headerlink" href="#module-app.run" title="此标题的永久链接"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.run.main">
+<span class="sig-prename descclassname"><span class="pre">app.run.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/run.html#main"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#app.run.main" title="永久链接至目标"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-app.strategy_context">
+<span id="app-strategy-context-module"></span><h2>app.strategy_context module<a class="headerlink" href="#module-app.strategy_context" title="此标题的永久链接"></a></h2>
+</section>
+<section id="module-app.websocket_schema">
+<span id="app-websocket-schema-module"></span><h2>app.websocket_schema module<a class="headerlink" href="#module-app.websocket_schema" title="此标题的永久链接"></a></h2>
+</section>
+<section id="module-app">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-app" title="此标题的永久链接"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to gros’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="base.html" class="btn btn-neutral float-right" title="base package" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2023, Fourier Software Department.</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

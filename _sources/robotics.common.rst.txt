@@ -1,0 +1,45 @@
+robotics.common package
+=======================
+
+Submodules
+----------
+
+robotics.common.audio module
+----------------------------
+
+.. automodule:: robotics.common.audio
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+robotics.common.camera module
+-----------------------------
+
+.. automodule:: robotics.common.camera
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+robotics.common.result module
+-----------------------------
+
+.. automodule:: robotics.common.result
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+robotics.common.slam module
+---------------------------
+
+.. automodule:: robotics.common.slam
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: robotics.common
+   :members:
+   :undoc-members:
+   :show-inheritance:

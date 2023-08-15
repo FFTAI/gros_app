@@ -1,0 +1,29 @@
+robotics.dog package
+====================
+
+Submodules
+----------
+
+robotics.dog.dog module
+-----------------------
+
+.. automodule:: robotics.dog.dog
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+robotics.dog.dog\_api module
+----------------------------
+
+.. automodule:: robotics.dog.dog_api
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: robotics.dog
+   :members:
+   :undoc-members:
+   :show-inheritance:

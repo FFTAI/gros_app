@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>robotics package &mdash; Fourier-GROS 1.0 文档</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/translations.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="robotics.base package" href="robotics.base.html" />
+    <link rel="prev" title="base package" href="base.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Fourier-GROS
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="app.html">app package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="base.html">base package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">robotics package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="robotics.base.html">robotics.base package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="robotics.car.html">robotics.car package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="robotics.common.html">robotics.common package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="robotics.dog.html">robotics.dog package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="robotics.human.html">robotics.human package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-robotics">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="system.html">system package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Fourier-GROS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">robotics package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/robotics.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="robotics-package">
+<h1>robotics package<a class="headerlink" href="#robotics-package" title="此标题的永久链接"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="此标题的永久链接"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="robotics.base.html">robotics.base package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="robotics.base.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="robotics.base.html#module-robotics.base.robot_type">robotics.base.robot_type module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="robotics.base.html#robotics.base.robot_type.Direction"><code class="docutils literal notranslate"><span class="pre">Direction</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robot_type.Direction.BEND"><code class="docutils literal notranslate"><span class="pre">Direction.BEND</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robot_type.Direction.PITCH_FRONT_BACK"><code class="docutils literal notranslate"><span class="pre">Direction.PITCH_FRONT_BACK</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robot_type.Direction.ROLL_OUT_IN"><code class="docutils literal notranslate"><span class="pre">Direction.ROLL_OUT_IN</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robot_type.Direction.ROLL_RIGHT_LEFT"><code class="docutils literal notranslate"><span class="pre">Direction.ROLL_RIGHT_LEFT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robot_type.Direction.TURN_OUT_IN"><code class="docutils literal notranslate"><span class="pre">Direction.TURN_OUT_IN</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robot_type.Direction.TURN_RIGHT_LEFT"><code class="docutils literal notranslate"><span class="pre">Direction.TURN_RIGHT_LEFT</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="robotics.base.html#robotics.base.robot_type.GROSError"><code class="docutils literal notranslate"><span class="pre">GROSError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="robotics.base.html#robotics.base.robot_type.PartType"><code class="docutils literal notranslate"><span class="pre">PartType</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robot_type.PartType.BODY"><code class="docutils literal notranslate"><span class="pre">PartType.BODY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robot_type.PartType.HEAD"><code class="docutils literal notranslate"><span class="pre">PartType.HEAD</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robot_type.PartType.LEFT_ARM"><code class="docutils literal notranslate"><span class="pre">PartType.LEFT_ARM</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robot_type.PartType.LEFT_FOREARM"><code class="docutils literal notranslate"><span class="pre">PartType.LEFT_FOREARM</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robot_type.PartType.LEFT_HAND"><code class="docutils literal notranslate"><span class="pre">PartType.LEFT_HAND</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robot_type.PartType.RIGHT_ARM"><code class="docutils literal notranslate"><span class="pre">PartType.RIGHT_ARM</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robot_type.PartType.RIGHT_FOREARM"><code class="docutils literal notranslate"><span class="pre">PartType.RIGHT_FOREARM</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robot_type.PartType.RIGHT_HAND"><code class="docutils literal notranslate"><span class="pre">PartType.RIGHT_HAND</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="robotics.base.html#robotics.base.robot_type.RobotError"><code class="docutils literal notranslate"><span class="pre">RobotError</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robot_type.RobotError.ANGLE_NOT_ALLOWED"><code class="docutils literal notranslate"><span class="pre">RobotError.ANGLE_NOT_ALLOWED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robot_type.RobotError.MOD_NOT_ALLOWED"><code class="docutils literal notranslate"><span class="pre">RobotError.MOD_NOT_ALLOWED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robot_type.RobotError.SPEED_NOT_ALLOWED"><code class="docutils literal notranslate"><span class="pre">RobotError.SPEED_NOT_ALLOWED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robot_type.RobotError.result"><code class="docutils literal notranslate"><span class="pre">RobotError.result()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="robotics.base.html#module-robotics.base.robot_udp">robotics.base.robot_udp module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="robotics.base.html#robotics.base.robot_udp.RobotUDP"><code class="docutils literal notranslate"><span class="pre">RobotUDP</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robot_udp.RobotUDP.model_config"><code class="docutils literal notranslate"><span class="pre">RobotUDP.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robot_udp.RobotUDP.model_fields"><code class="docutils literal notranslate"><span class="pre">RobotUDP.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robot_udp.RobotUDP.udp"><code class="docutils literal notranslate"><span class="pre">RobotUDP.udp</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="robotics.base.html#module-robotics.base.robotic">robotics.base.robotic module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="robotics.base.html#robotics.base.robotic.Robotic"><code class="docutils literal notranslate"><span class="pre">Robotic</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robotic.Robotic.host_id"><code class="docutils literal notranslate"><span class="pre">Robotic.host_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robotic.Robotic.id"><code class="docutils literal notranslate"><span class="pre">Robotic.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robotic.Robotic.mode"><code class="docutils literal notranslate"><span class="pre">Robotic.mode</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robotic.Robotic.status"><code class="docutils literal notranslate"><span class="pre">Robotic.status</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robotic.Robotic.estop"><code class="docutils literal notranslate"><span class="pre">Robotic.estop()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#id0"><code class="docutils literal notranslate"><span class="pre">Robotic.host_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#id1"><code class="docutils literal notranslate"><span class="pre">Robotic.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#id2"><code class="docutils literal notranslate"><span class="pre">Robotic.mode</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robotic.Robotic.model_config"><code class="docutils literal notranslate"><span class="pre">Robotic.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robotic.Robotic.model_fields"><code class="docutils literal notranslate"><span class="pre">Robotic.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robotic.Robotic.move"><code class="docutils literal notranslate"><span class="pre">Robotic.move()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robotic.Robotic.reset"><code class="docutils literal notranslate"><span class="pre">Robotic.reset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robotic.Robotic.set_mode"><code class="docutils literal notranslate"><span class="pre">Robotic.set_mode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robotic.Robotic.stand"><code class="docutils literal notranslate"><span class="pre">Robotic.stand()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robotic.Robotic.start"><code class="docutils literal notranslate"><span class="pre">Robotic.start()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#id3"><code class="docutils literal notranslate"><span class="pre">Robotic.status</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.base.html#robotics.base.robotic.Robotic.stop"><code class="docutils literal notranslate"><span class="pre">Robotic.stop()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="robotics.base.html#module-robotics.base">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="robotics.car.html">robotics.car package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="robotics.car.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="robotics.car.html#module-robotics.car.car">robotics.car.car module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="robotics.car.html#robotics.car.car.Car"><code class="docutils literal notranslate"><span class="pre">Car</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="robotics.car.html#robotics.car.car.Car.api"><code class="docutils literal notranslate"><span class="pre">Car.api</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.car.html#robotics.car.car.Car.model_config"><code class="docutils literal notranslate"><span class="pre">Car.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.car.html#robotics.car.car.Car.model_fields"><code class="docutils literal notranslate"><span class="pre">Car.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.car.html#robotics.car.car.Car.move"><code class="docutils literal notranslate"><span class="pre">Car.move()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.car.html#robotics.car.car.Car.set_mode"><code class="docutils literal notranslate"><span class="pre">Car.set_mode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.car.html#robotics.car.car.Car.speed"><code class="docutils literal notranslate"><span class="pre">Car.speed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.car.html#robotics.car.car.Car.start"><code class="docutils literal notranslate"><span class="pre">Car.start()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.car.html#robotics.car.car.Car.stop"><code class="docutils literal notranslate"><span class="pre">Car.stop()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="robotics.car.html#module-robotics.car.car_api">robotics.car.car_api module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="robotics.car.html#robotics.car.car_api.CarAPI"><code class="docutils literal notranslate"><span class="pre">CarAPI</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="robotics.car.html#robotics.car.car_api.CarAPI.fix"><code class="docutils literal notranslate"><span class="pre">CarAPI.fix()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.car.html#robotics.car.car_api.CarAPI.mod"><code class="docutils literal notranslate"><span class="pre">CarAPI.mod()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.car.html#robotics.car.car_api.CarAPI.model_config"><code class="docutils literal notranslate"><span class="pre">CarAPI.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.car.html#robotics.car.car_api.CarAPI.model_fields"><code class="docutils literal notranslate"><span class="pre">CarAPI.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.car.html#robotics.car.car_api.CarAPI.move"><code class="docutils literal notranslate"><span class="pre">CarAPI.move()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.car.html#robotics.car.car_api.CarAPI.speed"><code class="docutils literal notranslate"><span class="pre">CarAPI.speed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.car.html#robotics.car.car_api.CarAPI.start"><code class="docutils literal notranslate"><span class="pre">CarAPI.start()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.car.html#robotics.car.car_api.CarAPI.stop"><code class="docutils literal notranslate"><span class="pre">CarAPI.stop()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="robotics.car.html#module-robotics.car.car_mod">robotics.car.car_mod module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="robotics.car.html#robotics.car.car_mod.CarMod"><code class="docutils literal notranslate"><span class="pre">CarMod</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="robotics.car.html#robotics.car.car_mod.CarMod.MOD_2_WHEEL"><code class="docutils literal notranslate"><span class="pre">CarMod.MOD_2_WHEEL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.car.html#robotics.car.car_mod.CarMod.MOD_3_WHEEL"><code class="docutils literal notranslate"><span class="pre">CarMod.MOD_3_WHEEL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.car.html#robotics.car.car_mod.CarMod.MOD_4_WHEEL"><code class="docutils literal notranslate"><span class="pre">CarMod.MOD_4_WHEEL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.car.html#robotics.car.car_mod.CarMod.MOD_ACTION"><code class="docutils literal notranslate"><span class="pre">CarMod.MOD_ACTION</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.car.html#robotics.car.car_mod.CarMod.MOD_E_STOP"><code class="docutils literal notranslate"><span class="pre">CarMod.MOD_E_STOP</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.car.html#robotics.car.car_mod.CarMod.MOD_FIX"><code class="docutils literal notranslate"><span class="pre">CarMod.MOD_FIX</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.car.html#robotics.car.car_mod.CarMod.MOD_HOME"><code class="docutils literal notranslate"><span class="pre">CarMod.MOD_HOME</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="robotics.car.html#robotics.car.car_mod.get_mod_by_mod_val"><code class="docutils literal notranslate"><span class="pre">get_mod_by_mod_val()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="robotics.car.html#module-robotics.car">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="robotics.common.html">robotics.common package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="robotics.common.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="robotics.common.html#module-robotics.common.audio">robotics.common.audio module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="robotics.common.html#robotics.common.audio.Audio"><code class="docutils literal notranslate"><span class="pre">Audio</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="robotics.common.html#robotics.common.audio.Audio.play_path"><code class="docutils literal notranslate"><span class="pre">Audio.play_path()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.common.html#robotics.common.audio.Audio.play_predef"><code class="docutils literal notranslate"><span class="pre">Audio.play_predef()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.common.html#robotics.common.audio.Audio.set_voice"><code class="docutils literal notranslate"><span class="pre">Audio.set_voice()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.common.html#robotics.common.audio.Audio.set_volume"><code class="docutils literal notranslate"><span class="pre">Audio.set_volume()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.common.html#robotics.common.audio.Audio.talk"><code class="docutils literal notranslate"><span class="pre">Audio.talk()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="robotics.common.html#module-robotics.common.camera">robotics.common.camera module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="robotics.common.html#robotics.common.camera.Camera"><code class="docutils literal notranslate"><span class="pre">Camera</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="robotics.common.html#robotics.common.camera.Camera.cap"><code class="docutils literal notranslate"><span class="pre">Camera.cap</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.common.html#robotics.common.camera.Camera.gen"><code class="docutils literal notranslate"><span class="pre">Camera.gen()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.common.html#robotics.common.camera.Camera.get_video"><code class="docutils literal notranslate"><span class="pre">Camera.get_video()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.common.html#robotics.common.camera.Camera.is_on"><code class="docutils literal notranslate"><span class="pre">Camera.is_on()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="robotics.common.html#module-robotics.common.result">robotics.common.result module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="robotics.common.html#robotics.common.result.Result"><code class="docutils literal notranslate"><span class="pre">Result</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="robotics.common.html#robotics.common.result.Result.fail"><code class="docutils literal notranslate"><span class="pre">Result.fail()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.common.html#robotics.common.result.Result.ok"><code class="docutils literal notranslate"><span class="pre">Result.ok()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="robotics.common.html#module-robotics.common.slam">robotics.common.slam module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="robotics.common.html#robotics.common.slam.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="robotics.common.html#module-robotics.common">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="robotics.dog.html">robotics.dog package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="robotics.dog.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="robotics.dog.html#module-robotics.dog.dog">robotics.dog.dog module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="robotics.dog.html#robotics.dog.dog.Dog"><code class="docutils literal notranslate"><span class="pre">Dog</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="robotics.dog.html#robotics.dog.dog.Dog.api"><code class="docutils literal notranslate"><span class="pre">Dog.api</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.dog.html#robotics.dog.dog.Dog.model_config"><code class="docutils literal notranslate"><span class="pre">Dog.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.dog.html#robotics.dog.dog.Dog.model_fields"><code class="docutils literal notranslate"><span class="pre">Dog.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.dog.html#robotics.dog.dog.Dog.start"><code class="docutils literal notranslate"><span class="pre">Dog.start()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="robotics.dog.html#module-robotics.dog.dog_api">robotics.dog.dog_api module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="robotics.dog.html#robotics.dog.dog_api.DogAPI"><code class="docutils literal notranslate"><span class="pre">DogAPI</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="robotics.dog.html#robotics.dog.dog_api.DogAPI.model_config"><code class="docutils literal notranslate"><span class="pre">DogAPI.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.dog.html#robotics.dog.dog_api.DogAPI.model_fields"><code class="docutils literal notranslate"><span class="pre">DogAPI.model_fields</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="robotics.dog.html#module-robotics.dog">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="robotics.human.html">robotics.human package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="robotics.human.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="robotics.human.html#module-robotics.human.fgr_human_handler">robotics.human.fgr_human_handler module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="robotics.human.html#robotics.human.fgr_human_handler.blocking_udp_receive"><code class="docutils literal notranslate"><span class="pre">blocking_udp_receive()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="robotics.human.html#robotics.human.fgr_human_handler.handle"><code class="docutils literal notranslate"><span class="pre">handle()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="robotics.human.html#robotics.human.fgr_human_handler.receive"><code class="docutils literal notranslate"><span class="pre">receive()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="robotics.human.html#module-robotics.human.human">robotics.human.human module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="robotics.human.html#robotics.human.human.Human"><code class="docutils literal notranslate"><span class="pre">Human</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human.Human.api"><code class="docutils literal notranslate"><span class="pre">Human.api</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human.Human.estop"><code class="docutils literal notranslate"><span class="pre">Human.estop()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human.Human.model_config"><code class="docutils literal notranslate"><span class="pre">Human.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human.Human.model_fields"><code class="docutils literal notranslate"><span class="pre">Human.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human.Human.reset"><code class="docutils literal notranslate"><span class="pre">Human.reset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human.Human.stand"><code class="docutils literal notranslate"><span class="pre">Human.stand()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human.Human.start"><code class="docutils literal notranslate"><span class="pre">Human.start()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human.Human.stop"><code class="docutils literal notranslate"><span class="pre">Human.stop()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human.Human.walk"><code class="docutils literal notranslate"><span class="pre">Human.walk()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="robotics.human.html#module-robotics.human.human_api">robotics.human.human_api module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.HumanAPI"><code class="docutils literal notranslate"><span class="pre">HumanAPI</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.HumanAPI.mode"><code class="docutils literal notranslate"><span class="pre">HumanAPI.mode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.HumanAPI.model_config"><code class="docutils literal notranslate"><span class="pre">HumanAPI.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.HumanAPI.model_fields"><code class="docutils literal notranslate"><span class="pre">HumanAPI.model_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.HumanAPI.receive"><code class="docutils literal notranslate"><span class="pre">HumanAPI.receive()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.HumanAPI.reset"><code class="docutils literal notranslate"><span class="pre">HumanAPI.reset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.HumanAPI.stand"><code class="docutils literal notranslate"><span class="pre">HumanAPI.stand()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.HumanAPI.stand_up"><code class="docutils literal notranslate"><span class="pre">HumanAPI.stand_up()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.HumanAPI.start"><code class="docutils literal notranslate"><span class="pre">HumanAPI.start()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.HumanAPI.state_limit"><code class="docutils literal notranslate"><span class="pre">HumanAPI.state_limit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.HumanAPI.state_limit_str"><code class="docutils literal notranslate"><span class="pre">HumanAPI.state_limit_str</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.HumanAPI.states"><code class="docutils literal notranslate"><span class="pre">HumanAPI.states()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.HumanAPI.stop"><code class="docutils literal notranslate"><span class="pre">HumanAPI.stop()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.HumanAPI.system_command"><code class="docutils literal notranslate"><span class="pre">HumanAPI.system_command()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.HumanAPI.system_states"><code class="docutils literal notranslate"><span class="pre">HumanAPI.system_states()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.HumanAPI.system_states_str"><code class="docutils literal notranslate"><span class="pre">HumanAPI.system_states_str</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.HumanAPI.walk"><code class="docutils literal notranslate"><span class="pre">HumanAPI.walk()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.HumanAPI.zero_str"><code class="docutils literal notranslate"><span class="pre">HumanAPI.zero_str</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.JointType"><code class="docutils literal notranslate"><span class="pre">JointType</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.JointType.LEFT_ELBOW"><code class="docutils literal notranslate"><span class="pre">JointType.LEFT_ELBOW</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.JointType.LEFT_SHOULDER"><code class="docutils literal notranslate"><span class="pre">JointType.LEFT_SHOULDER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.JointType.LEFT_WRIST"><code class="docutils literal notranslate"><span class="pre">JointType.LEFT_WRIST</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.JointType.NECK"><code class="docutils literal notranslate"><span class="pre">JointType.NECK</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.JointType.RIGHT_ELBOW"><code class="docutils literal notranslate"><span class="pre">JointType.RIGHT_ELBOW</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.JointType.RIGHT_SHOULDER"><code class="docutils literal notranslate"><span class="pre">JointType.RIGHT_SHOULDER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.JointType.RIGHT_WRIST"><code class="docutils literal notranslate"><span class="pre">JointType.RIGHT_WRIST</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.JointType.WAIST"><code class="docutils literal notranslate"><span class="pre">JointType.WAIST</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.RotateType"><code class="docutils literal notranslate"><span class="pre">RotateType</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.RotateType.PITCH"><code class="docutils literal notranslate"><span class="pre">RotateType.PITCH</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.RotateType.ROLL"><code class="docutils literal notranslate"><span class="pre">RotateType.ROLL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="robotics.human.html#robotics.human.human_api.RotateType.YAW"><code class="docutils literal notranslate"><span class="pre">RotateType.YAW</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="robotics.human.html#module-robotics.human.human_params_schema">robotics.human.human_params_schema module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="robotics.human.html#module-robotics.human">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="module-robotics">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-robotics" title="此标题的永久链接"></a></h2>
+<p>这个包里的功能，都是机器人身上的功能，比如 相机，Slam，喇叭，电机，传感器，等等</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="base.html" class="btn btn-neutral float-left" title="base package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="robotics.base.html" class="btn btn-neutral float-right" title="robotics.base package" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2023, Fourier Software Department.</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
