@@ -11,7 +11,7 @@ import { Robot } from "gros-client";
 Vue.prototype.$axios = axios;
 Vue.prototype.$store = store;
 Vue.prototype.$webview = null;
-Vue.prototype.$robot = new Robot();
+Vue.prototype.$robot = new Robot({host: '127.0.0.1', port: 8001});
 
 Vue.use(ElementUI);
 
