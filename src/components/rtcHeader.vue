@@ -18,8 +18,8 @@
       </div>
       <div class="divider spacing" v-if="camera"></div>
       <div class="spacing" @click="openCamera()" v-if="camera">
-        <!-- <img class="inImg" src="@/assets/images/icon_cameraOn.png" /> -->
-        <img class="inImg" src="@/assets/images/icon_cameraOff.png" />
+        <img class="inImg" src="@/assets/images/icon_cameraOn.png" />
+        <!-- <img class="inImg" src="@/assets/images/icon_cameraOff.png" /> -->
       </div>
       <div class="divider spacing"></div>
       <div class="spacing" @click="setting()">
