@@ -42,42 +42,58 @@
                 </div>
                 <div class="rightTable">
                     <div class="tableItem">
-                        <div class="itemChild">+92.12°</div>
-                        <div class="itemChild middleCurr">Hip Pitch<div class="downArrow"></div>
+                        <div class="itemChild">{{ leftHipPitch_qa ? leftHipPitch_qa + '°' : '' }}</div>
+                        <div class="itemChild" :class="activatedItem == 'hipPitch' ? 'middleCurr' : 'middle'"
+                            @click="changeItem('hipPitch')">Hip Pitch<div class="downArrow"
+                                v-if="activatedItem == 'hipPitch'"></div>
                         </div>
-                        <div class="itemChild">+92.12°</div>
+                        <div class="itemChild">{{ rightHipPitch_qa ? rightHipPitch_qa + '°' : '' }}</div>
                     </div>
                     <div class="tableItem">
-                        <div class="itemChild">+48.13°</div>
-                        <div class="itemChild middle">Hip Yaw</div>
-                        <div class="itemChild">+48.13°</div>
+                        <div class="itemChild">{{ leftHipYaw_qa ? leftHipYaw_qa + '°' : '' }}</div>
+                        <div class="itemChild" :class="activatedItem == 'hipYaw' ? 'middleCurr' : 'middle'"
+                            @click="changeItem('hipYaw')">Hip Yaw<div class="downArrow" v-if="activatedItem == 'hipYaw'">
+                            </div>
+                        </div>
+                        <div class="itemChild">{{ rightHipYaw_qa ? rightHipYaw_qa + '°' : '' }}</div>
                     </div>
                     <div class="tableItem">
-                        <div class="itemChild">+157.02°</div>
-                        <div class="itemChild middle">Hip Roll</div>
-                        <div class="itemChild">+157.02°</div>
+                        <div class="itemChild">{{ leftHipRoll_qa ? leftHipRoll_qa + '°' : '' }}</div>
+                        <div class="itemChild" :class="activatedItem == 'hipRoll' ? 'middleCurr' : 'middle'"
+                            @click="changeItem('hipRoll')">Hip Roll<div class="downArrow" v-if="activatedItem == 'hipRoll'">
+                            </div>
+                        </div>
+                        <div class="itemChild">{{ rightHipRoll_qa ? rightHipRoll_qa + '°' : '' }}</div>
                     </div>
                     <div class="tableItem">
-                        <div class="itemChild">+22.12°</div>
-                        <div class="itemChild middle">Knee</div>
-                        <div class="itemChild">+22.12°</div>
+                        <div class="itemChild">{{ leftKnee_qa ? leftKnee_qa + '°' : '' }}</div>
+                        <div class="itemChild" :class="activatedItem == 'knee' ? 'middleCurr' : 'middle'"
+                            @click="changeItem('knee')">Knee<div class="downArrow" v-if="activatedItem == 'knee'"></div>
+                        </div>
+                        <div class="itemChild">{{ rightKnee_qa ? rightKnee_qa + '°' : '' }}</div>
                     </div>
                     <div class="tableItem">
-                        <div class="itemChild">+16.31°</div>
-                        <div class="itemChild middle">Ankle Pitch</div>
-                        <div class="itemChild">+16.31°</div>
+                        <div class="itemChild">{{ leftAnklePitch_qa ? leftAnklePitch_qa + '°' : '' }}</div>
+                        <div class="itemChild" :class="activatedItem == 'anklePitch' ? 'middleCurr' : 'middle'"
+                            @click="changeItem('anklePitch')">Ankle Pitch
+                            <div class="downArrow" v-if="activatedItem == 'anklePitch'"></div>
+                        </div>
+                        <div class="itemChild">{{ rightAnklePitch_qa ? rightAnklePitch_qa + '°' : '' }}</div>
                     </div>
                     <div class="tableItem">
-                        <div class="itemChild">+76.78°</div>
-                        <div class="itemChild middle">Ankle Roll</div>
-                        <div class="itemChild">+76.78°</div>
+                        <div class="itemChild">{{ leftAnkleRoll_qa ? leftAnkleRoll_qa + '°' : '' }}</div>
+                        <div class="itemChild" :class="activatedItem == 'ankleRoll' ? 'middleCurr' : 'middle'"
+                            @click="changeItem('ankleRoll')">Ankle Roll
+                            <div class="downArrow" v-if="activatedItem == 'ankleRoll'"></div>
+                        </div>
+                        <div class="itemChild">{{ rightAnkleRoll_qa ? rightAnkleRoll_qa + '°' : '' }}</div>
                     </div>
                 </div>
                 <div class="speedChart">
                     <div class="xChart">
                         <div class="chatItem" style="flex: 1;">
                             <div>{{ $t('xSpeed') }}</div>
-                            <div>+1.29m/s</div>
+                            <div>{{ xSpeed }}m/s</div>
                         </div>
                         <div class="chatItem" style="flex: 2;">
                             <div class="sChartSize" id="xChart"></div>
@@ -86,7 +102,7 @@
                     <div class="yChart">
                         <div class="chatItem" style="flex: 1;">
                             <div>{{ $t('ySpeed') }}</div>
-                            <div>-1.68m/s</div>
+                            <div>{{ ySpeed }}m/s</div>
                         </div>
                         <div class="chatItem" style="flex: 2;">
                             <div class="sChartSize" id="yChart"></div>
@@ -104,56 +120,82 @@ import * as echarts from 'echarts';
 
 export default {
     components: { rtcHeader },
+    data() {
+        return {
+            activated: "log",
+            logList: [],
+            leftHipPitch_qa: '',
+            leftHipPitch_qdota: '',
+            leftHipPitch_taua: '',
+            leftHipYaw_qa: '',
+            leftHipYaw_qdota: '',
+            leftHipYaw_taua: '',
+            leftHipRoll_qa: '',
+            leftHipRoll_qdota: '',
+            leftHipRoll_taua: '',
+            leftKnee_qa: '',
+            leftKnee_qdota: '',
+            leftKnee_taua: '',
+            leftAnklePitch_qa: '',
+            leftAnklePitch_qdota: '',
+            leftAnklePitch_taua: '',
+            leftAnkleRoll_qa: '',
+            leftAnkleRoll_qdota: '',
+            leftAnkleRoll_taua: '',
+            rightHipPitch_qa: '',
+            rightHipPitch_qdota: '',
+            rightHipPitch_taua: '',
+            rightHipYaw_qa: '',
+            rightHipYaw_qdota: '',
+            rightHipYaw_taua: '',
+            rightHipRoll_qa: '',
+            rightHipRoll_qdota: '',
+            rightHipRoll_taua: '',
+            rightKnee_qa: '',
+            rightKnee_qdota: '',
+            rightKnee_taua: '',
+            rightAnklePitch_qa: '',
+            rightAnklePitch_qdota: '',
+            rightAnklePitch_taua: '',
+            rightAnkleRoll_qa: '',
+            rightAnkleRoll_qdota: '',
+            rightAnkleRoll_taua: '',
+            xSpeed: '',
+            ySpeed: '',
+            leftSideChartData: [],
+            rightSideChartData: [],
+            leftSpeedChartData: [],
+            rightSpeedChartData: [],
+            activatedItem: 'hipPitch'
+        }
+    },
     created() {
 
     },
     mounted() {
+        this.initSideCharts()
+        this.initSpeedCharts()
         this.$robot.getType().then(r => {
-          console.log('getType=========', r);
+            console.log('getType=========', r);
         })
 
         this.$robot.enable_debug_state(1)
+        // this.$robot.jointStates()
 
         this.$robot.on_message(data => {
-          console.log('on_message===============', data)
+            let currData = JSON.parse(data.data)
+            console.log('on_message===============', currData)
+            this.assignData(JSON.parse(data.data).data.states)
+            if (currData.data.log && currData.data.log.logBuffer)
+                this.getLog(currData.data.log.logBuffer)
+            this.updateSideCharts(this.activatedItem)
+            this.updateSpeedCharts()
         })
-
-        this.initSideCharts()
-        this.initSpeedCharts()
     },
-    data() {
-        return {
-            activated: "log",
-            logList: [{
-                content: '主程序已启动',
-                timestamp: '2023/8/14 9:15',
-                placement: 'top'
-            }, {
-                content: '绝对值编码器数值已归零',
-                timestamp: '2023/8/14 9:30',
-                placement: 'top'
-            }, {
-                content: '错误！XXXXXX',
-                timestamp: '2023/8/14 9:52',
-                placement: 'top',
-                type: 'danger',
-            }, {
-                content: '绝对值编码器数值已归零',
-                timestamp: '2023/8/15 10:13',
-                placement: 'top'
-            }, {
-                content: '主程序已启动',
-                timestamp: '2023/8/15 15:37',
-                placement: 'top'
-            }, {
-                content: '主程序已启动',
-                timestamp: '2023/8/15 15:37',
-                placement: 'top'
-            }, {
-                content: '主程序已启动',
-                timestamp: '2023/8/15 15:37',
-                placement: 'top'
-            }]
+    watch: {
+        activatedItem(newVal, oldVal) {
+            console.log(newVal)
+            this.updateSideCharts(newVal)
         }
     },
     methods: {
@@ -172,8 +214,7 @@ export default {
             var rightChart = echarts.init(document.getElementById('rightChart'));
             leftChart.setOption({
                 xAxis: {
-                    type: 'category',
-                    data: ['1', '2', '3', '4', '5', '6', '7', '8']
+                    type: 'category'
                 },
                 yAxis: {
                     type: 'value',
@@ -181,7 +222,8 @@ export default {
                 },
                 series: [
                     {
-                        data: [5, 8, 6, 3, 4, 7, 9, 5],
+                        name: 'angle',
+                        data: this.leftSideChartData,
                         type: 'line',
                         smooth: true
                     }
@@ -190,7 +232,6 @@ export default {
             rightChart.setOption({
                 xAxis: {
                     type: 'category',
-                    data: ['1', '2', '3', '4', '5', '6', '7', '8']
                 },
                 yAxis: {
                     type: 'value',
@@ -198,7 +239,8 @@ export default {
                 },
                 series: [
                     {
-                        data: [4, 5, 3, 1, 5, 8, 7, 5],
+                        name: 'angle',
+                        data: this.rightSideChartData,
                         type: 'line',
                         smooth: true
                     }
@@ -211,7 +253,6 @@ export default {
             xChart.setOption({
                 xAxis: {
                     type: 'category',
-                    data: ['1', '2', '3', '4', '5', '6', '7', '8']
                 },
                 yAxis: {
                     type: 'value',
@@ -219,7 +260,8 @@ export default {
                 },
                 series: [
                     {
-                        data: [11, 12, 8, 6, 3, 5, 10, 9],
+                        name: 'speed',
+                        data: this.leftSpeedChartData,
                         type: 'line',
                         smooth: true
                     }
@@ -228,7 +270,6 @@ export default {
             yChart.setOption({
                 xAxis: {
                     type: 'category',
-                    data: ['1', '2', '3', '4', '5', '6', '7', '8']
                 },
                 yAxis: {
                     type: 'value',
@@ -236,12 +277,161 @@ export default {
                 },
                 series: [
                     {
-                        data: [10, 7, 15, 6, 2, 8, 11, 5],
+                        name: 'speed',
+                        data: this.rightSpeedChartData,
                         type: 'line',
                         smooth: true
                     }
                 ]
             })
+        },
+        assignData(data) {
+            this.leftHipPitch_qa = this.toDegrees(data.jointStates[2].qa)
+            this.leftHipPitch_qdota = data.jointStates[2].qdota
+            this.leftHipPitch_taua = data.jointStates[2].taua
+            this.leftHipYaw_qa = this.toDegrees(data.jointStates[1].qa)
+            this.leftHipYaw_qdota = data.jointStates[1].qdota
+            this.leftHipYaw_taua = data.jointStates[1].taua
+            this.leftHipRoll_qa = this.toDegrees(data.jointStates[0].qa)
+            this.leftHipRoll_qdota = data.jointStates[0].qdota
+            this.leftHipRoll_taua = data.jointStates[0].taua
+            this.leftKnee_qa = this.toDegrees(data.jointStates[3].qa)
+            this.leftKnee_qdota = data.jointStates[3].qdota
+            this.leftKnee_taua = data.jointStates[3].taua
+            this.leftAnklePitch_qa = this.toDegrees(data.jointStates[4].qa)
+            this.leftAnklePitch_qdota = data.jointStates[4].qdota
+            this.leftAnklePitch_taua = data.jointStates[4].taua
+            this.leftAnkleRoll_qa = this.toDegrees(data.jointStates[5].qa)
+            this.leftAnkleRoll_qdota = data.jointStates[5].qdota
+            this.leftAnkleRoll_taua = data.jointStates[5].taua
+            this.rightHipPitch_qa = this.toDegrees(data.jointStates[8].qa)
+            this.rightHipPitch_qdota = data.jointStates[8].qdota
+            this.rightHipPitch_taua = data.jointStates[8].taua
+            this.rightHipYaw_qa = this.toDegrees(data.jointStates[7].qa)
+            this.rightHipYaw_qdota = data.jointStates[7].qdota
+            this.rightHipYaw_taua = data.jointStates[7].taua
+            this.rightHipRoll_qa = this.toDegrees(data.jointStates[6].qa)
+            this.rightHipRoll_qdota = data.jointStates[6].qdota
+            this.rightHipRoll_taua = data.jointStates[6].taua
+            this.rightKnee_qa = this.toDegrees(data.jointStates[9].qa)
+            this.rightKnee_qdota = data.jointStates[9].qdota
+            this.rightKnee_taua = data.jointStates[9].taua
+            this.rightAnklePitch_qa = this.toDegrees(data.jointStates[10].qa)
+            this.rightAnklePitch_qdota = data.jointStates[10].qdota
+            this.rightAnklePitch_taua = data.jointStates[10].taua
+            this.rightAnkleRoll_qa = this.toDegrees(data.jointStates[11].qa)
+            this.rightAnkleRoll_qdota = data.jointStates[11].qdota
+            this.rightAnkleRoll_taua = data.jointStates[11].taua
+            this.xSpeed = data.basestate.vx.toFixed(2)
+            this.ySpeed = data.basestate.vy.toFixed(2)
+        },
+        getLog(data) {
+            data.forEach(element => {
+                let item = {}
+                item.content = element.log
+                item.placement = 'top'
+                item.timestamp = this.dateFormart()
+                this.logList.push(item)
+            })
+        },
+        dateFormart() {
+            var currentDate = new Date();
+            var year = currentDate.getFullYear();
+            var month = currentDate.getMonth() + 1;
+            var day = currentDate.getDate();
+            var hours = currentDate.getHours();
+            var minutes = currentDate.getMinutes();
+            var formattedDate = year + '/' + month + '/' + day + ' ' + hours + ':' + minutes;
+            return formattedDate;
+        },
+        toDegrees(e) {
+            var degrees = e * (180 / Math.PI);
+            return degrees.toFixed(2)
+        },
+        updateSideCharts(e) {
+            // this.leftSideChartData = []
+            // this.rightSideChartData = []
+            switch (e) {
+                case 'hipPitch':
+                    this.leftSideChartData.push(this.leftHipPitch_qa)
+                    this.rightSideChartData.push(this.rightHipPitch_qa)
+                    break;
+                case 'hipYaw':
+                    this.leftSideChartData.push(this.leftHipYaw_qa)
+                    this.rightSideChartData.push(this.rightHipYaw_qa)
+                    break;
+                case 'hipRoll':
+                    this.leftSideChartData.push(this.leftHipRoll_qa)
+                    this.rightSideChartData.push(this.rightHipRoll_qa)
+                    break;
+                case 'knee':
+                    this.leftSideChartData.push(this.leftKnee_qa)
+                    this.rightSideChartData.push(this.rightKnee_qa)
+                    break;
+                case 'anklePitch':
+                    this.leftSideChartData.push(this.leftAnklePitch_qa)
+                    this.rightSideChartData.push(this.rightAnklePitch_qa)
+                    break;
+                case 'ankleRoll':
+                    this.leftSideChartData.push(this.leftAnkleRoll_qa)
+                    this.rightSideChartData.push(this.rightAnkleRoll_qa)
+                    break;
+                default:
+                    break;
+            }
+            if (this.leftSideChartData.length > 10)
+                this.leftSideChartData.shift()
+            if (this.rightSideChartData.length > 10)
+                this.rightSideChartData.shift()
+            let leftChart = echarts.getInstanceByDom(document.getElementById('leftChart'))
+            leftChart.setOption({
+                series: [
+                    {
+                        name: 'angle',
+                        data: this.leftSideChartData
+                    }
+                ]
+            });
+            let rightChart = echarts.getInstanceByDom(document.getElementById('rightChart'))
+            rightChart.setOption({
+                series: [
+                    {
+                        name: 'angle',
+                        data: this.rightSideChartData
+                    }
+                ]
+            });
+        },
+        updateSpeedCharts() {
+            let xChart = echarts.getInstanceByDom(document.getElementById('xChart'))
+            this.leftSpeedChartData.push(this.xSpeed)
+            if (this.leftSpeedChartData.length > 10)
+                this.leftSpeedChartData.shift()
+            xChart.setOption({
+                series: [
+                    {
+                        name: 'speed',
+                        data: this.leftSpeedChartData
+                    }
+                ]
+            });
+            let yChart = echarts.getInstanceByDom(document.getElementById('yChart'))
+            this.rightSpeedChartData.push(this.ySpeed)
+            if (this.rightSpeedChartData.length > 10)
+                this.rightSpeedChartData.shift()
+            yChart.setOption({
+                series: [
+                    {
+                        name: 'speed',
+                        data: this.rightSpeedChartData
+                    }
+                ]
+            });
+        },
+        changeItem(e) {
+            this.activatedItem = e
+            this.leftSideChartData = []
+            this.rightSideChartData = []
         }
     }
 }
@@ -469,7 +659,7 @@ export default {
             justify-content: space-between;
             align-content: center;
 
-            .sChartSize{
+            .sChartSize {
                 width: 20vw;
                 height: 18vh;
             }
