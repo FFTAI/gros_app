@@ -3,22 +3,22 @@
     <div class="container">
       <div ref="videoContainer" align="center" class="video-container">
         <div class="video-item">
-          <img class="video-play" :src="videoSrc" />
+          <!-- <img class="video-play" :src="videoSrc" /> -->
         </div>
       </div>
       <div class="videoBox">
-        <rtc-header :currentSpeed="current_speed" :camera="true">
+        <rtc-header :currentSpeed="current_speed" :isController="true" :camera="true">
           <div class="headState" @click="headChange()">
             <span class="headTxt">{{ $t('remoteMode') }}</span>
             <div class="arrow"></div>
           </div>
         </rtc-header>
-        <div class="headBox" v-if="headBoxVisible">
-          <div>
+        <div class="headBox" v-if="headBoxVisible" ref="headBoxRef">
+          <div @click="changeMode('remoteMode')">
             {{ $t('remoteMode') }}
           </div>
           <div class="divider"></div>
-          <div>
+          <div @click="changeMode('developerMode')">
             {{ $t('developerMode') }}
           </div>
         </div>
@@ -69,23 +69,27 @@
         </div>
         <div class="actionBox" v-else-if="controlExpand && controlModel == 'inPlace'">
           <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_shakeHands.png" />
+            <img class="actionImg" src="@/assets/images/icon_shakeHands.png" @click="choseMode('shakeHands')"/>
             <div>{{ $t('shakeHands') }}</div>
           </div>
           <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_wave.png" />
+            <img class="actionImg" src="@/assets/images/icon_wave.png" @click="choseMode('wave')"/>
             <div>{{ $t('wave') }}</div>
           </div>
         </div>
-        <div class="controlBox" v-if="mode == ''">
+        <div class="controlBox">
           <div class="choseBox txt" :class="controlModel == 'gait' ? 'chose' : ''" @click="changeControl('gait')">
             {{ $t('gaitMotion') }}
+          </div>
+          <div class="choseBox txt" style="width: 6.25vw;" :class="controlModel == 'stand' ? 'chose' : ''"
+            @click="changeControl('stand')">
+            {{ $t('stand') }}
           </div>
           <div class="choseBox txt" :class="controlModel == 'inPlace' ? 'chose' : ''" @click="changeControl('inPlace')">
             {{ $t('inPlaceMotion') }}
           </div>
         </div>
-        <div class="stateBox" v-else @click="stopMode()">
+        <!-- <div class="stateBox" v-else @click="stopMode()">
           <img v-if="mode == 'slowWalk'" style="width: 2.2917vw;height: 2.2917vw;"
             src="@/assets/images/icon_slowWalk.png" />
           <img v-if="mode == 'fastWalk'" style="width: 2.2917vw;height: 2.2917vw;"
@@ -100,7 +104,15 @@
             <span v-if="mode == 'slowRun'">{{ $t('slowRunning') }}中</span>
             <span v-if="mode == 'fastRun'">{{ $t('fastRunning') }}中</span>
           </div>
-        </div>
+        </div> -->
+      </div>
+      <div class="stateMessage" v-if="mode != ''">
+        <span v-if="mode == 'slowWalk'">{{ $t('normalWalking') }}中...</span>
+        <span v-if="mode == 'fastWalk'">{{ $t('fastWalking') }}中...</span>
+        <span v-if="mode == 'slowRun'">{{ $t('slowRunning') }}中...</span>
+        <span v-if="mode == 'fastRun'">{{ $t('fastRunning') }}中...</span>
+        <span v-if="mode == 'shakeHands'">{{ $t('shakeHands') }}...</span>
+        <span v-if="mode == 'wave'">{{ $t('wave') }}...</span>
       </div>
     </div>
   </div>
@@ -110,7 +122,6 @@ import nipplejs from "nipplejs";
 import RtcHeader from "@/components/rtcHeader.vue";
 import rtcLeftControl from "@/components/rtcLeftControl.vue";
 import { getType, hStop } from "@/request/control"
-import { cameraOpen } from "@/request/camera"
 import { mapState } from "vuex";
 export default {
   components: { RtcHeader, rtcLeftControl },
@@ -154,6 +165,16 @@ export default {
       },
       true
     );
+    // document.addEventListener(
+    //   "click",
+    //   (e) => {
+    //     let headBoxRef = this.$refs.headBoxRef;
+    //     if (headBoxRef && !headBoxRef.contains(e.target)) {
+    //       this.headBoxVisible = false;
+    //     }
+    //   },
+    //   true
+    // );
   },
   async mounted() {
     let _this = this
@@ -172,7 +193,7 @@ export default {
     })
 
     this.videoContainer = this.$refs.videoContainer;
-    this.startFullScreen(); //强制全屏
+    // this.startFullScreen(); //强制全屏
     window.onresize = () => {
       return (() => {
         this.screenWidth = document.body.clientWidth;
@@ -357,28 +378,6 @@ export default {
         alert("浏览器不支持全屏调用！");
       }
     },
-    //退出全屏
-    ExitFullScreen() {
-      var el = document;
-      var cfs =
-        el.cancelFullScreen || el.webkitCancelFullScreen || el.exitFullScreen;
-      if (typeof cfs != "undefined" && cfs) {
-        cfs.call(el);
-      } else if (typeof window.ActiveXObject != "undefined") {
-        var wscript = new ActiveXObject("WScript.Shell");
-        if (wscript != null) {
-          wscript.SendKeys("{F11}");
-        }
-      } else if (el.msExitFullscreen) {
-        el.msExitFullscreen();
-      } else if (el.oRequestFullscreen) {
-        el.oCancelFullScreen();
-      } else if (el.mozCancelFullScreen) {
-        el.mozCancelFullScreen();
-      } else {
-        alert("浏览器不支持全屏调用！");
-      }
-    },
     //开启虚拟触控摇杆
     startJoystickL() {
       const _this = this;
@@ -481,20 +480,18 @@ export default {
     },
     //操控人形
     operateHuman(direction, velocity) {
-      this.$robot.move(direction,velocity)
+      this.$robot.move(direction, velocity)
     },
     cameraOpen() {
-      this.videoSrc = "http://192.168.10.207:8001/control/camera"
-      cameraOpen().then(res => {
-        console.log(res)
-        if (res.data.data)
-          this.videoSrc = process.env.VUE_APP_URL + "/control/camera"
-      }).catch(err => {
-
-      })
+      this.videoSrc = this.$robot.get_video_stream_url()
     },
     changeControl(e) {
-      this.controlExpand = true
+      this.mode = ''
+      if (e != 'stand') {
+        this.controlExpand = true
+      } else {
+        this.controlExpand = false
+      }
       this.controlModel = e
     },
     choseMode(e) {
@@ -506,6 +503,15 @@ export default {
     },
     headChange() {
       this.headBoxVisible = !this.headBoxVisible
+    },
+    changeMode(e) {
+      if (e == 'remoteMode') {
+        this.headBoxVisible = false
+      } else if (e == 'developerMode') {
+        this.$router.push({
+          name: 'development'
+        })
+      }
     }
   },
 };
@@ -520,7 +526,7 @@ export default {
   width: 100%;
   height: 100%;
   position: fixed;
-  background-color: #000;
+  background-color: #121E29;
   z-index: 3;
 }
 
@@ -677,7 +683,7 @@ export default {
   height: 10vh;
 
   .choseBox {
-    width: 13vw;
+    width: 9.2708vw;
     height: 100%;
     display: flex;
     justify-content: center;
@@ -685,7 +691,7 @@ export default {
   }
 
   .chose {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(0, 0.294, 0.522, 0.3);
     border-radius: 2.2396vw;
   }
 
@@ -771,7 +777,7 @@ export default {
   width: 13.5417vw;
   height: 11.4334vw;
   padding: 1.4708vw 0;
-  background:  rgba(0, 75, 133, 0.3);
+  background: rgba(0, 75, 133, 0.3);
   border: .1042vw solid rgba(68, 216, 251, 0.3);
   z-index: 99;
   display: flex;
@@ -788,5 +794,24 @@ export default {
     background: #ffffff;
     opacity: 0.3;
   }
-}</style>
+}
+
+.stateMessage {
+  position: absolute;
+  left: 50%;
+  top: 10vw;
+  transform: translate(-50%, -50%);
+  width: 12.5vw;
+  height: 3.1073vw;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 4px;
+  z-index: 999;
+  font-size: 1.25vw;
+  font-family: AlibabaPuHuiTiR;
+  color: #FFFFFF;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>
    

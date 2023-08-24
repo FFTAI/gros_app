@@ -101,7 +101,7 @@ export default {
 
 .headState {
     position: absolute;
-    top: 2vh;
+    top: 1vw;
     left: 10.9375vw;
     z-index: 99;
 

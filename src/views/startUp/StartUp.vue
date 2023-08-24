@@ -6,6 +6,13 @@
 
 <script>
 export default {
+    mounted() {
+        setTimeout(() => {
+            this.$router.push({
+                name: 'login'
+            })
+        }, 3000);
+    },
     data() {
         return {
 

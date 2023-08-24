@@ -1,6 +1,6 @@
 <template>
     <div class="main">
-        <rtc-header :is-logo="true" :is-login="true"></rtc-header>
+        <rtc-header :is-logo="true" :is-login="true" @connect="toConnect()"></rtc-header>
         <div class="humanBody">
             <img class="openHuman" src="@/assets/images/image_onOpen.png" />
         </div>
@@ -12,7 +12,6 @@
 
 <script>
 import rtcHeader from '@/components/rtcHeader.vue';
-import { Robot } from 'gros-client'
 export default {
     components: { rtcHeader },
     data() {
@@ -21,10 +20,15 @@ export default {
         }
     },
     methods: {
-
         startExplore() {
-            const robot = new Robot()
-            robot.getType()
+            this.$router.push({
+                name: 'loading'
+            })
+        },
+        toConnect() {
+            this.$router.push({
+                name: "connect"
+            })
         }
     }
 }

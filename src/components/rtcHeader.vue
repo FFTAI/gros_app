@@ -5,7 +5,7 @@
       <div class="headLogo" v-if="isLogo">
         <img class="leftSlot" src="@/assets/images/image_logo.png" />
       </div>
-      <div class="headReturn" v-else>
+      <div class="headReturn" v-else @click="routerReturn()">
         <img class="return" src="@/assets/images/icon_return.png" />
       </div>
     </div>
@@ -18,15 +18,15 @@
       </div>
       <div class="divider spacing" v-if="camera"></div>
       <div class="spacing" @click="openCamera()" v-if="camera">
-        <img class="inImg" src="@/assets/images/icon_cameraOn.png" />
-        <!-- <img class="inImg" src="@/assets/images/icon_cameraOff.png" /> -->
+        <img class="inImg" src="@/assets/images/icon_cameraOn.png" v-if="cameraOn"/>
+        <img class="inImg" src="@/assets/images/icon_cameraOff.png" v-else/>
       </div>
       <div class="divider spacing"></div>
       <div class="spacing" @click="setting()">
         <img class="inImg" src="@/assets/images/icon_setting.png" />
       </div>
     </div>
-    <div class="rightSlot" @click="toConnect" v-if="!connectState&&isLogin&&!isLoading">
+    <div class="rightSlot" @click="toConnect()" v-if="!connectState&&isLogin&&!isLoading">
       <span class="connect">{{ $t('connect') }}</span>
     </div>
   </div>
@@ -52,17 +52,38 @@ export default {
     isLoading: {
       type: Boolean,
       default: false
+    },
+    isController: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      connectState: false
+      connectState: false,
+      cameraOn: true
     }
   },
   methods: {
     toConnect() {
-      this.connectState = !this.connectState
+      this.$emit('connect')
+      // this.connectState = !this.connectState
     },
+    setting() {
+      this.$router.push({
+        name: 'setting'
+      })
+    },
+    routerReturn() {
+      if(this.isController){
+        this.$router.go(-2)
+      }else{
+        this.$router.go(-1)
+      }
+    },
+    openCamera() {
+      this.cameraOn = !this.cameraOn
+    }
   }
 };
 </script>

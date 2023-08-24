@@ -1,11 +1,20 @@
 <template>
     <div class="container">
         <rtc-header>
-            <div class="headState">
+            <div class="headState" @click="headChange()">
                 <span class="headTxt">{{ $t('developerMode') }}</span>
                 <div class="arrow"></div>
             </div>
         </rtc-header>
+        <div class="headBox" v-if="headBoxVisible" ref="headBoxRef">
+            <div @click="changeMode('remoteMode')">
+                {{ $t('remoteMode') }}
+            </div>
+            <div class="divider"></div>
+            <div @click="changeMode('developerMode')">
+                {{ $t('developerMode') }}
+            </div>
+        </div>
         <div class="mainBox">
             <div class="leftBox">
                 <!-- <img class="humanModel" src="@/assets/images/icon_model.png" v-show="activated == 'dynamic'" /> -->
@@ -39,55 +48,131 @@
                 </div>
                 <div class="sideChart">
                     <div class="chartSize" id="leftChart"></div>
-                    <div>
-                        
+                    <div class="typeBox">
+                        <img class="typeImg" @click="changeType('angle')" src="@/assets/images/icon_angle.png" />
+                        <img class="typeImg" @click="changeType('Avelocity')" src="@/assets/images/icon_Avelocity.png" />
+                        <img class="typeImg" @click="changeType('torque')" src="@/assets/images/icon_torque.png" />
                     </div>
                     <div class="chartSize" id="rightChart"></div>
                 </div>
                 <div class="rightTable">
                     <div class="tableItem" @click="changeItem('hipPitch')">
-                        <div class="itemChild">{{ leftHipPitch_qa ? leftHipPitch_qa + '°' : '' }}</div>
+                        <div v-if="activatedType == 'angle'" class="itemChild">{{ leftHipPitch_qa ? leftHipPitch_qa + '°' :
+                            ''
+                        }}</div>
+                        <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ leftHipPitch_qdota ?
+                            leftHipPitch_qdota + '°/s' : '' }}</div>
+                        <div v-else-if="activatedType == 'torque'" class="itemChild">{{ leftHipPitch_taua ?
+                            leftHipPitch_taua
+                            + 'N.m' : '' }}</div>
                         <div class="itemChild" :class="activatedItem == 'hipPitch' ? 'middleCurr' : 'middle'">Hip Pitch<div
                                 class="downArrow" v-if="activatedItem == 'hipPitch'"></div>
                         </div>
-                        <div class="itemChild">{{ rightHipPitch_qa ? rightHipPitch_qa + '°' : '' }}</div>
+                        <div v-if="activatedType == 'angle'" class="itemChild">{{ rightHipPitch_qa ? rightHipPitch_qa + '°'
+                            :
+                            '' }}</div>
+                        <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ rightHipPitch_qdota ?
+                            rightHipPitch_qdota + '°/s' : '' }}</div>
+                        <div v-else-if="activatedType == 'torque'" class="itemChild">{{ rightHipPitch_taua ?
+                            rightHipPitch_taua + 'N.m' : '' }}</div>
                     </div>
                     <div class="tableItem" @click="changeItem('hipYaw')">
-                        <div class="itemChild">{{ leftHipYaw_qa ? leftHipYaw_qa + '°' : '' }}</div>
+                        <div v-if="activatedType == 'angle'" class="itemChild">{{ leftHipYaw_qa ? leftHipYaw_qa + '°' : ''
+                        }}
+                        </div>
+                        <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ leftHipYaw_qdota ?
+                            leftHipYaw_qdota
+                            + '°/s' : '' }}</div>
+                        <div v-else-if="activatedType == 'torque'" class="itemChild">{{ leftHipYaw_taua ? leftHipYaw_taua +
+                            'N.m' : '' }}</div>
                         <div class="itemChild" :class="activatedItem == 'hipYaw' ? 'middleCurr' : 'middle'">Hip Yaw<div
                                 class="downArrow" v-if="activatedItem == 'hipYaw'">
                             </div>
                         </div>
-                        <div class="itemChild">{{ rightHipYaw_qa ? rightHipYaw_qa + '°' : '' }}</div>
+                        <div v-if="activatedType == 'angle'" class="itemChild">{{ rightHipYaw_qa ? rightHipYaw_qa + '°' : ''
+                        }}</div>
+                        <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ rightHipYaw_qdota ?
+                            rightHipYaw_qdota + '°/s' : '' }}</div>
+                        <div v-else-if="activatedType == 'torque'" class="itemChild">{{ rightHipYaw_taua ? rightHipYaw_taua
+                            +
+                            'N.m' : '' }}</div>
                     </div>
                     <div class="tableItem" @click="changeItem('hipRoll')">
-                        <div class="itemChild">{{ leftHipRoll_qa ? leftHipRoll_qa + '°' : '' }}</div>
+                        <div v-if="activatedType == 'angle'" class="itemChild">{{ leftHipRoll_qa ? leftHipRoll_qa + '°' : ''
+                        }}</div>
+                        <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ leftHipRoll_qdota ?
+                            leftHipRoll_qdota + '°/s' : '' }}</div>
+                        <div v-else-if="activatedType == 'torque'" class="itemChild">{{ leftHipRoll_taua ? leftHipRoll_taua
+                            +
+                            'N.m' : '' }}</div>
                         <div class="itemChild" :class="activatedItem == 'hipRoll' ? 'middleCurr' : 'middle'">Hip Roll<div
                                 class="downArrow" v-if="activatedItem == 'hipRoll'">
                             </div>
                         </div>
-                        <div class="itemChild">{{ rightHipRoll_qa ? rightHipRoll_qa + '°' : '' }}</div>
+                        <div v-if="activatedType == 'angle'" class="itemChild">{{ rightHipRoll_qa ? rightHipRoll_qa + '°' :
+                            ''
+                        }}</div>
+                        <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ rightHipRoll_qdota ?
+                            rightHipRoll_qdota + '°/s' : '' }}</div>
+                        <div v-else-if="activatedType == 'torque'" class="itemChild">{{ rightHipRoll_taua ?
+                            rightHipRoll_taua
+                            + 'N.m' : '' }}</div>
                     </div>
                     <div class="tableItem" @click="changeItem('knee')">
-                        <div class="itemChild">{{ leftKnee_qa ? leftKnee_qa + '°' : '' }}</div>
+                        <div v-if="activatedType == 'angle'" class="itemChild">{{ leftKnee_qa ? leftKnee_qa + '°' : '' }}
+                        </div>
+                        <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ leftKnee_qdota ? leftKnee_qdota +
+                            '°/s' : '' }}</div>
+                        <div v-else-if="activatedType == 'torque'" class="itemChild">{{ leftKnee_taua ? leftKnee_taua +
+                            'N.m'
+                            : '' }}</div>
                         <div class="itemChild" :class="activatedItem == 'knee' ? 'middleCurr' : 'middle'">Knee<div
                                 class="downArrow" v-if="activatedItem == 'knee'"></div>
                         </div>
-                        <div class="itemChild">{{ rightKnee_qa ? rightKnee_qa + '°' : '' }}</div>
+                        <div v-if="activatedType == 'angle'" class="itemChild">{{ rightKnee_qa ? rightKnee_qa + '°' : '' }}
+                        </div>
+                        <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ rightKnee_qdota ? rightKnee_qdota
+                            +
+                            '°/s' : '' }}</div>
+                        <div v-else-if="activatedType == 'torque'" class="itemChild">{{ rightKnee_taua ? rightKnee_taua +
+                            'N.m' : '' }}</div>
                     </div>
                     <div class="tableItem" @click="changeItem('anklePitch')">
-                        <div class="itemChild">{{ leftAnklePitch_qa ? leftAnklePitch_qa + '°' : '' }}</div>
+                        <div v-if="activatedType == 'angle'" class="itemChild">{{ leftAnklePitch_qa ? leftAnklePitch_qa +
+                            '°'
+                            : '' }}</div>
+                        <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ leftAnklePitch_qdota ?
+                            leftAnklePitch_qdota + '°/s' : '' }}</div>
+                        <div v-else-if="activatedType == 'torque'" class="itemChild">{{ leftAnklePitch_taua ?
+                            leftAnklePitch_taua + 'N.m' : '' }}</div>
                         <div class="itemChild" :class="activatedItem == 'anklePitch' ? 'middleCurr' : 'middle'">Ankle Pitch
                             <div class="downArrow" v-if="activatedItem == 'anklePitch'"></div>
                         </div>
-                        <div class="itemChild">{{ rightAnklePitch_qa ? rightAnklePitch_qa + '°' : '' }}</div>
+                        <div v-if="activatedType == 'angle'" class="itemChild">{{ rightAnklePitch_qa ? rightAnklePitch_qa +
+                            '°' : '' }}</div>
+                        <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ rightAnklePitch_qdota ?
+                            rightAnklePitch_qdota + '°/s' : '' }}</div>
+                        <div v-else-if="activatedType == 'torque'" class="itemChild">{{ rightAnklePitch_taua ?
+                            rightAnklePitch_taua + 'N.m' : '' }}</div>
                     </div>
                     <div class="tableItem" @click="changeItem('ankleRoll')">
-                        <div class="itemChild">{{ leftAnkleRoll_qa ? leftAnkleRoll_qa + '°' : '' }}</div>
+                        <div v-if="activatedType == 'angle'" class="itemChild">{{ leftAnkleRoll_qa ? leftAnkleRoll_qa + '°'
+                            :
+                            '' }}</div>
+                        <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ leftAnkleRoll_qdota ?
+                            leftAnkleRoll_qdota + '°/s' : '' }}</div>
+                        <div v-else-if="activatedType == 'torque'" class="itemChild">{{ leftAnkleRoll_taua ?
+                            leftAnkleRoll_taua + 'N.m' : '' }}</div>
                         <div class="itemChild" :class="activatedItem == 'ankleRoll' ? 'middleCurr' : 'middle'">Ankle Roll
                             <div class="downArrow" v-if="activatedItem == 'ankleRoll'"></div>
                         </div>
-                        <div class="itemChild">{{ rightAnkleRoll_qa ? rightAnkleRoll_qa + '°' : '' }}</div>
+                        <div v-if="activatedType == 'angle'" class="itemChild">{{ rightAnkleRoll_qa ? rightAnkleRoll_qa +
+                            '°'
+                            : '' }}</div>
+                        <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ rightAnkleRoll_qdota ?
+                            rightAnkleRoll_qdota + '°/s' : '' }}</div>
+                        <div v-else-if="activatedType == 'torque'" class="itemChild">{{ rightAnkleRoll_taua ?
+                            rightAnkleRoll_taua + 'N.m' : '' }}</div>
                     </div>
                 </div>
                 <div class="speedChart">
@@ -125,6 +210,7 @@ export default {
         return {
             activated: "dynamic",
             logList: [],
+            //qa:弧度 qdota:弧度/秒 taua:力矩(牛.米)
             leftHipPitch_qa: '',
             leftHipPitch_qdota: '',
             leftHipPitch_taua: '',
@@ -167,7 +253,9 @@ export default {
             rightSideChartData: [],
             leftSpeedChartData: [],
             rightSpeedChartData: [],
-            activatedItem: 'hipPitch'
+            activatedItem: 'hipPitch',
+            activatedType: 'angle',
+            headBoxVisible: false
         }
     },
     created() {
@@ -178,7 +266,7 @@ export default {
     mounted() {
         this.initSideCharts()
         this.initSpeedCharts()
-        this.$robot.getType().then(r => {
+        this.$robot.get_type().then(r => {
             console.log('getType=========', r);
         })
 
@@ -191,14 +279,16 @@ export default {
             this.assignData(JSON.parse(data.data).data.states)
             if (currData.data.log && currData.data.log.logBuffer)
                 this.getLog(currData.data.log.logBuffer)
-            this.updateSideCharts(this.activatedItem)
+            this.updateSideCharts(this.activatedItem, this.activatedType)
             this.updateSpeedCharts()
         })
     },
     watch: {
         activatedItem(newVal, oldVal) {
-            console.log(newVal)
-            this.updateSideCharts(newVal)
+            this.updateSideCharts(newVal, this.activatedType)
+        },
+        activatedType(newVal, oldVal) {
+            this.updateSideCharts(this.activatedItem, newVal)
         }
     },
     methods: {
@@ -211,13 +301,6 @@ export default {
                     window.vuplex.postMessage({ type: 'robot', message: 'off' });
                 }
             }
-        },
-        loadLog() {
-            this.logList.push({
-                content: '主程序已启动',
-                timestamp: '2023/8/15 15:37',
-                placement: 'top'
-            })
         },
         initSideCharts() {
             var leftChart = echarts.init(document.getElementById('leftChart'));
@@ -297,41 +380,41 @@ export default {
         },
         assignData(data) {
             this.leftHipPitch_qa = this.toDegrees(data.jointStates[2].qa)
-            this.leftHipPitch_qdota = data.jointStates[2].qdota
-            this.leftHipPitch_taua = data.jointStates[2].taua
+            this.leftHipPitch_qdota = this.toDegrees(data.jointStates[2].qdota)
+            this.leftHipPitch_taua = data.jointStates[2].taua.toFixed(2)
             this.leftHipYaw_qa = this.toDegrees(data.jointStates[1].qa)
-            this.leftHipYaw_qdota = data.jointStates[1].qdota
-            this.leftHipYaw_taua = data.jointStates[1].taua
+            this.leftHipYaw_qdota = this.toDegrees(data.jointStates[1].qdota)
+            this.leftHipYaw_taua = data.jointStates[1].taua.toFixed(2)
             this.leftHipRoll_qa = this.toDegrees(data.jointStates[0].qa)
-            this.leftHipRoll_qdota = data.jointStates[0].qdota
-            this.leftHipRoll_taua = data.jointStates[0].taua
+            this.leftHipRoll_qdota = this.toDegrees(data.jointStates[0].qdota)
+            this.leftHipRoll_taua = data.jointStates[0].taua.toFixed(2)
             this.leftKnee_qa = this.toDegrees(data.jointStates[3].qa)
-            this.leftKnee_qdota = data.jointStates[3].qdota
-            this.leftKnee_taua = data.jointStates[3].taua
+            this.leftKnee_qdota = this.toDegrees(data.jointStates[3].qdota)
+            this.leftKnee_taua = data.jointStates[3].taua.toFixed(2)
             this.leftAnklePitch_qa = this.toDegrees(data.jointStates[4].qa)
-            this.leftAnklePitch_qdota = data.jointStates[4].qdota
-            this.leftAnklePitch_taua = data.jointStates[4].taua
+            this.leftAnklePitch_qdota = this.toDegrees(data.jointStates[4].qdota)
+            this.leftAnklePitch_taua = data.jointStates[4].taua.toFixed(2)
             this.leftAnkleRoll_qa = this.toDegrees(data.jointStates[5].qa)
-            this.leftAnkleRoll_qdota = data.jointStates[5].qdota
-            this.leftAnkleRoll_taua = data.jointStates[5].taua
+            this.leftAnkleRoll_qdota = this.toDegrees(data.jointStates[5].qdota)
+            this.leftAnkleRoll_taua = data.jointStates[5].taua.toFixed(2)
             this.rightHipPitch_qa = this.toDegrees(data.jointStates[8].qa)
-            this.rightHipPitch_qdota = data.jointStates[8].qdota
-            this.rightHipPitch_taua = data.jointStates[8].taua
+            this.rightHipPitch_qdota = this.toDegrees(data.jointStates[8].qdota)
+            this.rightHipPitch_taua = data.jointStates[8].taua.toFixed(2)
             this.rightHipYaw_qa = this.toDegrees(data.jointStates[7].qa)
-            this.rightHipYaw_qdota = data.jointStates[7].qdota
-            this.rightHipYaw_taua = data.jointStates[7].taua
+            this.rightHipYaw_qdota = this.toDegrees(data.jointStates[7].qdota)
+            this.rightHipYaw_taua = data.jointStates[7].taua.toFixed(2)
             this.rightHipRoll_qa = this.toDegrees(data.jointStates[6].qa)
-            this.rightHipRoll_qdota = data.jointStates[6].qdota
-            this.rightHipRoll_taua = data.jointStates[6].taua
+            this.rightHipRoll_qdota = this.toDegrees(data.jointStates[6].qdota)
+            this.rightHipRoll_taua = data.jointStates[6].taua.toFixed(2)
             this.rightKnee_qa = this.toDegrees(data.jointStates[9].qa)
-            this.rightKnee_qdota = data.jointStates[9].qdota
-            this.rightKnee_taua = data.jointStates[9].taua
+            this.rightKnee_qdota = this.toDegrees(data.jointStates[9].qdota)
+            this.rightKnee_taua = data.jointStates[9].taua.toFixed(2)
             this.rightAnklePitch_qa = this.toDegrees(data.jointStates[10].qa)
-            this.rightAnklePitch_qdota = data.jointStates[10].qdota
-            this.rightAnklePitch_taua = data.jointStates[10].taua
+            this.rightAnklePitch_qdota = this.toDegrees(data.jointStates[10].qdota)
+            this.rightAnklePitch_taua = data.jointStates[10].taua.toFixed(2)
             this.rightAnkleRoll_qa = this.toDegrees(data.jointStates[11].qa)
-            this.rightAnkleRoll_qdota = data.jointStates[11].qdota
-            this.rightAnkleRoll_taua = data.jointStates[11].taua
+            this.rightAnkleRoll_qdota = this.toDegrees(data.jointStates[11].qdota)
+            this.rightAnkleRoll_taua = data.jointStates[11].taua.toFixed(2)
             this.xSpeed = data.basestate.vx.toFixed(2)
             this.ySpeed = data.basestate.vy.toFixed(2)
         },
@@ -341,7 +424,7 @@ export default {
                 item.content = element.log
                 item.placement = 'top'
                 item.timestamp = this.dateFormart()
-                this.logList.push(item)
+                this.logList.unshift(item)
             })
         },
         dateFormart() {
@@ -358,33 +441,81 @@ export default {
             var degrees = e * (180 / Math.PI);
             return degrees.toFixed(2)
         },
-        updateSideCharts(e) {
+        updateSideCharts(item, type) {
             // this.leftSideChartData = []
             // this.rightSideChartData = []
-            switch (e) {
+            switch (item) {
                 case 'hipPitch':
-                    this.leftSideChartData.push(this.leftHipPitch_qa)
-                    this.rightSideChartData.push(this.rightHipPitch_qa)
+                    if (type == 'angle') {
+                        this.leftSideChartData.push(this.leftHipPitch_qa)
+                        this.rightSideChartData.push(this.rightHipPitch_qa)
+                    } else if (type == 'Avelocity') {
+                        this.leftSideChartData.push(this.leftHipPitch_qdota)
+                        this.rightSideChartData.push(this.rightHipPitch_qdota)
+                    } else if (type == 'torque') {
+                        this.leftSideChartData.push(this.leftHipPitch_taua)
+                        this.rightSideChartData.push(this.rightHipPitch_taua)
+                    }
                     break;
                 case 'hipYaw':
-                    this.leftSideChartData.push(this.leftHipYaw_qa)
-                    this.rightSideChartData.push(this.rightHipYaw_qa)
+                    if (type == 'angle') {
+                        this.leftSideChartData.push(this.leftHipYaw_qa)
+                        this.rightSideChartData.push(this.rightHipYaw_qa)
+                    } else if (type == 'Avelocity') {
+                        this.leftSideChartData.push(this.leftHipYaw_qdota)
+                        this.rightSideChartData.push(this.rightHipYaw_qdota)
+                    } else if (type == 'torque') {
+                        this.leftSideChartData.push(this.leftHipYaw_taua)
+                        this.rightSideChartData.push(this.rightHipYaw_taua)
+                    }
                     break;
                 case 'hipRoll':
-                    this.leftSideChartData.push(this.leftHipRoll_qa)
-                    this.rightSideChartData.push(this.rightHipRoll_qa)
+                    if (type == 'angle') {
+                        this.leftSideChartData.push(this.leftHipRoll_qa)
+                        this.rightSideChartData.push(this.rightHipRoll_qa)
+                    } else if (type == 'Avelocity') {
+                        this.leftSideChartData.push(this.leftHipRoll_qdota)
+                        this.rightSideChartData.push(this.rightHipRoll_qdota)
+                    } else if (type == 'torque') {
+                        this.leftSideChartData.push(this.leftHipRoll_taua)
+                        this.rightSideChartData.push(this.rightHipRoll_taua)
+                    }
                     break;
                 case 'knee':
-                    this.leftSideChartData.push(this.leftKnee_qa)
-                    this.rightSideChartData.push(this.rightKnee_qa)
+                    if (type == 'angle') {
+                        this.leftSideChartData.push(this.leftKnee_qa)
+                        this.rightSideChartData.push(this.rightKnee_qa)
+                    } else if (type == 'Avelocity') {
+                        this.leftSideChartData.push(this.leftKnee_qdota)
+                        this.rightSideChartData.push(this.rightKnee_qdota)
+                    } else if (type == 'torque') {
+                        this.leftSideChartData.push(this.leftKnee_taua)
+                        this.rightSideChartData.push(this.rightKnee_taua)
+                    }
                     break;
                 case 'anklePitch':
-                    this.leftSideChartData.push(this.leftAnklePitch_qa)
-                    this.rightSideChartData.push(this.rightAnklePitch_qa)
+                    if (type == 'angle') {
+                        this.leftSideChartData.push(this.leftAnklePitch_qa)
+                        this.rightSideChartData.push(this.rightAnklePitch_qa)
+                    } else if (type == 'Avelocity') {
+                        this.leftSideChartData.push(this.leftAnklePitch_qdota)
+                        this.rightSideChartData.push(this.rightAnklePitch_qdota)
+                    } else if (type == 'torque') {
+                        this.leftSideChartData.push(this.leftAnklePitch_taua)
+                        this.rightSideChartData.push(this.rightAnklePitch_taua)
+                    }
                     break;
                 case 'ankleRoll':
-                    this.leftSideChartData.push(this.leftAnkleRoll_qa)
-                    this.rightSideChartData.push(this.rightAnkleRoll_qa)
+                    if (type == 'angle') {
+                        this.leftSideChartData.push(this.leftAnkleRoll_qa)
+                        this.rightSideChartData.push(this.rightAnkleRoll_qa)
+                    } else if (type == 'Avelocity') {
+                        this.leftSideChartData.push(this.leftAnkleRoll_qdota)
+                        this.rightSideChartData.push(this.rightAnkleRoll_qdota)
+                    } else if (type == 'torque') {
+                        this.leftSideChartData.push(this.leftAnkleRoll_taua)
+                        this.rightSideChartData.push(this.rightAnkleRoll_taua)
+                    }
                     break;
                 default:
                     break;
@@ -442,6 +573,23 @@ export default {
             this.activatedItem = e
             this.leftSideChartData = []
             this.rightSideChartData = []
+        },
+        changeType(e) {
+            this.activatedType = e
+            this.leftSideChartData = []
+            this.rightSideChartData = []
+        },
+        headChange() {
+            this.headBoxVisible = !this.headBoxVisible
+        },
+        changeMode(e) {
+            if (e == 'remoteMode') {
+                this.$router.push({
+                    name: 'controller'
+                })
+            } else if (e == 'developerMode') {
+                this.headBoxVisible = false
+            }
         }
     }
 }
@@ -457,7 +605,7 @@ export default {
 
 .headState {
     position: absolute;
-    top: 2vh;
+    top: 1vw;
     left: 10.9375vw;
     z-index: 99;
 
@@ -610,6 +758,19 @@ export default {
                 width: 26.0417vw;
                 height: 18vh;
             }
+
+            .typeBox {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-around;
+                margin-bottom: 2.6042vw;
+
+                .typeImg {
+                    width: 1.4583vw;
+                    height: 1.4583vw;
+                }
+            }
+
         }
 
         .rightTable {
@@ -696,6 +857,32 @@ export default {
                 font-size: 1.25vw;
             }
         }
+    }
+}
+
+.headBox {
+    position: absolute;
+    top: 4.453123vw;
+    left: 10.9375vw;
+    width: 13.5417vw;
+    height: 11.4334vw;
+    padding: 1.4708vw 0;
+    background: rgba(0, 75, 133, 0.3);
+    border: .1042vw solid rgba(68, 216, 251, 0.3);
+    z-index: 99;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    font-size: 1.7188vw;
+    font-family: AlibabaPuHuiTiR;
+    color: #FFFFFF;
+
+    .divider {
+        height: 0.1042vw;
+        width: 11.9792vw;
+        background: #ffffff;
+        opacity: 0.3;
     }
 }
 </style>

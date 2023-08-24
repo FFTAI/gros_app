@@ -9,7 +9,7 @@
             <img class="imgLoading" src="@/assets/images/image_loading.png"/>
         </div>
         <div class="progress">
-            <el-progress :stroke-width="20" :show-text="false" :percentage="50"></el-progress>
+            <el-progress :stroke-width="20" :show-text="false" :percentage="progress"></el-progress>
         </div>
     </div>
 </template>
@@ -18,9 +18,22 @@
 import rtcHeader from '@/components/rtcHeader.vue';
 export default {
     components: { rtcHeader },
+    mounted() {
+        this.progressInterval = setInterval(() => {
+            console.log(this.progress)
+            if(this.progress == 100) {
+                clearInterval(this.progressInterval)
+                this.$router.push({
+                    name: 'controller'
+                })
+            }
+            this.progress = this.progress + 1
+        }, 30);
+    },
     data(){
         return{
-
+            progress: 0,
+            progressInterval: undefined
         }
     }
 }
@@ -38,7 +51,7 @@ export default {
 
 .headState {
     position: absolute;
-    top: 2vh;
+    top: 1vw;
     left: 10.9375vw;
     z-index: 99;
 

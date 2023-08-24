@@ -34,10 +34,10 @@
             </div>
         </div>
         <!-- 连接提示弹框 -->
-        <r-dialog v-if="showDialog">
-            <img class="dialogPhone" src="@/assets/images/image_phone.png" />
-            <div class="connectTxt" style="font-size: 1.4583vw;">{{ $t('connectTips') }}</div>
-        </r-dialog>
+            <div class="connectDialog" ref="tipsDialog" v-if="showDialog">
+                <img class="dialogPhone" src="@/assets/images/image_phone.png" />
+                <div class="connectTxt" style="font-size: 1.4583vw;">{{ $t('connectTips') }}</div>
+            </div>
         <!-- 返回主界面及连接失败弹框 -->
         <r-dialog class="connectTxt" v-if="returnMain || connectFail">
             <div>
@@ -60,15 +60,26 @@
 
 <script>
 import rtcHeader from '@/components/rtcHeader.vue';
-import rDialog from "@/components/rDialog.vue";
 export default {
-    components: { rtcHeader, rDialog },
+    components: { rtcHeader },
     data() {
         return {
             showDialog: false,
             connectFail: false,
             returnMain: false
         }
+    },
+    mounted() {
+        document.addEventListener(
+            "click",
+            (e) => {
+                let tipsDialog = this.$refs.tipsDialog;
+                if (tipsDialog && !tipsDialog.contains(e.target)) {
+                    this.showDialog = false;
+                }
+            },
+            true
+        );
     },
     methods: {
         //打开/关闭弹窗
@@ -98,7 +109,7 @@ export default {
 
 .headState {
     position: absolute;
-    top: 2vh;
+    top: 1vw;
     left: 10.9375vw;
     z-index: 99;
 
@@ -194,7 +205,8 @@ export default {
     width: 12.0833vw;
     height: 11.5625vw;
 }
-.warning{
+
+.warning {
     width: 1.25vw;
     height: 1.1458vw;
 }
@@ -220,4 +232,21 @@ export default {
 
 .white {
     background-color: rgba(255, 255, 255, 0.1);
-}</style>
+}
+.connectDialog {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+    width: 30.2083vw;
+    height: 17.9167vw;
+    background-image: url("../../assets/images/image_dialog.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+}
+</style>
