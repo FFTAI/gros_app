@@ -60,7 +60,7 @@ const routes = [
   },
   {
     path: "/",
-    redirect: "/development"
+    redirect: "/controller"
   }
 ];
 

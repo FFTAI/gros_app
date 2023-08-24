@@ -32,5 +32,13 @@
     "robotVersion": "机器人固件版本",
     "appVersion": "APP版本",
     "appLanguage": "APP语言",
-    "logRecording": "日志记录"
+    "logRecording": "日志记录",
+    "gaitMotion": "步态运动",
+    "inPlaceMotion": "原地运动",
+    "normalWalking": "正常行走",
+    "fastWalking": "快速行走",
+    "slowRunning": "慢速奔跑",
+    "fastRunning": "快速奔跑",
+    "shakeHands": "握一握手",
+    "wave": "挥一挥手"
 }

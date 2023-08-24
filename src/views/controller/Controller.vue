@@ -7,9 +7,23 @@
         </div>
       </div>
       <div class="videoBox">
-        <rtc-header :currentSpeed="current_speed" :camera="true" @hangUp="hangUp"></rtc-header>
+        <rtc-header :currentSpeed="current_speed" :camera="true">
+          <div class="headState" @click="headChange()">
+            <span class="headTxt">{{ $t('remoteMode') }}</span>
+            <div class="arrow"></div>
+          </div>
+        </rtc-header>
+        <div class="headBox" v-if="headBoxVisible">
+          <div>
+            {{ $t('remoteMode') }}
+          </div>
+          <div class="divider"></div>
+          <div>
+            {{ $t('developerMode') }}
+          </div>
+        </div>
         <!-- Stop按钮 -->
-        <div class="rightControl" v-show="!dialogChatVisible">
+        <div class="rightControl">
           <div>
             <img class="stopImg" src="@/assets/images/icon_stop.png" @click="quickStop()" v-if="!isStoped" />
             <img class="stopImg" src="@/assets/images/icon_restart.png" @click="quickStop()" v-else />
@@ -24,23 +38,70 @@
             <div class="speedDirection"></div>
           </div>
         </div>
-        <!-- 摇杆操控区 -->
-        <div class="handle">
-          <img :class="minusD ? 'clockwiseB anti' : 'clockwise anti'" src="@/assets/images/icon_anti-clockwise.png" />
-          <img :class="plusD ? 'clockwiseB normal' : 'clockwise normal'" src="@/assets/images/icon_clockwise.png" />
-          <div class="rightButton">
-            <div class="rDirection">
-              <div @click="minusD1()" class="rTap"></div>
-              <div @click="plusD1()" class="rTap"></div>
-            </div>
+      </div>
+      <!-- 虚拟摇杆 -->
+      <div class="joystickBkL">
+        <img style="width: 13.8889vw; height: 13.8889vw; z-index: 999" src="@/assets/images/image_direction.png" />
+      </div>
+      <div class="joystickBkR">
+        <img style="width: 13.8889vw; height: 13.8889vw; z-index: 999" src="@/assets/images/image_direction.png" />
+      </div>
+      <div id="zone_joystickL"></div>
+      <div id="zone_joystickR"></div>
+      <div :class="controlExpand ? 'controlActivated' : 'controlStatus'" ref="controlRef">
+        <div class="actionBox" v-if="controlExpand && controlModel == 'gait'">
+          <div class="actionItem" @click="choseMode('slowWalk')">
+            <img class="actionImg" src="@/assets/images/icon_slowWalk.png" />
+            <div>{{ $t('normalWalking') }}</div>
+          </div>
+          <div class="actionItem" @click="choseMode('fastWalk')">
+            <img class="actionImg" src="@/assets/images/icon_fastWalk.png" />
+            <div>{{ $t('fastWalking') }}</div>
+          </div>
+          <div class="actionItem" @click="choseMode('slowRun')">
+            <img class="actionImg" src="@/assets/images/icon_slowRun.png" />
+            <div>{{ $t('slowRunning') }}</div>
+          </div>
+          <div class="actionItem" @click="choseMode('fastRun')">
+            <img class="actionImg" src="@/assets/images/icon_fastRun.png" />
+            <div>{{ $t('fastRunning') }}</div>
+          </div>
+        </div>
+        <div class="actionBox" v-else-if="controlExpand && controlModel == 'inPlace'">
+          <div class="actionItem">
+            <img class="actionImg" src="@/assets/images/icon_shakeHands.png" />
+            <div>{{ $t('shakeHands') }}</div>
+          </div>
+          <div class="actionItem">
+            <img class="actionImg" src="@/assets/images/icon_wave.png" />
+            <div>{{ $t('wave') }}</div>
+          </div>
+        </div>
+        <div class="controlBox" v-if="mode == ''">
+          <div class="choseBox txt" :class="controlModel == 'gait' ? 'chose' : ''" @click="changeControl('gait')">
+            {{ $t('gaitMotion') }}
+          </div>
+          <div class="choseBox txt" :class="controlModel == 'inPlace' ? 'chose' : ''" @click="changeControl('inPlace')">
+            {{ $t('inPlaceMotion') }}
+          </div>
+        </div>
+        <div class="stateBox" v-else @click="stopMode()">
+          <img v-if="mode == 'slowWalk'" style="width: 2.2917vw;height: 2.2917vw;"
+            src="@/assets/images/icon_slowWalk.png" />
+          <img v-if="mode == 'fastWalk'" style="width: 2.2917vw;height: 2.2917vw;"
+            src="@/assets/images/icon_fastWalk.png" />
+          <img v-if="mode == 'slowRun'" style="width: 2.2917vw;height: 2.2917vw;"
+            src="@/assets/images/icon_slowRun.png" />
+          <img v-if="mode == 'fastRun'" style="width: 2.2917vw;height: 2.2917vw;"
+            src="@/assets/images/icon_fastRun.png" />
+          <div style="margin-left: .625vw;">
+            <span v-if="mode == 'slowWalk'">{{ $t('normalWalking') }}中</span>
+            <span v-if="mode == 'fastWalk'">{{ $t('fastWalking') }}中</span>
+            <span v-if="mode == 'slowRun'">{{ $t('slowRunning') }}中</span>
+            <span v-if="mode == 'fastRun'">{{ $t('fastRunning') }}中</span>
           </div>
         </div>
       </div>
-      <!-- 虚拟摇杆 -->
-      <div class="joystickBk">
-        <img style="width: 13.8889vw; height: 13.8889vw; z-index: 999" src="@/assets/images/image_direction.png" />
-      </div>
-      <div id="zone_joystick"></div>
     </div>
   </div>
 </template>
@@ -61,7 +122,8 @@ export default {
       ws: "",
       videoContainer: "",
       buttons: "",
-      joystick: null,
+      joystickL: undefined,
+      joystickR: undefined,
       screenWidth: document.body.clientWidth,
       plusD: false,
       minusD: false,
@@ -71,25 +133,44 @@ export default {
       speed: 1,
       current_speed: 0, //当前速度，默认0
       videoSrc: "", //摄像头视频路径
+      controlModel: "gait",
+      controlExpand: false,
+      mode: '',
+      headBoxVisible: false
     };
   },
   created() {
     let wsUrl = 'ws' + process.env.VUE_APP_URL.slice(4) + '/ws'
     this.ws = new WebSocket(wsUrl)
     let _this = this
-    window.addEventListener("gamepadconnected", function (e) {
-      const gp = navigator.getGamepads()[e.gamepad.index];
-      console.log("手柄连接", gp);
-      _this.gamepadConnected = true;
-      _this.startGamepad(); // 启动手柄
-    });
-    window.addEventListener("gamepaddisconnected", function (e) {
-      _this.gamepadConnected = false;
-      clearInterval(this.interval); // 停止获取手柄数据
-      console.log("手柄断开", e);
-    });
+
+    document.addEventListener(
+      "click",
+      (e) => {
+        let controlRef = this.$refs.controlRef;
+        if (controlRef && !controlRef.contains(e.target)) {
+          this.controlExpand = false;
+        }
+      },
+      true
+    );
   },
   async mounted() {
+    let _this = this
+    this.$nextTick(() => {
+      window.addEventListener("gamepadconnected", function (e) {
+        const gp = navigator.getGamepads()[e.gamepad.index];
+        console.log("手柄连接", gp);
+        _this.gamepadConnected = true;
+        _this.startGamepad(); // 启动手柄
+      });
+      window.addEventListener("gamepaddisconnected", function (e) {
+        _this.gamepadConnected = false;
+        clearInterval(this.interval); // 停止获取手柄数据
+        console.log("手柄断开", e);
+      });
+    })
+
     this.videoContainer = this.$refs.videoContainer;
     this.startFullScreen(); //强制全屏
     window.onresize = () => {
@@ -98,7 +179,8 @@ export default {
       })();
     };
     this.cameraOpen()
-    this.startJoystick(); //生成虚拟摇杆
+    this.startJoystickL(); //生成虚拟摇杆
+    this.startJoystickR();
     const typeRes = await getType()
     console.log('typeRes', typeRes)
     let currIP = {}
@@ -133,9 +215,13 @@ export default {
     //屏幕尺寸变化后，重新生成joystick适配当前尺寸
     screenWidth: function (n, o) {
       console.log("屏幕变化", n);
-      if (this.joystick) {
-        this.joystick.destroy();
-        this.startJoystick();
+      if (this.joystickL) {
+        this.joystickL.destroy();
+        this.startJoystickL();
+      }
+      if (this.joystickR) {
+        this.joystickR.destroy();
+        this.startJoystickR();
       }
     },
   },
@@ -175,9 +261,13 @@ export default {
         _this.remoteSensing(gamepad.axes);
 
         let size = (_this.screenWidth * 100) / 1440;
-        _this.joystick[0].setPosition(1, {
+        _this.joystickL[0].setPosition(1, {
           x: gamepad.axes.slice(0, 2)[0] * size,
           y: gamepad.axes.slice(0, 2)[1] * size,
+        });
+        _this.joystickR[0].setPosition(1, {
+          x: gamepad.axes.slice(2, 4)[0] * size,
+          y: gamepad.axes.slice(2, 4)[1] * size,
         });
       }, 10);
     },
@@ -201,17 +291,17 @@ export default {
       if (Math.abs(velocity) < 0.1) {
         velocity = 0
       }
-      console.log(
-        "实时坐标---前后",
-        (velocity * this.speed) / 6.25,
-        "实时坐标---左右角度",
-        angle / -90 * 0.2,
-        'host',
-        this.iP.host,
-        'port',
-        this.iP.port
-      );
-      this.operateHuman(angle / -90 * 0.2, (velocity * this.speed) / 6.25)
+      // console.log(
+      //   "实时坐标---前后",
+      //   (velocity * this.speed) / 6.25,
+      //   "实时坐标---左右角度",
+      //   angle / -90 * 0.2,
+      //   'host',
+      //   this.iP.host,
+      //   'port',
+      //   this.iP.port
+      // );
+      this.operateHuman(angle * -0.2, (velocity * this.speed) / 6.25)
 
     },
     // 手柄按键
@@ -290,17 +380,17 @@ export default {
       }
     },
     //开启虚拟触控摇杆
-    startJoystick() {
+    startJoystickL() {
       const _this = this;
       let sWidth = parseInt(this.screenWidth * 16.67 * 0.01);
-      _this.joystick = nipplejs.create({
-        zone: document.getElementById("zone_joystick"),
+      _this.joystickL = nipplejs.create({
+        zone: document.getElementById("zone_joystickL"),
         mode: "static",
         position: { left: "20%", top: "70%" },
         color: "white",
         size: sWidth,
       });
-      _this.joystick
+      _this.joystickL
         .on("start", function (evt, data) {
           if (!_this.gamepadConnected) {
             _this.time = setInterval(() => {
@@ -326,26 +416,47 @@ export default {
             if (Math.abs(velocity) < 0.1) {
               velocity = 0
             }
-            console.log(
-              "实时坐标---前后",
-              (velocity * _this.speed) / 6.25,
-              "实时坐标---左右角度",
-              angle / -90,
-              'host',
-              _this.iP.host,
-              'port',
-              _this.iP.port
-            );
-            // _this.operateHuman(angle / -90 * 0.2, (velocity * _this.speed) / 6.25)
+            // console.log(
+            //   "实时坐标---前后",
+            //   (velocity * _this.speed) / 6.25,
+            //   "实时坐标---左右角度",
+            //   angle / -90,
+            //   'host',
+            //   _this.iP.host,
+            //   'port',
+            //   _this.iP.port
+            // );
+            _this.operateHuman(angle * -0.2, (velocity * _this.speed) / 6.25)
           }
         })
         .on("end", function (evt, data) {
           if (!_this.gamepadConnected) {
             //摇杆回原点后速度方向归零
-            // _this.operateHuman(0, 0)
+            _this.operateHuman(0, 0)
             clearInterval(_this.time);
             _this.onEnd && _this.onEnd();
           }
+        });
+    },
+    startJoystickR() {
+      const _this = this;
+      let sWidth = parseInt(this.screenWidth * 16.67 * 0.01);
+      _this.joystickR = nipplejs.create({
+        zone: document.getElementById("zone_joystickR"),
+        mode: "static",
+        position: { right: "20%", top: "70%" },
+        color: "white",
+        size: sWidth,
+      });
+      _this.joystickR
+        .on("start", function (evt, data) {
+
+        })
+        .on("move", function (evt, data) {
+
+        })
+        .on("end", function (evt, data) {
+
         });
     },
     //紧急停止
@@ -370,23 +481,10 @@ export default {
     },
     //操控人形
     operateHuman(direction, velocity) {
-      const msg = JSON.stringify({
-        type: "command",
-        client_type: "human",
-        command: "walk",
-        host: this.iP.host,
-        port: this.iP.port,
-        walk_vx: velocity,
-        walk_vc: direction,
-        walk_vy: 0,
-        walk_vz: 0,
-        walk_va: 0,
-        walk_vb: 0
-      });
-      this.ws.send(msg);
+      this.$robot.move(direction,velocity)
     },
     cameraOpen() {
-      console.log('baseUrl.......', process.env.VUE_APP_URL)
+      this.videoSrc = "http://192.168.10.207:8001/control/camera"
       cameraOpen().then(res => {
         console.log(res)
         if (res.data.data)
@@ -395,6 +493,20 @@ export default {
 
       })
     },
+    changeControl(e) {
+      this.controlExpand = true
+      this.controlModel = e
+    },
+    choseMode(e) {
+      this.controlExpand = false
+      this.mode = e
+    },
+    stopMode() {
+      this.mode = ''
+    },
+    headChange() {
+      this.headBoxVisible = !this.headBoxVisible
+    }
   },
 };
 </script>
@@ -445,7 +557,7 @@ export default {
 
 .speedBox {
   position: absolute;
-  right: 3.5vw;
+  left: 3.5vw;
   bottom: 6.9444vw;
   z-index: 999;
 
@@ -500,73 +612,181 @@ export default {
   }
 }
 
-.handle {
-  position: absolute;
-  right: 11.1111vw;
-  bottom: 6.9444vw;
-  z-index: 999;
-
-  .clockwise {
-    position: absolute;
-    width: 1.458213vw;
-    height: 1.25vw;
-  }
-
-  .clockwiseB {
-    position: absolute;
-    width: 2.7778vw;
-    height: 2.3334vw;
-  }
-
-  .anti {
-    left: 4.1667vw;
-    bottom: 7.2917vw;
-  }
-
-  .normal {
-    right: 3.4722vw;
-    bottom: 7.2917vw;
-  }
-
-  .rightButton {
-    height: 16.6667vw;
-    width: 16.6667vw;
-    background: #ffffff;
-    opacity: 0.6;
-    border-radius: 50%;
-
-    .rDirection {
-      position: absolute;
-      left: 2.4306vw;
-      bottom: 5.5556vw;
-      background: #004c81;
-      width: 12.2917vw;
-      height: 4.9306vw;
-      border-radius: 2.4306vw;
-      opacity: 0.24;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      .rTap {
-        width: 4.1667vw;
-        height: 4.8611vw;
-      }
-    }
-  }
-}
-
-.joystickBk {
+.joystickBkL {
   position: absolute;
   left: 13.8889vw;
   bottom: 7.9861vw;
   z-index: 999;
 }
 
-#zone_joystick {
+.joystickBkR {
+  position: absolute;
+  right: 13.8889vw;
+  bottom: 7.9861vw;
+  z-index: 999;
+}
+
+#zone_joystickL {
   position: absolute;
   left: 20.8333vw;
   bottom: 15.2778vw;
 }
-</style>
+
+#zone_joystickR {
+  position: absolute;
+  right: 20.8333vw;
+  bottom: 15.2778vw;
+}
+
+.controlStatus {
+  position: absolute;
+  left: 35.25vw;
+  bottom: 11vh;
+  width: 27.0313vw;
+  height: 10.2vh;
+  border-radius: 3.0729vw;
+  padding: .8854vw 1.25vw;
+  border: .1042vw solid rgba(255, 255, 255, 0.3);
+  z-index: 999;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+}
+
+.controlActivated {
+  position: absolute;
+  left: 35.25vw;
+  bottom: 11vh;
+  width: 27.0313vw;
+  height: 30.2605vw;
+  padding: .8854vw 1.25vw;
+  background-image: url("../../assets/images/image_controlBk.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.controlBox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 10vh;
+
+  .choseBox {
+    width: 13vw;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .chose {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2.2396vw;
+  }
+
+  .txt {
+    font-size: 1.7188vw;
+    font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
+    font-weight: normal;
+    color: #FFFFFF;
+  }
+}
+
+.actionBox {
+  height: 15.1563vw;
+  width: 21.9792vw;
+  padding: 3.125vw 3.8021vw;
+  display: flex;
+  flex-wrap: wrap;
+
+  .actionItem {
+    text-align: center;
+    flex-basis: 33.33%;
+    font-size: 1.25vw;
+    font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
+    font-weight: normal;
+    color: #FFFFFF;
+  }
+
+  .actionImg {
+    width: 2.2917vw;
+    height: 2.2917vw;
+  }
+}
+
+.modeBox {
+  height: 14.375vw;
+  width: 13.5417vw;
+}
+
+.stateBox {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 75, 133, 0.3);
+  border-radius: 3.0729vw;
+  font-size: 1.7188vw;
+  font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
+  font-weight: normal;
+  color: #FFFFFF;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.headState {
+  position: absolute;
+  top: 1vw;
+  left: 10.9375vw;
+  z-index: 99;
+
+  .headTxt {
+    font-size: 1.9792vw;
+    font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
+    font-weight: normal;
+    color: #FFFFFF;
+  }
+
+  .arrow {
+    position: absolute;
+    top: 1.2vw;
+    left: 8.34vw;
+    width: 0;
+    height: 0;
+    background: linear-gradient(274deg, #1a1919 0%, #004c81 100%);
+    border-left: .4167vw solid transparent;
+    border-right: .4167vw solid transparent;
+    border-top: .5208vw solid #FFFFFF;
+  }
+}
+
+.headBox {
+  position: absolute;
+  top: 4.453123vw;
+  left: 10.9375vw;
+  width: 13.5417vw;
+  height: 11.4334vw;
+  padding: 1.4708vw 0;
+  background:  rgba(0, 75, 133, 0.3);
+  border: .1042vw solid rgba(68, 216, 251, 0.3);
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  font-size: 1.7188vw;
+  font-family: AlibabaPuHuiTiR;
+  color: #FFFFFF;
+
+  .divider {
+    height: 0.1042vw;
+    width: 11.9792vw;
+    background: #ffffff;
+    opacity: 0.3;
+  }
+}</style>
    

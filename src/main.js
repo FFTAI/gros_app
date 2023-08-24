@@ -11,7 +11,7 @@ import { Robot } from "gros-client";
 Vue.prototype.$axios = axios;
 Vue.prototype.$store = store;
 Vue.prototype.$webview = null;
-Vue.prototype.$robot = new Robot({host: '127.0.0.1', port: 8001});
+Vue.prototype.$robot = new Robot({host: '192.168.9.17'});
 
 Vue.use(ElementUI);
 
@@ -20,3 +20,4 @@ Vue.config.productionTip = false;
 new Vue({
   router, store, i18n, render: (h) => h(App)
 }).$mount("#app");
+ 

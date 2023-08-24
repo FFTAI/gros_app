@@ -8,7 +8,8 @@
         </rtc-header>
         <div class="mainBox">
             <div class="leftBox">
-                <img class="humanModel" src="@/assets/images/icon_model.png" v-show="activated == 'dynamic'" />
+                <!-- <img class="humanModel" src="@/assets/images/icon_model.png" v-show="activated == 'dynamic'" /> -->
+                <div class="humanModel" v-show="activated == 'dynamic'"></div>
                 <div class="logBox" v-show="activated == 'log'">
                     <div class="logTitle">{{ $t('logoFile') }}</div>
                     <div class="logMain">
@@ -38,52 +39,52 @@
                 </div>
                 <div class="sideChart">
                     <div class="chartSize" id="leftChart"></div>
+                    <div>
+                        
+                    </div>
                     <div class="chartSize" id="rightChart"></div>
                 </div>
                 <div class="rightTable">
-                    <div class="tableItem">
+                    <div class="tableItem" @click="changeItem('hipPitch')">
                         <div class="itemChild">{{ leftHipPitch_qa ? leftHipPitch_qa + '°' : '' }}</div>
-                        <div class="itemChild" :class="activatedItem == 'hipPitch' ? 'middleCurr' : 'middle'"
-                            @click="changeItem('hipPitch')">Hip Pitch<div class="downArrow"
-                                v-if="activatedItem == 'hipPitch'"></div>
+                        <div class="itemChild" :class="activatedItem == 'hipPitch' ? 'middleCurr' : 'middle'">Hip Pitch<div
+                                class="downArrow" v-if="activatedItem == 'hipPitch'"></div>
                         </div>
                         <div class="itemChild">{{ rightHipPitch_qa ? rightHipPitch_qa + '°' : '' }}</div>
                     </div>
-                    <div class="tableItem">
+                    <div class="tableItem" @click="changeItem('hipYaw')">
                         <div class="itemChild">{{ leftHipYaw_qa ? leftHipYaw_qa + '°' : '' }}</div>
-                        <div class="itemChild" :class="activatedItem == 'hipYaw' ? 'middleCurr' : 'middle'"
-                            @click="changeItem('hipYaw')">Hip Yaw<div class="downArrow" v-if="activatedItem == 'hipYaw'">
+                        <div class="itemChild" :class="activatedItem == 'hipYaw' ? 'middleCurr' : 'middle'">Hip Yaw<div
+                                class="downArrow" v-if="activatedItem == 'hipYaw'">
                             </div>
                         </div>
                         <div class="itemChild">{{ rightHipYaw_qa ? rightHipYaw_qa + '°' : '' }}</div>
                     </div>
-                    <div class="tableItem">
+                    <div class="tableItem" @click="changeItem('hipRoll')">
                         <div class="itemChild">{{ leftHipRoll_qa ? leftHipRoll_qa + '°' : '' }}</div>
-                        <div class="itemChild" :class="activatedItem == 'hipRoll' ? 'middleCurr' : 'middle'"
-                            @click="changeItem('hipRoll')">Hip Roll<div class="downArrow" v-if="activatedItem == 'hipRoll'">
+                        <div class="itemChild" :class="activatedItem == 'hipRoll' ? 'middleCurr' : 'middle'">Hip Roll<div
+                                class="downArrow" v-if="activatedItem == 'hipRoll'">
                             </div>
                         </div>
                         <div class="itemChild">{{ rightHipRoll_qa ? rightHipRoll_qa + '°' : '' }}</div>
                     </div>
-                    <div class="tableItem">
+                    <div class="tableItem" @click="changeItem('knee')">
                         <div class="itemChild">{{ leftKnee_qa ? leftKnee_qa + '°' : '' }}</div>
-                        <div class="itemChild" :class="activatedItem == 'knee' ? 'middleCurr' : 'middle'"
-                            @click="changeItem('knee')">Knee<div class="downArrow" v-if="activatedItem == 'knee'"></div>
+                        <div class="itemChild" :class="activatedItem == 'knee' ? 'middleCurr' : 'middle'">Knee<div
+                                class="downArrow" v-if="activatedItem == 'knee'"></div>
                         </div>
                         <div class="itemChild">{{ rightKnee_qa ? rightKnee_qa + '°' : '' }}</div>
                     </div>
-                    <div class="tableItem">
+                    <div class="tableItem" @click="changeItem('anklePitch')">
                         <div class="itemChild">{{ leftAnklePitch_qa ? leftAnklePitch_qa + '°' : '' }}</div>
-                        <div class="itemChild" :class="activatedItem == 'anklePitch' ? 'middleCurr' : 'middle'"
-                            @click="changeItem('anklePitch')">Ankle Pitch
+                        <div class="itemChild" :class="activatedItem == 'anklePitch' ? 'middleCurr' : 'middle'">Ankle Pitch
                             <div class="downArrow" v-if="activatedItem == 'anklePitch'"></div>
                         </div>
                         <div class="itemChild">{{ rightAnklePitch_qa ? rightAnklePitch_qa + '°' : '' }}</div>
                     </div>
-                    <div class="tableItem">
+                    <div class="tableItem" @click="changeItem('ankleRoll')">
                         <div class="itemChild">{{ leftAnkleRoll_qa ? leftAnkleRoll_qa + '°' : '' }}</div>
-                        <div class="itemChild" :class="activatedItem == 'ankleRoll' ? 'middleCurr' : 'middle'"
-                            @click="changeItem('ankleRoll')">Ankle Roll
+                        <div class="itemChild" :class="activatedItem == 'ankleRoll' ? 'middleCurr' : 'middle'">Ankle Roll
                             <div class="downArrow" v-if="activatedItem == 'ankleRoll'"></div>
                         </div>
                         <div class="itemChild">{{ rightAnkleRoll_qa ? rightAnkleRoll_qa + '°' : '' }}</div>
@@ -122,7 +123,7 @@ export default {
     components: { rtcHeader },
     data() {
         return {
-            activated: "log",
+            activated: "dynamic",
             logList: [],
             leftHipPitch_qa: '',
             leftHipPitch_qdota: '',
@@ -170,7 +171,9 @@ export default {
         }
     },
     created() {
-
+        if (window.vuplex) {
+            window.vuplex.postMessage({ type: 'robot', message: 'on' });
+        }
     },
     mounted() {
         this.initSideCharts()
@@ -201,6 +204,13 @@ export default {
     methods: {
         changeModel(e) {
             this.activated = e
+            if (window.vuplex) {
+                if (e == 'dynamic') {
+                    window.vuplex.postMessage({ type: 'robot', message: 'on' });
+                } else if (e == 'log') {
+                    window.vuplex.postMessage({ type: 'robot', message: 'off' });
+                }
+            }
         },
         loadLog() {
             this.logList.push({
@@ -456,7 +466,6 @@ export default {
         font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
         font-weight: normal;
         color: #FFFFFF;
-        line-height: 2.7083vw;
     }
 
     .arrow {
@@ -581,6 +590,7 @@ export default {
 
         .rightTitle {
             height: 6vh;
+            width: 91%;
             display: flex;
             justify-content: space-between;
             margin-left: 1.5625vw;
