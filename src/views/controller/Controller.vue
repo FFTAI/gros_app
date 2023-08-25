@@ -3,11 +3,11 @@
     <div class="container">
       <div ref="videoContainer" align="center" class="video-container">
         <div class="video-item">
-          <!-- <img class="video-play" :src="videoSrc" /> -->
+          <img class="video-play" :src="videoSrc" v-show="camera"/>
         </div>
       </div>
       <div class="videoBox">
-        <rtc-header :currentSpeed="current_speed" :isController="true" :camera="true">
+        <rtc-header :currentSpeed="current_speed" :isController="true" :camera="true" @cameraOn="openCamera()">
           <div class="headState" @click="headChange()">
             <span class="headTxt">{{ $t('remoteMode') }}</span>
             <div class="arrow"></div>
@@ -23,11 +23,11 @@
           </div>
         </div>
         <!-- Stop按钮 -->
-        <div class="rightControl">
-          <div>
-            <img class="stopImg" src="@/assets/images/icon_stop.png" @click="quickStop()" v-if="!isStoped" />
-            <img class="stopImg" src="@/assets/images/icon_restart.png" @click="quickStop()" v-else />
-          </div>
+        <div class="stopControl">
+          <img class="stopImg" src="@/assets/images/icon_chStop.png" @click="quickStop()" />
+        </div>
+        <div class="calibration">
+          <img class="calibrationImg" src="@/assets/images/icon_calibration.png" @click="calibration()" />
         </div>
         <!-- 速度挡位调节 -->
         <div class="speedBox">
@@ -69,11 +69,11 @@
         </div>
         <div class="actionBox" v-else-if="controlExpand && controlModel == 'inPlace'">
           <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_shakeHands.png" @click="choseMode('shakeHands')"/>
+            <img class="actionImg" src="@/assets/images/icon_shakeHands.png" @click="choseMode('shakeHands')" />
             <div>{{ $t('shakeHands') }}</div>
           </div>
           <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_wave.png" @click="choseMode('wave')"/>
+            <img class="actionImg" src="@/assets/images/icon_wave.png" @click="choseMode('wave')" />
             <div>{{ $t('wave') }}</div>
           </div>
         </div>
@@ -140,14 +140,14 @@ export default {
       minusD: false,
       direction: 0,
       gamepadConnected: false,
-      isStoped: false,
       speed: 1,
       current_speed: 0, //当前速度，默认0
       videoSrc: "", //摄像头视频路径
       controlModel: "gait",
       controlExpand: false,
       mode: '',
-      headBoxVisible: false
+      headBoxVisible: false,
+      camera: true
     };
   },
   created() {
@@ -512,6 +512,9 @@ export default {
           name: 'development'
         })
       }
+    },
+    openCamera() {
+      this.camera = !this.camera
     }
   },
 };
@@ -548,17 +551,30 @@ export default {
   position: absolute;
 }
 
-.rightControl {
+.stopControl {
   position: absolute;
   right: 5vw;
   top: 8.3333vw;
   z-index: 9999;
+
+  .stopImg {
+    width: 3.9583vw;
+    height: 3.9583vw;
+    margin: auto;
+  }
 }
 
-.stopImg {
-  width: 3.9583vw;
-  height: 3.9583vw;
-  margin: auto;
+.calibration {
+  position: absolute;
+  left: 5vw;
+  top: 8.3333vw;
+  z-index: 9999;
+
+  .calibrationImg {
+    width: 3.9583vw;
+    height: 3.9583vw;
+    margin: auto;
+  }
 }
 
 .speedBox {

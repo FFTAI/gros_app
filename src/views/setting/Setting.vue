@@ -1,6 +1,6 @@
 <template>
     <div class="main">
-        <rtc-header :isLogin="true">
+        <rtc-header :isLogin="true" @connect="toConnect()">
             <div class="headState">
                 <span class="headTxt">{{ $t('systemSettings') }}</span>
             </div>
@@ -57,11 +57,27 @@
                 <span>{{ $t('appVersion') }}</span>
                 <span>V1.2.1</span>
             </div>
-            <div class="item">
+            <div class="item" :class="{ 'languageActivated': languageActivated }" @click="languageExpand()">
                 <span>{{ $t('appLanguage') }}</span>
                 <div>
-                    <span class="itemTxt">简体中文</span>
+                    <span class="itemTxt" v-if="currLanguage == 'zh'">简体中文</span>
+                    <span class="itemTxt" v-if="currLanguage == 'tw'">繁体中文</span>
+                    <span class="itemTxt" v-if="currLanguage == 'en'">English</span>
                     <img class="iconTo" src="@/assets/images/icon_to.png" />
+                </div>
+            </div>
+            <div class="item" v-if="languageActivated">
+                <div class="languageItem" :class="{ 'chosedLanguage': currLanguage == 'zh' }" @click="changeLanguage('zh')">
+                    <span>简体中文</span>
+                    <img class="iconChose" src="@/assets/images/icon_chose.png" v-if="currLanguage == 'zh'" />
+                </div>
+                <div class="languageItem" :class="{ 'chosedLanguage': currLanguage == 'tw' }" @click="changeLanguage('tw')">
+                    <span>繁体中文</span>
+                    <img class="iconChose" src="@/assets/images/icon_chose.png" v-if="currLanguage == 'tw'" />
+                </div>
+                <div class="languageItem" :class="{ 'chosedLanguage': currLanguage == 'en' }" @click="changeLanguage('en')">
+                    <span>English</span>
+                    <img class="iconChose" src="@/assets/images/icon_chose.png" v-if="currLanguage == 'en'" />
                 </div>
             </div>
             <div class="item">
@@ -78,14 +94,33 @@ export default {
     components: { rtcHeader },
     data() {
         return {
-            isActivated: 'connect',
+            isActivated: 'status',
             logOpen: false,
-            connected: true
+            connected: true,
+            currLanguage: 'zh',
+            languageActivated: false
         }
+    },
+    mounted(){
+        this.currLanguage = localStorage.getItem('lang');
     },
     methods: {
         changeTab(e) {
             this.isActivated = e
+        },
+        languageExpand() {
+            this.languageActivated = !this.languageActivated
+        },
+        changeLanguage(e) {
+            this.currLanguage = e
+            this.$i18n.locale = e
+            localStorage.setItem('lang', e)
+            this.languageActivated = false
+        },
+        toConnect() {
+            this.$router.push({
+                name: "connect"
+            })
         }
     }
 }
@@ -179,8 +214,9 @@ export default {
     position: absolute;
     right: 10%;
     top: 13vh;
-    width: 61.5625vw;
-    height: 72.13vh;
+    width: 63.5625vw;
+    height: 39.5vw;
+    overflow-y: auto;
 
     .item {
         width: 56.6667vw;
@@ -197,6 +233,10 @@ export default {
         align-items: center;
     }
 
+    .languageActivated {
+        margin-bottom: 0;
+    }
+
     .iconTo {
         width: .625vw;
         height: 1.1979vw;
@@ -206,5 +246,29 @@ export default {
         color: #44D8FB;
         margin-right: .625vw;
     }
+
+    .languageItem {
+        width: 17.2396vw;
+        height: 4.1667vw;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: .2604vw;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .chosedLanguage {
+        background: rgba(68, 216, 251, 0.1);
+        border: .1042vw solid #44D8FB;
+    }
+
+    .iconChose {
+        width: 1.25vw;
+        height: 1.25vw;
+    }
+}
+
+.listBox::-webkit-scrollbar {
+    width: 0;
 }
 </style>

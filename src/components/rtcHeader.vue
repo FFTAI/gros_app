@@ -83,6 +83,7 @@ export default {
     },
     openCamera() {
       this.cameraOn = !this.cameraOn
+      this.$emit('cameraOn')
     }
   }
 };

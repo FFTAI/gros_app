@@ -10,11 +10,13 @@ export default {
   name: 'app',
   mounted() {
     let lang = localStorage.getItem('lang')
-    if(lang == 'en_US'){
+    if(lang == 'en'){
       this.$i18n.locale = 'en';
-    }else {
+    }else if(lang == 'tw'){
+      this.$i18n.locale = 'tw';
+    }else{
       this.$i18n.locale = 'zh';
-      this.locale = null;
+      localStorage.setItem('lang', 'zh')
     }
   }
 }

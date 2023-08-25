@@ -34,10 +34,10 @@
             </div>
         </div>
         <!-- 连接提示弹框 -->
-            <div class="connectDialog" ref="tipsDialog" v-if="showDialog">
-                <img class="dialogPhone" src="@/assets/images/image_phone.png" />
-                <div class="connectTxt" style="font-size: 1.4583vw;">{{ $t('connectTips') }}</div>
-            </div>
+        <div class="connectDialog" ref="tipsDialog" v-if="showDialog">
+            <img class="dialogPhone" src="@/assets/images/image_phone.png" />
+            <div class="connectTxt" style="font-size: 1.4583vw;">{{ $t('connectTips') }}</div>
+        </div>
         <!-- 返回主界面及连接失败弹框 -->
         <r-dialog class="connectTxt" v-if="returnMain || connectFail">
             <div>
@@ -84,7 +84,11 @@ export default {
     methods: {
         //打开/关闭弹窗
         openDialog() {
-            this.showDialog = !this.showDialog
+            if (/(android)/i.test(navigator.userAgent)) {
+                window.location.href = "intent://wifi#Intent;end";
+            }else{
+                this.showDialog = !this.showDialog
+            }
         }
     }
 }
@@ -233,6 +237,7 @@ export default {
 .white {
     background-color: rgba(255, 255, 255, 0.1);
 }
+
 .connectDialog {
     position: absolute;
     top: 50%;

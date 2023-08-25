@@ -28,7 +28,7 @@ export default {
                 })
             }
             this.progress = this.progress + 1
-        }, 30);
+        }, 20);
     },
     data(){
         return{
