@@ -6,7 +6,7 @@ import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 import axios from "axios";
 import i18n from "./i18n/i18n";
-import { Robot } from "/Users/jax/Documents/GitHub/gros_client_js/index";
+import { Robot } from "gros-client";
 
 Vue.prototype.$axios = axios;
 Vue.prototype.$store = store;
