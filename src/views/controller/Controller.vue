@@ -3,29 +3,30 @@
     <div class="container">
       <div ref="videoContainer" align="center" class="video-container">
         <div class="video-item">
-          <img class="video-play" :src="videoSrc" v-show="camera"/>
+          <img class="video-play" :src="videoSrc" v-show="camera" />
         </div>
       </div>
       <div class="videoBox">
         <rtc-header :currentSpeed="current_speed" :isController="true" :camera="true" @cameraOn="openCamera()">
           <div class="headState" @click="headChange()">
-            <span class="headTxt">{{ $t('remoteMode') }}</span>
+            <span class="headTxt">{{ $t("remoteMode") }}</span>
             <div class="arrow"></div>
           </div>
         </rtc-header>
         <div class="headBox" v-if="headBoxVisible" ref="headBoxRef">
           <div @click="changeMode('remoteMode')">
-            {{ $t('remoteMode') }}
+            {{ $t("remoteMode") }}
           </div>
           <div class="divider"></div>
           <div @click="changeMode('developerMode')">
-            {{ $t('developerMode') }}
+            {{ $t("developerMode") }}
           </div>
         </div>
         <!-- Stop按钮 -->
         <div class="stopControl">
           <img class="stopImg" src="@/assets/images/icon_chStop.png" @click="quickStop()" />
         </div>
+        <!--校准-->
         <div class="calibration">
           <img class="calibrationImg" src="@/assets/images/icon_calibration.png" @click="calibration()" />
         </div>
@@ -52,41 +53,41 @@
         <div class="actionBox" v-if="controlExpand && controlModel == 'gait'">
           <div class="actionItem" @click="choseMode('slowWalk')">
             <img class="actionImg" src="@/assets/images/icon_slowWalk.png" />
-            <div>{{ $t('normalWalking') }}</div>
+            <div>{{ $t("normalWalking") }}</div>
           </div>
           <div class="actionItem" @click="choseMode('fastWalk')">
             <img class="actionImg" src="@/assets/images/icon_fastWalk.png" />
-            <div>{{ $t('fastWalking') }}</div>
+            <div>{{ $t("fastWalking") }}</div>
           </div>
           <div class="actionItem" @click="choseMode('slowRun')">
             <img class="actionImg" src="@/assets/images/icon_slowRun.png" />
-            <div>{{ $t('slowRunning') }}</div>
+            <div>{{ $t("slowRunning") }}</div>
           </div>
           <div class="actionItem" @click="choseMode('fastRun')">
             <img class="actionImg" src="@/assets/images/icon_fastRun.png" />
-            <div>{{ $t('fastRunning') }}</div>
+            <div>{{ $t("fastRunning") }}</div>
           </div>
         </div>
         <div class="actionBox" v-else-if="controlExpand && controlModel == 'inPlace'">
           <div class="actionItem">
             <img class="actionImg" src="@/assets/images/icon_shakeHands.png" @click="choseMode('shakeHands')" />
-            <div>{{ $t('shakeHands') }}</div>
+            <div>{{ $t("shakeHands") }}</div>
           </div>
           <div class="actionItem">
             <img class="actionImg" src="@/assets/images/icon_wave.png" @click="choseMode('wave')" />
-            <div>{{ $t('wave') }}</div>
+            <div>{{ $t("wave") }}</div>
           </div>
         </div>
         <div class="controlBox">
           <div class="choseBox txt" :class="controlModel == 'gait' ? 'chose' : ''" @click="changeControl('gait')">
-            {{ $t('gaitMotion') }}
+            {{ $t("gaitMotion") }}
           </div>
           <div class="choseBox txt" style="width: 6.25vw;" :class="controlModel == 'stand' ? 'chose' : ''"
-            @click="changeControl('stand')">
-            {{ $t('stand') }}
+               @click="changeControl('stand')">
+            {{ $t("stand") }}
           </div>
           <div class="choseBox txt" :class="controlModel == 'inPlace' ? 'chose' : ''" @click="changeControl('inPlace')">
-            {{ $t('inPlaceMotion') }}
+            {{ $t("inPlaceMotion") }}
           </div>
         </div>
         <!-- <div class="stateBox" v-else @click="stopMode()">
@@ -107,12 +108,12 @@
         </div> -->
       </div>
       <div class="stateMessage" v-if="mode != ''">
-        <span v-if="mode == 'slowWalk'">{{ $t('normalWalking') }}中...</span>
-        <span v-if="mode == 'fastWalk'">{{ $t('fastWalking') }}中...</span>
-        <span v-if="mode == 'slowRun'">{{ $t('slowRunning') }}中...</span>
-        <span v-if="mode == 'fastRun'">{{ $t('fastRunning') }}中...</span>
-        <span v-if="mode == 'shakeHands'">{{ $t('shakeHands') }}...</span>
-        <span v-if="mode == 'wave'">{{ $t('wave') }}...</span>
+        <span v-if="mode == 'slowWalk'">{{ $t("normalWalking") }}中...</span>
+        <span v-if="mode == 'fastWalk'">{{ $t("fastWalking") }}中...</span>
+        <span v-if="mode == 'slowRun'">{{ $t("slowRunning") }}中...</span>
+        <span v-if="mode == 'fastRun'">{{ $t("fastRunning") }}中...</span>
+        <span v-if="mode == 'shakeHands'">{{ $t("shakeHands") }}...</span>
+        <span v-if="mode == 'wave'">{{ $t("wave") }}...</span>
       </div>
     </div>
   </div>
@@ -121,12 +122,13 @@
 import nipplejs from "nipplejs";
 import RtcHeader from "@/components/rtcHeader.vue";
 import rtcLeftControl from "@/components/rtcLeftControl.vue";
-import { getType, hStop } from "@/request/control"
+import { getType, hStop } from "@/request/control";
 import { mapState } from "vuex";
+
 export default {
   components: { RtcHeader, rtcLeftControl },
   computed: {
-    ...mapState(['controlType', 'iP'])
+    ...mapState(["controlType", "iP"])
   },
   data() {
     return {
@@ -145,15 +147,15 @@ export default {
       videoSrc: "", //摄像头视频路径
       controlModel: "gait",
       controlExpand: false,
-      mode: '',
+      mode: "",
       headBoxVisible: false,
       camera: true
     };
   },
   created() {
-    let wsUrl = 'ws' + process.env.VUE_APP_URL.slice(4) + '/ws'
-    this.ws = new WebSocket(wsUrl)
-    let _this = this
+    // let wsUrl = 'ws' + process.env.VUE_APP_URL.slice(4) + '/ws'
+    this.ws = new WebSocket(wsUrl);
+    let _this = this;
 
     document.addEventListener(
       "click",
@@ -177,20 +179,20 @@ export default {
     // );
   },
   async mounted() {
-    let _this = this
+    let _this = this;
     this.$nextTick(() => {
-      window.addEventListener("gamepadconnected", function (e) {
+      window.addEventListener("gamepadconnected", function(e) {
         const gp = navigator.getGamepads()[e.gamepad.index];
         console.log("手柄连接", gp);
         _this.gamepadConnected = true;
         _this.startGamepad(); // 启动手柄
       });
-      window.addEventListener("gamepaddisconnected", function (e) {
+      window.addEventListener("gamepaddisconnected", function(e) {
         _this.gamepadConnected = false;
         clearInterval(this.interval); // 停止获取手柄数据
         console.log("手柄断开", e);
       });
-    })
+    });
 
     this.videoContainer = this.$refs.videoContainer;
     // this.startFullScreen(); //强制全屏
@@ -199,27 +201,27 @@ export default {
         this.screenWidth = document.body.clientWidth;
       })();
     };
-    this.cameraOpen()
+    this.cameraOpen();
     this.startJoystickL(); //生成虚拟摇杆
     this.startJoystickR();
-    const typeRes = await getType()
-    console.log('typeRes', typeRes)
-    let currIP = {}
-    currIP.host = typeRes.data.data.host
-    currIP.port = Number(typeRes.data.data.port)
-    this.$store.commit('setIP', currIP)
-    console.log(typeRes.data.data.type)
+    const typeRes = await getType();
+    console.log("typeRes", typeRes);
+    let currIP = {};
+    currIP.host = typeRes.data.data.host;
+    currIP.port = Number(typeRes.data.data.port);
+    this.$store.commit("setIP", currIP);
+    console.log(typeRes.data.data.type);
     this.connectWss();
   },
   beforeDestroy() {
-    let _this = this
-    window.removeEventListener('gamepadconnected', function (e) {
+    let _this = this;
+    window.removeEventListener("gamepadconnected", function(e) {
       const gp = navigator.getGamepads()[e.gamepad.index];
       console.log("手柄连接beforeDestroy", gp);
       _this.gamepadConnected = true;
       _this.startGamepad(); // 启动手柄
     });
-    window.removeEventListener('gamepaddisconnected', function (e) {
+    window.removeEventListener("gamepaddisconnected", function(e) {
       _this.gamepadConnected = false;
       clearInterval(this.interval); // 停止获取手柄数据
       console.log("手柄断开beforeDestroy", e);
@@ -234,7 +236,7 @@ export default {
   },
   watch: {
     //屏幕尺寸变化后，重新生成joystick适配当前尺寸
-    screenWidth: function (n, o) {
+    screenWidth: function(n, o) {
       console.log("屏幕变化", n);
       if (this.joystickL) {
         this.joystickL.destroy();
@@ -244,7 +246,7 @@ export default {
         this.joystickR.destroy();
         this.startJoystickR();
       }
-    },
+    }
   },
   methods: {
     // 开始
@@ -253,7 +255,7 @@ export default {
         console.log("connect WebSocket is ok: ", event);
       };
       this.ws.onmessage = (msg) => {
-        console.log('WS返回信息22222。。。。======', msg)
+        console.log("WS返回信息22222。。。。======", msg);
         const str = msg.data.toString();
         const json = JSON.parse(str);
         switch (json.type) {
@@ -272,7 +274,7 @@ export default {
     startGamepad() {
       const _this = this;
       // 每10ms 获取一次手柄数据，查看是否按下手柄按键
-      this.interval = setInterval(function () {
+      this.interval = setInterval(function() {
         let gamepad = null;
         navigator.getGamepads().forEach((item) => {
           if (item) gamepad = item;
@@ -284,11 +286,11 @@ export default {
         let size = (_this.screenWidth * 100) / 1440;
         _this.joystickL[0].setPosition(1, {
           x: gamepad.axes.slice(0, 2)[0] * size,
-          y: gamepad.axes.slice(0, 2)[1] * size,
+          y: gamepad.axes.slice(0, 2)[1] * size
         });
         _this.joystickR[0].setPosition(1, {
           x: gamepad.axes.slice(2, 4)[0] * size,
-          y: gamepad.axes.slice(2, 4)[1] * size,
+          y: gamepad.axes.slice(2, 4)[1] * size
         });
       }, 10);
     },
@@ -310,7 +312,7 @@ export default {
       if (Math.abs(velocity) < 0.1) v = 0;
       if (Math.abs(direction) < 0.1) angle = 0;
       if (Math.abs(velocity) < 0.1) {
-        velocity = 0
+        velocity = 0;
       }
       // console.log(
       //   "实时坐标---前后",
@@ -322,7 +324,7 @@ export default {
       //   'port',
       //   this.iP.port
       // );
-      this.operateHuman(angle * -0.2, (velocity * this.speed) / 6.25)
+      this.operateHuman(angle * -0.2, (velocity * this.speed) / 6.25);
 
     },
     // 手柄按键
@@ -387,10 +389,10 @@ export default {
         mode: "static",
         position: { left: "20%", top: "70%" },
         color: "white",
-        size: sWidth,
+        size: sWidth
       });
       _this.joystickL
-        .on("start", function (evt, data) {
+        .on("start", function(evt, data) {
           if (!_this.gamepadConnected) {
             _this.time = setInterval(() => {
               // console.log("startstart", evt, data);
@@ -398,7 +400,7 @@ export default {
             }, 5);
           }
         })
-        .on("move", function (evt, data) {
+        .on("move", function(evt, data) {
           //同手柄圆心方案（新）
           let velocity = data.vector.y;
           let direction = data.vector.x;
@@ -411,9 +413,9 @@ export default {
           if (Math.abs(direction) < 0.1) angle = 0;
           //人形控制
           if (!_this.gamepadConnected) {
-            console.log(velocity)
+            console.log(velocity);
             if (Math.abs(velocity) < 0.1) {
-              velocity = 0
+              velocity = 0;
             }
             // console.log(
             //   "实时坐标---前后",
@@ -425,13 +427,13 @@ export default {
             //   'port',
             //   _this.iP.port
             // );
-            _this.operateHuman(angle * -0.2, (velocity * _this.speed) / 6.25)
+            _this.operateHuman(angle * -0.2, (velocity * _this.speed) / 6.25);
           }
         })
-        .on("end", function (evt, data) {
+        .on("end", function(evt, data) {
           if (!_this.gamepadConnected) {
             //摇杆回原点后速度方向归零
-            _this.operateHuman(0, 0)
+            _this.operateHuman(0, 0);
             clearInterval(_this.time);
             _this.onEnd && _this.onEnd();
           }
@@ -445,18 +447,24 @@ export default {
         mode: "static",
         position: { right: "20%", top: "70%" },
         color: "white",
-        size: sWidth,
+        size: sWidth
       });
       _this.joystickR
-        .on("start", function (evt, data) {
+        .on("start", function(evt, data) {
 
         })
-        .on("move", function (evt, data) {
+        .on("move", function(evt, data) {
 
         })
-        .on("end", function (evt, data) {
+        .on("end", function(evt, data) {
 
         });
+    },
+    calibration() {
+      this.$robot.start()
+      setTimeout(() => {
+        this.$robot.stand()
+      }, 10000)
     },
     //紧急停止
     quickStop() {
@@ -466,7 +474,7 @@ export default {
         })
         .catch((err) => {
           console.log(err);
-        })
+        });
     },
     // 速度挡位调节
     speedChange(e) {
@@ -480,43 +488,43 @@ export default {
     },
     //操控人形
     operateHuman(direction, velocity) {
-      this.$robot.move(direction, velocity)
+      this.$robot.move(direction, velocity);
     },
     cameraOpen() {
-      this.videoSrc = this.$robot.get_video_stream_url()
+      this.videoSrc = this.$robot.get_video_stream_url();
     },
     changeControl(e) {
-      this.mode = ''
-      if (e != 'stand') {
-        this.controlExpand = true
+      this.mode = "";
+      if (e != "stand") {
+        this.controlExpand = true;
       } else {
-        this.controlExpand = false
+        this.controlExpand = false;
       }
-      this.controlModel = e
+      this.controlModel = e;
     },
     choseMode(e) {
-      this.controlExpand = false
-      this.mode = e
+      this.controlExpand = false;
+      this.mode = e;
     },
     stopMode() {
-      this.mode = ''
+      this.mode = "";
     },
     headChange() {
-      this.headBoxVisible = !this.headBoxVisible
+      this.headBoxVisible = !this.headBoxVisible;
     },
     changeMode(e) {
-      if (e == 'remoteMode') {
-        this.headBoxVisible = false
-      } else if (e == 'developerMode') {
+      if (e == "remoteMode") {
+        this.headBoxVisible = false;
+      } else if (e == "developerMode") {
         this.$router.push({
-          name: 'development'
-        })
+          name: "development"
+        });
       }
     },
     openCamera() {
-      this.camera = !this.camera
+      this.camera = !this.camera;
     }
-  },
+  }
 };
 </script>
 <style lang="scss">
