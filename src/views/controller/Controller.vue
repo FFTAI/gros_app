@@ -132,7 +132,6 @@ export default {
   },
   data() {
     return {
-      ws: "",
       videoContainer: "",
       buttons: "",
       joystickL: undefined,
@@ -153,10 +152,6 @@ export default {
     };
   },
   created() {
-    // let wsUrl = 'ws' + process.env.VUE_APP_URL.slice(4) + '/ws'
-    this.ws = new WebSocket(wsUrl);
-    let _this = this;
-
     document.addEventListener(
       "click",
       (e) => {
@@ -167,16 +162,6 @@ export default {
       },
       true
     );
-    // document.addEventListener(
-    //   "click",
-    //   (e) => {
-    //     let headBoxRef = this.$refs.headBoxRef;
-    //     if (headBoxRef && !headBoxRef.contains(e.target)) {
-    //       this.headBoxVisible = false;
-    //     }
-    //   },
-    //   true
-    // );
   },
   async mounted() {
     let _this = this;
@@ -204,14 +189,6 @@ export default {
     this.cameraOpen();
     this.startJoystickL(); //生成虚拟摇杆
     this.startJoystickR();
-    const typeRes = await getType();
-    console.log("typeRes", typeRes);
-    let currIP = {};
-    currIP.host = typeRes.data.data.host;
-    currIP.port = Number(typeRes.data.data.port);
-    this.$store.commit("setIP", currIP);
-    console.log(typeRes.data.data.type);
-    this.connectWss();
   },
   beforeDestroy() {
     let _this = this;
@@ -229,10 +206,6 @@ export default {
   },
   destroyed() {
     clearInterval(this.interval);
-    if (this.ws) {
-      this.ws.close();
-      this.ws = null;
-    }
   },
   watch: {
     //屏幕尺寸变化后，重新生成joystick适配当前尺寸
@@ -249,27 +222,6 @@ export default {
     }
   },
   methods: {
-    // 开始
-    connectWss() {
-      this.ws.onopen = (event) => {
-        console.log("connect WebSocket is ok: ", event);
-      };
-      this.ws.onmessage = (msg) => {
-        console.log("WS返回信息22222。。。。======", msg);
-        const str = msg.data.toString();
-        const json = JSON.parse(str);
-        switch (json.type) {
-          case "conn":
-            console.log("连接成功", json);
-            break;
-          case "speed":
-            this.current_speed = json.speed;
-          case "action":
-
-            break;
-        }
-      };
-    },
     // 启动手柄
     startGamepad() {
       const _this = this;
@@ -462,9 +414,7 @@ export default {
     },
     calibration() {
       this.$robot.start()
-      setTimeout(() => {
-        this.$robot.stand()
-      }, 10000)
+      // this.loading = true
     },
     //紧急停止
     quickStop() {
@@ -498,6 +448,7 @@ export default {
       if (e != "stand") {
         this.controlExpand = true;
       } else {
+        this.$robot.stand()
         this.controlExpand = false;
       }
       this.controlModel = e;

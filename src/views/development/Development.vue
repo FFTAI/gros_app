@@ -480,6 +480,8 @@ export default {
     updateSideCharts(item, type) {
       // this.leftSideChartData = []
       // this.rightSideChartData = []
+      if(!document.getElementById("leftChart") || !document.getElementById("rightChart"))
+        return
       switch (item) {
         case "hipPitch":
           if (type == "angle") {
