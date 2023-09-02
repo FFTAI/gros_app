@@ -122,7 +122,6 @@
 import nipplejs from "nipplejs";
 import RtcHeader from "@/components/rtcHeader.vue";
 import rtcLeftControl from "@/components/rtcLeftControl.vue";
-import { getType, hStop } from "@/request/control";
 import { mapState } from "vuex";
 
 export default {
@@ -418,13 +417,7 @@ export default {
     },
     //紧急停止
     quickStop() {
-      hStop(this.iP)
-        .then((res) => {
-          console.log("humanStop--stop", res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      this.$robot.stop()
     },
     // 速度挡位调节
     speedChange(e) {
