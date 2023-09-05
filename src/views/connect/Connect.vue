@@ -84,11 +84,12 @@ export default {
     methods: {
         //打开/关闭弹窗
         openDialog() {
-            if (/(android)/i.test(navigator.userAgent)) {
-                window.location.href = "intent://wifi#Intent;end";
-            }else{
+            // if (/(android)/i.test(navigator.userAgent)) {
+            //     window.location.href = "intent://wifi#Intent;end";
+            // }else{
                 this.showDialog = !this.showDialog
-            }
+            // }
+            console.log(navigator.connection)
         }
     }
 }

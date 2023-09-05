@@ -37,7 +37,7 @@
             </div>
             <div class="item" v-if="connected">
                 <span>{{ $t('robotIP') }}</span>
-                <span>192.168.2.1</span>
+                <span>192.168.12.1</span>
             </div>
             <div class="item" v-if="connected">
                 <span>{{ $t('wifiName') }}</span>

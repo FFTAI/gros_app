@@ -24,19 +24,18 @@
           <div class="logMain">
             <el-timeline>
               <el-timeline-item v-for="(activity, index) in logList" :key="index" :type="activity.type"
-                                :timestamp="activity.timestamp" :placement="activity.placement">
+                :timestamp="activity.timestamp" :placement="activity.placement">
                 <p class="logTxt">{{ activity.content }}</p>
               </el-timeline-item>
             </el-timeline>
           </div>
         </div>
         <div class="modelChose">
-          <div class="modelBtn" :class="{ 'activatedModel': activated == 'dynamic' }"
-               @click="changeModel('dynamic')">
+          <div class="modelBtn" :class="{ 'activatedModel': activated == 'dynamic' }" @click="changeModel('dynamic')">
             <span class="btnTxt">{{ $t("dynamicShowcase") }}</span>
           </div>
           <div class="modelBtn" :class="{ 'activatedModel': activated == 'log' }" style="margin-left: .8854vw;"
-               @click="changeModel('log')">
+            @click="changeModel('log')">
             <span class="btnTxt">{{ $t("logoFile") }}</span>
           </div>
         </div>
@@ -59,7 +58,7 @@
           <div class="tableItem" @click="changeItem('hipPitch')">
             <div v-if="activatedType == 'angle'" class="itemChild">{{ leftHipPitch_qa ? leftHipPitch_qa + "°" :
               ""
-              }}
+            }}
             </div>
             <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ leftHipPitch_qdota ?
               leftHipPitch_qdota + "°/s" : "" }}
@@ -69,8 +68,7 @@
               + "N.m" : "" }}
             </div>
             <div class="itemChild" :class="activatedItem == 'hipPitch' ? 'middleCurr' : 'middle'">Hip Pitch
-              <div
-                class="downArrow" v-if="activatedItem == 'hipPitch'"></div>
+              <div class="downArrow" v-if="activatedItem == 'hipPitch'"></div>
             </div>
             <div v-if="activatedType == 'angle'" class="itemChild">{{ rightHipPitch_qa ? rightHipPitch_qa + "°"
               :
@@ -85,7 +83,7 @@
           </div>
           <div class="tableItem" @click="changeItem('hipYaw')">
             <div v-if="activatedType == 'angle'" class="itemChild">{{ leftHipYaw_qa ? leftHipYaw_qa + "°" : ""
-              }}
+            }}
             </div>
             <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ leftHipYaw_qdota ?
               leftHipYaw_qdota
@@ -95,12 +93,11 @@
               "N.m" : "" }}
             </div>
             <div class="itemChild" :class="activatedItem == 'hipYaw' ? 'middleCurr' : 'middle'">Hip Yaw
-              <div
-                class="downArrow" v-if="activatedItem == 'hipYaw'">
+              <div class="downArrow" v-if="activatedItem == 'hipYaw'">
               </div>
             </div>
             <div v-if="activatedType == 'angle'" class="itemChild">{{ rightHipYaw_qa ? rightHipYaw_qa + "°" : ""
-              }}
+            }}
             </div>
             <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ rightHipYaw_qdota ?
               rightHipYaw_qdota + "°/s" : "" }}
@@ -112,7 +109,7 @@
           </div>
           <div class="tableItem" @click="changeItem('hipRoll')">
             <div v-if="activatedType == 'angle'" class="itemChild">{{ leftHipRoll_qa ? leftHipRoll_qa + "°" : ""
-              }}
+            }}
             </div>
             <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ leftHipRoll_qdota ?
               leftHipRoll_qdota + "°/s" : "" }}
@@ -122,13 +119,12 @@
               "N.m" : "" }}
             </div>
             <div class="itemChild" :class="activatedItem == 'hipRoll' ? 'middleCurr' : 'middle'">Hip Roll
-              <div
-                class="downArrow" v-if="activatedItem == 'hipRoll'">
+              <div class="downArrow" v-if="activatedItem == 'hipRoll'">
               </div>
             </div>
             <div v-if="activatedType == 'angle'" class="itemChild">{{ rightHipRoll_qa ? rightHipRoll_qa + "°" :
               ""
-              }}
+            }}
             </div>
             <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ rightHipRoll_qdota ?
               rightHipRoll_qdota + "°/s" : "" }}
@@ -149,8 +145,7 @@
               : "" }}
             </div>
             <div class="itemChild" :class="activatedItem == 'knee' ? 'middleCurr' : 'middle'">Knee
-              <div
-                class="downArrow" v-if="activatedItem == 'knee'"></div>
+              <div class="downArrow" v-if="activatedItem == 'knee'"></div>
             </div>
             <div v-if="activatedType == 'angle'" class="itemChild">{{ rightKnee_qa ? rightKnee_qa + "°" : "" }}
             </div>
@@ -343,7 +338,7 @@ export default {
       var rightChart = echarts.init(document.getElementById("rightChart"));
       leftChart.setOption({
         xAxis: {
-          type: "category"
+          type: "category",
         },
         yAxis: {
           type: "value",
@@ -354,9 +349,13 @@ export default {
             name: "angle",
             data: this.leftSideChartData,
             type: "line",
-            smooth: true
+            smooth: true,
+            // animation: true,
+            // animationDuration: 3000,
+            // animationEasing: 'linear'
           }
-        ]
+        ],
+
       });
       rightChart.setOption({
         xAxis: {
@@ -478,10 +477,12 @@ export default {
       return degrees.toFixed(2);
     },
     updateSideCharts(item, type) {
-      // this.leftSideChartData = []
-      // this.rightSideChartData = []
-      if(!document.getElementById("leftChart") || !document.getElementById("rightChart"))
+      if (!document.getElementById("leftChart") || !document.getElementById("rightChart"))
         return
+      if (this.leftSideChartData.length > 10)
+        this.leftSideChartData.shift();
+      if (this.rightSideChartData.length > 10)
+        this.rightSideChartData.shift();
       switch (item) {
         case "hipPitch":
           if (type == "angle") {
@@ -558,10 +559,6 @@ export default {
         default:
           break;
       }
-      if (this.leftSideChartData.length > 10)
-        this.leftSideChartData.shift();
-      if (this.rightSideChartData.length > 10)
-        this.rightSideChartData.shift();
       let leftChart = echarts.getInstanceByDom(document.getElementById("leftChart"));
       leftChart.setOption({
         series: [
@@ -571,6 +568,7 @@ export default {
           }
         ]
       });
+      // leftChart.resize()
       let rightChart = echarts.getInstanceByDom(document.getElementById("rightChart"));
       rightChart.setOption({
         series: [
@@ -606,6 +604,9 @@ export default {
           }
         ]
       });
+    },
+    splittingData(data) {
+
     },
     changeItem(e) {
       this.activatedItem = e;
