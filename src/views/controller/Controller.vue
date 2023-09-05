@@ -431,10 +431,10 @@ export default {
     },
     //操控人形
     operateHuman(direction, velocity) {
-      this.$robot.move(direction, velocity);
+      this.$robot.walk(direction, velocity);
     },
     cameraOpen() {
-      this.videoSrc = this.$robot.get_video_stream_url();
+      this.videoSrc = this.$robot.camera.videoStreamUrl;
     },
     changeControl(e) {
       this.mode = "";
