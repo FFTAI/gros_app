@@ -297,11 +297,11 @@ export default {
   },
   beforeDestroy() {
     this.$robot.disable_debug_state()
+    this.$robot.removeAllListeners()
   },
   mounted() {
     this.initSideCharts();
     this.initSpeedCharts();
-
     this.$robot.enable_debug_state(1);
 
     this.$robot.on_message(data => {
@@ -336,9 +336,21 @@ export default {
     initSideCharts() {
       var leftChart = echarts.init(document.getElementById("leftChart"));
       var rightChart = echarts.init(document.getElementById("rightChart"));
+      // for (let i = 0; i < 10; i++) {
+      //   this.leftSideChartData.push(0)
+      // }
       leftChart.setOption({
+        tooltip: {
+          trigger: 'axis'
+        },
         xAxis: {
-          type: "category",
+          type: "time",
+          // axisTick: {
+          //   show: false 
+          // }, 
+          axisLabel: {
+            show: false
+          }
         },
         yAxis: {
           type: "value",
@@ -349,17 +361,29 @@ export default {
             name: "angle",
             data: this.leftSideChartData,
             type: "line",
-            smooth: true,
-            // animation: true,
-            // animationDuration: 3000,
-            // animationEasing: 'linear'
+            showSymbol: false,
           }
         ],
-
+        dataZoom: [
+          {
+            type: "inside",
+            realtime: true,
+            start: 10,
+            end: 100,
+            xAxisIndex: [0],
+            filterMode: 'none'
+          }
+        ]
       });
       rightChart.setOption({
+        tooltip: {
+          trigger: 'axis'
+        },
         xAxis: {
-          type: "category"
+          type: "time",
+          axisLabel: {
+            show: false
+          }
         },
         yAxis: {
           type: "value",
@@ -370,7 +394,17 @@ export default {
             name: "angle",
             data: this.rightSideChartData,
             type: "line",
-            smooth: true
+            showSymbol: false
+          }
+        ],
+        dataZoom: [
+          {
+            type: "inside",
+            realtime: true,
+            start: 10,
+            end: 100,
+            xAxisIndex: [0],
+            filterMode: 'none'
           }
         ]
       });
@@ -379,8 +413,14 @@ export default {
       var xChart = echarts.init(document.getElementById("xChart"));
       var yChart = echarts.init(document.getElementById("yChart"));
       xChart.setOption({
+        tooltip: {
+          trigger: 'axis'
+        },
         xAxis: {
-          type: "category"
+          type: "time",
+          axisLabel: {
+            show: false
+          }
         },
         yAxis: {
           type: "value",
@@ -391,13 +431,29 @@ export default {
             name: "speed",
             data: this.leftSpeedChartData,
             type: "line",
-            smooth: true
+            showSymbol: false
+          }
+        ],
+        dataZoom: [
+          {
+            type: "inside",
+            realtime: true,
+            start: 10,
+            end: 100,
+            xAxisIndex: [0],
+            filterMode: 'none'
           }
         ]
       });
       yChart.setOption({
+        tooltip: {
+          trigger: 'axis'
+        },
         xAxis: {
-          type: "category"
+          type: "time",
+          axisLabel: {
+            show: false
+          }
         },
         yAxis: {
           type: "value",
@@ -408,7 +464,17 @@ export default {
             name: "speed",
             data: this.rightSpeedChartData,
             type: "line",
-            smooth: true
+            showSymbol: false
+          }
+        ],
+        dataZoom: [
+          {
+            type: "inside",
+            realtime: true,
+            start: 10,
+            end: 100,
+            xAxisIndex: [0],
+            filterMode: 'none'
           }
         ]
       });
@@ -486,74 +552,74 @@ export default {
       switch (item) {
         case "hipPitch":
           if (type == "angle") {
-            this.leftSideChartData.push(this.leftHipPitch_qa);
-            this.rightSideChartData.push(this.rightHipPitch_qa);
+            this.leftSideChartData.push(this.xAxisDataFmt(this.leftHipPitch_qa))
+            this.rightSideChartData.push(this.xAxisDataFmt(this.rightHipPitch_qa));
           } else if (type == "Avelocity") {
-            this.leftSideChartData.push(this.leftHipPitch_qdota);
-            this.rightSideChartData.push(this.rightHipPitch_qdota);
+            this.leftSideChartData.push(this.xAxisDataFmt(this.leftHipPitch_qdota));
+            this.rightSideChartData.push(this.xAxisDataFmt(this.rightHipPitch_qdota));
           } else if (type == "torque") {
-            this.leftSideChartData.push(this.leftHipPitch_taua);
-            this.rightSideChartData.push(this.rightHipPitch_taua);
+            this.leftSideChartData.push(this.xAxisDataFmt(this.leftHipPitch_taua));
+            this.rightSideChartData.push(this.xAxisDataFmt(this.rightHipPitch_taua));
           }
           break;
         case "hipYaw":
           if (type == "angle") {
-            this.leftSideChartData.push(this.leftHipYaw_qa);
-            this.rightSideChartData.push(this.rightHipYaw_qa);
+            this.leftSideChartData.push(this.xAxisDataFmt(this.leftHipYaw_qa));
+            this.rightSideChartData.push(this.xAxisDataFmt(this.rightHipYaw_qa));
           } else if (type == "Avelocity") {
-            this.leftSideChartData.push(this.leftHipYaw_qdota);
-            this.rightSideChartData.push(this.rightHipYaw_qdota);
+            this.leftSideChartData.push(this.xAxisDataFmt(this.leftHipYaw_qdota));
+            this.rightSideChartData.push(this.xAxisDataFmt(this.rightHipYaw_qdota));
           } else if (type == "torque") {
-            this.leftSideChartData.push(this.leftHipYaw_taua);
-            this.rightSideChartData.push(this.rightHipYaw_taua);
+            this.leftSideChartData.push(this.xAxisDataFmt(this.leftHipYaw_taua));
+            this.rightSideChartData.push(this.xAxisDataFmt(this.rightHipYaw_taua));
           }
           break;
         case "hipRoll":
           if (type == "angle") {
-            this.leftSideChartData.push(this.leftHipRoll_qa);
-            this.rightSideChartData.push(this.rightHipRoll_qa);
+            this.leftSideChartData.push(this.xAxisDataFmt(this.leftHipRoll_qa));
+            this.rightSideChartData.push(this.xAxisDataFmt(this.rightHipRoll_qa));
           } else if (type == "Avelocity") {
-            this.leftSideChartData.push(this.leftHipRoll_qdota);
-            this.rightSideChartData.push(this.rightHipRoll_qdota);
+            this.leftSideChartData.push(this.xAxisDataFmt(this.leftHipRoll_qdota));
+            this.rightSideChartData.push(this.xAxisDataFmt(this.rightHipRoll_qdota));
           } else if (type == "torque") {
-            this.leftSideChartData.push(this.leftHipRoll_taua);
-            this.rightSideChartData.push(this.rightHipRoll_taua);
+            this.leftSideChartData.push(this.xAxisDataFmt(this.leftHipRoll_taua));
+            this.rightSideChartData.push(this.xAxisDataFmt(this.rightHipRoll_taua));
           }
           break;
         case "knee":
           if (type == "angle") {
-            this.leftSideChartData.push(this.leftKnee_qa);
-            this.rightSideChartData.push(this.rightKnee_qa);
+            this.leftSideChartData.push(this.xAxisDataFmt(this.leftKnee_qa));
+            this.rightSideChartData.push(this.xAxisDataFmt(this.rightKnee_qa));
           } else if (type == "Avelocity") {
-            this.leftSideChartData.push(this.leftKnee_qdota);
-            this.rightSideChartData.push(this.rightKnee_qdota);
+            this.leftSideChartData.push(this.xAxisDataFmt(this.leftKnee_qdota));
+            this.rightSideChartData.push(this.xAxisDataFmt(this.rightKnee_qdota));
           } else if (type == "torque") {
-            this.leftSideChartData.push(this.leftKnee_taua);
-            this.rightSideChartData.push(this.rightKnee_taua);
+            this.leftSideChartData.push(this.xAxisDataFmt(this.leftKnee_taua));
+            this.rightSideChartData.push(this.xAxisDataFmt(this.rightKnee_taua));
           }
           break;
         case "anklePitch":
           if (type == "angle") {
-            this.leftSideChartData.push(this.leftAnklePitch_qa);
-            this.rightSideChartData.push(this.rightAnklePitch_qa);
+            this.leftSideChartData.push(this.xAxisDataFmt(this.leftAnklePitch_qa));
+            this.rightSideChartData.push(this.xAxisDataFmt(this.rightAnklePitch_qa));
           } else if (type == "Avelocity") {
-            this.leftSideChartData.push(this.leftAnklePitch_qdota);
-            this.rightSideChartData.push(this.rightAnklePitch_qdota);
+            this.leftSideChartData.push(this.xAxisDataFmt(this.leftAnklePitch_qdota));
+            this.rightSideChartData.push(this.xAxisDataFmt(this.rightAnklePitch_qdota));
           } else if (type == "torque") {
-            this.leftSideChartData.push(this.leftAnklePitch_taua);
-            this.rightSideChartData.push(this.rightAnklePitch_taua);
+            this.leftSideChartData.push(this.xAxisDataFmt(this.leftAnklePitch_taua));
+            this.rightSideChartData.push(this.xAxisDataFmt(this.rightAnklePitch_taua));
           }
           break;
         case "ankleRoll":
           if (type == "angle") {
-            this.leftSideChartData.push(this.leftAnkleRoll_qa);
-            this.rightSideChartData.push(this.rightAnkleRoll_qa);
+            this.leftSideChartData.push(this.xAxisDataFmt(this.leftAnkleRoll_qa));
+            this.rightSideChartData.push(this.xAxisDataFmt(this.rightAnkleRoll_qa));
           } else if (type == "Avelocity") {
-            this.leftSideChartData.push(this.leftAnkleRoll_qdota);
-            this.rightSideChartData.push(this.rightAnkleRoll_qdota);
+            this.leftSideChartData.push(this.xAxisDataFmt(this.leftAnkleRoll_qdota));
+            this.rightSideChartData.push(this.xAxisDataFmt(this.rightAnkleRoll_qdota));
           } else if (type == "torque") {
-            this.leftSideChartData.push(this.leftAnkleRoll_taua);
-            this.rightSideChartData.push(this.rightAnkleRoll_taua);
+            this.leftSideChartData.push(this.xAxisDataFmt(this.leftAnkleRoll_taua));
+            this.rightSideChartData.push(this.xAxisDataFmt(this.rightAnkleRoll_taua));
           }
           break;
         default:
@@ -563,17 +629,16 @@ export default {
       leftChart.setOption({
         series: [
           {
-            name: "angle",
+            name: type,
             data: this.leftSideChartData
           }
         ]
       });
-      // leftChart.resize()
       let rightChart = echarts.getInstanceByDom(document.getElementById("rightChart"));
       rightChart.setOption({
         series: [
           {
-            name: "angle",
+            name: type,
             data: this.rightSideChartData
           }
         ]
@@ -581,9 +646,9 @@ export default {
     },
     updateSpeedCharts() {
       let xChart = echarts.getInstanceByDom(document.getElementById("xChart"));
-      this.leftSpeedChartData.push(this.xSpeed);
       if (this.leftSpeedChartData.length > 10)
         this.leftSpeedChartData.shift();
+      this.leftSpeedChartData.push(this.xAxisDataFmt(this.xSpeed));
       xChart.setOption({
         series: [
           {
@@ -593,9 +658,9 @@ export default {
         ]
       });
       let yChart = echarts.getInstanceByDom(document.getElementById("yChart"));
-      this.rightSpeedChartData.push(this.ySpeed);
       if (this.rightSpeedChartData.length > 10)
         this.rightSpeedChartData.shift();
+      this.rightSpeedChartData.push(this.xAxisDataFmt(this.ySpeed));
       yChart.setOption({
         series: [
           {
@@ -605,8 +670,14 @@ export default {
         ]
       });
     },
-    splittingData(data) {
-
+    xAxisDataFmt(e) {
+      return {
+        name: +new Date(),
+        value: [
+          +new Date(),
+          e
+        ]
+      }
     },
     changeItem(e) {
       this.activatedItem = e;

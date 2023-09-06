@@ -24,7 +24,7 @@
         </div>
         <!-- Stop按钮 -->
         <div class="stopControl">
-          <img class="stopImg" src="@/assets/images/icon_chStop.png" @click="quickStop()" />
+          <img class="stopImg" src="@/assets/images/icon_chStop.png" @click="stop()" />
         </div>
         <!--校准-->
         <div class="calibration">
@@ -308,7 +308,7 @@ export default {
           }
         }
       }
-      if (stopL && stopR) this.quickStop();
+      if (stopL && stopR) this.stop();
     },
     //强制全屏进入
     startFullScreen() {
@@ -416,7 +416,7 @@ export default {
       // this.loading = true
     },
     //紧急停止
-    quickStop() {
+    stop() {
       this.$robot.stop()
     },
     // 速度挡位调节

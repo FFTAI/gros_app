@@ -89,7 +89,6 @@ export default {
             // }else{
                 this.showDialog = !this.showDialog
             // }
-            console.log(navigator.connection)
         }
     }
 }
