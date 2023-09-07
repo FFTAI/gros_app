@@ -17,8 +17,8 @@
     </div>
     <div class="mainBox">
       <div class="leftBox">
-        <!-- <img class="humanModel" src="@/assets/images/icon_model.png" v-show="activated == 'dynamic'" /> -->
-        <div class="humanModel" v-show="activated == 'dynamic'"></div>
+        <img class="humanModel" src="@/assets/images/icon_model.png" v-show="activated == 'dynamic'" />
+        <!-- <div class="humanModel" v-show="activated == 'dynamic'"></div> -->
         <div class="logBox" v-show="activated == 'log'">
           <div class="logTitle">{{ $t("logoFile") }}</div>
           <div class="logMain">
@@ -362,6 +362,9 @@ export default {
             data: this.leftSideChartData,
             type: "line",
             showSymbol: false,
+            lineStyle: {
+              color: '#ffffff'
+            }
           }
         ],
         dataZoom: [
@@ -394,7 +397,10 @@ export default {
             name: "angle",
             data: this.rightSideChartData,
             type: "line",
-            showSymbol: false
+            showSymbol: false,
+            lineStyle: {
+              color: '#ffffff'
+            }
           }
         ],
         dataZoom: [
@@ -431,7 +437,10 @@ export default {
             name: "speed",
             data: this.leftSpeedChartData,
             type: "line",
-            showSymbol: false
+            showSymbol: false,
+            lineStyle: {
+              color: '#ffffff'
+            }
           }
         ],
         dataZoom: [
@@ -464,7 +473,10 @@ export default {
             name: "speed",
             data: this.rightSpeedChartData,
             type: "line",
-            showSymbol: false
+            showSymbol: false,
+            lineStyle: {
+              color: '#ffffff'
+            }
           }
         ],
         dataZoom: [

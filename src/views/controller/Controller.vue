@@ -70,6 +70,10 @@
         </div>
         <div class="actionBox" v-else-if="controlExpand && controlModel == 'inPlace'">
           <div class="actionItem">
+            <img class="actionImg" src="@/assets/images/icon_markingTime.png" @click="choseMode('markingTime')" />
+            <div>{{ $t("markingTime") }}</div>
+          </div>
+          <div class="actionItem">
             <img class="actionImg" src="@/assets/images/icon_shakeHands.png" @click="choseMode('shakeHands')" />
             <div>{{ $t("shakeHands") }}</div>
           </div>
@@ -83,7 +87,7 @@
             {{ $t("gaitMotion") }}
           </div>
           <div class="choseBox txt" style="width: 6.25vw;" :class="controlModel == 'stand' ? 'chose' : ''"
-               @click="changeControl('stand')">
+            @click="changeControl('stand')">
             {{ $t("stand") }}
           </div>
           <div class="choseBox txt" :class="controlModel == 'inPlace' ? 'chose' : ''" @click="changeControl('inPlace')">
@@ -112,6 +116,7 @@
         <span v-if="mode == 'fastWalk'">{{ $t("fastWalking") }}中...</span>
         <span v-if="mode == 'slowRun'">{{ $t("slowRunning") }}中...</span>
         <span v-if="mode == 'fastRun'">{{ $t("fastRunning") }}中...</span>
+        <span v-if="mode == 'markingTime'">{{ $t("markingTime") }}中...</span>
         <span v-if="mode == 'shakeHands'">{{ $t("shakeHands") }}...</span>
         <span v-if="mode == 'wave'">{{ $t("wave") }}...</span>
       </div>
@@ -165,13 +170,13 @@ export default {
   async mounted() {
     let _this = this;
     this.$nextTick(() => {
-      window.addEventListener("gamepadconnected", function(e) {
+      window.addEventListener("gamepadconnected", function (e) {
         const gp = navigator.getGamepads()[e.gamepad.index];
         console.log("手柄连接", gp);
         _this.gamepadConnected = true;
         _this.startGamepad(); // 启动手柄
       });
-      window.addEventListener("gamepaddisconnected", function(e) {
+      window.addEventListener("gamepaddisconnected", function (e) {
         _this.gamepadConnected = false;
         clearInterval(this.interval); // 停止获取手柄数据
         console.log("手柄断开", e);
@@ -191,13 +196,13 @@ export default {
   },
   beforeDestroy() {
     let _this = this;
-    window.removeEventListener("gamepadconnected", function(e) {
+    window.removeEventListener("gamepadconnected", function (e) {
       const gp = navigator.getGamepads()[e.gamepad.index];
       console.log("手柄连接beforeDestroy", gp);
       _this.gamepadConnected = true;
       _this.startGamepad(); // 启动手柄
     });
-    window.removeEventListener("gamepaddisconnected", function(e) {
+    window.removeEventListener("gamepaddisconnected", function (e) {
       _this.gamepadConnected = false;
       clearInterval(this.interval); // 停止获取手柄数据
       console.log("手柄断开beforeDestroy", e);
@@ -208,7 +213,7 @@ export default {
   },
   watch: {
     //屏幕尺寸变化后，重新生成joystick适配当前尺寸
-    screenWidth: function(n, o) {
+    screenWidth: function (n, o) {
       console.log("屏幕变化", n);
       if (this.joystickL) {
         this.joystickL.destroy();
@@ -225,7 +230,7 @@ export default {
     startGamepad() {
       const _this = this;
       // 每10ms 获取一次手柄数据，查看是否按下手柄按键
-      this.interval = setInterval(function() {
+      this.interval = setInterval(function () {
         let gamepad = null;
         navigator.getGamepads().forEach((item) => {
           if (item) gamepad = item;
@@ -275,7 +280,7 @@ export default {
       //   'port',
       //   this.iP.port
       // );
-      this.operateHuman(angle * -0.2, (velocity * this.speed) / 6.25);
+      this.operateWalk(angle * -0.2, (velocity * this.speed) / 6.25);
 
     },
     // 手柄按键
@@ -343,7 +348,7 @@ export default {
         size: sWidth
       });
       _this.joystickL
-        .on("start", function(evt, data) {
+        .on("start", function (evt, data) {
           if (!_this.gamepadConnected) {
             _this.time = setInterval(() => {
               // console.log("startstart", evt, data);
@@ -351,7 +356,7 @@ export default {
             }, 5);
           }
         })
-        .on("move", function(evt, data) {
+        .on("move", function (evt, data) {
           //同手柄圆心方案（新）
           let velocity = data.vector.y;
           let direction = data.vector.x;
@@ -378,13 +383,13 @@ export default {
             //   'port',
             //   _this.iP.port
             // );
-            _this.operateHuman(angle * -0.2, (velocity * _this.speed) / 6.25);
+            _this.operateWalk(angle * -0.2, (velocity * _this.speed) / 6.25);
           }
         })
-        .on("end", function(evt, data) {
+        .on("end", function (evt, data) {
           if (!_this.gamepadConnected) {
             //摇杆回原点后速度方向归零
-            _this.operateHuman(0, 0);
+            _this.operateWalk(0, 0);
             clearInterval(_this.time);
             _this.onEnd && _this.onEnd();
           }
@@ -401,14 +406,21 @@ export default {
         size: sWidth
       });
       _this.joystickR
-        .on("start", function(evt, data) {
+        .on("start", function (evt, data) {
 
         })
-        .on("move", function(evt, data) {
-
+        .on("move", function (evt, data) {
+          let pitch = data.vector.y * 17.1887
+          let yaw = data.vector.x * 17.1887
+          if (Math.abs(pitch) < 0.1) pitch = 0
+          if (Math.abs(yaw) < 0.1) yaw = 0
+          console.log('headData', pitch, yaw)
+          _this.operateHead(pitch, yaw)
         })
-        .on("end", function(evt, data) {
-
+        .on("end", function (evt, data) {
+          if (!_this.gamepadConnected) {
+            _this.operateHead(0, 0);
+          }
         });
     },
     calibration() {
@@ -430,8 +442,11 @@ export default {
       }
     },
     //操控人形
-    operateHuman(direction, velocity) {
+    operateWalk(direction, velocity) {
       this.$robot.walk(direction, velocity);
+    },
+    operateHead(pitch, yaw) {
+      this.$robot.head(0, pitch, yaw * -1);
     },
     cameraOpen() {
       this.videoSrc = this.$robot.camera.videoStreamUrl;
@@ -449,6 +464,8 @@ export default {
     choseMode(e) {
       this.controlExpand = false;
       this.mode = e;
+      if (e == "markingTime")
+        this.$robot.walk(0, 0);
     },
     stopMode() {
       this.mode = "";
