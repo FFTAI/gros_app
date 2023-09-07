@@ -12,11 +12,15 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 package-lock.json
-/yarn.lock
+pnpm-lock.yaml
+yarn.lock
 
 # Editor directories and files
 .idea
 .vscode
+.hbuilderx
+
+
 *.suo
 *.ntvs*
 *.njsproj
