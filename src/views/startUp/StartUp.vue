@@ -8,7 +8,7 @@
 export default {
     mounted() {
         setTimeout(() => {
-            this.$router.push({
+            this.$router.push({//首页logo3秒后跳转
                 name: 'login'
             })
         }, 3000);

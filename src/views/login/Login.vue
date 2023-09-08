@@ -12,11 +12,15 @@
 
 <script>
 import rtcHeader from '@/components/rtcHeader.vue';
+import { mapState } from "vuex";
 export default {
     components: { rtcHeader },
+    computed: {
+        ...mapState(["connected"])
+    },
     data() {
         return {
-            connectState: true
+            
         }
     },
     methods: {

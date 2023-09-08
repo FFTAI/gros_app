@@ -46,13 +46,13 @@
           <span>{{ $t("rightSide") }}</span>
         </div>
         <div class="sideChart">
-          <div class="chartSize" id="leftChart"></div>
+          <div class="chartSize" style="height: 14vw;" id="leftChart"></div>
           <div class="typeBox">
             <img class="typeImg" @click="changeType('angle')" src="@/assets/images/icon_angle.png" />
             <img class="typeImg" @click="changeType('Avelocity')" src="@/assets/images/icon_Avelocity.png" />
             <img class="typeImg" @click="changeType('torque')" src="@/assets/images/icon_torque.png" />
           </div>
-          <div class="chartSize" id="rightChart"></div>
+          <div class="chartSize" style="height: 14vw;" id="rightChart"></div>
         </div>
         <div class="rightTable">
           <div class="tableItem" @click="changeItem('hipPitch')">
@@ -214,7 +214,7 @@
               <div>{{ xSpeed }}m/s</div>
             </div>
             <div class="chatItem" style="flex: 2;">
-              <div class="sChartSize" id="xChart"></div>
+              <div class="sChartSize" style="height: 13vw;" id="xChart"></div>
             </div>
           </div>
           <div class="yChart">
@@ -223,7 +223,7 @@
               <div>{{ ySpeed }}m/s</div>
             </div>
             <div class="chatItem" style="flex: 2;">
-              <div class="sChartSize" id="yChart"></div>
+              <div class="sChartSize" style="height: 13vw;" id="yChart"></div>
             </div>
           </div>
         </div>
@@ -336,18 +336,12 @@ export default {
     initSideCharts() {
       var leftChart = echarts.init(document.getElementById("leftChart"));
       var rightChart = echarts.init(document.getElementById("rightChart"));
-      // for (let i = 0; i < 10; i++) {
-      //   this.leftSideChartData.push(0)
-      // }
       leftChart.setOption({
         tooltip: {
           trigger: 'axis'
         },
         xAxis: {
           type: "time",
-          // axisTick: {
-          //   show: false 
-          // }, 
           axisLabel: {
             show: false
           }
@@ -364,7 +358,8 @@ export default {
             showSymbol: false,
             lineStyle: {
               color: '#ffffff'
-            }
+            },
+            smooth: true
           }
         ],
         dataZoom: [
@@ -400,7 +395,8 @@ export default {
             showSymbol: false,
             lineStyle: {
               color: '#ffffff'
-            }
+            },
+            smooth: true
           }
         ],
         dataZoom: [
@@ -440,7 +436,8 @@ export default {
             showSymbol: false,
             lineStyle: {
               color: '#ffffff'
-            }
+            },
+            smooth: true
           }
         ],
         dataZoom: [
@@ -476,7 +473,8 @@ export default {
             showSymbol: false,
             lineStyle: {
               color: '#ffffff'
-            }
+            },
+            smooth: true
           }
         ],
         dataZoom: [
@@ -859,7 +857,7 @@ export default {
     height: 85vh;
 
     .rightTitle {
-      height: 6vh;
+      // height: 6vh;
       width: 91%;
       display: flex;
       justify-content: space-between;
@@ -870,7 +868,7 @@ export default {
 
     .sideChart {
       width: 100%;
-      height: 20vh;
+      height: 23vh;
       background-color: rgba(81, 82, 85, 0.1);
       margin-left: 1.5625vw;
       display: flex;

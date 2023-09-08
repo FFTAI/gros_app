@@ -17,6 +17,7 @@
             <div class="contentTxt connectTxt">
                 {{ $t('connectRobot') }}
             </div>
+            <!-- 初始账号密码 -->
             <div class="connectBox">
                 <div class="connectTxt txtFlex">
                     <div>{{ $t('initialAccount') }}</div>
@@ -43,9 +44,9 @@
             <div>
                 {{ $t('tip') }}
             </div>
-            <!-- <div style="font-size: 1.4583vw;" v-if="returnMain">
+            <div style="font-size: 1.4583vw;" v-if="returnMain">
                 {{ $t('returnToMain') }}?
-            </div> -->
+            </div>
             <div style="font-size: 1.4583vw;" v-if="connectFail">
                 <img class="warning" src="@/assets/images/icon_warning.png" />
                 {{ $t('connectionFailed') }}
@@ -60,8 +61,13 @@
 
 <script>
 import rtcHeader from '@/components/rtcHeader.vue';
+import rDialog from '@/components/rDialog.vue';
+import { mapState } from "vuex";
 export default {
-    components: { rtcHeader },
+    components: { rtcHeader, rDialog },
+    computed: {
+        ...mapState(["connected"])
+    },
     data() {
         return {
             showDialog: false,
@@ -84,11 +90,7 @@ export default {
     methods: {
         //打开/关闭弹窗
         openDialog() {
-            // if (/(android)/i.test(navigator.userAgent)) {
-            //     window.location.href = "intent://wifi#Intent;end";
-            // }else{
-                this.showDialog = !this.showDialog
-            // }
+            this.showDialog = !this.showDialog
         }
     }
 }

@@ -2,37 +2,44 @@
   <div class="main">
     <div class="headBk"></div>
     <div class="headBkIn">
+      <!-- Logo -->
       <div class="headLogo" v-if="isLogo">
         <img class="leftSlot" src="@/assets/images/image_logo.png" />
       </div>
+      <!-- 返回 -->
       <div class="headReturn" v-else @click="routerReturn()">
         <img class="return" src="@/assets/images/icon_return.png" />
       </div>
     </div>
     <slot></slot>
-    <div class="headButtonIn" v-if="((connectState&&isLogin)||!isLogin)&&!isLoading">
+    <div class="headButtonIn" v-if="((connected && isLogin) || !isLogin) && !isLoading">
+      <!-- 电量和wifi -->
       <div class="spacing">
-        <img class="inImg" src="@/assets/images/icon_battery2.png" />
-        <span class="inTxt">43%</span>
+        <!-- <img class="inImg" src="@/assets/images/icon_battery2.png" />
+        <span class="inTxt">43%</span> -->
         <img class="inImg" style="height: 1.6667vw;width: 2.2917vw;" src="@/assets/images/icon_Wifi.png" />
       </div>
       <div class="divider spacing" v-if="camera"></div>
+      <!-- 视频显示开关 -->
       <div class="spacing" @click="openCamera()" v-if="camera">
-        <img class="inImg" src="@/assets/images/icon_cameraOn.png" v-if="cameraOn"/>
-        <img class="inImg" src="@/assets/images/icon_cameraOff.png" v-else/>
+        <img class="inImg" src="@/assets/images/icon_cameraOn.png" v-if="cameraOn" />
+        <img class="inImg" src="@/assets/images/icon_cameraOff.png" v-else />
       </div>
       <div class="divider spacing"></div>
+      <!-- 设置 -->
       <div class="spacing" @click="setting()">
         <img class="inImg" src="@/assets/images/icon_setting.png" />
       </div>
     </div>
-    <div class="rightSlot" @click="toConnect()" v-if="!connectState&&isLogin&&!isLoading">
+    <!-- 连接 -->
+    <div class="rightSlot" @click="toConnect()" v-if="!connected && isLogin && !isLoading">
       <span class="connect">{{ $t('connect') }}</span>
     </div>
   </div>
 </template>
   
 <script>
+import { mapState } from "vuex";
 export default {
   name: "rtcHeader",
   props: {
@@ -45,6 +52,7 @@ export default {
       type: Boolean,
       default: false
     },
+    // 是否是登录和设置页
     isLogin: {
       type: Boolean,
       default: false
@@ -58,16 +66,17 @@ export default {
       default: false
     }
   },
+  computed: {
+    ...mapState(["connected"])
+  },
   data() {
     return {
-      connectState: false,
       cameraOn: true
     }
   },
   methods: {
     toConnect() {
       this.$emit('connect')
-      // this.connectState = !this.connectState
     },
     setting() {
       this.$router.push({
@@ -75,9 +84,10 @@ export default {
       })
     },
     routerReturn() {
-      if(this.isController){
+      //如果是控制页跳过loading返回
+      if (this.isController) {
         this.$router.go(-2)
-      }else{
+      } else {
         this.$router.go(-1)
       }
     },
@@ -201,7 +211,8 @@ export default {
     margin-left: 0.6944vw;
     vertical-align: middle;
   }
-  .spacing{
+
+  .spacing {
     margin-right: 2.6042vw;
   }
 }
@@ -226,5 +237,6 @@ export default {
     line-height: 1.7188vw;
     z-index: 99;
   }
-}</style>
+}
+</style>
   

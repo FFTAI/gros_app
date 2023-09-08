@@ -5,7 +5,9 @@
                 <span class="headTxt">{{ $t('systemSettings') }}</span>
             </div>
         </rtc-header>
+        <!-- 左侧Tab标签栏 -->
         <div class="tabBox">
+            <!-- 连接 -->
             <div class="txt1" :class="{ 'activeTab': isActivated == 'connect' }" @click="changeTab('connect')">
                 <div class="tab" :class="{ 'opt': isActivated != 'connect' }">
                     <img class="iconConnect" src="@/assets/images/icon_connect.png" />
@@ -14,6 +16,7 @@
                     </div>
                 </div>
             </div>
+            <!-- 系统状态 -->
             <div class="txt2" :class="{ 'activeTab': isActivated == 'status' }" @click="changeTab('status')">
                 <div class="tab" :class="{ 'opt': isActivated != 'status' }">
                     <img class="iconSysState" src="@/assets/images/icon_sysState.png" />
@@ -23,12 +26,13 @@
                 </div>
             </div>
         </div>
+        <!-- 连接标签页 -->
         <div class="listBox" v-if="isActivated == 'connect'">
             <div class="item" v-if="connected">
                 <span>{{ $t('connectionStatus') }}</span>
                 <span>{{ $t('connected') }}</span>
             </div>
-            <div class="item" v-if="!connected">
+            <div class="item" v-if="!connected" @click="toConnect()">
                 <span>{{ $t('connectionStatus') }}</span>
                 <div>
                     <span class="itemTxt">{{ $t('notConnected') }}</span>
@@ -48,6 +52,7 @@
                 <span>66668888</span>
             </div>
         </div>
+        <!-- 系统状态标签页 -->
         <div class="listBox" v-if="isActivated == 'status'">
             <div class="item">
                 <span>{{ $t('robotVersion') }}</span>
@@ -66,6 +71,7 @@
                     <img class="iconTo" src="@/assets/images/icon_to.png" />
                 </div>
             </div>
+            <!-- 多语言选择 -->
             <div class="item" v-if="languageActivated">
                 <div class="languageItem" :class="{ 'chosedLanguage': currLanguage == 'zh' }" @click="changeLanguage('zh')">
                     <span>简体中文</span>
@@ -80,6 +86,7 @@
                     <img class="iconChose" src="@/assets/images/icon_chose.png" v-if="currLanguage == 'en'" />
                 </div>
             </div>
+            <!-- 是否开启日志 -->
             <div class="item">
                 <span>{{ $t('logRecording') }}</span>
                 <el-switch v-model="logOpen"></el-switch>
@@ -90,18 +97,21 @@
 
 <script>
 import rtcHeader from '@/components/rtcHeader.vue';
+import { mapState } from "vuex";
 export default {
     components: { rtcHeader },
+    computed: {
+        ...mapState(["connected"])
+    },
     data() {
         return {
-            isActivated: 'status',
+            isActivated: 'status',//当前活动Tab
             logOpen: false,
-            connected: true,
             currLanguage: 'zh',
             languageActivated: false
         }
     },
-    mounted(){
+    mounted() {
         this.currLanguage = localStorage.getItem('lang');
     },
     methods: {

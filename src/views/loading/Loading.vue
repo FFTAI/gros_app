@@ -6,7 +6,7 @@
             </div>
         </rtc-header>
         <div class="loadingMain">
-            <img class="imgLoading" src="@/assets/images/image_loading.png"/>
+            <img class="imgLoading" src="@/assets/images/image_loading.png" />
         </div>
         <div class="progress">
             <el-progress :stroke-width="20" :show-text="false" :percentage="progress"></el-progress>
@@ -20,18 +20,19 @@ export default {
     components: { rtcHeader },
     mounted() {
         this.progressInterval = setInterval(() => {
-            console.log(this.progress)
-            if(this.progress == 100) {
+            if (this.progress == 100) {
                 clearInterval(this.progressInterval)
-                this.$router.push({
-                    name: 'controller'
-                })
+                setTimeout(() => {
+                    this.$router.push({
+                        name: 'controller'
+                    })
+                }, 1000);
             }
-            this.progress = this.progress + 1
-        }, 20);
+            this.progress = this.progress + 2
+        }, 10);
     },
-    data(){
-        return{
+    data() {
+        return {
             progress: 0,
             progressInterval: undefined
         }
@@ -64,21 +65,23 @@ export default {
     }
 }
 
-.loadingMain{
+.loadingMain {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%,-50%);
-    .imgLoading{
+    transform: translate(-50%, -50%);
+
+    .imgLoading {
         width: 64.5833vw;
         height: 17.7604vw;
     }
 }
-.progress{
+
+.progress {
     position: absolute;
     left: 50%;
     bottom: 10vh;
     width: 70%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
 }
 </style>

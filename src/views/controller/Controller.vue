@@ -83,7 +83,7 @@
           </div>
         </div>
         <div class="controlBox">
-          <div class="choseBox txt" :class="controlModel == 'gait' ? 'chose' : ''" @click="changeControl('gait')">
+          <div :class="['choseBox' ,'txt',controlModel == 'gait' ? 'chose' : '']" @click="changeControl('gait')">
             {{ $t("gaitMotion") }}
           </div>
           <div class="choseBox txt" style="width: 6.25vw;" :class="controlModel == 'stand' ? 'chose' : ''"
@@ -94,22 +94,6 @@
             {{ $t("inPlaceMotion") }}
           </div>
         </div>
-        <!-- <div class="stateBox" v-else @click="stopMode()">
-          <img v-if="mode == 'slowWalk'" style="width: 2.2917vw;height: 2.2917vw;"
-            src="@/assets/images/icon_slowWalk.png" />
-          <img v-if="mode == 'fastWalk'" style="width: 2.2917vw;height: 2.2917vw;"
-            src="@/assets/images/icon_fastWalk.png" />
-          <img v-if="mode == 'slowRun'" style="width: 2.2917vw;height: 2.2917vw;"
-            src="@/assets/images/icon_slowRun.png" />
-          <img v-if="mode == 'fastRun'" style="width: 2.2917vw;height: 2.2917vw;"
-            src="@/assets/images/icon_fastRun.png" />
-          <div style="margin-left: .625vw;">
-            <span v-if="mode == 'slowWalk'">{{ $t('normalWalking') }}中</span>
-            <span v-if="mode == 'fastWalk'">{{ $t('fastWalking') }}中</span>
-            <span v-if="mode == 'slowRun'">{{ $t('slowRunning') }}中</span>
-            <span v-if="mode == 'fastRun'">{{ $t('fastRunning') }}中</span>
-          </div>
-        </div> -->
       </div>
       <div class="stateMessage" v-if="mode != ''">
         <span v-if="mode == 'slowWalk'">{{ $t("normalWalking") }}中...</span>
@@ -171,20 +155,16 @@ export default {
     let _this = this;
     this.$nextTick(() => {
       window.addEventListener("gamepadconnected", function (e) {
-        const gp = navigator.getGamepads()[e.gamepad.index];
-        console.log("手柄连接", gp);
         _this.gamepadConnected = true;
         _this.startGamepad(); // 启动手柄
       });
       window.addEventListener("gamepaddisconnected", function (e) {
         _this.gamepadConnected = false;
         clearInterval(this.interval); // 停止获取手柄数据
-        console.log("手柄断开", e);
       });
     });
 
     this.videoContainer = this.$refs.videoContainer;
-    // this.startFullScreen(); //强制全屏
     window.onresize = () => {
       return (() => {
         this.screenWidth = document.body.clientWidth;
@@ -197,15 +177,12 @@ export default {
   beforeDestroy() {
     let _this = this;
     window.removeEventListener("gamepadconnected", function (e) {
-      const gp = navigator.getGamepads()[e.gamepad.index];
-      console.log("手柄连接beforeDestroy", gp);
       _this.gamepadConnected = true;
       _this.startGamepad(); // 启动手柄
     });
     window.removeEventListener("gamepaddisconnected", function (e) {
       _this.gamepadConnected = false;
       clearInterval(this.interval); // 停止获取手柄数据
-      console.log("手柄断开beforeDestroy", e);
     });
   },
   destroyed() {
@@ -214,7 +191,6 @@ export default {
   watch: {
     //屏幕尺寸变化后，重新生成joystick适配当前尺寸
     screenWidth: function (n, o) {
-      console.log("屏幕变化", n);
       if (this.joystickL) {
         this.joystickL.destroy();
         this.startJoystickL();
@@ -235,7 +211,6 @@ export default {
         navigator.getGamepads().forEach((item) => {
           if (item) gamepad = item;
         });
-        // console.log("手柄实时数据", gamepad);
         _this.pressKey(gamepad.buttons);
         _this.remoteSensing(gamepad.axes);
 
@@ -262,7 +237,6 @@ export default {
       if (velocity < 0) v = v * -1;
       //计算正弦值，根据反正弦算出角度
       let sin = direction / Math.abs(v);
-      // console.log('sin', sin, direction, Math.abs(v))
       let angle = (Math.asin(sin) * 180) / Math.PI;
       //设定低值死区
       if (Math.abs(velocity) < 0.1) v = 0;
@@ -270,22 +244,11 @@ export default {
       if (Math.abs(velocity) < 0.1) {
         velocity = 0;
       }
-      // console.log(
-      //   "实时坐标---前后",
-      //   (velocity * this.speed) / 6.25,
-      //   "实时坐标---左右角度",
-      //   angle / -90 * 0.2,
-      //   'host',
-      //   this.iP.host,
-      //   'port',
-      //   this.iP.port
-      // );
       this.operateWalk(angle * -0.2, (velocity * this.speed) / 6.25);
 
     },
     // 手柄按键
     pressKey(arr) {
-      // console.log("手柄按键", arr);
       let stopL = false;
       let stopR = false;
       for (let i = 0; i < arr.length; i++) {
@@ -351,7 +314,6 @@ export default {
         .on("start", function (evt, data) {
           if (!_this.gamepadConnected) {
             _this.time = setInterval(() => {
-              // console.log("startstart", evt, data);
               _this.onStart && _this.onStart(_this.distance, _this.angle);
             }, 5);
           }
@@ -369,20 +331,9 @@ export default {
           if (Math.abs(direction) < 0.1) angle = 0;
           //人形控制
           if (!_this.gamepadConnected) {
-            console.log(velocity);
             if (Math.abs(velocity) < 0.1) {
               velocity = 0;
             }
-            // console.log(
-            //   "实时坐标---前后",
-            //   (velocity * _this.speed) / 6.25,
-            //   "实时坐标---左右角度",
-            //   angle / -90,
-            //   'host',
-            //   _this.iP.host,
-            //   'port',
-            //   _this.iP.port
-            // );
             _this.operateWalk(angle * -0.2, (velocity * _this.speed) / 6.25);
           }
         })
@@ -414,7 +365,6 @@ export default {
           let yaw = data.vector.x * 17.1887
           if (Math.abs(pitch) < 0.1) pitch = 0
           if (Math.abs(yaw) < 0.1) yaw = 0
-          console.log('headData', pitch, yaw)
           _this.operateHead(pitch, yaw)
         })
         .on("end", function (evt, data) {
@@ -425,7 +375,6 @@ export default {
     },
     calibration() {
       this.$robot.start()
-      // this.loading = true
     },
     //紧急停止
     stop() {
@@ -676,8 +625,12 @@ export default {
   }
 
   .chose {
-    background: rgba(0, 0.294, 0.522, 0.3);
+    background: rgba(0, 75, 133, 0.3);
     border-radius: 2.2396vw;
+  }
+
+  .choseBk {
+    background: rgba(0, 0.294, 0.522, 0.3);
   }
 
   .txt {

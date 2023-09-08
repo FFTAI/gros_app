@@ -9,10 +9,12 @@ export default new Vuex.Store({
     iP: {
       host: '127.0.0.1',
       port: '4197'
-    }
+    },
+    connected: false
   },
   getters: {
-    controlType: state => state.controlType
+    controlType: state => state.controlType,
+    connected: state => state.connected
   },
   mutations: {
     setControlType(state,type){
@@ -20,6 +22,9 @@ export default new Vuex.Store({
     },
     setIP(state,iP){
       state.iP = iP
+    },
+    setConnected(state,connected){
+      state.connected = connected
     }
   },
   actions: {},
