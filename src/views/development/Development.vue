@@ -48,9 +48,9 @@
         <div class="sideChart">
           <div class="chartSize" style="height: 14vw;" id="leftChart"></div>
           <div class="typeBox">
-            <img class="typeImg" @click="changeType('angle')" src="@/assets/images/icon_angle.png" />
-            <img class="typeImg" @click="changeType('Avelocity')" src="@/assets/images/icon_Avelocity.png" />
-            <img class="typeImg" @click="changeType('torque')" src="@/assets/images/icon_torque.png" />
+            <img class="typeImg" :class="{'notAct': activatedType != 'angle'}" @click="changeType('angle')" src="@/assets/images/icon_angle.png" />
+            <img class="typeImg" :class="{'notAct': activatedType != 'Avelocity'}" @click="changeType('Avelocity')" src="@/assets/images/icon_Avelocity.png" />
+            <img class="typeImg" :class="{'notAct': activatedType != 'torque'}" @click="changeType('torque')" src="@/assets/images/icon_torque.png" />
           </div>
           <div class="chartSize" style="height: 14vw;" id="rightChart"></div>
         </div>
@@ -302,7 +302,7 @@ export default {
   mounted() {
     this.initSideCharts();
     this.initSpeedCharts();
-    this.$robot.enable_debug_state(1);
+    this.$robot.enable_debug_state(2);
 
     this.$robot.on_message(data => {
       let currData = JSON.parse(data.data);
@@ -359,14 +359,27 @@ export default {
             lineStyle: {
               color: '#ffffff'
             },
-            smooth: true
+            smooth: true,
+            areaStyle: {
+              opacity: 0.8,
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                {
+                  offset: 0,
+                  color: 'rgb(0, 221, 255)'
+                },
+                {
+                  offset: 1,
+                  color: 'rgb(77, 119, 255)'
+                }
+              ])
+            }
           }
         ],
         dataZoom: [
           {
             type: "inside",
             realtime: true,
-            start: 10,
+            start: 12,
             end: 100,
             xAxisIndex: [0],
             filterMode: 'none'
@@ -396,14 +409,27 @@ export default {
             lineStyle: {
               color: '#ffffff'
             },
-            smooth: true
+            smooth: true,
+            areaStyle: {
+              opacity: 0.8,
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                {
+                  offset: 0,
+                  color: 'rgb(0, 221, 255)'
+                },
+                {
+                  offset: 1,
+                  color: 'rgb(77, 119, 255)'
+                }
+              ])
+            }
           }
         ],
         dataZoom: [
           {
             type: "inside",
             realtime: true,
-            start: 10,
+            start: 12,
             end: 100,
             xAxisIndex: [0],
             filterMode: 'none'
@@ -437,14 +463,27 @@ export default {
             lineStyle: {
               color: '#ffffff'
             },
-            smooth: true
+            smooth: true,
+            areaStyle: {
+              opacity: 0.8,
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                {
+                  offset: 0,
+                  color: 'rgb(55, 162, 255)'
+                },
+                {
+                  offset: 1,
+                  color: 'rgb(116, 21, 219)'
+                }
+              ])
+            },
           }
         ],
         dataZoom: [
           {
             type: "inside",
             realtime: true,
-            start: 10,
+            start: 12,
             end: 100,
             xAxisIndex: [0],
             filterMode: 'none'
@@ -474,14 +513,27 @@ export default {
             lineStyle: {
               color: '#ffffff'
             },
-            smooth: true
+            smooth: true,
+            areaStyle: {
+              opacity: 0.8,
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                {
+                  offset: 0,
+                  color: 'rgb(55, 162, 255)'
+                },
+                {
+                  offset: 1,
+                  color: 'rgb(116, 21, 219)'
+                }
+              ])
+            },
           }
         ],
         dataZoom: [
           {
             type: "inside",
             realtime: true,
-            start: 10,
+            start: 12,
             end: 100,
             xAxisIndex: [0],
             filterMode: 'none'
@@ -888,6 +940,9 @@ export default {
         .typeImg {
           width: 1.4583vw;
           height: 1.4583vw;
+        }
+        .notAct {
+          opacity: 0.3;
         }
       }
 
