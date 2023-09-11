@@ -48,9 +48,12 @@
         <div class="sideChart">
           <div class="chartSize" style="height: 14vw;" id="leftChart"></div>
           <div class="typeBox">
-            <img class="typeImg" :class="{'notAct': activatedType != 'angle'}" @click="changeType('angle')" src="@/assets/images/icon_angle.png" />
-            <img class="typeImg" :class="{'notAct': activatedType != 'Avelocity'}" @click="changeType('Avelocity')" src="@/assets/images/icon_Avelocity.png" />
-            <img class="typeImg" :class="{'notAct': activatedType != 'torque'}" @click="changeType('torque')" src="@/assets/images/icon_torque.png" />
+            <img class="typeImg" :class="{ 'notAct': activatedType != 'angle' }" @click="changeType('angle')"
+              src="@/assets/images/icon_angle.png" />
+            <img class="typeImg" :class="{ 'notAct': activatedType != 'Avelocity' }" @click="changeType('Avelocity')"
+              src="@/assets/images/icon_Avelocity.png" />
+            <img class="typeImg" :class="{ 'notAct': activatedType != 'torque' }" @click="changeType('torque')"
+              src="@/assets/images/icon_torque.png" />
           </div>
           <div class="chartSize" style="height: 14vw;" id="rightChart"></div>
         </div>
@@ -344,6 +347,9 @@ export default {
           type: "time",
           axisLabel: {
             show: false
+          },
+          axisLine: {
+            onZero: false
           }
         },
         yAxis: {
@@ -357,7 +363,35 @@ export default {
             type: "line",
             showSymbol: false,
             lineStyle: {
-              color: '#ffffff'
+              normal: {
+                width: 3,
+                color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                  {
+                    offset: 0,
+                    color: 'rgba(255, 255, 255, 0.3)'
+                  },
+                  {
+                    offset: 0.2,
+                    color: 'rgba(255, 255, 255, 0.3)'
+                  },
+                  {
+                    offset: 0.4,
+                    color: '#ffffff'
+                  },
+                  {
+                    offset: 0.6,
+                    color: '#ffffff'
+                  },
+                  {
+                    offset: 0.8,
+                    color: 'rgba(255, 255, 255, 0.3)'
+                  },
+                  {
+                    offset: 1,
+                    color: 'rgba(255, 255, 255, 0.3)'
+                  }
+                ])
+              }
             },
             smooth: true,
             areaStyle: {
@@ -365,13 +399,14 @@ export default {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                 {
                   offset: 0,
-                  color: 'rgb(0, 221, 255)'
+                  color: 'rgb(255,255,255,0.12)'
                 },
                 {
                   offset: 1,
-                  color: 'rgb(77, 119, 255)'
+                  color: 'rgb(0,76,129,0)'
                 }
-              ])
+              ]),
+              origin: 'start'
             }
           }
         ],
@@ -394,6 +429,9 @@ export default {
           type: "time",
           axisLabel: {
             show: false
+          },
+          axisLine: {
+            onZero: false
           }
         },
         yAxis: {
@@ -407,7 +445,35 @@ export default {
             type: "line",
             showSymbol: false,
             lineStyle: {
-              color: '#ffffff'
+              normal: {
+                width: 3,
+                color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                  {
+                    offset: 0,
+                    color: 'rgba(255, 255, 255, 0.3)'
+                  },
+                  {
+                    offset: 0.2,
+                    color: 'rgba(255, 255, 255, 0.3)'
+                  },
+                  {
+                    offset: 0.4,
+                    color: '#ffffff'
+                  },
+                  {
+                    offset: 0.6,
+                    color: '#ffffff'
+                  },
+                  {
+                    offset: 0.8,
+                    color: 'rgba(255, 255, 255, 0.3)'
+                  },
+                  {
+                    offset: 1,
+                    color: 'rgba(255, 255, 255, 0.3)'
+                  }
+                ])
+              }
             },
             smooth: true,
             areaStyle: {
@@ -415,13 +481,14 @@ export default {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                 {
                   offset: 0,
-                  color: 'rgb(0, 221, 255)'
+                  color: 'rgb(255,255,255,0.12)'
                 },
                 {
                   offset: 1,
-                  color: 'rgb(77, 119, 255)'
+                  color: 'rgb(0,76,129,0)'
                 }
-              ])
+              ]),
+              origin: 'start'
             }
           }
         ],
@@ -448,6 +515,9 @@ export default {
           type: "time",
           axisLabel: {
             show: false
+          },
+          axisLine: {
+            onZero: false
           }
         },
         yAxis: {
@@ -461,7 +531,35 @@ export default {
             type: "line",
             showSymbol: false,
             lineStyle: {
-              color: '#ffffff'
+              normal: {
+                width: 3,
+                color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                  {
+                    offset: 0,
+                    color: 'rgba(255, 255, 255, 0.3)'
+                  },
+                  {
+                    offset: 0.2,
+                    color: 'rgba(255, 255, 255, 0.3)'
+                  },
+                  {
+                    offset: 0.4,
+                    color: '#ffffff'
+                  },
+                  {
+                    offset: 0.6,
+                    color: '#ffffff'
+                  },
+                  {
+                    offset: 0.8,
+                    color: 'rgba(255, 255, 255, 0.3)'
+                  },
+                  {
+                    offset: 1,
+                    color: 'rgba(255, 255, 255, 0.3)'
+                  }
+                ])
+              }
             },
             smooth: true,
             areaStyle: {
@@ -469,14 +567,16 @@ export default {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                 {
                   offset: 0,
-                  color: 'rgb(55, 162, 255)'
+                  color: 'rgb(255,255,255,0.12)'
+                  
                 },
                 {
                   offset: 1,
-                  color: 'rgb(116, 21, 219)'
+                  color: 'rgb(0,76,129,0)'
                 }
-              ])
-            },
+              ]),
+              origin: 'start'
+            }
           }
         ],
         dataZoom: [
@@ -498,6 +598,9 @@ export default {
           type: "time",
           axisLabel: {
             show: false
+          },
+          axisLine: {
+            onZero: false
           }
         },
         yAxis: {
@@ -511,7 +614,35 @@ export default {
             type: "line",
             showSymbol: false,
             lineStyle: {
-              color: '#ffffff'
+              normal: {
+                width: 3,
+                color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                  {
+                    offset: 0,
+                    color: 'rgba(255, 255, 255, 0.3)'
+                  },
+                  {
+                    offset: 0.2,
+                    color: 'rgba(255, 255, 255, 0.3)'
+                  },
+                  {
+                    offset: 0.4,
+                    color: '#ffffff'
+                  },
+                  {
+                    offset: 0.6,
+                    color: '#ffffff'
+                  },
+                  {
+                    offset: 0.8,
+                    color: 'rgba(255, 255, 255, 0.3)'
+                  },
+                  {
+                    offset: 1,
+                    color: 'rgba(255, 255, 255, 0.3)'
+                  }
+                ])
+              }
             },
             smooth: true,
             areaStyle: {
@@ -519,14 +650,15 @@ export default {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                 {
                   offset: 0,
-                  color: 'rgb(55, 162, 255)'
+                  color: 'rgb(255,255,255,0.12)'
                 },
                 {
                   offset: 1,
-                  color: 'rgb(116, 21, 219)'
+                  color: 'rgb(0,76,129,0)'
                 }
-              ])
-            },
+              ]),
+              origin: 'start'
+            }
           }
         ],
         dataZoom: [
@@ -542,6 +674,7 @@ export default {
       });
     },
     assignData(data) {
+      // this.leftHipPitch_qa =this.minFormat(this.toDegrees(data.jointStates[2].qa),this.leftSideChartData)
       this.leftHipPitch_qa = this.toDegrees(data.jointStates[2].qa);
       this.leftHipPitch_qdota = this.toDegrees(data.jointStates[2].qdota);
       this.leftHipPitch_taua = data.jointStates[2].taua.toFixed(2);
@@ -614,6 +747,7 @@ export default {
       switch (item) {
         case "hipPitch":
           if (type == "angle") {
+            console.log(this.leftSideChartData)
             this.leftSideChartData.push(this.xAxisDataFmt(this.leftHipPitch_qa))
             this.rightSideChartData.push(this.xAxisDataFmt(this.rightHipPitch_qa));
           } else if (type == "Avelocity") {
@@ -732,6 +866,25 @@ export default {
         ]
       });
     },
+    // minFormat(e,chart) {
+    //   let data = 0
+    //   if (chart.length > 0) {
+    //     var minValue = chart[0].value[1]
+    //     // console.log('minValue',minValue)
+    //     for (var i = 1; i < chart.length; i++) {
+    //       console.log('666666666666666',Number(chart[i].value[1]),Number(minValue))
+    //       if (Number(chart[i].value[1]) < Number(minValue)) {
+    //         minValue = chart[i].value[1];
+    //       }
+    //     }
+    //     console.log('1',Number(e),Number(minValue))
+    //     // if(Number(e) > Number(minValue)){
+    //       data = (Number(e) - Number(minValue)).toFixed(2)
+    //     // }
+    //   }
+    //   // console.log('chart',e , minValue)
+    //   return data
+    // },
     xAxisDataFmt(e) {
       return {
         name: +new Date(),
@@ -941,6 +1094,7 @@ export default {
           width: 1.4583vw;
           height: 1.4583vw;
         }
+
         .notAct {
           opacity: 0.3;
         }

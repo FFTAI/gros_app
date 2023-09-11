@@ -40,7 +40,7 @@
           </div>
         </div>
       </div>
-      <!-- 虚拟摇杆 -->
+      <!-- 虚拟摇杆 joystick-start-->
       <div class="joystickBkL">
         <img style="width: 13.8889vw; height: 13.8889vw; z-index: 999" src="@/assets/images/image_direction.png" />
       </div>
@@ -49,7 +49,9 @@
       </div>
       <div id="zone_joystickL"></div>
       <div id="zone_joystickR"></div>
+      <!-- joystick-end -->
       <div :class="controlExpand ? 'controlActivated' : 'controlStatus'" ref="controlRef">
+        <!-- 步态运动展开 -->
         <div class="actionBox" v-if="controlExpand && controlModel == 'gait'">
           <div class="actionItem" @click="choseMode('slowWalk')">
             <img class="actionImg" src="@/assets/images/icon_slowWalk.png" />
@@ -68,6 +70,7 @@
             <div>{{ $t("fastRunning") }}</div>
           </div>
         </div>
+        <!-- 原地运动展开 -->
         <div class="actionBox" v-else-if="controlExpand && controlModel == 'inPlace'">
           <div class="actionItem">
             <img class="actionImg" src="@/assets/images/icon_markingTime.png" @click="choseMode('markingTime')" />
@@ -82,19 +85,24 @@
             <div>{{ $t("wave") }}</div>
           </div>
         </div>
+        <!-- action box -->
         <div class="controlBox">
+          <!-- 步态运动 -->
           <div :class="['choseBox' ,'txt',controlModel == 'gait' ? 'chose' : '']" @click="changeControl('gait')">
             {{ $t("gaitMotion") }}
           </div>
+          <!-- 站立 -->
           <div class="choseBox txt" style="width: 6.25vw;" :class="controlModel == 'stand' ? 'chose' : ''"
             @click="changeControl('stand')">
             {{ $t("stand") }}
           </div>
+          <!-- 原地运动 -->
           <div class="choseBox txt" :class="controlModel == 'inPlace' ? 'chose' : ''" @click="changeControl('inPlace')">
             {{ $t("inPlaceMotion") }}
           </div>
         </div>
       </div>
+      <!-- 当前状态提示 -->
       <div class="stateMessage" v-if="mode != ''">
         <span v-if="mode == 'slowWalk'">{{ $t("normalWalking") }}中...</span>
         <span v-if="mode == 'fastWalk'">{{ $t("fastWalking") }}中...</span>
@@ -120,23 +128,20 @@ export default {
   },
   data() {
     return {
-      videoContainer: "",
-      buttons: "",
-      joystickL: undefined,
-      joystickR: undefined,
-      screenWidth: document.body.clientWidth,
-      plusD: false,
-      minusD: false,
-      direction: 0,
-      gamepadConnected: false,
-      speed: 1,
+      videoContainer: "",//视频
+      buttons: "",//当前按键
+      joystickL: undefined,//左侧虚拟摇杆
+      joystickR: undefined,//右侧虚拟摇杆
+      screenWidth: document.body.clientWidth,//当前屏幕宽度
+      gamepadConnected: false,//是否连接手柄监听
+      speed: 1,//当前速度档位 1-5
       current_speed: 0, //当前速度，默认0
       videoSrc: "", //摄像头视频路径
-      controlModel: "gait",
-      controlExpand: false,
-      mode: "",
-      headBoxVisible: false,
-      camera: true
+      controlModel: "gait",//当前运动 gait:步态 inPlace:原地
+      controlExpand: false,//运动选择栏展开
+      mode: "",//当前运动模式
+      headBoxVisible: false,//模式选择框显隐
+      camera: true//是否开启视频
     };
   },
   created() {
