@@ -304,7 +304,7 @@ export default {
         alert("浏览器不支持全屏调用！");
       }
     },
-    //开启虚拟触控摇杆
+    //开启左侧虚拟触控摇杆
     startJoystickL() {
       const _this = this;
       let sWidth = parseInt(this.screenWidth * 16.67 * 0.01);
@@ -351,6 +351,7 @@ export default {
           }
         });
     },
+    //开启右侧虚拟触控摇杆
     startJoystickR() {
       const _this = this;
       let sWidth = parseInt(this.screenWidth * 16.67 * 0.01);
@@ -395,16 +396,19 @@ export default {
         }, 500);
       }
     },
-    //操控人形
+    //操控行走
     operateWalk(direction, velocity) {
       this.$robot.walk(direction, velocity);
     },
+    //操控头部
     operateHead(pitch, yaw) {
       this.$robot.head(0, pitch, yaw * -1);
     },
+    //开启视频
     cameraOpen() {
       this.videoSrc = this.$robot.camera.videoStreamUrl;
     },
+    //切换当前控制模式
     changeControl(e) {
       this.mode = "";
       if (e != "stand") {

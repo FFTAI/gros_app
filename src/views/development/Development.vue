@@ -6,6 +6,7 @@
         <div class="arrow"></div>
       </div>
     </rtc-header>
+    <!-- 模式切换 -->
     <div class="headBox" v-if="headBoxVisible" ref="headBoxRef">
       <div @click="changeMode('remoteMode')">
         {{ $t("remoteMode") }}
@@ -16,9 +17,12 @@
       </div>
     </div>
     <div class="mainBox">
+      <!-- 左侧栏 -->
       <div class="leftBox">
+        <!-- 人形模型 -->
         <img class="humanModel" src="@/assets/images/icon_model.png" v-show="activated == 'dynamic'" />
         <!-- <div class="humanModel" v-show="activated == 'dynamic'"></div> -->
+        <!-- log日志 -->
         <div class="logBox" v-show="activated == 'log'">
           <div class="logTitle">{{ $t("logoFile") }}</div>
           <div class="logMain">
@@ -30,6 +34,7 @@
             </el-timeline>
           </div>
         </div>
+        <!-- 底部切换 -->
         <div class="modelChose">
           <div class="modelBtn" :class="{ 'activatedModel': activated == 'dynamic' }" @click="changeModel('dynamic')">
             <span class="btnTxt">{{ $t("dynamicShowcase") }}</span>
@@ -45,8 +50,10 @@
           <span>{{ $t("leftSide") }}</span>
           <span>{{ $t("rightSide") }}</span>
         </div>
+        <!-- 左右侧图表 -->
         <div class="sideChart">
           <div class="chartSize" style="height: 14vw;" id="leftChart"></div>
+          <!-- 切换: 度,度/秒，扭矩(牛.米) -->
           <div class="typeBox">
             <img class="typeImg" :class="{ 'notAct': activatedType != 'angle' }" @click="changeType('angle')"
               src="@/assets/images/icon_angle.png" />
@@ -57,7 +64,9 @@
           </div>
           <div class="chartSize" style="height: 14vw;" id="rightChart"></div>
         </div>
+        <!-- 数值切换显示Table -->
         <div class="rightTable">
+          <!-- Hip Pitch -->
           <div class="tableItem" @click="changeItem('hipPitch')">
             <div v-if="activatedType == 'angle'" class="itemChild">{{ leftHipPitch_qa ? leftHipPitch_qa + "°" :
               ""
@@ -84,6 +93,7 @@
               rightHipPitch_taua + "N.m" : "" }}
             </div>
           </div>
+          <!-- Hip Yaw -->
           <div class="tableItem" @click="changeItem('hipYaw')">
             <div v-if="activatedType == 'angle'" class="itemChild">{{ leftHipYaw_qa ? leftHipYaw_qa + "°" : ""
             }}
@@ -110,6 +120,7 @@
               "N.m" : "" }}
             </div>
           </div>
+          <!-- Hip Roll -->
           <div class="tableItem" @click="changeItem('hipRoll')">
             <div v-if="activatedType == 'angle'" class="itemChild">{{ leftHipRoll_qa ? leftHipRoll_qa + "°" : ""
             }}
@@ -137,6 +148,7 @@
               + "N.m" : "" }}
             </div>
           </div>
+          <!-- Knee -->
           <div class="tableItem" @click="changeItem('knee')">
             <div v-if="activatedType == 'angle'" class="itemChild">{{ leftKnee_qa ? leftKnee_qa + "°" : "" }}
             </div>
@@ -160,6 +172,7 @@
               "N.m" : "" }}
             </div>
           </div>
+          <!-- Ankle Pitch -->
           <div class="tableItem" @click="changeItem('anklePitch')">
             <div v-if="activatedType == 'angle'" class="itemChild">{{ leftAnklePitch_qa ? leftAnklePitch_qa +
               "°"
@@ -184,6 +197,7 @@
               rightAnklePitch_taua + "N.m" : "" }}
             </div>
           </div>
+          <!-- Ankle Roll -->
           <div class="tableItem" @click="changeItem('ankleRoll')">
             <div v-if="activatedType == 'angle'" class="itemChild">{{ leftAnkleRoll_qa ? leftAnkleRoll_qa + "°"
               :
@@ -210,7 +224,9 @@
             </div>
           </div>
         </div>
+        <!-- 速度折线图 -->
         <div class="speedChart">
+          <!-- X轴速度 -->
           <div class="xChart">
             <div class="chatItem" style="flex: 1;">
               <div>{{ $t("xSpeed") }}</div>
@@ -220,6 +236,7 @@
               <div class="sChartSize" style="height: 13vw;" id="xChart"></div>
             </div>
           </div>
+          <!-- Y轴速度 -->
           <div class="yChart">
             <div class="chatItem" style="flex: 1;">
               <div>{{ $t("ySpeed") }}</div>
@@ -243,8 +260,8 @@ export default {
   components: { rtcHeader },
   data() {
     return {
-      activated: "dynamic",
-      logList: [],
+      activated: "dynamic",//动态展示:dynamic Log日志:log
+      logList: [],//日志列表
       //qa:弧度 qdota:弧度/秒 taua:力矩(牛.米)
       leftHipPitch_qa: "",
       leftHipPitch_qdota: "",
@@ -284,10 +301,10 @@ export default {
       rightAnkleRoll_taua: "",
       xSpeed: "",
       ySpeed: "",
-      leftSideChartData: [],
-      rightSideChartData: [],
-      leftSpeedChartData: [],
-      rightSpeedChartData: [],
+      leftSideChartData: [],//左侧图表数据
+      rightSideChartData: [],//右侧图表数据
+      leftSpeedChartData: [],//X轴速度图表数据
+      rightSpeedChartData: [],//Y轴速度图表数据
       activatedItem: "hipPitch",
       activatedType: "angle",
       headBoxVisible: false
@@ -299,14 +316,18 @@ export default {
     }
   },
   beforeDestroy() {
+    //关闭状态发送
     this.$robot.disable_debug_state()
+    //关闭所有监听
     this.$robot.removeAllListeners()
   },
   mounted() {
+    // 初始化图表
     this.initSideCharts();
     this.initSpeedCharts();
+    //开启状态发送
     this.$robot.enable_debug_state(2);
-
+    //开启监听数据并处理
     this.$robot.on_message(data => {
       let currData = JSON.parse(data.data);
       console.log("on_message===============", currData);
@@ -318,6 +339,7 @@ export default {
     });
   },
   watch: {
+    //监听当前渲染图表的切换
     activatedItem(newVal, oldVal) {
       this.updateSideCharts(newVal, this.activatedType);
     },
@@ -349,7 +371,20 @@ export default {
             show: false
           },
           axisLine: {
-            onZero: false
+            onZero: false,
+            show:false
+          },
+          axisTick: {
+            show: false
+          },
+          axisTick: {
+            length: 1,
+            lineStyle: {
+              type: 'dotted',
+              color: '#ffffff',
+              width: 2,
+              cap: 'round'
+            }
           }
         },
         yAxis: {
@@ -431,7 +466,17 @@ export default {
             show: false
           },
           axisLine: {
-            onZero: false
+            onZero: false,
+            show:false
+          },
+          axisTick: {
+            length: 1,
+            lineStyle: {
+              type: 'dotted',
+              color: '#ffffff',
+              width: 2,
+              cap: 'round'
+            }
           }
         },
         yAxis: {
@@ -517,7 +562,17 @@ export default {
             show: false
           },
           axisLine: {
-            onZero: false
+            onZero: false,
+            show:false
+          },
+          axisTick: {
+            length: 1,
+            lineStyle: {
+              type: 'dotted',
+              color: '#ffffff',
+              width: 2,
+              cap: 'round'
+            }
           }
         },
         yAxis: {
@@ -600,7 +655,17 @@ export default {
             show: false
           },
           axisLine: {
-            onZero: false
+            onZero: false,
+            show:false
+          },
+          axisTick: {
+            length: 1,
+            lineStyle: {
+              type: 'dotted',
+              color: '#ffffff',
+              width: 2,
+              cap: 'round'
+            }
           }
         },
         yAxis: {
@@ -673,6 +738,7 @@ export default {
         ]
       });
     },
+    // 格式化当前数据
     assignData(data) {
       // this.leftHipPitch_qa =this.minFormat(this.toDegrees(data.jointStates[2].qa),this.leftSideChartData)
       this.leftHipPitch_qa = this.toDegrees(data.jointStates[2].qa);
@@ -714,6 +780,7 @@ export default {
       this.xSpeed = data.basestate.vx.toFixed(2);
       this.ySpeed = data.basestate.vy.toFixed(2);
     },
+    //获取log列表
     getLog(data) {
       data.forEach(element => {
         let item = {};
@@ -733,14 +800,16 @@ export default {
       var formattedDate = year + "/" + month + "/" + day + " " + hours + ":" + minutes;
       return formattedDate;
     },
+    //弧度转角度
     toDegrees(e) {
       var degrees = e * (180 / Math.PI);
       return degrees.toFixed(2);
     },
+    //更新两侧图表
     updateSideCharts(item, type) {
       if (!document.getElementById("leftChart") || !document.getElementById("rightChart"))
         return
-      if (this.leftSideChartData.length > 10)
+      if (this.leftSideChartData.length > 10)//每超过10条数据，删除最旧的一条
         this.leftSideChartData.shift();
       if (this.rightSideChartData.length > 10)
         this.rightSideChartData.shift();
@@ -840,6 +909,7 @@ export default {
         ]
       });
     },
+    //更新速度图表
     updateSpeedCharts() {
       let xChart = echarts.getInstanceByDom(document.getElementById("xChart"));
       if (this.leftSpeedChartData.length > 10)
@@ -866,25 +936,7 @@ export default {
         ]
       });
     },
-    // minFormat(e,chart) {
-    //   let data = 0
-    //   if (chart.length > 0) {
-    //     var minValue = chart[0].value[1]
-    //     // console.log('minValue',minValue)
-    //     for (var i = 1; i < chart.length; i++) {
-    //       console.log('666666666666666',Number(chart[i].value[1]),Number(minValue))
-    //       if (Number(chart[i].value[1]) < Number(minValue)) {
-    //         minValue = chart[i].value[1];
-    //       }
-    //     }
-    //     console.log('1',Number(e),Number(minValue))
-    //     // if(Number(e) > Number(minValue)){
-    //       data = (Number(e) - Number(minValue)).toFixed(2)
-    //     // }
-    //   }
-    //   // console.log('chart',e , minValue)
-    //   return data
-    // },
+    // x轴格式化成时间轴数据
     xAxisDataFmt(e) {
       return {
         name: +new Date(),
