@@ -374,9 +374,7 @@ export default {
             onZero: false,
             show:false
           },
-          axisTick: {
-            show: false
-          },
+          boundaryGap: true,
           axisTick: {
             length: 1,
             lineStyle: {
@@ -384,7 +382,7 @@ export default {
               color: '#ffffff',
               width: 2,
               cap: 'round'
-            }
+            },
           }
         },
         yAxis: {
@@ -809,9 +807,9 @@ export default {
     updateSideCharts(item, type) {
       if (!document.getElementById("leftChart") || !document.getElementById("rightChart"))
         return
-      if (this.leftSideChartData.length > 10)//每超过10条数据，删除最旧的一条
+      if (this.leftSideChartData.length > 21)//每超过10条数据，删除最旧的一条
         this.leftSideChartData.shift();
-      if (this.rightSideChartData.length > 10)
+      if (this.rightSideChartData.length > 21)
         this.rightSideChartData.shift();
       switch (item) {
         case "hipPitch":
@@ -912,7 +910,7 @@ export default {
     //更新速度图表
     updateSpeedCharts() {
       let xChart = echarts.getInstanceByDom(document.getElementById("xChart"));
-      if (this.leftSpeedChartData.length > 10)
+      if (this.leftSpeedChartData.length > 21)
         this.leftSpeedChartData.shift();
       this.leftSpeedChartData.push(this.xAxisDataFmt(this.xSpeed));
       xChart.setOption({
@@ -924,7 +922,7 @@ export default {
         ]
       });
       let yChart = echarts.getInstanceByDom(document.getElementById("yChart"));
-      if (this.rightSpeedChartData.length > 10)
+      if (this.rightSpeedChartData.length > 21)
         this.rightSpeedChartData.shift();
       this.rightSpeedChartData.push(this.xAxisDataFmt(this.ySpeed));
       yChart.setOption({

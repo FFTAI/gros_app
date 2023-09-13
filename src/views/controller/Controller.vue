@@ -88,16 +88,20 @@
         <!-- action box -->
         <div class="controlBox">
           <!-- 步态运动 -->
-          <div :class="['choseBox' ,'txt',controlModel == 'gait' ? 'chose' : '']" @click="changeControl('gait')">
+          <div
+            :class="['choseBox', 'txt', controlModel != 'gait' ? '' : controlExpand? 'choseBk': 'chose']"
+            @click="changeControl('gait')">
             {{ $t("gaitMotion") }}
           </div>
           <!-- 站立 -->
-          <div class="choseBox txt" style="width: 6.25vw;" :class="controlModel == 'stand' ? 'chose' : ''"
+          <div :class="['choseBox', 'txt', controlModel == 'stand' ? 'chose' : '']" style="width: 6.25vw;"
             @click="changeControl('stand')">
             {{ $t("stand") }}
           </div>
           <!-- 原地运动 -->
-          <div class="choseBox txt" :class="controlModel == 'inPlace' ? 'chose' : ''" @click="changeControl('inPlace')">
+          <div
+            :class="['choseBox', 'txt', controlModel != 'inPlace' ? '' : controlExpand? 'choseBk': 'chose']"
+            @click="changeControl('inPlace')">
             {{ $t("inPlaceMotion") }}
           </div>
         </div>
@@ -591,15 +595,15 @@ export default {
   position: absolute;
   left: 35.25vw;
   bottom: 11vh;
-  width: 27.0313vw;
+  width: 26.0313vw;
   height: 10.2vh;
-  border-radius: 3.0729vw;
+  border-radius: 2.6042vw;
   padding: .8854vw 1.25vw;
   border: .1042vw solid rgba(255, 255, 255, 0.3);
   z-index: 999;
-  display: flex;
-  align-items: end;
-  justify-content: center;
+  // display: flex;
+  // align-items: end;
+  // justify-content: center;
 }
 
 .controlActivated {
@@ -607,19 +611,22 @@ export default {
   left: 35.25vw;
   bottom: 11vh;
   width: 27.0313vw;
-  height: 30.2605vw;
+  height: 27.0833vw;
   padding: .8854vw 1.25vw;
-  background-image: url("../../assets/images/image_controlBk.png");
+  background-image: url("../../assets/images/image_controlBk.jpg");
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: contain;
   z-index: 999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
+  // display: flex;
+  // flex-direction: column;
+  // align-items: center;
+  // justify-content: space-between;
 }
 
 .controlBox {
+  position: absolute;
+  bottom: 1vw;
+  width: 26.0313vw;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -639,7 +646,8 @@ export default {
   }
 
   .choseBk {
-    background: rgba(0, 0.294, 0.522, 0.3);
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2.2396vw;
   }
 
   .txt {
@@ -651,6 +659,9 @@ export default {
 }
 
 .actionBox {
+  position: absolute;
+  bottom: 7vw;
+  right: 1vw;
   height: 15.1563vw;
   width: 21.9792vw;
   padding: 3.125vw 3.8021vw;
