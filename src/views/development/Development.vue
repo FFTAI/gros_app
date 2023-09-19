@@ -21,7 +21,8 @@
       <div class="leftBox">
         <!-- 人形模型 -->
         <img class="humanModel" src="@/assets/images/icon_model.png" v-show="activated == 'dynamic'" />
-        <!-- <div class="humanModel" v-show="activated == 'dynamic'"></div> -->
+        <!-- <iframe ref="unityIfm" src="/WebGL/index.html" style="border: none;width: 26.0417vw;height: 36.4583vw;" v-show="activated == 'dynamic'"></iframe>
+        <el-button type="primary" @click="sendUnity()">点击</el-button> -->
         <!-- log日志 -->
         <div class="logBox" v-show="activated == 'log'">
           <div class="logTitle">{{ $t("logoFile") }}</div>
@@ -326,7 +327,7 @@ export default {
     this.initSideCharts();
     this.initSpeedCharts();
     //开启状态发送
-    this.$robot.enable_debug_state(2);
+    this.$robot.enable_debug_state(1);
     //开启监听数据并处理
     this.$robot.on_message(data => {
       let currData = JSON.parse(data.data);
@@ -348,6 +349,9 @@ export default {
     }
   },
   methods: {
+    // sendUnity() {
+    //   console.log(this.$refs.unityIfm.contentWindow.myGameInstance.SendMessage('UnityJsCommunication','ReceiveMsg','refgr'))
+    // },
     changeModel(e) {
       this.activated = e;
       if (window.vuplex) {
@@ -738,7 +742,6 @@ export default {
     },
     // 格式化当前数据
     assignData(data) {
-      // this.leftHipPitch_qa =this.minFormat(this.toDegrees(data.jointStates[2].qa),this.leftSideChartData)
       this.leftHipPitch_qa = this.toDegrees(data.jointStates[2].qa);
       this.leftHipPitch_qdota = this.toDegrees(data.jointStates[2].qdota);
       this.leftHipPitch_taua = data.jointStates[2].taua.toFixed(2);
@@ -807,9 +810,9 @@ export default {
     updateSideCharts(item, type) {
       if (!document.getElementById("leftChart") || !document.getElementById("rightChart"))
         return
-      if (this.leftSideChartData.length > 21)//每超过10条数据，删除最旧的一条
+      if (this.leftSideChartData.length > 11)//每超过10条数据，删除最旧的一条
         this.leftSideChartData.shift();
-      if (this.rightSideChartData.length > 21)
+      if (this.rightSideChartData.length > 11)
         this.rightSideChartData.shift();
       switch (item) {
         case "hipPitch":
@@ -910,7 +913,7 @@ export default {
     //更新速度图表
     updateSpeedCharts() {
       let xChart = echarts.getInstanceByDom(document.getElementById("xChart"));
-      if (this.leftSpeedChartData.length > 21)
+      if (this.leftSpeedChartData.length > 11)
         this.leftSpeedChartData.shift();
       this.leftSpeedChartData.push(this.xAxisDataFmt(this.xSpeed));
       xChart.setOption({
@@ -922,7 +925,7 @@ export default {
         ]
       });
       let yChart = echarts.getInstanceByDom(document.getElementById("yChart"));
-      if (this.rightSpeedChartData.length > 21)
+      if (this.rightSpeedChartData.length > 11)
         this.rightSpeedChartData.shift();
       this.rightSpeedChartData.push(this.xAxisDataFmt(this.ySpeed));
       yChart.setOption({
@@ -1263,5 +1266,10 @@ export default {
     background: #ffffff;
     opacity: 0.3;
   }
+}
+
+.unity-robot {
+  width: 18.9063vw;
+  height: 29.0625vw;
 }
 </style>

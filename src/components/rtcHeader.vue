@@ -15,8 +15,8 @@
     <div class="headButtonIn" v-if="((connected && isLogin) || !isLogin) && !isLoading">
       <!-- 电量和wifi -->
       <div class="spacing">
-        <!-- <img class="inImg" src="@/assets/images/icon_battery2.png" />
-        <span class="inTxt">43%</span> -->
+        <img class="inImg" src="@/assets/images/icon_battery2.png" />
+        <span class="inTxt">43%</span>
         <img class="inImg" style="height: 1.6667vw;width: 2.2917vw;" src="@/assets/images/icon_Wifi.png" />
       </div>
       <div class="divider spacing" v-if="camera"></div>
