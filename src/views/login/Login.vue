@@ -1,5 +1,5 @@
 <template>
-    <div class="main">
+    <div class="loginMain">
         <rtc-header :is-logo="true" :is-login="true" @connect="toConnect()"></rtc-header>
         <div class="humanBody">
             <img class="openHuman" src="@/assets/images/image_onOpen.png" />
@@ -39,7 +39,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.main {
+.loginMain {
     position: relative;
     width: 100%;
     height: 100vh;

@@ -217,6 +217,9 @@ export default {
       // 每10ms 获取一次手柄数据，查看是否按下手柄按键
       this.interval = setInterval(function () {
         let gamepad = null;
+        console.log(JSON.stringify(navigator))
+        console.log(navigator.getGamepads())
+        console.log(JSON.stringify(navigator.getGamepads()))
         navigator.getGamepads().forEach((item) => {
           if (item) gamepad = item;
         });
@@ -460,8 +463,11 @@ export default {
   width: 100%;
   height: 100%;
   position: fixed;
-  background-color: #121E29;
+  // background-color: #121E29;
   z-index: 3;
+  background-image: url("../../assets/images/image_cameraBk.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .video-play {

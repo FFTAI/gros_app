@@ -9,9 +9,10 @@ import { Human } from "gros-client";
 
 Vue.prototype.$store = store;
 Vue.prototype.$webview = null;
-// Vue.prototype.$robot = new Human({host: '192.168.8.122'});
-Vue.prototype.$robot = new Human({host: '192.168.9.17'});
+Vue.prototype.$robot = new Human({host: '192.168.11.146'});
+// Vue.prototype.$robot = new Human({host: '192.168.9.17'});
 // Vue.prototype.$robot = new Human({host: '192.168.31.25'});
+// Vue.prototype.$robot = new Human({host: '192.168.31.254'});
 
 Vue.use(ElementUI);
 

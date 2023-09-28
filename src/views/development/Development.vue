@@ -20,9 +20,13 @@
       <!-- 左侧栏 -->
       <div class="leftBox">
         <!-- 人形模型 -->
-        <img class="humanModel" src="@/assets/images/icon_model.png" v-show="activated == 'dynamic'" />
-        <!-- <iframe ref="unityIfm" src="/WebGL/index.html" style="border: none;width: 26.0417vw;height: 36.4583vw;" v-show="activated == 'dynamic'"></iframe>
-        <el-button type="primary" @click="sendUnity()">点击</el-button> -->
+        <!-- <img class="humanModel" src="@/assets/images/icon_model.png" v-show="activated == 'dynamic'" /> -->
+        <iframe ref="unityIfm" src="WebGL/index.html"
+          style="border: none;width: 26.0417vw;height: 36.4583vw;margin-top:6.25vw;"
+          v-show="activated == 'dynamic'"></iframe>
+          <!-- <iframe ref="unityIfm" src="http://192.168.11.151:3000/"
+          style="border: none;width: 26.0417vw;height: 36.4583vw;margin-top:6.25vw;"
+          v-show="activated == 'dynamic'"></iframe> -->
         <!-- log日志 -->
         <div class="logBox" v-show="activated == 'log'">
           <div class="logTitle">{{ $t("logoFile") }}</div>
@@ -308,7 +312,8 @@ export default {
       rightSpeedChartData: [],//Y轴速度图表数据
       activatedItem: "hipPitch",
       activatedType: "angle",
-      headBoxVisible: false
+      headBoxVisible: false,
+      robotCount: 1
     };
   },
   created() {
@@ -327,16 +332,24 @@ export default {
     this.initSideCharts();
     this.initSpeedCharts();
     //开启状态发送
-    this.$robot.enable_debug_state(1);
+    this.$robot.enable_debug_state(50);
     //开启监听数据并处理
     this.$robot.on_message(data => {
       let currData = JSON.parse(data.data);
-      console.log("on_message===============", currData);
-      this.assignData(JSON.parse(data.data).data.states);
-      if (currData.data.log && currData.data.log.logBuffer)
-        this.getLog(currData.data.log.logBuffer);
-      this.updateSideCharts(this.activatedItem, this.activatedType);
-      this.updateSpeedCharts();
+      console.log("on_message===============", { 'jointStates': currData.data.states.jointStates });
+      // if (this.$refs.unityIfm.contentWindow.myGameInstance)
+      //   this.$refs.unityIfm.contentWindow.myGameInstance.SendMessage('UnityJsCommunication', 'ReceiveMsg', JSON.stringify({ 'jointStates': currData.data.states.jointStates }))
+      if (this.robotCount == 50) {
+        this.assignData(JSON.parse(data.data).data.states);
+        if (currData.data.log && currData.data.log.logBuffer)
+          this.getLog(currData.data.log.logBuffer);
+        this.updateSideCharts(this.activatedItem, this.activatedType);
+        this.updateSpeedCharts();
+        this.robotCount = 1
+      } else {
+        this.robotCount = this.robotCount + 1
+      }
+
     });
   },
   watch: {
@@ -349,9 +362,6 @@ export default {
     }
   },
   methods: {
-    // sendUnity() {
-    //   console.log(this.$refs.unityIfm.contentWindow.myGameInstance.SendMessage('UnityJsCommunication','ReceiveMsg','refgr'))
-    // },
     changeModel(e) {
       this.activated = e;
       if (window.vuplex) {
@@ -376,7 +386,7 @@ export default {
           },
           axisLine: {
             onZero: false,
-            show:false
+            show: false
           },
           boundaryGap: true,
           axisTick: {
@@ -469,7 +479,7 @@ export default {
           },
           axisLine: {
             onZero: false,
-            show:false
+            show: false
           },
           axisTick: {
             length: 1,
@@ -565,7 +575,7 @@ export default {
           },
           axisLine: {
             onZero: false,
-            show:false
+            show: false
           },
           axisTick: {
             length: 1,
@@ -625,7 +635,7 @@ export default {
                 {
                   offset: 0,
                   color: 'rgb(255,255,255,0.12)'
-                  
+
                 },
                 {
                   offset: 1,
@@ -658,7 +668,7 @@ export default {
           },
           axisLine: {
             onZero: false,
-            show:false
+            show: false
           },
           axisTick: {
             length: 1,
