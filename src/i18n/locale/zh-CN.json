@@ -42,5 +42,11 @@
     "shakeHands": "握一握手",
     "wave": "挥一挥手",
     "stand": "站立",
-    "markingTime": "原地踏步"
+    "markingTime": "原地踏步",
+    "deviceSettings": "设备设置",
+    "defaultNickname": "默认昵称",
+    "customNickname": "自定义昵称",
+    "volumeAdjustment": "音量调节",
+    "microphone": "麦克风",
+    "speechRecognition": "语音识别"
 }

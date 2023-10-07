@@ -8,7 +8,7 @@
         <!-- 左侧Tab标签栏 -->
         <div class="tabBox">
             <!-- 连接 -->
-            <div class="txt1" :class="{ 'activeTab': isActivated == 'connect' }" @click="changeTab('connect')">
+            <div class="txt" :class="{ 'activeTab': isActivated == 'connect' }" @click="changeTab('connect')">
                 <div class="tab" :class="{ 'opt': isActivated != 'connect' }">
                     <img class="iconConnect" src="@/assets/images/icon_connect.png" />
                     <div style="margin-left: 1.25vw;">
@@ -16,8 +16,19 @@
                     </div>
                 </div>
             </div>
+            <!-- 设备设置 -->
+            <div class="txt" :class="{ 'activeTab': isActivated == 'deviceSettings' }" style="top: 47%;"
+                @click="changeTab('deviceSettings')">
+                <div class="tab" :class="{ 'opt': isActivated != 'deviceSettings' }">
+                    <img class="iconSysState" src="@/assets/images/icon_sysState.png" />
+                    <div style="margin-left: 1.25vw;">
+                        {{ $t('deviceSettings') }}
+                    </div>
+                </div>
+            </div>
             <!-- 系统状态 -->
-            <div class="txt2" :class="{ 'activeTab': isActivated == 'status' }" @click="changeTab('status')">
+            <div class="txt" :class="{ 'activeTab': isActivated == 'status' }" style="top: 94%;"
+                @click="changeTab('status')">
                 <div class="tab" :class="{ 'opt': isActivated != 'status' }">
                     <img class="iconSysState" src="@/assets/images/icon_sysState.png" />
                     <div style="margin-left: 1.25vw;">
@@ -50,6 +61,32 @@
             <div class="item" v-if="connected">
                 <span>{{ $t('wifiPwd') }}</span>
                 <span>66668888</span>
+            </div>
+        </div>
+        <!-- 设备设置标签页 -->
+        <div class="listBox" v-if="isActivated == 'deviceSettings'">
+            <div class="item">
+                <span>{{ $t('defaultNickname') }}</span>
+                <span>小傅小傅</span>
+            </div>
+            <div class="item">
+                <span>{{ $t('customNickname') }}</span>
+                <div>
+                    <span style="margin-right: .625vw;">当前唤醒词：小傅小傅</span>
+                    <el-switch v-model="nickname"></el-switch>
+                </div>
+            </div>
+            <div class="item">
+                <span>{{ $t('volumeAdjustment') }}</span>
+                <el-slider style="width: 25vw;" v-model="volume"></el-slider>
+            </div>
+            <div class="item">
+                <span>{{ $t('microphone') }}</span>
+                <el-switch v-model="microphone"></el-switch>
+            </div>
+            <div class="item">
+                <span>{{ $t('speechRecognition') }}</span>
+                <el-switch v-model="speechs"></el-switch>
             </div>
         </div>
         <!-- 系统状态标签页 -->
@@ -107,8 +144,12 @@ export default {
         return {
             isActivated: 'status',//当前活动Tab
             logOpen: false,
+            nickname: false,
+            microphone: false,
+            speech: false,
             currLanguage: 'zh',
-            languageActivated: false
+            languageActivated: false,
+            volume: 50
         }
     },
     mounted() {
@@ -180,14 +221,8 @@ export default {
         align-items: center;
     }
 
-    .txt1 {
+    .txt {
         top: 0;
-        width: 23.3854vw;
-        height: 6.1458vw;
-    }
-
-    .txt2 {
-        top: 47%;
         width: 23.3854vw;
         height: 6.1458vw;
     }

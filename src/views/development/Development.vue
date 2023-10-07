@@ -21,12 +21,12 @@
       <div class="leftBox">
         <!-- 人形模型 -->
         <!-- <img class="humanModel" src="@/assets/images/icon_model.png" v-show="activated == 'dynamic'" /> -->
-        <iframe ref="unityIfm" src="WebGL/index.html"
-          style="border: none;width: 26.0417vw;height: 36.4583vw;margin-top:6.25vw;"
-          v-show="activated == 'dynamic'"></iframe>
-          <!-- <iframe ref="unityIfm" src="http://192.168.11.151:3000/"
+        <!-- <iframe ref="unityIfm" src="WebGL/index.html"
           style="border: none;width: 26.0417vw;height: 36.4583vw;margin-top:6.25vw;"
           v-show="activated == 'dynamic'"></iframe> -->
+          <iframe ref="unityIfm" src="http://192.168.11.152:3002/"
+          style="border: none;width: 26.0417vw;height: 36.4583vw;margin-top:6.25vw;"
+          v-show="activated == 'dynamic'"></iframe>
         <!-- log日志 -->
         <div class="logBox" v-show="activated == 'log'">
           <div class="logTitle">{{ $t("logoFile") }}</div>

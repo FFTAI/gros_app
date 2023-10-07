@@ -42,5 +42,11 @@
     "shakeHands": "Shake Hands",
     "wave": "Wave",
     "stand": "Stand",
-    "markingTime": "Marking Time"
+    "markingTime": "Marking Time",
+    "deviceSettings": "Device Settings",
+    "defaultNickname": "Default Nickname",
+    "customNickname": "Custom Nickname",
+    "volumeAdjustment": "Volume Adjustment",
+    "microphone": "Microphone",
+    "speechRecognition": "Speech Recognition"
 }
