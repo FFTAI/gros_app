@@ -48,5 +48,11 @@
     "customNickname": "自定义昵称",
     "volumeAdjustment": "音量调节",
     "microphone": "麦克风",
-    "speechRecognition": "语音识别"
+    "speechRecognition": "语音识别",
+    "hipPitch": "髋部倾斜度",
+    "hipYaw": "髋部偏角",
+    "hipRoll": "髋部晃动",
+    "knee": "膝盖",
+    "anklePitch": "踝部倾斜度",
+    "ankleRoll": "踝部晃动"
 }

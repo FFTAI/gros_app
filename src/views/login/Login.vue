@@ -7,6 +7,9 @@
         <div class="startContain" @click="startExplore()">
             <span class="startBtn">{{ $t('beginToExplore') }}</span>
         </div>
+        <!-- <div class="circle">
+            <div class="particle"></div>
+        </div> -->
     </div>
 </template>
 
@@ -20,7 +23,7 @@ export default {
     },
     data() {
         return {
-            
+
         }
     },
     methods: {
@@ -79,4 +82,52 @@ export default {
     color: #FFFFFF;
     line-height: 2.3438vw;
 }
+
+// .circle {
+//     width: 100px;
+//     height: 100px;
+//     position: absolute;
+//     bottom: 15.7292vw;
+//     right: 13.0208vw;
+//     animation: expand 5s infinite;
+//     border: 8px solid rgb(55, 127, 234);
+//     border-radius: 50%;
+//     overflow: hidden;
+// }
+
+// .particle {
+//     position: absolute;
+//     width: 10px;
+//     height: 10px;
+//     background-color: rgb(71, 71, 218);
+//     border-radius: 50%;
+//     animation: particleExpand 2s infinite;
+// }
+
+// @keyframes expand {
+//     0% {
+//         transform: scale(1);
+//     }
+
+//     50% {
+//         transform: scale(2);
+//     }
+
+//     100% {
+//         transform: scale(1);
+//     }
+// }
+
+// @keyframes particleExpand {
+//     0% {
+//         transform: scale(0);
+//         opacity: 1;
+//     }
+
+//     100% {
+//         transform: scale(2);
+//         opacity: 0;
+//     }
+// }
+
 </style>

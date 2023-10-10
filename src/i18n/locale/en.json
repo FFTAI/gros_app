@@ -48,5 +48,11 @@
     "customNickname": "Custom Nickname",
     "volumeAdjustment": "Volume Adjustment",
     "microphone": "Microphone",
-    "speechRecognition": "Speech Recognition"
+    "speechRecognition": "Speech Recognition",
+    "hipPitch": "Hip Pitch",
+    "hipYaw": "Hip Yaw",
+    "hipRoll": "Hip Roll",
+    "knee": "Knee",
+    "anklePitch": "Ankle Pitch",
+    "ankleRoll": "Ankle Roll"
 }

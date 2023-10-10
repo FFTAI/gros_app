@@ -84,7 +84,7 @@
               leftHipPitch_taua
               + "N.m" : "" }}
             </div>
-            <div class="itemChild" :class="activatedItem == 'hipPitch' ? 'middleCurr' : 'middle'">Hip Pitch
+            <div class="itemChild" :class="activatedItem == 'hipPitch' ? 'middleCurr' : 'middle'">{{ $t('hipPitch') }}
               <div class="downArrow" v-if="activatedItem == 'hipPitch'"></div>
             </div>
             <div v-if="activatedType == 'angle'" class="itemChild">{{ rightHipPitch_qa ? rightHipPitch_qa + "°"
@@ -110,7 +110,7 @@
             <div v-else-if="activatedType == 'torque'" class="itemChild">{{ leftHipYaw_taua ? leftHipYaw_taua +
               "N.m" : "" }}
             </div>
-            <div class="itemChild" :class="activatedItem == 'hipYaw' ? 'middleCurr' : 'middle'">Hip Yaw
+            <div class="itemChild" :class="activatedItem == 'hipYaw' ? 'middleCurr' : 'middle'">{{ $t('hipYaw') }}
               <div class="downArrow" v-if="activatedItem == 'hipYaw'">
               </div>
             </div>
@@ -137,7 +137,7 @@
               +
               "N.m" : "" }}
             </div>
-            <div class="itemChild" :class="activatedItem == 'hipRoll' ? 'middleCurr' : 'middle'">Hip Roll
+            <div class="itemChild" :class="activatedItem == 'hipRoll' ? 'middleCurr' : 'middle'">{{ $t('hipRoll') }}
               <div class="downArrow" v-if="activatedItem == 'hipRoll'">
               </div>
             </div>
@@ -164,7 +164,7 @@
               "N.m"
               : "" }}
             </div>
-            <div class="itemChild" :class="activatedItem == 'knee' ? 'middleCurr' : 'middle'">Knee
+            <div class="itemChild" :class="activatedItem == 'knee' ? 'middleCurr' : 'middle'">{{ $t('knee') }}
               <div class="downArrow" v-if="activatedItem == 'knee'"></div>
             </div>
             <div v-if="activatedType == 'angle'" class="itemChild">{{ rightKnee_qa ? rightKnee_qa + "°" : "" }}
@@ -189,7 +189,7 @@
             <div v-else-if="activatedType == 'torque'" class="itemChild">{{ leftAnklePitch_taua ?
               leftAnklePitch_taua + "N.m" : "" }}
             </div>
-            <div class="itemChild" :class="activatedItem == 'anklePitch' ? 'middleCurr' : 'middle'">Ankle Pitch
+            <div class="itemChild" :class="activatedItem == 'anklePitch' ? 'middleCurr' : 'middle'">{{ $t('anklePitch') }}
               <div class="downArrow" v-if="activatedItem == 'anklePitch'"></div>
             </div>
             <div v-if="activatedType == 'angle'" class="itemChild">{{ rightAnklePitch_qa ? rightAnklePitch_qa +
@@ -214,7 +214,7 @@
             <div v-else-if="activatedType == 'torque'" class="itemChild">{{ leftAnkleRoll_taua ?
               leftAnkleRoll_taua + "N.m" : "" }}
             </div>
-            <div class="itemChild" :class="activatedItem == 'ankleRoll' ? 'middleCurr' : 'middle'">Ankle Roll
+            <div class="itemChild" :class="activatedItem == 'ankleRoll' ? 'middleCurr' : 'middle'">{{ $t('ankleRoll') }}
               <div class="downArrow" v-if="activatedItem == 'ankleRoll'"></div>
             </div>
             <div v-if="activatedType == 'angle'" class="itemChild">{{ rightAnkleRoll_qa ? rightAnkleRoll_qa +

@@ -17,7 +17,7 @@
                 </div>
             </div>
             <!-- 设备设置 -->
-            <div class="txt" :class="{ 'activeTab': isActivated == 'deviceSettings' }" style="top: 47%;"
+            <!-- <div class="txt" :class="{ 'activeTab': isActivated == 'deviceSettings' }" style="top: 47%;"
                 @click="changeTab('deviceSettings')">
                 <div class="tab" :class="{ 'opt': isActivated != 'deviceSettings' }">
                     <img class="iconSysState" src="@/assets/images/icon_sysState.png" />
@@ -25,7 +25,7 @@
                         {{ $t('deviceSettings') }}
                     </div>
                 </div>
-            </div>
+            </div> -->
             <!-- 系统状态 -->
             <div class="txt" :class="{ 'activeTab': isActivated == 'status' }" style="top: 94%;"
                 @click="changeTab('status')">
@@ -64,7 +64,7 @@
             </div>
         </div>
         <!-- 设备设置标签页 -->
-        <div class="listBox" v-if="isActivated == 'deviceSettings'">
+        <!-- <div class="listBox" v-if="isActivated == 'deviceSettings'">
             <div class="item">
                 <span>{{ $t('defaultNickname') }}</span>
                 <span>小傅小傅</span>
@@ -88,7 +88,7 @@
                 <span>{{ $t('speechRecognition') }}</span>
                 <el-switch v-model="speechs"></el-switch>
             </div>
-        </div>
+        </div> -->
         <!-- 系统状态标签页 -->
         <div class="listBox" v-if="isActivated == 'status'">
             <div class="item">
@@ -149,7 +149,7 @@ export default {
             speech: false,
             currLanguage: 'zh',
             languageActivated: false,
-            volume: 50
+            volume: 70
         }
     },
     mounted() {
