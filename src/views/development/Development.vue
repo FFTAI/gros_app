@@ -24,7 +24,7 @@
         <!-- <iframe ref="unityIfm" src="WebGL/index.html"
           style="border: none;width: 26.0417vw;height: 36.4583vw;margin-top:6.25vw;"
           v-show="activated == 'dynamic'"></iframe> -->
-          <iframe ref="unityIfm" src="http://192.168.11.152:3002/"
+          <iframe ref="unityIfm" src="http://192.168.10.135:3002/"
           style="border: none;width: 26.0417vw;height: 36.4583vw;margin-top:6.25vw;"
           v-show="activated == 'dynamic'"></iframe>
         <!-- log日志 -->

@@ -21,13 +21,13 @@
             <div class="connectBox">
                 <div class="connectTxt txtFlex">
                     <div>{{ $t('initialAccount') }}</div>
-                    <div>RMS1-XXXXXX</div>
+                    <div>GR123OT0002</div>
                 </div>
                 <div class="line">
                 </div>
                 <div class="connectTxt txtFlex">
                     <span>{{ $t('initialPassword') }}</span>
-                    <span>12344321</span>
+                    <span>66668888</span>
                 </div>
             </div>
             <div class="toConnect" @click="openDialog">

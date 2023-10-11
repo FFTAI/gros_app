@@ -26,11 +26,26 @@ export default {
 
         }
     },
+    mounted() {
+        this.$http.get('http://192.168.10.135:8001/robot/type')
+            .then(res => {
+                this.$store.commit('setConnected', true)
+            })
+            .catch(err => {
+                console.log('错误', err)
+            });
+    },
     methods: {
         startExplore() {
-            this.$router.push({
-                name: 'loading'
-            })
+            console.log(this.connected)
+            if (this.connected) {
+                this.$router.push({
+                    name: 'loading'
+                })
+            } else {
+                this.toConnect()
+            }
+
         },
         toConnect() {
             this.$router.push({
@@ -129,5 +144,4 @@ export default {
 //         opacity: 0;
 //     }
 // }
-
 </style>

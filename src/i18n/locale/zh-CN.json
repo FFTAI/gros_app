@@ -54,5 +54,9 @@
     "hipRoll": "髋部晃动",
     "knee": "膝盖",
     "anklePitch": "踝部倾斜度",
-    "ankleRoll": "踝部晃动"
+    "ankleRoll": "踝部晃动",
+    "waveLeftHand": "左挥手",
+    "waveTwoHand": "双臂挥手",
+    "swingArms": "甩胳膊",
+    "greet": "打招呼"
 }

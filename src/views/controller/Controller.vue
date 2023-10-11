@@ -57,7 +57,7 @@
             <img class="actionImg" src="@/assets/images/icon_slowWalk.png" />
             <div>{{ $t("normalWalking") }}</div>
           </div>
-          <div class="actionItem" @click="choseMode('fastWalk')">
+          <!-- <div class="actionItem" @click="choseMode('fastWalk')">
             <img class="actionImg" src="@/assets/images/icon_fastWalk.png" />
             <div>{{ $t("fastWalking") }}</div>
           </div>
@@ -68,7 +68,7 @@
           <div class="actionItem" @click="choseMode('fastRun')">
             <img class="actionImg" src="@/assets/images/icon_fastRun.png" />
             <div>{{ $t("fastRunning") }}</div>
-          </div>
+          </div> -->
         </div>
         <!-- 原地运动展开 -->
         <div class="actionBox" v-else-if="controlExpand && controlModel == 'inPlace'">
@@ -76,20 +76,31 @@
             <img class="actionImg" src="@/assets/images/icon_markingTime.png" @click="choseMode('markingTime')" />
             <div>{{ $t("markingTime") }}</div>
           </div>
-          <div class="actionItem">
+          <!-- <div class="actionItem">
             <img class="actionImg" src="@/assets/images/icon_shakeHands.png" @click="choseMode('shakeHands')" />
             <div>{{ $t("shakeHands") }}</div>
+          </div> -->
+          <div class="actionItem">
+            <img class="actionImg" src="@/assets/images/icon_waveLeft.png" @click="choseMode('waveLeftHand')" />
+            <div>{{ $t("waveLeftHand") }}</div>
           </div>
           <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_wave.png" @click="choseMode('wave')" />
-            <div>{{ $t("wave") }}</div>
+            <img class="actionImg" src="@/assets/images/icon_waveTwo.png" @click="choseMode('waveTwoHand')" />
+            <div>{{ $t("waveTwoHand") }}</div>
+          </div>
+          <div class="actionItem">
+            <img class="actionImg" src="@/assets/images/icon_swingArms.png" @click="choseMode('swingArms')" />
+            <div>{{ $t("swingArms") }}</div>
+          </div>
+          <div class="actionItem">
+            <img class="actionImg" src="@/assets/images/icon_greet.png" @click="choseMode('greet')" />
+            <div>{{ $t("greet") }}</div>
           </div>
         </div>
         <!-- action box -->
         <div class="controlBox">
           <!-- 步态运动 -->
-          <div
-            :class="['choseBox', 'txt', controlModel != 'gait' ? '' : controlExpand? 'choseBk': 'chose']"
+          <div :class="['choseBox', 'txt', controlModel != 'gait' ? '' : controlExpand ? 'choseBk' : 'chose']"
             @click="changeControl('gait')">
             {{ $t("gaitMotion") }}
           </div>
@@ -99,8 +110,7 @@
             {{ $t("stand") }}
           </div>
           <!-- 原地运动 -->
-          <div
-            :class="['choseBox', 'txt', controlModel != 'inPlace' ? '' : controlExpand? 'choseBk': 'chose']"
+          <div :class="['choseBox', 'txt', controlModel != 'inPlace' ? '' : controlExpand ? 'choseBk' : 'chose']"
             @click="changeControl('inPlace')">
             {{ $t("inPlaceMotion") }}
           </div>
@@ -429,8 +439,23 @@ export default {
     choseMode(e) {
       this.controlExpand = false;
       this.mode = e;
-      if (e == "markingTime")
+      if (e == "markingTime") {
         this.$robot.walk(0, 0);
+      } else {
+        let data = {arm_action: ""}
+        if (e == "waveLeftHand") {
+          data.arm_action = "LEFT_ARM_WAVE"
+        }else if(e =="waveTwoHand") {
+          data.arm_action = "TWO_ARMS_WAVE"
+        }else if(e =="swingArms") {
+          data.arm_action = "ARMS_SWING"
+        }else if(e =="greet") {
+          data.arm_action = "HELLO"
+        }
+        this.$http.post('http://192.168.10.135:8001/robot/upper_body', data)
+            .then(res => { console.log(res) })
+            .catch(err => { console.log(err) });
+      }
     },
     stopMode() {
       this.mode = "";

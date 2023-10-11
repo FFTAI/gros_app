@@ -52,11 +52,11 @@
             </div>
             <div class="item" v-if="connected">
                 <span>{{ $t('robotIP') }}</span>
-                <span>192.168.12.1</span>
+                <span>192.168.10.135</span>
             </div>
             <div class="item" v-if="connected">
                 <span>{{ $t('wifiName') }}</span>
-                <span>GR1-230001</span>
+                <span>GR123OT0002</span>
             </div>
             <div class="item" v-if="connected">
                 <span>{{ $t('wifiPwd') }}</span>
@@ -97,7 +97,7 @@
             </div>
             <div class="item">
                 <span>{{ $t('appVersion') }}</span>
-                <span>V1.2.1</span>
+                <span>V1.0.0</span>
             </div>
             <div class="item" :class="{ 'languageActivated': languageActivated }" @click="languageExpand()">
                 <span>{{ $t('appLanguage') }}</span>
