@@ -12,9 +12,8 @@ Vue.prototype.$http= axios
 Vue.prototype.$store = store;
 Vue.prototype.$webview = null;
 // Vue.prototype.$robot = new Human({host: '192.168.11.152'});
-Vue.prototype.$robot = new Human({host: '192.168.10.135'});
-// Vue.prototype.$robot = new Human({host: '192.168.31.25'});
-// Vue.prototype.$robot = new Human({host: '192.168.31.254'});
+Vue.prototype.$robot = new Human({host: '192.168.12.1'});
+// Vue.prototype.$robot = new Human({host: '192.168.10.135'});
 
 Vue.use(ElementUI);
 

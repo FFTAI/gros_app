@@ -12,7 +12,7 @@
       </div>
     </div>
     <slot></slot>
-    <div class="headButtonIn" v-if="((connected && isLogin) || !isLogin) && !isLoading">
+    <div class="headButtonIn" v-if="(connected || isController) && !isLoading">
       <!-- 电量和wifi -->
       <div class="spacing">
         <!-- <img class="inImg" src="@/assets/images/icon_battery2.png" />
@@ -25,14 +25,14 @@
         <img class="inImg" src="@/assets/images/icon_cameraOn.png" v-if="cameraOn" />
         <img class="inImg" src="@/assets/images/icon_cameraOff.png" v-else />
       </div>
-      <div class="divider spacing"></div>
+      <div class="divider spacing" v-if="!isSetting"></div>
       <!-- 设置 -->
-      <div class="spacing" @click="setting()">
+      <div class="spacing" v-if="!isSetting" @click="setting()">
         <img class="inImg" src="@/assets/images/icon_setting.png" />
       </div>
     </div>
     <!-- 连接 -->
-    <div class="rightSlot" @click="toConnect()" v-if="!connected && isLogin && !isLoading">
+    <div class="rightSlot" @click="toConnect()" v-if="!connected && (isLogin || isSetting) && !isLoading">
       <span class="connect">{{ $t('connect') }}</span>
     </div>
   </div>
@@ -52,7 +52,6 @@ export default {
       type: Boolean,
       default: false
     },
-    // 是否是登录和设置页
     isLogin: {
       type: Boolean,
       default: false
@@ -62,6 +61,10 @@ export default {
       default: false
     },
     isController: {
+      type: Boolean,
+      default: false
+    },
+    isSetting: {
       type: Boolean,
       default: false
     }

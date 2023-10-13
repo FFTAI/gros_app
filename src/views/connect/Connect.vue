@@ -21,7 +21,7 @@
             <div class="connectBox">
                 <div class="connectTxt txtFlex">
                     <div>{{ $t('initialAccount') }}</div>
-                    <div>GR123OT0002</div>
+                    <div>gr123ot0002</div>
                 </div>
                 <div class="line">
                 </div>
@@ -132,16 +132,19 @@ export default {
     position: absolute;
     bottom: 0;
     left: 12.5vw;
+    width: 36.8229vw;
+    height: 36.3542vw;
+    overflow: hidden;
 }
 
 .connectHuman {
-    height: 68.98vh;
-    width: 34.1146vw;
+    height: 44.6354vw;
+    width: 36.8229vw;
 }
 
 .content {
     position: absolute;
-    bottom: 20vh;
+    bottom: 10vh;
     right: 12.5vw;
     width: 30.7813vw;
     height: 30.7813vw;

@@ -16,6 +16,7 @@
 <script>
 import rtcHeader from '@/components/rtcHeader.vue';
 import { mapState } from "vuex";
+import { get_robot_type } from "gros-client";
 export default {
     components: { rtcHeader },
     computed: {
@@ -27,13 +28,9 @@ export default {
         }
     },
     mounted() {
-        this.$http.get('http://192.168.10.135:8001/robot/type')
-            .then(res => {
-                this.$store.commit('setConnected', true)
-            })
-            .catch(err => {
-                console.log('错误', err)
-            });
+        get_robot_type({host: '192.168.12.1', port: '8001'}).then(res=>{
+            this.$store.commit('setConnected', true)
+        })
     },
     methods: {
         startExplore() {

@@ -1,6 +1,6 @@
 <template>
     <div class="main">
-        <rtc-header :isLogin="true" @connect="toConnect()">
+        <rtc-header :isSetting="true" @connect="toConnect()">
             <div class="headState">
                 <span class="headTxt">{{ $t('systemSettings') }}</span>
             </div>
@@ -52,11 +52,11 @@
             </div>
             <div class="item" v-if="connected">
                 <span>{{ $t('robotIP') }}</span>
-                <span>192.168.10.135</span>
+                <span>192.168.12.1</span>
             </div>
             <div class="item" v-if="connected">
                 <span>{{ $t('wifiName') }}</span>
-                <span>GR123OT0002</span>
+                <span>gr123ot0002</span>
             </div>
             <div class="item" v-if="connected">
                 <span>{{ $t('wifiPwd') }}</span>
@@ -143,7 +143,7 @@ export default {
     data() {
         return {
             isActivated: 'status',//当前活动Tab
-            logOpen: false,
+            logOpen: true,
             nickname: false,
             microphone: false,
             speech: false,
