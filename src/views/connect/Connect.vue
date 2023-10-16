@@ -21,7 +21,7 @@
             <div class="connectBox">
                 <div class="connectTxt txtFlex">
                     <div>{{ $t('initialAccount') }}</div>
-                    <div>gr123ot0002</div>
+                    <div>gr1********</div>
                 </div>
                 <div class="line">
                 </div>

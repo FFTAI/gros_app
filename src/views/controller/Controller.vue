@@ -23,9 +23,9 @@
           </div>
         </div>
         <!-- Stop按钮 -->
-        <div class="stopControl">
+        <!-- <div class="stopControl">
           <img class="stopImg" src="@/assets/images/icon_chStop.png" @click="stop()" />
-        </div>
+        </div> -->
         <!--校准-->
         <div class="calibration">
           <img class="calibrationImg" src="@/assets/images/icon_calibration.png" @click="calibration()" />
@@ -76,10 +76,10 @@
             <img class="actionImg" src="@/assets/images/icon_markingTime.png" @click="choseMode('markingTime')" />
             <div>{{ $t("markingTime") }}</div>
           </div>
-          <!-- <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_shakeHands.png" @click="choseMode('shakeHands')" />
-            <div>{{ $t("shakeHands") }}</div>
-          </div> -->
+          <div class="actionItem">
+            <img class="actionImg" src="@/assets/images/icon_zero.png" @click="choseMode('zero')" />
+            <div>{{ $t("zero") }}</div>
+          </div>
           <div class="actionItem">
             <img class="actionImg" src="@/assets/images/icon_waveLeft.png" @click="choseMode('waveLeftHand')" />
             <div>{{ $t("waveLeftHand") }}</div>
@@ -95,6 +95,18 @@
           <div class="actionItem">
             <img class="actionImg" src="@/assets/images/icon_greet.png" @click="choseMode('greet')" />
             <div>{{ $t("greet") }}</div>
+          </div>
+          <div class="actionItem">
+            <img class="actionImg" src="@/assets/images/icon_open.png" @click="choseMode('openHand')" />
+            <div>{{ $t("openHand") }}</div>
+          </div>
+          <div class="actionItem">
+            <img class="actionImg" src="@/assets/images/icon_grasp.png" @click="choseMode('grasp')" />
+            <div>{{ $t("grasp") }}</div>
+          </div>
+          <div class="actionItem">
+            <img class="actionImg" src="@/assets/images/icon_tremble.png" @click="choseMode('tremble')" />
+            <div>{{ $t("tremble") }}</div>
           </div>
         </div>
         <!-- action box -->
@@ -118,13 +130,12 @@
       </div>
       <!-- 当前状态提示 -->
       <div class="stateMessage" v-if="mode != ''">
-        <span v-if="mode == 'slowWalk'">{{ $t("normalWalking") }}中...</span>
-        <span v-if="mode == 'fastWalk'">{{ $t("fastWalking") }}中...</span>
-        <span v-if="mode == 'slowRun'">{{ $t("slowRunning") }}中...</span>
-        <span v-if="mode == 'fastRun'">{{ $t("fastRunning") }}中...</span>
+        <span v-if="mode == 'zero'">{{ $t("zero") }}中...</span>
+        <span v-if="mode == 'waveLeftHand'">{{ $t("waveLeftHand") }}中...</span>
+        <span v-if="mode == 'waveTwoHand'">{{ $t("waveTwoHand") }}中...</span>
+        <span v-if="mode == 'swingArms'">{{ $t("swingArms") }}中...</span>
         <span v-if="mode == 'markingTime'">{{ $t("markingTime") }}中...</span>
-        <span v-if="mode == 'shakeHands'">{{ $t("shakeHands") }}...</span>
-        <span v-if="mode == 'wave'">{{ $t("wave") }}...</span>
+        <span v-if="mode == 'greet'">{{ $t("greet") }}...</span>
       </div>
     </div>
   </div>
@@ -266,7 +277,7 @@ export default {
       if (Math.abs(velocity) < 0.1) {
         velocity = 0;
       }
-      this.operateWalk(angle * -0.2, (velocity * this.speed) / 6.25);
+      this.operateWalk(angle * -0.5, (velocity * this.speed) / 6.25);
 
     },
     // 手柄按键
@@ -356,7 +367,7 @@ export default {
             if (Math.abs(velocity) < 0.1) {
               velocity = 0;
             }
-            _this.operateWalk(angle * -0.2, (velocity * _this.speed) / 6.25);
+            _this.operateWalk(angle * -0.5, (velocity * _this.speed) / 6.25);
           }
         })
         .on("end", function (evt, data) {
@@ -442,8 +453,13 @@ export default {
       if (e == "markingTime") {
         this.$robot.walk(0, 0);
       } else {
-        let data = {arm_action: ""}
-        if (e == "waveLeftHand") {
+        let data = {
+          arm_action: "",
+          hand_action: ""
+        }
+        if (e == "zero") {
+          data.arm_action = "RESET"
+        }else if (e == "waveLeftHand") {
           data.arm_action = "LEFT_ARM_WAVE"
         }else if(e =="waveTwoHand") {
           data.arm_action = "TWO_ARMS_WAVE"
@@ -451,10 +467,14 @@ export default {
           data.arm_action = "ARMS_SWING"
         }else if(e =="greet") {
           data.arm_action = "HELLO"
+        }else if(e =="openHand") {
+          data.hand_action = "OPEN"
+        }else if(e =="grasp") {
+          data.hand_action = "GRASP"
+        }else if(e =="tremble") {
+          data.hand_action = "TREMBLE"
         }
-        this.$http.post('http://192.168.10.135:8001/robot/upper_body', data)
-            .then(res => { console.log(res) })
-            .catch(err => { console.log(err) });
+        this.$robot.upper_body(data.arm_action,data.hand_action)
       }
     },
     stopMode() {
@@ -691,9 +711,9 @@ export default {
 
 .actionBox {
   position: absolute;
-  bottom: 7vw;
+  bottom: 5vw;
   right: 1vw;
-  height: 15.1563vw;
+  height: 18.125vw;
   width: 21.9792vw;
   padding: 3.125vw 3.8021vw;
   display: flex;

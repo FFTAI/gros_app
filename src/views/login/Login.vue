@@ -28,7 +28,8 @@ export default {
         }
     },
     mounted() {
-        get_robot_type({host: '192.168.12.1', port: '8001'}).then(res=>{
+        let ip = process.env.VUE_APP_URL.split('//')[1].split(':')
+        get_robot_type({host: ip[0], port: ip[1]}).then(res=>{
             this.$store.commit('setConnected', true)
         })
     },

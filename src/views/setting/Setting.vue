@@ -56,7 +56,7 @@
             </div>
             <div class="item" v-if="connected">
                 <span>{{ $t('wifiName') }}</span>
-                <span>gr123ot0002</span>
+                <span>gr1********</span>
             </div>
             <div class="item" v-if="connected">
                 <span>{{ $t('wifiPwd') }}</span>

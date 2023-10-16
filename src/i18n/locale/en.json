@@ -59,5 +59,8 @@
     "waveTwoHand": "Wave Two Hand",
     "swingArms": "Swing Arms",
     "greet": "Greet",
-    "zero": "Zero"
+    "zero": "Zero",
+    "openHand": "Open Hand",
+    "grasp": "Grasp",
+    "tremble": "Tremble"
 }
