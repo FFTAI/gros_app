@@ -6,6 +6,7 @@
       <div class="headLogo" v-if="isLogo">
         <img class="leftSlot" src="@/assets/images/image_logo.png" />
       </div>
+      <div class="headAfter" v-if="isLogo"></div>
       <!-- 返回 -->
       <div class="headReturn" v-else @click="routerReturn()">
         <img class="return" src="@/assets/images/icon_return.png" />
@@ -129,23 +130,34 @@ export default {
   .leftSlot {
     width: 9.97vw;
     height: 2.604vw;
+    position: absolute;
+    left: 1.8333vw;
+    top: .9167vw;
   }
 
   .headLogo {
-    height: 4.4444vw;
-    width: 12.24vw;
-    background: #004c81;
-    padding-left: 1.24vw;
-    line-height: 5.8vw;
+    height: 4.4167vw;
+    width: 13.25vw;
+    background: #004B85;
+    // line-height: 5.8vw;
   }
 
-  .headLogo::after {
+  // .headLogo::after {
+  //   position: absolute;
+  //   content: " ";
+  //   border-width: 106px 64px;
+  //   border-style: solid;
+  //   border-color: #004c81 transparent transparent transparent;
+  // }
+
+  .headAfter{
+    width: 0;
+    height: 0;
+    border-right: 2vw solid transparent; /* 左边长 */
+    border-top: 4.45vw solid #004B85; /* 底边长，可以更改颜色 */
     position: absolute;
-    content: " ";
-    left: 11.218vw;
-    border-width: 4.4444vw 2.3021vw;
-    border-style: solid;
-    border-color: #004c81 transparent transparent transparent;
+    left: 13.2083vw;
+    top: 0;
   }
 
   // .headTitle {

@@ -24,9 +24,9 @@
         <!-- <iframe ref="unityIfm" src="WebGL/index.html"
           style="border: none;width: 26.0417vw;height: 36.4583vw;margin-top:6.25vw;"
           v-show="activated == 'dynamic'"></iframe> -->
-          <iframe ref="unityIfm" src="http://192.168.12.1:3002/"
-          style="border: none;width: 26.0417vw;height: 36.4583vw;margin-top:3.125vw;"
-          v-show="activated == 'dynamic'"></iframe>
+        <div class="humanModel" v-show="activated == 'dynamic'">
+          <iframe ref="unityIfm" style="border: none;margin-top: 3.125vw;width: 26.0417vw;height: 36.4583vw;" src="http://192.168.11.152:3002/"></iframe>
+        </div>
         <!-- log日志 -->
         <div class="logBox" v-show="activated == 'log'">
           <div class="logTitle">{{ $t("logoFile") }}</div>
@@ -57,7 +57,7 @@
         </div>
         <!-- 左右侧图表 -->
         <div class="sideChart">
-          <div class="chartSize" style="height: 14vw;" id="leftChart"></div>
+          <div class="chartSize" style="height: 10vw;" id="leftChart"></div>
           <!-- 切换: 度,度/秒，扭矩(牛.米) -->
           <div class="typeBox">
             <img class="typeImg" :class="{ 'notAct': activatedType != 'angle' }" @click="changeType('angle')"
@@ -67,7 +67,7 @@
             <img class="typeImg" :class="{ 'notAct': activatedType != 'torque' }" @click="changeType('torque')"
               src="@/assets/images/icon_torque.png" />
           </div>
-          <div class="chartSize" style="height: 14vw;" id="rightChart"></div>
+          <div class="chartSize" style="height: 10vw;" id="rightChart"></div>
         </div>
         <!-- 数值切换显示Table -->
         <div class="rightTable">
@@ -336,13 +336,15 @@ export default {
     //开启监听数据并处理
     this.$robot.on_message(data => {
       let currData = JSON.parse(data.data);
-      console.log("on_message===============", { 'jointStates': currData.data.states.jointStates });
+      // if(currData.data.log)
+      console.log(currData.data.log)
+      // console.log("on_message===============", { 'logBuffer': currData.data.log.logBuffer });
+      if (currData.data.log && currData.data.log.logBuffer)
+        this.getLog(currData.data.log.logBuffer);
       // if (this.$refs.unityIfm.contentWindow.myGameInstance)
       //   this.$refs.unityIfm.contentWindow.myGameInstance.SendMessage('UnityJsCommunication', 'ReceiveMsg', JSON.stringify({ 'jointStates': currData.data.states.jointStates }))
       if (this.robotCount == 50) {
         this.assignData(JSON.parse(data.data).data.states);
-        if (currData.data.log && currData.data.log.logBuffer)
-          this.getLog(currData.data.log.logBuffer);
         this.updateSideCharts(this.activatedItem, this.activatedType);
         this.updateSpeedCharts();
         this.robotCount = 1
@@ -1020,10 +1022,10 @@ export default {
 .mainBox {
   position: absolute;
   display: flex;
-  top: 11vh;
-  left: 2.4479vw;
-  height: 86vh;
-  width: 95.1042vw;
+  top: 5.7083vw;
+  left: 2.4583vw;
+  height: 38.0417vw;
+  width: 95.0833vw;
 
   .logTitle {
     font-size: 1.6146vw;
@@ -1040,15 +1042,17 @@ export default {
     align-items: center;
 
     .humanModel {
-      margin-top: 1.875vw;
-      width: 22.625vw;
-      height: 62vh;
+      width: 37.5417vw;
+      height: 32.125vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .logBox {
-      height: 70vh;
-      width: 34.8vw;
-      padding: 1.0417vw 1.5625vw 0 1.5625vw;
+      height: 30.8333vw;
+      width: 32.625vw;
+      padding: 1.2917vw 2.4583vw 0 2.4583vw;
       box-shadow: 0 .1042vw .2083vw 0 rgba(41, 72, 152, 0.01), 0 .4688vw .4167vw 0 rgba(41, 72, 152, 0.02);
       border-radius: .2604vw;
       background-color: rgba(81, 82, 85, 0.1);
@@ -1121,8 +1125,10 @@ export default {
 
   .rightBox {
     flex: 3;
-    width: 56.3021vw;
-    height: 85vh;
+    width: 56.2917vw;
+    height: 38.7917vw;
+    box-shadow: 0 .1042vw .2083vw 0 rgba(41, 72, 152, 0.01), 0 .4688vw .4167vw 0 rgba(41, 72, 152, 0.02);
+    border-radius: .2604vw;
 
     .rightTitle {
       // height: 6vh;
@@ -1136,7 +1142,7 @@ export default {
 
     .sideChart {
       width: 100%;
-      height: 23vh;
+      height: 18vh;
       background-color: rgba(81, 82, 85, 0.1);
       margin-left: 1.5625vw;
       display: flex;

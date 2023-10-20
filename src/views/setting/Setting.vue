@@ -26,13 +26,13 @@
                     </div>
                 </div>
             </div> -->
-            <!-- 系统状态 -->
+            <!-- 系统信息 -->
             <div class="txt" :class="{ 'activeTab': isActivated == 'status' }" style="top: 94%;"
                 @click="changeTab('status')">
                 <div class="tab" :class="{ 'opt': isActivated != 'status' }">
                     <img class="iconSysState" src="@/assets/images/icon_sysState.png" />
                     <div style="margin-left: 1.25vw;">
-                        {{ $t('systemStatus') }}
+                        {{ $t('systemInfo') }}
                     </div>
                 </div>
             </div>
@@ -89,7 +89,7 @@
                 <el-switch v-model="speechs"></el-switch>
             </div>
         </div> -->
-        <!-- 系统状态标签页 -->
+        <!-- 系统信息标签页 -->
         <div class="listBox" v-if="isActivated == 'status'">
             <div class="item">
                 <span>{{ $t('robotVersion') }}</span>
@@ -112,21 +112,27 @@
             <div class="item" v-if="languageActivated">
                 <div class="languageItem" :class="{ 'chosedLanguage': currLanguage == 'zh' }" @click="changeLanguage('zh')">
                     <span>简体中文</span>
-                    <img class="iconChose" src="@/assets/images/icon_chose.png" v-if="currLanguage == 'zh'" />
+                    <img class="iconChose" :class="{ 'visibility': currLanguage != 'zh' }"
+                        src="@/assets/images/icon_chose.png" />
                 </div>
                 <div class="languageItem" :class="{ 'chosedLanguage': currLanguage == 'tw' }" @click="changeLanguage('tw')">
                     <span>繁体中文</span>
-                    <img class="iconChose" src="@/assets/images/icon_chose.png" v-if="currLanguage == 'tw'" />
+                    <img class="iconChose" :class="{ 'visibility': currLanguage != 'tw' }"
+                        src="@/assets/images/icon_chose.png" />
                 </div>
                 <div class="languageItem" :class="{ 'chosedLanguage': currLanguage == 'en' }" @click="changeLanguage('en')">
                     <span>English</span>
-                    <img class="iconChose" src="@/assets/images/icon_chose.png" v-if="currLanguage == 'en'" />
+                    <img class="iconChose" :class="{ 'visibility': currLanguage != 'en' }"
+                        src="@/assets/images/icon_chose.png" />
                 </div>
             </div>
             <!-- 是否开启日志 -->
             <div class="item">
                 <span>{{ $t('logRecording') }}</span>
-                <el-switch v-model="logOpen"></el-switch>
+                <div class="switch" :class="{ 'isChecked': logOpen }" @click="openLog">
+                    <span class="switchCore"></span>
+                </div>
+                <!-- <el-switch v-model="logOpen"></el-switch> -->
             </div>
         </div>
     </div>
@@ -172,6 +178,9 @@ export default {
             this.$router.push({
                 name: "connect"
             })
+        },
+        openLog() {
+            this.logOpen = !this.logOpen
         }
     }
 }
@@ -203,15 +212,15 @@ export default {
 .tabBox {
     position: absolute;
     left: 0;
-    top: 13vh;
-    width: 23.3854vw;
+    top: 6.9167vw;
+    width: 23.4167vw;
     height: 17.0833vw;
 
     .tab {
         position: absolute;
         left: 20%;
-        width: 23.3854vw;
-        height: 6.1458vw;
+        width: 23.4167vw;
+        height: 6.1667vw;
         font-size: 1.8229vw;
         font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
         font-weight: normal;
@@ -222,9 +231,9 @@ export default {
     }
 
     .txt {
-        top: 0;
         width: 23.3854vw;
         height: 6.1458vw;
+        margin-bottom: 1.9167vw;
     }
 
     .activeTab {
@@ -257,18 +266,18 @@ export default {
 
 .listBox {
     position: absolute;
-    right: 10%;
-    top: 13vh;
-    width: 63.5625vw;
-    height: 39.5vw;
+    right: 3.625vw;
+    top: 6.2917vw;
+    width: 65.2083vw;
+    height: 38vw;
     overflow-y: auto;
 
     .item {
-        width: 56.6667vw;
-        height: 15.93vh;
+        width: 55.625vw;
+        height: 7.375vw;
         background-color: rgba(255, 255, 255, 0.08);
         margin-bottom: 1.5219vw;
-        padding: 0 2.4479vw;
+        padding: 0 3.5vw 0 2.4583vw;
         font-size: 1.7188vw;
         font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
         font-weight: normal;
@@ -276,6 +285,7 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        border-radius: .25vw;
     }
 
     .languageActivated {
@@ -311,9 +321,75 @@ export default {
         width: 1.25vw;
         height: 1.25vw;
     }
+
+    .visibility {
+        visibility: hidden;
+    }
 }
 
 .listBox::-webkit-scrollbar {
-    width: 0;
+    width: .25vw;
 }
-</style>
+
+.listBox::-webkit-scrollbar-track {
+    background-color: rgba(81, 82, 85, 0.2);
+}
+
+.listBox::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: .125vw;
+}
+
+.listBox::-webkit-scrollbar-corner {
+    background-color: transparent;
+}
+
+// .listBox::-webkit-scrollbar {
+//     width: 0;
+// }
+
+.switch {
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+    font-size: 14px;
+    line-height: 20px;
+    height: 2.7083vw;
+    vertical-align: middle;
+
+    .switchCore {
+        margin: 0;
+        position: relative;
+        width: 5.1667vw;
+        height: 2.7083vw;
+        border: .0417vw solid #DCDFE6;
+        outline: 0;
+        border-radius: 1.5vw;
+        box-sizing: border-box;
+        background: #DCDFE6;
+        transition: border-color .3s, background-color .3s;
+        vertical-align: middle;
+    }
+
+    .switchCore::after {
+        content: "";
+        position: absolute;
+        top: .2083vw;
+        left: 1px;
+        border-radius: 100%;
+        transition: all .3s;
+        width: 2.1667vw;
+        height: 2.1667vw;
+        background-color: #FFF;
+    }
+}
+
+.switch.isChecked .switchCore {
+    border-color: #44D8FB;
+    background-color: #44D8FB;
+}
+
+.switch.isChecked .switchCore::after {
+    left: 100%;
+    margin-left: -2.1667vw;
+}</style>

@@ -40,7 +40,10 @@
             <div class="connectTxt" style="font-size: 1.4583vw;">{{ $t('connectTips') }}</div>
         </div>
         <!-- 返回主界面及连接失败弹框 -->
-        <r-dialog class="connectTxt" v-if="returnMain || connectFail">
+        
+        
+        <div class="dialog-wrapper" v-if="returnMain || connectFail">
+            <r-dialog class="connectTxt">
             <div>
                 {{ $t('tip') }}
             </div>
@@ -56,6 +59,7 @@
                 <div class="btn blue">{{ $t('confirm') }}</div>
             </div>
         </r-dialog>
+        </div>
     </div>
 </template>
 
@@ -107,7 +111,7 @@ export default {
 }
 
 .connectTxt {
-    font-size: 1.7188vw;
+    font-size: 1.7083vw;
     font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
     font-weight: normal;
     color: #FFFFFF;
@@ -131,15 +135,15 @@ export default {
 .humanBody {
     position: absolute;
     bottom: 0;
-    left: 12.5vw;
-    width: 36.8229vw;
-    height: 36.3542vw;
+    left: 0;
+    width: 53.5vw;
+    height: 41.75vw;
     overflow: hidden;
 }
 
 .connectHuman {
-    height: 44.6354vw;
-    width: 36.8229vw;
+    height: 41.75vw;
+    width: 53.5vw;
 }
 
 .content {
@@ -177,14 +181,14 @@ export default {
     }
 
     .connectBox {
-        width: 26.09vw;
-        height: 12.2vw;
-        padding: 1.9271vw 2.3438vw 1.8229vw 2.3438vw;
+        width: 27.125vw;
+        height: 8.5833vw;
+        padding: 1.9167vw 1.8333vw 1.8333vw 1.8333vw;
         background-color: rgba(255, 255, 255, 0.1);
         border-radius: .2604vw;
         display: flex;
         flex-direction: column;
-        justify-content: space-around;
+        justify-content: space-between;
         align-items: center;
 
         .line {
@@ -203,7 +207,7 @@ export default {
 
     .toConnect {
         margin-top: 2.2917vw;
-        font-size: 1.9792vw;
+        font-size: 1.9583vw;
         font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
         font-weight: normal;
         color: #44D8FB;
@@ -222,21 +226,21 @@ export default {
 
 .btnBox {
     display: flex;
-    justify-content: space-around;
-    width: 30.2083vw;
-    font-size: 1.3542vw;
+    justify-content: space-between;
+    width: 27.125vw;
+    font-size: 1.7083vw;
 }
 
 .btn {
-    width: 9.8375vw;
-    height: 3.3333vw;
+    width: 12.3333vw;
+    height: 4.1667vw;
     border-radius: 2.2396vw;
-    line-height: 3.3333vw;
+    line-height: 4.1667vw;
     text-align: center;
 }
 
 .blue {
-    background: #44D8FB;
+    background: #0075B8;
 }
 
 .white {
@@ -249,14 +253,25 @@ export default {
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 999;
-    width: 30.2083vw;
-    height: 17.9167vw;
+    width: 35.7083vw;
+    height: 20.9167vw;
     background-image: url("../../assets/images/image_dialog.png");
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size: contain;
     display: flex;
     justify-content: space-around;
     align-items: center;
     flex-direction: column;
+}
+.dialog-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7); /* 半透明黑色背景 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

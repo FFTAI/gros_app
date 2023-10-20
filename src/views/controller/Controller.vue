@@ -32,11 +32,12 @@
         </div>
         <!-- 速度挡位调节 -->
         <div class="speedBox">
-          <img class="speedAdd" @click="speedChange('add')" src="@/assets/images/btn_add.png" />
-          <img class="speedReduce" @click="speedChange('reduce')" src="@/assets/images/btn_reduce.png" />
-          <span class="speedNum">{{ speed }}</span>
           <div class="speedControl">
-            <div class="speedDirection"></div>
+            <div class="speedDirection">
+              <img class="speedAdd" @click="speedChange('add')" src="@/assets/images/btn_add.png" />
+              <span class="speedNum">{{ speed }}</span>
+              <img class="speedReduce" @click="speedChange('reduce')" src="@/assets/images/btn_reduce.png" />
+            </div>
           </div>
         </div>
       </div>
@@ -131,11 +132,13 @@
       <!-- 当前状态提示 -->
       <div class="stateMessage" v-if="mode != ''">
         <span v-if="mode == 'zero'">{{ $t("zero") }}中...</span>
-        <span v-if="mode == 'waveLeftHand'">{{ $t("waveLeftHand") }}中...</span>
-        <span v-if="mode == 'waveTwoHand'">{{ $t("waveTwoHand") }}中...</span>
-        <span v-if="mode == 'swingArms'">{{ $t("swingArms") }}中...</span>
-        <span v-if="mode == 'markingTime'">{{ $t("markingTime") }}中...</span>
-        <span v-if="mode == 'greet'">{{ $t("greet") }}...</span>
+        <span v-if="mode == 'waveLeftHand'">{{ $t("waveLeftHand") }}...</span>
+        <span v-if="mode == 'waveTwoHand'">{{ $t("waveTwoHand") }}...</span>
+        <span v-if="mode == 'swingArms'">{{ $t("swingArms") }}...</span>
+        <span v-if="mode == 'markingTime'">{{ $t("markingTime") }}...</span>
+        <span v-if="mode == 'openHand'">{{ $t("openHand") }}...</span>
+        <span v-if="mode == 'grasp'">{{ $t("grasp") }}...</span>
+        <span v-if="mode == 'tremble'">{{ $t("tremble") }}...</span>
       </div>
     </div>
   </div>
@@ -459,22 +462,22 @@ export default {
         }
         if (e == "zero") {
           data.arm_action = "RESET"
-        }else if (e == "waveLeftHand") {
+        } else if (e == "waveLeftHand") {
           data.arm_action = "LEFT_ARM_WAVE"
-        }else if(e =="waveTwoHand") {
+        } else if (e == "waveTwoHand") {
           data.arm_action = "TWO_ARMS_WAVE"
-        }else if(e =="swingArms") {
+        } else if (e == "swingArms") {
           data.arm_action = "ARMS_SWING"
-        }else if(e =="greet") {
+        } else if (e == "greet") {
           data.arm_action = "HELLO"
-        }else if(e =="openHand") {
+        } else if (e == "openHand") {
           data.hand_action = "OPEN"
-        }else if(e =="grasp") {
+        } else if (e == "grasp") {
           data.hand_action = "GRASP"
-        }else if(e =="tremble") {
+        } else if (e == "tremble") {
           data.hand_action = "TREMBLE"
         }
-        this.$robot.upper_body(data.arm_action,data.hand_action)
+        this.$robot.upper_body(data.arm_action, data.hand_action)
       }
     },
     stopMode() {
@@ -548,70 +551,60 @@ export default {
 
 .calibration {
   position: absolute;
-  left: 5vw;
-  top: 8.3333vw;
+  left: 2.4583vw;
+  top: 7.375vw;
   z-index: 9999;
 
   .calibrationImg {
-    width: 3.9583vw;
-    height: 3.9583vw;
+    width: 4.9167vw;
+    height: 4.9167vw;
     margin: auto;
   }
 }
 
 .speedBox {
   position: absolute;
-  left: 3.5vw;
-  bottom: 6.9444vw;
+  left: 1.8333vw;
+  bottom: 5.25vw;
   z-index: 999;
 
-  .speedAdd {
-    position: absolute;
-    left: 2.0833vw;
-    top: 2.8646vw;
-    width: 2.0833vw;
-    height: 2.0833vw;
-    z-index: 1000;
-  }
-
-  .speedReduce {
-    position: absolute;
-    left: 2.0833vw;
-    top: 11.9792vw;
-    width: 2.0833vw;
-    height: 2.0833vw;
-    z-index: 1000;
-  }
-
-  .speedNum {
-    position: absolute;
-    left: 2.6042vw;
-    top: 7.5521vw;
-    font-size: 1.7188vw;
-    font-family: Roboto-Bold, Roboto;
-    font-weight: bold;
-    color: #ffffff;
-  }
-
   .speedControl {
-    width: 6.1806vw;
-    height: 16.6667vw;
-    background: #ffffff;
-    border-radius: 4.4271vw;
-    opacity: 0.4;
+    width: 6.1667vw;
+    height: 14.7917vw;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2.9583vw;
 
     .speedDirection {
-      width: 3.6979vw;
-      height: 14.0625vw;
-      background: #004c81;
-      border-radius: 4.9479vw;
-      opacity: 0.24;
+      width: 3.7083vw;
+      height: 12.3333vw;
+      background: rgba(0, 76, 129, 0.12);
+      border-radius: 2.4583vw;
       position: absolute;
       left: 1.28vw;
       bottom: 1.2556vw;
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
+      justify-content: space-around;
       align-items: center;
+
+      .speedAdd {
+        width: 1.375vw;
+        height: 1.375vw;
+        z-index: 1000;
+      }
+
+      .speedReduce {
+        width: 1.375vw;
+        height: 1.375vw;
+        z-index: 1000;
+      }
+
+      .speedNum {
+        font-size: 1.7188vw;
+        font-family: Roboto-Bold, Roboto;
+        font-weight: bold;
+        color: #ffffff;
+      }
     }
   }
 }
@@ -619,27 +612,27 @@ export default {
 .joystickBkL {
   position: absolute;
   left: 13.8889vw;
-  bottom: 7.9861vw;
+  bottom: 5.3333vw;
   z-index: 999;
 }
 
 .joystickBkR {
   position: absolute;
   right: 13.8889vw;
-  bottom: 7.9861vw;
+  bottom: 5.3333vw;
   z-index: 999;
 }
 
 #zone_joystickL {
   position: absolute;
   left: 20.8333vw;
-  bottom: 15.2778vw;
+  bottom: 12.625vw;
 }
 
 #zone_joystickR {
   position: absolute;
   right: 20.8333vw;
-  bottom: 15.2778vw;
+  bottom: 12.625vw;
 }
 
 .controlStatus {
