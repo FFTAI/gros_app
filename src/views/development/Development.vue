@@ -25,7 +25,8 @@
           style="border: none;width: 26.0417vw;height: 36.4583vw;margin-top:6.25vw;"
           v-show="activated == 'dynamic'"></iframe> -->
         <div class="humanModel" v-show="activated == 'dynamic'">
-          <iframe ref="unityIfm" style="border: none;margin-top: 3.125vw;width: 26.0417vw;height: 36.4583vw;" src="http://192.168.11.152:3002/"></iframe>
+          <iframe ref="unityIfm" style="border: none;margin-top: 3.125vw;width: 26.0417vw;height: 36.4583vw;"
+            src="http://192.168.11.152:3002/"></iframe>
         </div>
         <!-- log日志 -->
         <div class="logBox" v-show="activated == 'log'">
@@ -265,7 +266,7 @@ export default {
   components: { rtcHeader },
   data() {
     return {
-      activated: "dynamic",//动态展示:dynamic Log日志:log
+      activated: "log",//动态展示:dynamic Log日志:log
       logList: [],//日志列表
       //qa:弧度 qdota:弧度/秒 taua:力矩(牛.米)
       leftHipPitch_qa: "",
@@ -1051,15 +1052,17 @@ export default {
 
     .logBox {
       height: 30.8333vw;
-      width: 32.625vw;
-      padding: 1.2917vw 2.4583vw 0 2.4583vw;
+      width: 33.8333vw;
+      padding: 1.2917vw 1.25vw 0 2.4583vw;
       box-shadow: 0 .1042vw .2083vw 0 rgba(41, 72, 152, 0.01), 0 .4688vw .4167vw 0 rgba(41, 72, 152, 0.02);
       border-radius: .2604vw;
-      background-color: rgba(81, 82, 85, 0.1);
-      overflow-y: auto;
+      background-color: rgba(255, 255, 255, 0.1);
 
       .logMain {
         margin-top: 1.0417vw;
+        overflow-y: auto;
+        height: 26.6667vw;
+        width: 33.8333vw;
 
         .logTxt {
           font-size: 1.25vw;
@@ -1072,24 +1075,26 @@ export default {
           color: #DC4253;
         }
       }
+
+      .logMain::-webkit-scrollbar {
+        width: .5vw;
+      }
+
+      // .logMain::-webkit-scrollbar-track {
+      //   background-color: rgba(81, 82, 85, 0.1);
+      // }
+
+      .logMain::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: .125vw;
+      }
+
+      .logMain::-webkit-scrollbar-corner {
+        background-color: transparent;
+      }
     }
 
-    .logBox::-webkit-scrollbar {
-      width: .4688vw;
-    }
 
-    .logBox::-webkit-scrollbar-track {
-      background-color: rgba(81, 82, 85, 0.1);
-    }
-
-    .logBox::-webkit-scrollbar-thumb {
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: .1042vw;
-    }
-
-    .logBox::-webkit-scrollbar-corner {
-      background-color: transparent;
-    }
 
     .modelChose {
       height: 4.5021vw;
@@ -1132,18 +1137,18 @@ export default {
 
     .rightTitle {
       // height: 6vh;
-      width: 91%;
+      width: 51.0833vw;
       display: flex;
       justify-content: space-between;
       margin-left: 1.5625vw;
       padding: 1.0417vw 2.6042vw 0 2.6042vw;
-      background-color: rgba(81, 82, 85, 0.1);
+      background-color: rgba(255, 255, 255, 0.08);
     }
 
     .sideChart {
-      width: 100%;
+      width: 56.2917vw;
       height: 18vh;
-      background-color: rgba(81, 82, 85, 0.1);
+      background-color: rgba(255, 255, 255, 0.08);
       margin-left: 1.5625vw;
       display: flex;
       justify-content: space-between;
@@ -1172,9 +1177,10 @@ export default {
     }
 
     .rightTable {
-      width: 100%;
-      height: 35vh;
-      background-color: rgba(81, 82, 85, 0.1);
+      width: 51.375vw;
+      height: 15.5vw;
+      padding: 0 2.4583vw;
+      background-color: rgba(255, 255, 255, 0.08);
       margin-left: 1.5625vw;
 
       .tableItem {
@@ -1221,8 +1227,8 @@ export default {
     }
 
     .speedChart {
-      width: 100%;
-      height: 20vh;
+      width: 56.2917vw;
+      height: 9.25vw;
       margin: 1.5625vw 0 0 1.5625vw;
       display: flex;
       justify-content: space-between;
@@ -1234,14 +1240,14 @@ export default {
       }
 
       .xChart {
-        width: 49%;
-        background-color: rgba(81, 82, 85, 0.1);
+        width: 27.4583vw;
+        background-color: rgba(255, 255, 255, 0.08);
         display: flex;
       }
 
       .yChart {
-        width: 49%;
-        background-color: rgba(81, 82, 85, 0.1);
+        width: 27.4583vw;
+        background-color: rgba(255, 255, 255, 0.08);
         display: flex;
       }
 

@@ -62,5 +62,6 @@
     "zero": "歸零",
     "openHand": "手張開",
     "grasp": "抓握",
-    "tremble": "抖动手"
+    "tremble": "抖动手",
+    "endGrasping": "末端抓取"
 }

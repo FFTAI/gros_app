@@ -62,5 +62,6 @@
     "zero": "Zero",
     "openHand": "Open Hand",
     "grasp": "Grasp",
-    "tremble": "Tremble"
+    "tremble": "Tremble",
+    "endGrasping": "End Grasping"
 }
