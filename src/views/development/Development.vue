@@ -26,7 +26,7 @@
           v-show="activated == 'dynamic'"></iframe> -->
         <div class="humanModel" v-show="activated == 'dynamic'">
           <iframe ref="unityIfm" style="border: none;margin-top: 3.125vw;width: 26.0417vw;height: 36.4583vw;"
-            src="http://192.168.11.152:3002/"></iframe>
+            src="http://192.168.12.1:3002/"></iframe>
         </div>
         <!-- log日志 -->
         <div class="logBox" v-show="activated == 'log'">
@@ -1143,6 +1143,7 @@ export default {
       margin-left: 1.5625vw;
       padding: 1.0417vw 2.6042vw 0 2.6042vw;
       background-color: rgba(255, 255, 255, 0.08);
+      border-radius: .2604vw .2604vw 0 0;
     }
 
     .sideChart {
@@ -1162,7 +1163,7 @@ export default {
         display: flex;
         flex-direction: column;
         justify-content: space-around;
-        margin-bottom: 2.6042vw;
+        margin-bottom: 1.9583vw;
 
         .typeImg {
           width: 1.4583vw;
@@ -1182,6 +1183,7 @@ export default {
       padding: 0 2.4583vw;
       background-color: rgba(255, 255, 255, 0.08);
       margin-left: 1.5625vw;
+      border-radius: 0 0 .2604vw .2604vw;
 
       .tableItem {
         height: 16.67%;
@@ -1243,12 +1245,14 @@ export default {
         width: 27.4583vw;
         background-color: rgba(255, 255, 255, 0.08);
         display: flex;
+        border-radius: .2604vw .2604vw;
       }
 
       .yChart {
         width: 27.4583vw;
         background-color: rgba(255, 255, 255, 0.08);
         display: flex;
+        border-radius: .2604vw .2604vw;
       }
 
       .chatItem {

@@ -26,9 +26,10 @@ export default {
                     this.$router.push({
                         name: 'controller'
                     })
-                }, 1000);
+                }, 1000)
+            }else{
+                this.progress = this.progress + 2
             }
-            this.progress = this.progress + 2
         }, 10);
     },
     data() {

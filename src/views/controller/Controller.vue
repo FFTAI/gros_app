@@ -640,14 +640,14 @@ export default {
 
 #zone_joystickL {
   position: absolute;
-  left: 20.0625vw;
-  bottom: 12.6458vw;
+  left: 20.2625vw;
+  bottom: 12.8458vw;
 }
 
 #zone_joystickR {
   position: absolute;
-  right: 20.0625vw;
-  bottom: 12.6458vw;
+  right: 20.2625vw;
+  bottom: 12.8458vw;
 }
 
 .controlStatus {
