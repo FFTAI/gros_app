@@ -6,17 +6,18 @@
       <div class="headLogo" v-if="isLogo">
         <img class="leftSlot" src="@/assets/images/image_logo.png" />
       </div>
+      <div class="headAfter" v-if="isLogo"></div>
       <!-- 返回 -->
       <div class="headReturn" v-else @click="routerReturn()">
         <img class="return" src="@/assets/images/icon_return.png" />
       </div>
     </div>
     <slot></slot>
-    <div class="headButtonIn" v-if="((connected && isLogin) || !isLogin) && !isLoading">
+    <div class="headButtonIn" v-if="(connected || isController) && !isLoading">
       <!-- 电量和wifi -->
       <div class="spacing">
-        <img class="inImg" src="@/assets/images/icon_battery2.png" />
-        <span class="inTxt">43%</span>
+        <!-- <img class="inImg" src="@/assets/images/icon_battery2.png" />
+        <span class="inTxt">43%</span> -->
         <img class="inImg" style="height: 1.6667vw;width: 2.2917vw;" src="@/assets/images/icon_Wifi.png" />
       </div>
       <div class="divider spacing" v-if="camera"></div>
@@ -25,14 +26,14 @@
         <img class="inImg" src="@/assets/images/icon_cameraOn.png" v-if="cameraOn" />
         <img class="inImg" src="@/assets/images/icon_cameraOff.png" v-else />
       </div>
-      <div class="divider spacing"></div>
+      <div class="divider spacing" v-if="!isSetting"></div>
       <!-- 设置 -->
-      <div class="spacing" @click="setting()">
+      <div class="spacing" v-if="!isSetting" @click="setting()">
         <img class="inImg" src="@/assets/images/icon_setting.png" />
       </div>
     </div>
     <!-- 连接 -->
-    <div class="rightSlot" @click="toConnect()" v-if="!connected && isLogin && !isLoading">
+    <div class="rightSlot" @click="toConnect()" v-if="!connected && (isLogin || isSetting) && !isLoading">
       <span class="connect">{{ $t('connect') }}</span>
     </div>
   </div>
@@ -52,7 +53,6 @@ export default {
       type: Boolean,
       default: false
     },
-    // 是否是登录和设置页
     isLogin: {
       type: Boolean,
       default: false
@@ -62,6 +62,10 @@ export default {
       default: false
     },
     isController: {
+      type: Boolean,
+      default: false
+    },
+    isSetting: {
       type: Boolean,
       default: false
     }
@@ -126,23 +130,34 @@ export default {
   .leftSlot {
     width: 9.97vw;
     height: 2.604vw;
+    position: absolute;
+    left: 1.8333vw;
+    top: .9167vw;
   }
 
   .headLogo {
-    height: 4.4444vw;
-    width: 12.24vw;
-    background: #004c81;
-    padding-left: 1.24vw;
-    line-height: 5.8vw;
+    height: 4.4167vw;
+    width: 13.25vw;
+    background: #004B85;
+    // line-height: 5.8vw;
   }
 
-  .headLogo::after {
+  // .headLogo::after {
+  //   position: absolute;
+  //   content: " ";
+  //   border-width: 106px 64px;
+  //   border-style: solid;
+  //   border-color: #004c81 transparent transparent transparent;
+  // }
+
+  .headAfter{
+    width: 0;
+    height: 0;
+    border-right: 2vw solid transparent; /* 左边长 */
+    border-top: 4.45vw solid #004B85; /* 底边长，可以更改颜色 */
     position: absolute;
-    content: " ";
-    left: 11.218vw;
-    border-width: 4.4444vw 2.3021vw;
-    border-style: solid;
-    border-color: #004c81 transparent transparent transparent;
+    left: 13.2083vw;
+    top: 0;
   }
 
   // .headTitle {

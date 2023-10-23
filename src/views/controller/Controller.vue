@@ -23,29 +23,30 @@
           </div>
         </div>
         <!-- Stop按钮 -->
-        <div class="stopControl">
+        <!-- <div class="stopControl">
           <img class="stopImg" src="@/assets/images/icon_chStop.png" @click="stop()" />
-        </div>
+        </div> -->
         <!--校准-->
         <div class="calibration">
           <img class="calibrationImg" src="@/assets/images/icon_calibration.png" @click="calibration()" />
         </div>
         <!-- 速度挡位调节 -->
         <div class="speedBox">
-          <img class="speedAdd" @click="speedChange('add')" src="@/assets/images/btn_add.png" />
-          <img class="speedReduce" @click="speedChange('reduce')" src="@/assets/images/btn_reduce.png" />
-          <span class="speedNum">{{ speed }}</span>
           <div class="speedControl">
-            <div class="speedDirection"></div>
+            <div class="speedDirection">
+              <img class="speedAdd" @click="speedChange('add')" src="@/assets/images/btn_add.png" />
+              <span class="speedNum">{{ speed }}</span>
+              <img class="speedReduce" @click="speedChange('reduce')" src="@/assets/images/btn_reduce.png" />
+            </div>
           </div>
         </div>
       </div>
       <!-- 虚拟摇杆 joystick-start-->
-      <div class="joystickBkL">
-        <img style="width: 13.8889vw; height: 13.8889vw; z-index: 999" src="@/assets/images/image_direction.png" />
+      <div class="joystickBorder" style="left: 11.0833vw;">
+        <img class="joystickImg" src="@/assets/images/image_direction.png" />
       </div>
-      <div class="joystickBkR">
-        <img style="width: 13.8889vw; height: 13.8889vw; z-index: 999" src="@/assets/images/image_direction.png" />
+      <div class="joystickBorder" style="right: 11.0833vw;">
+        <img class="joystickImg" src="@/assets/images/image_direction.png" />
       </div>
       <div id="zone_joystickL"></div>
       <div id="zone_joystickR"></div>
@@ -57,7 +58,7 @@
             <img class="actionImg" src="@/assets/images/icon_slowWalk.png" />
             <div>{{ $t("normalWalking") }}</div>
           </div>
-          <div class="actionItem" @click="choseMode('fastWalk')">
+          <!-- <div class="actionItem" @click="choseMode('fastWalk')">
             <img class="actionImg" src="@/assets/images/icon_fastWalk.png" />
             <div>{{ $t("fastWalking") }}</div>
           </div>
@@ -68,7 +69,7 @@
           <div class="actionItem" @click="choseMode('fastRun')">
             <img class="actionImg" src="@/assets/images/icon_fastRun.png" />
             <div>{{ $t("fastRunning") }}</div>
-          </div>
+          </div> -->
         </div>
         <!-- 原地运动展开 -->
         <div class="actionBox" v-else-if="controlExpand && controlModel == 'inPlace'">
@@ -77,44 +78,72 @@
             <div>{{ $t("markingTime") }}</div>
           </div>
           <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_shakeHands.png" @click="choseMode('shakeHands')" />
-            <div>{{ $t("shakeHands") }}</div>
+            <img class="actionImg" src="@/assets/images/icon_zero.png" @click="choseMode('zero')" />
+            <div>{{ $t("zero") }}</div>
           </div>
           <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_wave.png" @click="choseMode('wave')" />
-            <div>{{ $t("wave") }}</div>
+            <img class="actionImg" src="@/assets/images/icon_waveLeft.png" @click="choseMode('waveLeftHand')" />
+            <div>{{ $t("waveLeftHand") }}</div>
+          </div>
+          <div class="actionItem">
+            <img class="actionImg" src="@/assets/images/icon_waveTwo.png" @click="choseMode('waveTwoHand')" />
+            <div>{{ $t("waveTwoHand") }}</div>
+          </div>
+          <div class="actionItem">
+            <img class="actionImg" src="@/assets/images/icon_swingArms.png" @click="choseMode('swingArms')" />
+            <div>{{ $t("swingArms") }}</div>
+          </div>
+          <div class="actionItem">
+            <img class="actionImg" src="@/assets/images/icon_greet.png" @click="choseMode('greet')" />
+            <div>{{ $t("greet") }}</div>
+          </div>
+          <div class="actionItem">
+            <img class="actionImg" src="@/assets/images/icon_open.png" @click="choseMode('openHand')" />
+            <div>{{ $t("openHand") }}</div>
+          </div>
+          <div class="actionItem">
+            <img class="actionImg" src="@/assets/images/icon_grasp.png" @click="choseMode('grasp')" />
+            <div>{{ $t("grasp") }}</div>
+          </div>
+          <div class="actionItem">
+            <img class="actionImg" src="@/assets/images/icon_tremble.png" @click="choseMode('tremble')" />
+            <div>{{ $t("tremble") }}</div>
           </div>
         </div>
         <!-- action box -->
         <div class="controlBox">
+          <!-- 站立 -->
+          <div :class="['choseBox', 'txt', controlModel == 'stand' ? 'chose' : '']" @click="changeControl('stand')">
+            {{ $t("stand") }}
+          </div>
           <!-- 步态运动 -->
-          <div
-            :class="['choseBox', 'txt', controlModel != 'gait' ? '' : controlExpand? 'choseBk': 'chose']"
+          <div :class="['choseBox', 'txt', controlModel != 'gait' ? '' : controlExpand ? 'choseBk' : 'chose']"
             @click="changeControl('gait')">
             {{ $t("gaitMotion") }}
           </div>
-          <!-- 站立 -->
-          <div :class="['choseBox', 'txt', controlModel == 'stand' ? 'chose' : '']" style="width: 6.25vw;"
-            @click="changeControl('stand')">
-            {{ $t("stand") }}
-          </div>
           <!-- 原地运动 -->
-          <div
-            :class="['choseBox', 'txt', controlModel != 'inPlace' ? '' : controlExpand? 'choseBk': 'chose']"
+          <div :class="['choseBox', 'txt', controlModel != 'inPlace' ? '' : controlExpand ? 'choseBk' : 'chose']"
             @click="changeControl('inPlace')">
             {{ $t("inPlaceMotion") }}
+          </div>
+          <!-- 末端抓取 -->
+          <div :class="['choseBox', 'txt', controlModel == 'endGrasping' ? 'chose' : '']"
+            @click="changeControl('endGrasping')">
+            {{ $t("endGrasping") }}
           </div>
         </div>
       </div>
       <!-- 当前状态提示 -->
       <div class="stateMessage" v-if="mode != ''">
-        <span v-if="mode == 'slowWalk'">{{ $t("normalWalking") }}中...</span>
-        <span v-if="mode == 'fastWalk'">{{ $t("fastWalking") }}中...</span>
-        <span v-if="mode == 'slowRun'">{{ $t("slowRunning") }}中...</span>
-        <span v-if="mode == 'fastRun'">{{ $t("fastRunning") }}中...</span>
-        <span v-if="mode == 'markingTime'">{{ $t("markingTime") }}中...</span>
-        <span v-if="mode == 'shakeHands'">{{ $t("shakeHands") }}...</span>
-        <span v-if="mode == 'wave'">{{ $t("wave") }}...</span>
+        <span v-if="mode == 'zero'">{{ $t("zero") }}中...</span>
+        <span v-if="mode == 'slowWalk'">{{ $t("normalWalking") }}...</span>
+        <span v-if="mode == 'waveLeftHand'">{{ $t("waveLeftHand") }}...</span>
+        <span v-if="mode == 'waveTwoHand'">{{ $t("waveTwoHand") }}...</span>
+        <span v-if="mode == 'swingArms'">{{ $t("swingArms") }}...</span>
+        <span v-if="mode == 'markingTime'">{{ $t("markingTime") }}...</span>
+        <span v-if="mode == 'openHand'">{{ $t("openHand") }}...</span>
+        <span v-if="mode == 'grasp'">{{ $t("grasp") }}...</span>
+        <span v-if="mode == 'tremble'">{{ $t("tremble") }}...</span>
       </div>
     </div>
   </div>
@@ -256,7 +285,7 @@ export default {
       if (Math.abs(velocity) < 0.1) {
         velocity = 0;
       }
-      this.operateWalk(angle * -0.2, (velocity * this.speed) / 6.25);
+      this.operateWalk(angle * -0.5, (velocity * this.speed) / 6.25);
 
     },
     // 手柄按键
@@ -314,7 +343,8 @@ export default {
     //开启左侧虚拟触控摇杆
     startJoystickL() {
       const _this = this;
-      let sWidth = parseInt(this.screenWidth * 16.67 * 0.01);
+      let sWidth = parseInt(this.screenWidth * 14.8 * 0.01);
+      console.log(this.screenWidth, sWidth)
       _this.joystickL = nipplejs.create({
         zone: document.getElementById("zone_joystickL"),
         mode: "static",
@@ -346,7 +376,7 @@ export default {
             if (Math.abs(velocity) < 0.1) {
               velocity = 0;
             }
-            _this.operateWalk(angle * -0.2, (velocity * _this.speed) / 6.25);
+            _this.operateWalk(angle * -0.5, (velocity * _this.speed) / 6.25);
           }
         })
         .on("end", function (evt, data) {
@@ -361,7 +391,7 @@ export default {
     //开启右侧虚拟触控摇杆
     startJoystickR() {
       const _this = this;
-      let sWidth = parseInt(this.screenWidth * 16.67 * 0.01);
+      let sWidth = parseInt(this.screenWidth * 14.8 * 0.01);
       _this.joystickR = nipplejs.create({
         zone: document.getElementById("zone_joystickR"),
         mode: "static",
@@ -418,19 +448,45 @@ export default {
     //切换当前控制模式
     changeControl(e) {
       this.mode = "";
-      if (e != "stand") {
-        this.controlExpand = true;
-      } else {
+      if (e == "stand") {
         this.$robot.stand()
         this.controlExpand = false;
+      } else if (e == "endGrasping") {
+        this.controlExpand = false;
+      } else {
+        this.controlExpand = true;
       }
       this.controlModel = e;
     },
     choseMode(e) {
       this.controlExpand = false;
       this.mode = e;
-      if (e == "markingTime")
+      if (e == "markingTime") {
         this.$robot.walk(0, 0);
+      } else {
+        let data = {
+          arm_action: "",
+          hand_action: ""
+        }
+        if (e == "zero") {
+          data.arm_action = "RESET"
+        } else if (e == "waveLeftHand") {
+          data.arm_action = "LEFT_ARM_WAVE"
+        } else if (e == "waveTwoHand") {
+          data.arm_action = "TWO_ARMS_WAVE"
+        } else if (e == "swingArms") {
+          data.arm_action = "ARMS_SWING"
+        } else if (e == "greet") {
+          data.arm_action = "HELLO"
+        } else if (e == "openHand") {
+          data.hand_action = "OPEN"
+        } else if (e == "grasp") {
+          data.hand_action = "GRASP"
+        } else if (e == "tremble") {
+          data.hand_action = "TREMBLE"
+        }
+        this.$robot.upper_body(data.arm_action, data.hand_action)
+      }
     },
     stopMode() {
       this.mode = "";
@@ -503,143 +559,134 @@ export default {
 
 .calibration {
   position: absolute;
-  left: 5vw;
-  top: 8.3333vw;
+  left: 2.4583vw;
+  top: 7.375vw;
   z-index: 9999;
 
   .calibrationImg {
-    width: 3.9583vw;
-    height: 3.9583vw;
+    width: 4.9167vw;
+    height: 4.9167vw;
     margin: auto;
   }
 }
 
 .speedBox {
   position: absolute;
-  left: 3.5vw;
-  bottom: 6.9444vw;
+  left: 1.8333vw;
+  bottom: 5.25vw;
   z-index: 999;
 
-  .speedAdd {
-    position: absolute;
-    left: 2.0833vw;
-    top: 2.8646vw;
-    width: 2.0833vw;
-    height: 2.0833vw;
-    z-index: 1000;
-  }
-
-  .speedReduce {
-    position: absolute;
-    left: 2.0833vw;
-    top: 11.9792vw;
-    width: 2.0833vw;
-    height: 2.0833vw;
-    z-index: 1000;
-  }
-
-  .speedNum {
-    position: absolute;
-    left: 2.6042vw;
-    top: 7.5521vw;
-    font-size: 1.7188vw;
-    font-family: Roboto-Bold, Roboto;
-    font-weight: bold;
-    color: #ffffff;
-  }
-
   .speedControl {
-    width: 6.1806vw;
-    height: 16.6667vw;
-    background: #ffffff;
-    border-radius: 4.4271vw;
-    opacity: 0.4;
+    width: 6.1667vw;
+    height: 14.7917vw;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2.9583vw;
 
     .speedDirection {
-      width: 3.6979vw;
-      height: 14.0625vw;
-      background: #004c81;
-      border-radius: 4.9479vw;
-      opacity: 0.24;
+      width: 3.7083vw;
+      height: 12.3333vw;
+      background: rgba(0, 76, 129, 0.12);
+      border-radius: 2.4583vw;
       position: absolute;
       left: 1.28vw;
       bottom: 1.2556vw;
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
+      justify-content: space-around;
       align-items: center;
+
+      .speedAdd {
+        width: 1.375vw;
+        height: 1.375vw;
+        z-index: 1000;
+      }
+
+      .speedReduce {
+        width: 1.375vw;
+        height: 1.375vw;
+        z-index: 1000;
+      }
+
+      .speedNum {
+        font-size: 1.7188vw;
+        font-family: Roboto-Bold, Roboto;
+        font-weight: bold;
+        color: #ffffff;
+      }
     }
   }
 }
 
-.joystickBkL {
+
+
+.joystickBorder {
   position: absolute;
-  left: 13.8889vw;
-  bottom: 7.9861vw;
+  bottom: 3.7083vw;
+  width: 17.875vw;
+  height: 17.875vw;
+  border: 3px solid rgba(255, 255, 255, 0.3);
   z-index: 999;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.joystickBkR {
-  position: absolute;
-  right: 13.8889vw;
-  bottom: 7.9861vw;
+.joystickImg {
+  width: 11.0833vw;
+  height: 11.0833vw;
   z-index: 999;
 }
 
 #zone_joystickL {
   position: absolute;
-  left: 20.8333vw;
-  bottom: 15.2778vw;
+  left: 20.2625vw;
+  bottom: 12.8458vw;
 }
 
 #zone_joystickR {
   position: absolute;
-  right: 20.8333vw;
-  bottom: 15.2778vw;
+  right: 20.2625vw;
+  bottom: 12.8458vw;
 }
 
 .controlStatus {
   position: absolute;
-  left: 35.25vw;
-  bottom: 11vh;
-  width: 26.0313vw;
-  height: 10.2vh;
-  border-radius: 2.6042vw;
-  padding: .8854vw 1.25vw;
-  border: .1042vw solid rgba(255, 255, 255, 0.3);
+  left: 32.75vw;
+  bottom: 3.7083vw;
+  width: 31.75vw;
+  height: 3.4583vw;
+  border-radius: 2.7917vw;
+  padding: .9167vw 1.25vw;
+  border: .125vw solid rgba(255, 255, 255, 0.3);
   z-index: 999;
-  // display: flex;
-  // align-items: end;
-  // justify-content: center;
 }
 
 .controlActivated {
   position: absolute;
-  left: 35.25vw;
-  bottom: 11vh;
-  width: 27.0313vw;
-  height: 27.0833vw;
-  padding: .8854vw 1.25vw;
-  background-image: url("../../assets/images/image_controlBk.jpg");
-  background-repeat: no-repeat;
-  background-size: contain;
+  left: 32.75vw;
+  bottom: 3.7083vw;
+  width: 34.25vw;
+  height: 31.75vw;
+  // padding: .9167vw 1.25vw;
+  border-radius: 3.0833vw;
+  border: .125vw solid rgba(255, 255, 255, 0.3);
+  background-color: rgba(0, 75, 133, 0.5);
   z-index: 999;
-  // display: flex;
-  // flex-direction: column;
-  // align-items: center;
-  // justify-content: space-between;
 }
 
 .controlBox {
   position: absolute;
-  bottom: 1vw;
-  width: 26.0313vw;
+  left: 1.25vw;
+  bottom: .9167vw;
+  width: 31.75vw;
+  height: 3.4583vw;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 10vh;
 
   .choseBox {
-    width: 9.2708vw;
+    width: 8vw;
     height: 100%;
     display: flex;
     justify-content: center;
@@ -647,7 +694,7 @@ export default {
   }
 
   .chose {
-    background: rgba(0, 75, 133, 0.3);
+    background: rgba(0, 75, 133, 0.4);
     border-radius: 2.2396vw;
   }
 
@@ -657,7 +704,7 @@ export default {
   }
 
   .txt {
-    font-size: 1.7188vw;
+    font-size: 1.4583vw;
     font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
     font-weight: normal;
     color: #FFFFFF;
@@ -665,12 +712,15 @@ export default {
 }
 
 .actionBox {
-  position: absolute;
-  bottom: 7vw;
-  right: 1vw;
-  height: 15.1563vw;
-  width: 21.9792vw;
-  padding: 3.125vw 3.8021vw;
+  // position: absolute;
+  // bottom: 5vw;
+  // right: 1vw;
+  // height: 20vw;
+  // width: 22.8333vw;
+  height: 23vw;
+  width: 27.775vw;
+  // padding: 2.2083vw 4.3333vw 0 4.7917vw;
+  padding: 3.125vw 3.1333vw 0 3.5917vw;
   display: flex;
   flex-wrap: wrap;
 
@@ -684,8 +734,8 @@ export default {
   }
 
   .actionImg {
-    width: 2.2917vw;
-    height: 2.2917vw;
+    width: 2.7083vw;
+    height: 2.7083vw;
   }
 }
 
@@ -763,10 +813,10 @@ export default {
 .stateMessage {
   position: absolute;
   left: 50%;
-  top: 10vw;
+  top: 7.5vw;
   transform: translate(-50%, -50%);
-  width: 12.5vw;
-  height: 3.1073vw;
+  width: 14.7917vw;
+  height: 3.4583vw;
   background: rgba(0, 0, 0, 0.8);
   border-radius: 4px;
   z-index: 999;

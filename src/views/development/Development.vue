@@ -24,9 +24,10 @@
         <!-- <iframe ref="unityIfm" src="WebGL/index.html"
           style="border: none;width: 26.0417vw;height: 36.4583vw;margin-top:6.25vw;"
           v-show="activated == 'dynamic'"></iframe> -->
-          <iframe ref="unityIfm" src="http://192.168.11.152:3002/"
-          style="border: none;width: 26.0417vw;height: 36.4583vw;margin-top:6.25vw;"
-          v-show="activated == 'dynamic'"></iframe>
+        <div class="humanModel" v-show="activated == 'dynamic'">
+          <iframe ref="unityIfm" style="border: none;margin-top: 3.125vw;width: 26.0417vw;height: 36.4583vw;"
+            src="http://192.168.12.1:3002/"></iframe>
+        </div>
         <!-- log日志 -->
         <div class="logBox" v-show="activated == 'log'">
           <div class="logTitle">{{ $t("logoFile") }}</div>
@@ -57,7 +58,7 @@
         </div>
         <!-- 左右侧图表 -->
         <div class="sideChart">
-          <div class="chartSize" style="height: 14vw;" id="leftChart"></div>
+          <div class="chartSize" style="height: 10vw;" id="leftChart"></div>
           <!-- 切换: 度,度/秒，扭矩(牛.米) -->
           <div class="typeBox">
             <img class="typeImg" :class="{ 'notAct': activatedType != 'angle' }" @click="changeType('angle')"
@@ -67,7 +68,7 @@
             <img class="typeImg" :class="{ 'notAct': activatedType != 'torque' }" @click="changeType('torque')"
               src="@/assets/images/icon_torque.png" />
           </div>
-          <div class="chartSize" style="height: 14vw;" id="rightChart"></div>
+          <div class="chartSize" style="height: 10vw;" id="rightChart"></div>
         </div>
         <!-- 数值切换显示Table -->
         <div class="rightTable">
@@ -265,7 +266,7 @@ export default {
   components: { rtcHeader },
   data() {
     return {
-      activated: "dynamic",//动态展示:dynamic Log日志:log
+      activated: "log",//动态展示:dynamic Log日志:log
       logList: [],//日志列表
       //qa:弧度 qdota:弧度/秒 taua:力矩(牛.米)
       leftHipPitch_qa: "",
@@ -336,13 +337,15 @@ export default {
     //开启监听数据并处理
     this.$robot.on_message(data => {
       let currData = JSON.parse(data.data);
-      console.log("on_message===============", { 'jointStates': currData.data.states.jointStates });
+      // if(currData.data.log)
+      console.log(currData.data.log)
+      // console.log("on_message===============", { 'logBuffer': currData.data.log.logBuffer });
+      if (currData.data.log && currData.data.log.logBuffer)
+        this.getLog(currData.data.log.logBuffer);
       // if (this.$refs.unityIfm.contentWindow.myGameInstance)
       //   this.$refs.unityIfm.contentWindow.myGameInstance.SendMessage('UnityJsCommunication', 'ReceiveMsg', JSON.stringify({ 'jointStates': currData.data.states.jointStates }))
       if (this.robotCount == 50) {
         this.assignData(JSON.parse(data.data).data.states);
-        if (currData.data.log && currData.data.log.logBuffer)
-          this.getLog(currData.data.log.logBuffer);
         this.updateSideCharts(this.activatedItem, this.activatedType);
         this.updateSpeedCharts();
         this.robotCount = 1
@@ -1020,10 +1023,10 @@ export default {
 .mainBox {
   position: absolute;
   display: flex;
-  top: 11vh;
-  left: 2.4479vw;
-  height: 86vh;
-  width: 95.1042vw;
+  top: 5.7083vw;
+  left: 2.4583vw;
+  height: 38.0417vw;
+  width: 95.0833vw;
 
   .logTitle {
     font-size: 1.6146vw;
@@ -1040,22 +1043,26 @@ export default {
     align-items: center;
 
     .humanModel {
-      margin-top: 1.875vw;
-      width: 22.625vw;
-      height: 62vh;
+      width: 37.5417vw;
+      height: 32.125vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .logBox {
-      height: 70vh;
-      width: 34.8vw;
-      padding: 1.0417vw 1.5625vw 0 1.5625vw;
+      height: 30.8333vw;
+      width: 33.8333vw;
+      padding: 1.2917vw 1.25vw 0 2.4583vw;
       box-shadow: 0 .1042vw .2083vw 0 rgba(41, 72, 152, 0.01), 0 .4688vw .4167vw 0 rgba(41, 72, 152, 0.02);
       border-radius: .2604vw;
-      background-color: rgba(81, 82, 85, 0.1);
-      overflow-y: auto;
+      background-color: rgba(255, 255, 255, 0.1);
 
       .logMain {
         margin-top: 1.0417vw;
+        overflow-y: auto;
+        height: 26.6667vw;
+        width: 33.8333vw;
 
         .logTxt {
           font-size: 1.25vw;
@@ -1068,24 +1075,26 @@ export default {
           color: #DC4253;
         }
       }
+
+      .logMain::-webkit-scrollbar {
+        width: .5vw;
+      }
+
+      // .logMain::-webkit-scrollbar-track {
+      //   background-color: rgba(81, 82, 85, 0.1);
+      // }
+
+      .logMain::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: .125vw;
+      }
+
+      .logMain::-webkit-scrollbar-corner {
+        background-color: transparent;
+      }
     }
 
-    .logBox::-webkit-scrollbar {
-      width: .4688vw;
-    }
 
-    .logBox::-webkit-scrollbar-track {
-      background-color: rgba(81, 82, 85, 0.1);
-    }
-
-    .logBox::-webkit-scrollbar-thumb {
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: .1042vw;
-    }
-
-    .logBox::-webkit-scrollbar-corner {
-      background-color: transparent;
-    }
 
     .modelChose {
       height: 4.5021vw;
@@ -1121,23 +1130,26 @@ export default {
 
   .rightBox {
     flex: 3;
-    width: 56.3021vw;
-    height: 85vh;
+    width: 56.2917vw;
+    height: 38.7917vw;
+    box-shadow: 0 .1042vw .2083vw 0 rgba(41, 72, 152, 0.01), 0 .4688vw .4167vw 0 rgba(41, 72, 152, 0.02);
+    border-radius: .2604vw;
 
     .rightTitle {
       // height: 6vh;
-      width: 91%;
+      width: 51.0833vw;
       display: flex;
       justify-content: space-between;
       margin-left: 1.5625vw;
       padding: 1.0417vw 2.6042vw 0 2.6042vw;
-      background-color: rgba(81, 82, 85, 0.1);
+      background-color: rgba(255, 255, 255, 0.08);
+      border-radius: .2604vw .2604vw 0 0;
     }
 
     .sideChart {
-      width: 100%;
-      height: 23vh;
-      background-color: rgba(81, 82, 85, 0.1);
+      width: 56.2917vw;
+      height: 18vh;
+      background-color: rgba(255, 255, 255, 0.08);
       margin-left: 1.5625vw;
       display: flex;
       justify-content: space-between;
@@ -1151,7 +1163,7 @@ export default {
         display: flex;
         flex-direction: column;
         justify-content: space-around;
-        margin-bottom: 2.6042vw;
+        margin-bottom: 1.9583vw;
 
         .typeImg {
           width: 1.4583vw;
@@ -1166,10 +1178,12 @@ export default {
     }
 
     .rightTable {
-      width: 100%;
-      height: 35vh;
-      background-color: rgba(81, 82, 85, 0.1);
+      width: 51.375vw;
+      height: 15.5vw;
+      padding: 0 2.4583vw;
+      background-color: rgba(255, 255, 255, 0.08);
       margin-left: 1.5625vw;
+      border-radius: 0 0 .2604vw .2604vw;
 
       .tableItem {
         height: 16.67%;
@@ -1215,8 +1229,8 @@ export default {
     }
 
     .speedChart {
-      width: 100%;
-      height: 20vh;
+      width: 56.2917vw;
+      height: 9.25vw;
       margin: 1.5625vw 0 0 1.5625vw;
       display: flex;
       justify-content: space-between;
@@ -1228,15 +1242,17 @@ export default {
       }
 
       .xChart {
-        width: 49%;
-        background-color: rgba(81, 82, 85, 0.1);
+        width: 27.4583vw;
+        background-color: rgba(255, 255, 255, 0.08);
         display: flex;
+        border-radius: .2604vw .2604vw;
       }
 
       .yChart {
-        width: 49%;
-        background-color: rgba(81, 82, 85, 0.1);
+        width: 27.4583vw;
+        background-color: rgba(255, 255, 255, 0.08);
         display: flex;
+        border-radius: .2604vw .2604vw;
       }
 
       .chatItem {

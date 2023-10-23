@@ -22,7 +22,7 @@
     "confirm": "Confirm",
     "cancel": "Cancel",
     "systemSettings": "System Settings",
-    "systemStatus": "System Status",
+    "systemInfo": "System Info",
     "connectionStatus": "Connection Status",
     "connected": "Connected",
     "notConnected": "Not Connected",
@@ -54,5 +54,14 @@
     "hipRoll": "Hip Roll",
     "knee": "Knee",
     "anklePitch": "Ankle Pitch",
-    "ankleRoll": "Ankle Roll"
+    "ankleRoll": "Ankle Roll",
+    "waveLeftHand": "Wave Left Hand",
+    "waveTwoHand": "Wave Two Hand",
+    "swingArms": "Swing Arms",
+    "greet": "Greet",
+    "zero": "Zero",
+    "openHand": "Open Hand",
+    "grasp": "Grasp",
+    "tremble": "Tremble",
+    "endGrasping": "End Grasping"
 }

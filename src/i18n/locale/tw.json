@@ -22,7 +22,7 @@
     "confirm": "確定",
     "cancel": "取消",
     "systemSettings": "系統設置",
-    "systemStatus": "系统状态",
+    "systemInfo": "系统信息",
     "connectionStatus": "系統狀態",
     "connected": "已連接",
     "notConnected": "未連接",
@@ -54,5 +54,14 @@
     "hipRoll": "髖部晃動",
     "knee": "膝蓋",
     "anklePitch": "踝部傾斜度",
-    "ankleRoll": "踝部晃動"
+    "ankleRoll": "踝部晃動",
+    "waveLeftHand": "左揮手",
+    "waveTwoHand": "雙臂揮手",
+    "swingArms": "甩胳膊",
+    "greet": "打招呼",
+    "zero": "歸零",
+    "openHand": "手張開",
+    "grasp": "抓握",
+    "tremble": "抖动手",
+    "endGrasping": "末端抓取"
 }

@@ -9,7 +9,7 @@
             <img class="imgLoading" src="@/assets/images/image_loading.png" />
         </div>
         <div class="progress">
-            <el-progress :stroke-width="20" :show-text="false" :percentage="progress"></el-progress>
+            <el-progress :stroke-width="20" :show-text="false" :percentage="progress" :color="'#44D8FB'"></el-progress>
         </div>
     </div>
 </template>
@@ -26,9 +26,10 @@ export default {
                     this.$router.push({
                         name: 'controller'
                     })
-                }, 1000);
+                }, 1000)
+            }else{
+                this.progress = this.progress + 2
             }
-            this.progress = this.progress + 2
         }, 10);
     },
     data() {
@@ -45,9 +46,7 @@ export default {
     position: relative;
     width: 100%;
     height: 100vh;
-    background-image: url("../../assets/images/image_bkg.png");
-    background-repeat: no-repeat;
-    background-size: cover;
+    background-color: #121E29;
 }
 
 .headState {
@@ -72,16 +71,17 @@ export default {
     transform: translate(-50%, -50%);
 
     .imgLoading {
-        width: 64.5833vw;
-        height: 17.7604vw;
+        width: 85.9167vw;
+        height: 28.8333vw;
     }
 }
 
 .progress {
     position: absolute;
     left: 50%;
-    bottom: 10vh;
-    width: 70%;
+    bottom: 4vw;
+    width: 73%;
     transform: translate(-50%, -50%);
+    
 }
 </style>
