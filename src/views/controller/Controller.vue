@@ -135,12 +135,13 @@
       </div>
       <!-- 当前状态提示 -->
       <div class="stateMessage" v-if="mode != ''">
-        <span v-if="mode == 'zero'">{{ $t("zero") }}中...</span>
+        <span v-if="mode == 'zero'">{{ $t("zero") }}...</span>
         <span v-if="mode == 'slowWalk'">{{ $t("normalWalking") }}...</span>
         <span v-if="mode == 'waveLeftHand'">{{ $t("waveLeftHand") }}...</span>
         <span v-if="mode == 'waveTwoHand'">{{ $t("waveTwoHand") }}...</span>
         <span v-if="mode == 'swingArms'">{{ $t("swingArms") }}...</span>
         <span v-if="mode == 'markingTime'">{{ $t("markingTime") }}...</span>
+        <span v-if="mode == 'greet'">{{ $t("greet") }}...</span>
         <span v-if="mode == 'openHand'">{{ $t("openHand") }}...</span>
         <span v-if="mode == 'grasp'">{{ $t("grasp") }}...</span>
         <span v-if="mode == 'tremble'">{{ $t("tremble") }}...</span>
