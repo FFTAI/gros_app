@@ -17,7 +17,7 @@
                 </div>
             </div>
             <!-- 设备设置 -->
-            <!-- <div class="txt" :class="{ 'activeTab': isActivated == 'deviceSettings' }" style="top: 47%;"
+            <div class="txt" :class="{ 'activeTab': isActivated == 'deviceSettings' }" style="top: 47%;"
                 @click="changeTab('deviceSettings')">
                 <div class="tab" :class="{ 'opt': isActivated != 'deviceSettings' }">
                     <img class="iconSysState" src="@/assets/images/icon_sysState.png" />
@@ -25,7 +25,7 @@
                         {{ $t('deviceSettings') }}
                     </div>
                 </div>
-            </div> -->
+            </div>
             <!-- 系统信息 -->
             <div class="txt" :class="{ 'activeTab': isActivated == 'status' }" style="top: 94%;"
                 @click="changeTab('status')">
@@ -64,7 +64,7 @@
             </div>
         </div>
         <!-- 设备设置标签页 -->
-        <!-- <div class="listBox" v-if="isActivated == 'deviceSettings'">
+        <div class="listBox" v-if="isActivated == 'deviceSettings'">
             <div class="item">
                 <span>{{ $t('defaultNickname') }}</span>
                 <span>小傅小傅</span>
@@ -72,23 +72,26 @@
             <div class="item">
                 <span>{{ $t('customNickname') }}</span>
                 <div>
-                    <span style="margin-right: .625vw;">当前唤醒词：小傅小傅</span>
-                    <el-switch v-model="nickname"></el-switch>
+                    <span>小傅小傅</span>
                 </div>
             </div>
             <div class="item">
                 <span>{{ $t('volumeAdjustment') }}</span>
-                <el-slider style="width: 25vw;" v-model="volume"></el-slider>
+                <el-slider style="width: 25vw;font-size: initial;" v-model="volume"></el-slider>
             </div>
             <div class="item">
                 <span>{{ $t('microphone') }}</span>
-                <el-switch v-model="microphone"></el-switch>
+                <div class="switch" :class="{ 'isChecked': logOpen }">
+                    <span class="switchCore"></span>
+                </div>
             </div>
             <div class="item">
                 <span>{{ $t('speechRecognition') }}</span>
-                <el-switch v-model="speechs"></el-switch>
+                <div class="switch" :class="{ 'isChecked': logOpen }">
+                    <span class="switchCore"></span>
+                </div>
             </div>
-        </div> -->
+        </div>
         <!-- 系统信息标签页 -->
         <div class="listBox" v-if="isActivated == 'status'">
             <div class="item">
@@ -132,7 +135,6 @@
                 <div class="switch" :class="{ 'isChecked': logOpen }" @click="openLog">
                     <span class="switchCore"></span>
                 </div>
-                <!-- <el-switch v-model="logOpen"></el-switch> -->
             </div>
         </div>
     </div>
@@ -392,4 +394,5 @@ export default {
 .switch.isChecked .switchCore::after {
     left: 100%;
     margin-left: -2.1667vw;
-}</style>
+}
+</style>
