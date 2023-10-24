@@ -63,5 +63,8 @@
     "openHand": "Open Hand",
     "grasp": "Grasp",
     "tremble": "Tremble",
-    "endGrasping": "End Grasping"
+    "endGrasping": "End Grasping",
+    "productModel": "Product Model",
+    "serialNumber": "Serial Number",
+    "selfCheck": "Self Check"
 }

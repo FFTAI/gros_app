@@ -72,12 +72,16 @@
             <div class="item">
                 <span>{{ $t('customNickname') }}</span>
                 <div>
-                    <span>小傅小傅</span>
+                    <span class="itemTxt">小傅小傅</span>
+                    <img class="iconTo" src="@/assets/images/icon_to.png" />
                 </div>
             </div>
             <div class="item">
                 <span>{{ $t('volumeAdjustment') }}</span>
-                <el-slider style="width: 25vw;font-size: initial;" v-model="volume"></el-slider>
+                <div style="display: flex;align-items: center;">
+                    <el-slider class="splider" v-model="volume"></el-slider>
+                    <span style="font-size: 1.4583vw;">{{ volume }}</span>
+                </div>
             </div>
             <div class="item">
                 <span>{{ $t('microphone') }}</span>
@@ -94,6 +98,14 @@
         </div>
         <!-- 系统信息标签页 -->
         <div class="listBox" v-if="isActivated == 'status'">
+            <div class="item">
+                <span>{{ $t('productModel') }}</span>
+                <span>GR-1R</span>
+            </div>
+            <div class="item">
+                <span>{{ $t('serialNumber') }}</span>
+                <span>GR1R23OT0001</span>
+            </div>
             <div class="item">
                 <span>{{ $t('robotVersion') }}</span>
                 <span>V1.0.0</span>
@@ -327,6 +339,13 @@ export default {
     .visibility {
         visibility: hidden;
     }
+
+    .splider {
+        width: 24.625vw;
+        font-size: initial;
+        display: inline-block;
+        margin-right: 1.25vw;
+    }
 }
 
 .listBox::-webkit-scrollbar {
@@ -354,8 +373,8 @@ export default {
     display: inline-flex;
     align-items: center;
     position: relative;
-    font-size: 14px;
-    line-height: 20px;
+    font-size: .5833vw;
+    line-height: .8333vw;
     height: 2.7083vw;
     vertical-align: middle;
 
@@ -377,7 +396,7 @@ export default {
         content: "";
         position: absolute;
         top: .2083vw;
-        left: 1px;
+        left: .0417vw;
         border-radius: 100%;
         transition: all .3s;
         width: 2.1667vw;
@@ -394,5 +413,10 @@ export default {
 .switch.isChecked .switchCore::after {
     left: 100%;
     margin-left: -2.1667vw;
+}
+
+.el-slider__button {
+    width: 32px;
+    height: 32px;
 }
 </style>

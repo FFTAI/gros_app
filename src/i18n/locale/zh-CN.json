@@ -63,5 +63,8 @@
     "openHand": "手张开",
     "grasp": "抓握",
     "tremble": "抖动手",
-    "endGrasping": "末端抓取"
+    "endGrasping": "末端抓取",
+    "productModel": "产品型号",
+    "serialNumber": "序列号",
+    "selfCheck": "设备自检"
 }
