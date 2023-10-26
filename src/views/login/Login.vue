@@ -28,7 +28,7 @@
 <script>
 import rtcHeader from '@/components/rtcHeader.vue';
 import { mapState } from "vuex";
-import { get_robot_type } from "gros-client";
+import { get_robot_type } from "rocs-client";
 export default {
     components: { rtcHeader },
     computed: {
