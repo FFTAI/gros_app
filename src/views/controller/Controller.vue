@@ -54,29 +54,13 @@
       <div :class="controlExpand ? 'controlActivated' : 'controlStatus'" ref="controlRef">
         <!-- 步态运动展开 -->
         <div class="actionBox" v-if="controlExpand && controlModel == 'gait'">
-          <div class="actionItem" @click="choseMode('slowWalk')">
-            <img class="actionImg" src="@/assets/images/icon_slowWalk.png" />
-            <div>{{ $t("normalWalking") }}</div>
-          </div>
-          <!-- <div class="actionItem" @click="choseMode('fastWalk')">
-            <img class="actionImg" src="@/assets/images/icon_fastWalk.png" />
-            <div>{{ $t("fastWalking") }}</div>
-          </div>
-          <div class="actionItem" @click="choseMode('slowRun')">
-            <img class="actionImg" src="@/assets/images/icon_slowRun.png" />
-            <div>{{ $t("slowRunning") }}</div>
-          </div>
-          <div class="actionItem" @click="choseMode('fastRun')">
-            <img class="actionImg" src="@/assets/images/icon_fastRun.png" />
-            <div>{{ $t("fastRunning") }}</div>
-          </div> -->
-        </div>
-        <!-- 原地运动展开 -->
-        <div class="actionBox" v-else-if="controlExpand && controlModel == 'inPlace'">
           <div class="actionItem">
             <img class="actionImg" src="@/assets/images/icon_markingTime.png" @click="choseMode('markingTime')" />
             <div>{{ $t("markingTime") }}</div>
           </div>
+        </div>
+        <!-- 原地运动展开 -->
+        <div class="actionBox" v-else-if="controlExpand && controlModel == 'inPlace'">
           <div class="actionItem">
             <img class="actionImg" src="@/assets/images/icon_zero.png" @click="choseMode('zero')" />
             <div>{{ $t("zero") }}</div>
@@ -86,10 +70,6 @@
             <div>{{ $t("waveLeftHand") }}</div>
           </div>
           <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_waveTwo.png" @click="choseMode('waveTwoHand')" />
-            <div>{{ $t("waveTwoHand") }}</div>
-          </div>
-          <div class="actionItem">
             <img class="actionImg" src="@/assets/images/icon_swingArms.png" @click="choseMode('swingArms')" />
             <div>{{ $t("swingArms") }}</div>
           </div>
@@ -97,6 +77,11 @@
             <img class="actionImg" src="@/assets/images/icon_greet.png" @click="choseMode('greet')" />
             <div>{{ $t("greet") }}</div>
           </div>
+          <div class="actionItem"></div>
+          <div class="actionItem"></div>
+          <div class="actionItem"></div>
+        </div>
+        <div class="actionBox" v-else-if="controlExpand && controlModel == 'endGrasping'">
           <div class="actionItem">
             <img class="actionImg" src="@/assets/images/icon_open.png" @click="choseMode('openHand')" />
             <div>{{ $t("openHand") }}</div>
@@ -127,7 +112,7 @@
             {{ $t("inPlaceMotion") }}
           </div>
           <!-- 末端抓取 -->
-          <div :class="['choseBox', 'txt', controlModel == 'endGrasping' ? 'chose' : '']"
+          <div :class="['choseBox', 'txt', controlModel != 'endGrasping' ? '' : controlExpand ? 'choseBk' : 'chose']"
             @click="changeControl('endGrasping')">
             {{ $t("endGrasping") }}
           </div>
@@ -171,7 +156,7 @@ export default {
       speed: 1,//当前速度档位 1-5
       current_speed: 0, //当前速度，默认0
       videoSrc: "", //摄像头视频路径
-      controlModel: "gait",//当前运动 gait:步态 inPlace:原地
+      controlModel: "gait",//当前运动 gait:步态 inPlace:原地 endGrasping:末端抓取
       controlExpand: false,//运动选择栏展开
       mode: "",//当前运动模式
       headBoxVisible: false,//模式选择框显隐
@@ -452,8 +437,6 @@ export default {
       if (e == "stand") {
         this.$robot.stand()
         this.controlExpand = false;
-      } else if (e == "endGrasping") {
-        this.controlExpand = false;
       } else {
         this.controlExpand = true;
       }
@@ -724,10 +707,14 @@ export default {
   padding: 3.125vw 3.1333vw 0 3.5917vw;
   display: flex;
   flex-wrap: wrap;
+  // justify-content: flex-start;
+  // align-items: flex-start;
 
   .actionItem {
     text-align: center;
     flex-basis: 33.33%;
+    // height: 6.6667vw;
+    // width: 7.6112vw;
     font-size: 1.25vw;
     font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
     font-weight: normal;
