@@ -66,5 +66,14 @@
     "endGrasping": "末端抓取",
     "productModel": "產品型號",
     "serialNumber": "序列號",
-    "selfCheck": "設備自檢"
+    "selfCheck": "設備自檢",
+    "powerOff": "設備關機",
+    "visionCamera": "視覺相機",
+    "controlModule": "控製模塊",
+    "actuator": "執行器",
+    "battery": "電池",
+    "screen": "熒幕",
+    "normal": "正常",
+    "anomaly": "異常",
+    "initialization": "初始化"
 }

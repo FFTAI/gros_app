@@ -45,10 +45,8 @@
             </div>
             <div class="item" v-if="!connected" @click="toConnect()">
                 <span>{{ $t('connectionStatus') }}</span>
-                <div>
-                    <span class="itemTxt">{{ $t('notConnected') }}</span>
-                    <img class="iconTo" src="@/assets/images/icon_to.png" />
-                </div>
+                <span class="itemTxt">{{ $t('notConnected') }}</span>
+                <img class="iconTo" src="@/assets/images/icon_to.png" />
             </div>
             <div class="item" v-if="connected">
                 <span>{{ $t('robotIP') }}</span>
@@ -71,28 +69,58 @@
             </div>
             <div class="item">
                 <span>{{ $t('customNickname') }}</span>
-                <div>
-                    <span class="itemTxt">小傅小傅</span>
-                    <img class="iconTo" src="@/assets/images/icon_to.png" />
-                </div>
+                <span class="itemTxt">小傅小傅</span>
+                <img class="iconTo" src="@/assets/images/icon_to.png" />
             </div>
             <div class="item">
                 <span>{{ $t('volumeAdjustment') }}</span>
-                <div style="display: flex;align-items: center;">
+                <div style="display: flex;align-items: center;justify-content: space-between;">
                     <el-slider class="splider" v-model="volume"></el-slider>
                     <span style="font-size: 1.4583vw;">{{ volume }}</span>
                 </div>
             </div>
-            <div class="item">
+            <div class="item" :class="{ 'expandLabel': microphoneOpen }">
                 <span>{{ $t('microphone') }}</span>
-                <div class="switch" :class="{ 'isChecked': logOpen }">
+                <div class="switch" :class="{ 'isChecked': microphoneOpen }" @click="openMicrophone()">
                     <span class="switchCore"></span>
                 </div>
             </div>
-            <div class="item">
+            <div class="item" style="border-radius: 0 0 .25vw .25vw;" v-if="microphoneOpen">
                 <span>{{ $t('speechRecognition') }}</span>
-                <div class="switch" :class="{ 'isChecked': logOpen }">
+                <div class="switch" :class="{ 'isChecked': speechOpen }" @click="openSpeech()">
                     <span class="switchCore"></span>
+                </div>
+            </div>
+            <div class="item" :class="{ 'expandLabel': selfCheckActivated }" @click="selfCheckExpand()">
+                <span>{{ $t('selfCheck') }}</span>
+                <span class="itemTxt">{{ $t('normal') }}</span>
+                <img class="iconTo" src="@/assets/images/icon_to.png" />
+            </div>
+            <div class="item scItem" v-if="selfCheckActivated">
+                <div class="scChild">
+                    <span>{{ $t('visionCamera') }}</span>
+                    <span>{{ $t('normal') }}</span>
+                </div>
+                <div class="scChild">
+                    <span>{{ $t('controlModule') }}</span>
+                    <span>{{ $t('normal') }}</span>
+                </div>
+                <div class="scChild">
+                    <span>{{ $t('actuator') }}</span>
+                    <span>{{ $t('normal') }}</span>
+                </div>
+                <div class="scChild">
+                    <span>{{ $t('battery') }}</span>
+                    <span style="color: #DC4253;">{{ $t('anomaly') }}</span>
+                </div>
+                <div class="scChild">
+                    <span>{{ $t('screen') }}</span>
+                    <span>{{ $t('normal') }}</span>
+                </div>
+            </div>
+            <div class="powerBtn">
+                <div>
+                    {{ $t('powerOff') }}
                 </div>
             </div>
         </div>
@@ -114,17 +142,15 @@
                 <span>{{ $t('appVersion') }}</span>
                 <span>V1.0.0</span>
             </div>
-            <div class="item" :class="{ 'languageActivated': languageActivated }" @click="languageExpand()">
+            <div class="item" :class="{ 'expandLabel': languageActivated }" @click="languageExpand()">
                 <span>{{ $t('appLanguage') }}</span>
-                <div>
-                    <span class="itemTxt" v-if="currLanguage == 'zh'">简体中文</span>
-                    <span class="itemTxt" v-if="currLanguage == 'tw'">繁体中文</span>
-                    <span class="itemTxt" v-if="currLanguage == 'en'">English</span>
-                    <img class="iconTo" src="@/assets/images/icon_to.png" />
-                </div>
+                <span class="itemTxt" v-if="currLanguage == 'zh'">简体中文</span>
+                <span class="itemTxt" v-if="currLanguage == 'tw'">繁体中文</span>
+                <span class="itemTxt" v-if="currLanguage == 'en'">English</span>
+                <img class="iconTo" src="@/assets/images/icon_to.png" />
             </div>
             <!-- 多语言选择 -->
-            <div class="item" v-if="languageActivated">
+            <div class="item" style="border-radius: 0 0 .25vw .25vw;" v-if="languageActivated">
                 <div class="languageItem" :class="{ 'chosedLanguage': currLanguage == 'zh' }" @click="changeLanguage('zh')">
                     <span>简体中文</span>
                     <img class="iconChose" :class="{ 'visibility': currLanguage != 'zh' }"
@@ -162,14 +188,17 @@ export default {
     },
     data() {
         return {
-            isActivated: 'status',//当前活动Tab
+            isActivated: 'deviceSettings',//当前活动Tab
             logOpen: true,
             nickname: false,
             microphone: false,
             speech: false,
             currLanguage: 'zh',
             languageActivated: false,
-            volume: 70
+            volume: 70,
+            microphoneOpen: true,
+            speechOpen: false,
+            selfCheckActivated: false
         }
     },
     mounted() {
@@ -195,6 +224,15 @@ export default {
         },
         openLog() {
             this.logOpen = !this.logOpen
+        },
+        openMicrophone() {
+            this.microphoneOpen = !this.microphoneOpen
+        },
+        openSpeech() {
+            this.speechOpen = !this.speechOpen
+        },
+        selfCheckExpand() {
+            this.selfCheckActivated = !this.selfCheckActivated
         }
     }
 }
@@ -290,7 +328,7 @@ export default {
         width: 55.625vw;
         height: 7.375vw;
         background-color: rgba(255, 255, 255, 0.08);
-        margin-bottom: 1.5219vw;
+        margin-bottom: 1.25vw;
         padding: 0 3.5vw 0 2.4583vw;
         font-size: 1.7188vw;
         font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
@@ -302,18 +340,21 @@ export default {
         border-radius: .25vw;
     }
 
-    .languageActivated {
+    .expandLabel {
         margin-bottom: 0;
+        border-radius: .25vw .25vw 0 0;
     }
 
     .iconTo {
+        position: absolute;
+        right: 5.4167vw;
         width: .625vw;
         height: 1.1979vw;
     }
 
     .itemTxt {
         color: #44D8FB;
-        margin-right: .625vw;
+        // margin-right: .625vw;
     }
 
     .languageItem {
@@ -345,6 +386,37 @@ export default {
         font-size: initial;
         display: inline-block;
         margin-right: 1.25vw;
+        position: absolute;
+        right: 9vw;
+    }
+
+    .powerBtn {
+        width: 34.5vw;
+        height: 4.1667vw;
+        background: #0075B8;
+        border-radius: 2.0833vw;
+        font-size: 1.7083vw;
+        font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
+        font-weight: normal;
+        color: #FFFFFF;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-left: 14.8333vw;
+        margin-top: 2.4583vw;
+    }
+
+    .scItem {
+        height: 25.3333vw;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: normal;
+        border-radius: 0 0 .25vw .25vw;
+        .scChild{
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
     }
 }
 
@@ -418,5 +490,4 @@ export default {
 .el-slider__button {
     width: 32px;
     height: 32px;
-}
-</style>
+}</style>

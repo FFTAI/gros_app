@@ -47,6 +47,12 @@ const routes = [
       import("../views/setting/Setting.vue"),
   },
   {
+    path: "/initialization",
+    name: "initialization",
+    component: () =>
+      import("../views/initialization/Initialization.vue"),
+  },
+  {
     path: "/",
     redirect: "/startUp"
   }

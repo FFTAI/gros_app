@@ -66,5 +66,14 @@
     "endGrasping": "End Grasping",
     "productModel": "Product Model",
     "serialNumber": "Serial Number",
-    "selfCheck": "Self Check"
+    "selfCheck": "Self Check",
+    "powerOff": "Power Off",
+    "visionCamera": "Vision Camera",
+    "controlModule": "Control Module",
+    "actuator": "Actuator",
+    "battery": "Battery",
+    "screen": "Screen",
+    "normal": "Normal",
+    "anomaly": "Anomaly",
+    "initialization": "Initialization"
 }
