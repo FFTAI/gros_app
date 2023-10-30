@@ -26,7 +26,7 @@
           v-show="activated == 'dynamic'"></iframe> -->
         <div class="humanModel" v-show="activated == 'dynamic'">
           <iframe ref="unityIfm" style="border: none;margin-top: 3.125vw;width: 26.0417vw;height: 36.4583vw;"
-            src="http://192.168.12.1:3002/"></iframe>
+            :src="iframeUrl"></iframe>
         </div>
         <!-- log日志 -->
         <div class="logBox" v-show="activated == 'log'">
@@ -261,9 +261,13 @@
 <script>
 import rtcHeader from "@/components/rtcHeader.vue";
 import * as echarts from "echarts";
+import { mapState } from "vuex";
 
 export default {
   components: { rtcHeader },
+  computed: {
+    ...mapState(["robot"])
+  },
   data() {
     return {
       activated: "log",//动态展示:dynamic Log日志:log
@@ -314,7 +318,8 @@ export default {
       activatedItem: "hipPitch",
       activatedType: "angle",
       headBoxVisible: false,
-      robotCount: 1
+      robotCount: 1,
+      iframeUrl: process.env.VUE_APP_URL.replace(process.env.VUE_APP_URL.split('//')[1].split(':')[1],'3002')
     };
   },
   created() {
@@ -324,18 +329,18 @@ export default {
   },
   beforeDestroy() {
     //关闭状态发送
-    this.$robot.disable_debug_state()
+    this.robot.disable_debug_state()
     //关闭所有监听
-    this.$robot.removeAllListeners()
+    this.robot.removeAllListeners()
   },
   mounted() {
     // 初始化图表
     this.initSideCharts();
     this.initSpeedCharts();
     //开启状态发送
-    this.$robot.enable_debug_state(50);
+    this.robot.enable_debug_state(50);
     //开启监听数据并处理
-    this.$robot.on_message(data => {
+    this.robot.on_message(data => {
       let currData = JSON.parse(data.data);
       // if(currData.data.log)
       console.log(currData.data.log)
@@ -352,8 +357,11 @@ export default {
       } else {
         this.robotCount = this.robotCount + 1
       }
-
     });
+    this.robot.on_close(()=>{
+      console.log("Websocket已断开。。。。。。")
+      this.$store.commit('setRobot')
+    })
   },
   watch: {
     //监听当前渲染图表的切换

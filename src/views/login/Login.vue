@@ -28,8 +28,9 @@
 <script>
 import rtcHeader from '@/components/rtcHeader.vue';
 import { mapState } from "vuex";
-import { get_robot_type } from "rocs-client";
+import Heartbeat from '@/mixin/Heartbeat';
 export default {
+    mixins: [Heartbeat],
     components: { rtcHeader },
     computed: {
         ...mapState(["connected"])
@@ -39,12 +40,6 @@ export default {
             // streamValue: '',
             // shValue: ''
         }
-    },
-    mounted() {
-        let ip = process.env.VUE_APP_URL.split('//')[1].split(':')
-        get_robot_type({ host: ip[0], port: ip[1] }).then(res => {
-            this.$store.commit('setConnected', true)
-        })
     },
     methods: {
         startExplore() {
