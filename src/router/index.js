@@ -47,6 +47,12 @@ const routes = [
       import("../views/setting/Setting.vue"),
   },
   {
+    path: "/robotStartup",
+    name: "robotStartup",
+    component: () =>
+      import("../views/robotStartup/RobotStartup.vue"),
+  },
+  {
     path: "/",
     redirect: "/startUp"
   }

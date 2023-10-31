@@ -63,5 +63,19 @@
     "openHand": "Open Hand",
     "grasp": "Grasp",
     "tremble": "Tremble",
-    "endGrasping": "End Grasping"
+    "endGrasping": "End Grasping",
+    "robotStartup": "Robot Startup",
+    "startupTip1": "Assume the calibration pose correctly",
+    "startupTip2": "Unlock the emergency stop button",
+    "startupTip3": "First, turn on the actuator power",
+    "startupTip4": "Then, press the computer's power button",
+    "startupWarning": "Note: Before unlocking the emergency stop switch, assume the calibration pose correctly, and maintain the calibration pose for more than 5 seconds after unlocking",
+    "connectTip": "Please connect to the robot's Wi-Fi in the network settings",
+    "calibrationTip1": "Align the shoulder grooves",
+    "calibrationTip2": "Keep the arms straight, palms facing inward, with a distance of 10cm from the hips",
+    "calibrationTip3": "Keep the waist upright",
+    "logTips": "After the program successfully starts, it will display 'init'",
+    "bootCalibration": "Boot calibration",
+    "deviceConnected": "The device is connected",
+    "programStartup": "Program startup"
 }

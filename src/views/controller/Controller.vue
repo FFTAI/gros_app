@@ -119,7 +119,7 @@
         </div>
       </div>
       <!-- 当前状态提示 -->
-      <div class="stateMessage" v-if="mode != ''">
+      <div class="stateMessage" v-if="mode != '' && upperAction">
         <span v-if="mode == 'zero'">{{ $t("zero") }}...</span>
         <span v-if="mode == 'slowWalk'">{{ $t("normalWalking") }}...</span>
         <span v-if="mode == 'waveLeftHand'">{{ $t("waveLeftHand") }}...</span>
@@ -159,7 +159,8 @@ export default {
       controlExpand: false,//运动选择栏展开
       mode: "",//当前运动模式
       headBoxVisible: false,//模式选择框显隐
-      camera: true//是否开启视频
+      camera: true,//是否开启视频
+      upperAction: false
     };
   },
   created() {
@@ -178,7 +179,7 @@ export default {
     let _this = this;
     this.$nextTick(() => {
       window.addEventListener("gamepadconnected", function (e) {
-        console.log('手柄',JSON.stringify(e))
+        console.log('手柄', JSON.stringify(e))
         _this.gamepadConnected = true;
         _this.startGamepad(); // 启动手柄
       });
@@ -197,12 +198,14 @@ export default {
     this.cameraOpen();
     this.startJoystickL(); //生成虚拟摇杆
     this.startJoystickR();
-    this.robot.enable_debug_state(1);
+    this.robot.enable_debug_state(2);
     this.robot.on_message(data => {
       let currData = JSON.parse(data.data);
-      console.log(currData.data.states)
+      this.upperAction = currData.data.upper_action
+      console.log(this.upperAction)
+      // console.log(currData.data)
     });
-    this.robot.on_close(()=>{
+    this.robot.on_close(() => {
       console.log("Websocket已断开。。。。。。")
       this.$store.commit('setRobot')
     })
@@ -435,7 +438,7 @@ export default {
       try {
         this.robot.walk(direction, velocity);
       } catch (error) {
-        console.log('Walk错误。。。。。。',error)
+        console.log('Walk错误。。。。。。', error)
       }
     },
     //操控头部
@@ -443,7 +446,7 @@ export default {
       try {
         this.robot.head(0, pitch, yaw * -1);
       } catch (error) {
-        console.log('Head错误。。。。。。',error)
+        console.log('Head错误。。。。。。', error)
       }
     },
     //开启视频
@@ -452,7 +455,6 @@ export default {
     },
     //切换当前控制模式
     changeControl(e) {
-      this.mode = "";
       if (e == "stand") {
         this.robot.stand()
         this.controlExpand = false;
@@ -462,6 +464,7 @@ export default {
       this.controlModel = e;
     },
     choseMode(e) {
+      if (this.upperAction == true) return
       this.controlExpand = false;
       this.mode = e;
       if (e == "markingTime") {
@@ -486,11 +489,11 @@ export default {
         } else if (e == "tremble") {
           data.hand_action = "TREMBLE"
         }
+        setTimeout(() => {
+          this.upperAction = true
+        }, 500);
         this.robot.upper_body(data.arm_action, data.hand_action)
       }
-    },
-    stopMode() {
-      this.mode = "";
     },
     headChange() {
       this.headBoxVisible = !this.headBoxVisible;

@@ -4,24 +4,9 @@
         <div class="humanBody">
             <img class="openHuman" src="@/assets/images/image_onOpen.png" />
         </div>
-        <!-- <div class="startContain" style="bottom: 12vw;width: 14vw;right: 28vw;" @click="startSh()">
-            <span class="startBtn">启动脚本</span>
-        </div>
-        <div class="startContain" style="bottom: 12vw;width: 14vw;" @click="startLog()">
-            <span class="startBtn">查看日志</span>
-        </div> -->
         <div class="startContain" @click="startExplore()">
             <span class="startBtn">{{ $t('beginToExplore') }}</span>
         </div>
-        <!-- <div class="circle">
-            <div class="particle"></div>
-        </div> -->
-        <!-- <div class="txtBox" style="right: 56vw;">
-            {{ shValue }}
-        </div>
-        <div class="txtBox">
-            {{ streamValue }}
-        </div> -->
     </div>
 </template>
 
@@ -55,59 +40,9 @@ export default {
         },
         toConnect() {
             this.$router.push({
-                name: "connect"
+                name: "robotStartup"
             })
-        },
-        // startSh() {
-        //     let _this = this
-        //     fetch('http://192.168.12.1:8001/robot/sdk_ctrl/start')
-        //         .then((response) => {
-        //             const reader = response.body.getReader();
-        //             let result = '';
-
-        //             function process() {
-        //                 reader.read().then(({ done, value }) => {
-        //                     if (done) {
-        //                         console.log('处理结束')
-        //                         return;
-        //                     }
-        //                     result += new TextDecoder().decode(value);
-        //                     _this.shValue = result
-        //                     console.log(result)
-        //                     process();
-        //                 });
-        //             }
-        //             process();
-        //         })
-        //         .catch((error) => {
-        //             console.error(error);
-        //         });
-        // },
-        // startLog() {
-        //     let _this = this
-        //     fetch('http://192.168.12.1:8001/robot/sdk_ctrl/log')
-        //         .then((response) => {
-        //             const reader = response.body.getReader();
-        //             let result = '';
-
-        //             function process() {
-        //                 reader.read().then(({ done, value }) => {
-        //                     if (done) {
-        //                         console.log('处理结束')
-        //                         return;
-        //                     }
-        //                     result += new TextDecoder().decode(value);
-        //                     _this.streamValue = result
-        //                     console.log(result)
-        //                     process();
-        //                 });
-        //             }
-        //             process();
-        //         })
-        //         .catch((error) => {
-        //             console.error(error);
-        //         });
-        // }
+        }
     }
 }
 
