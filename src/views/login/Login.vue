@@ -1,6 +1,6 @@
 <template>
     <div class="loginMain">
-        <rtc-header :is-logo="true" :is-login="true" @connect="toConnect()"></rtc-header>
+        <rtc-header :is-logo="true" :is-login="true" @connect="startExplore()"></rtc-header>
         <div class="humanBody">
             <img class="openHuman" src="@/assets/images/image_onOpen.png" />
         </div>
@@ -22,21 +22,26 @@ export default {
     },
     data() {
         return {
-            // streamValue: '',
-            // shValue: ''
+            getFlag: true
         }
     },
     methods: {
         startExplore() {
-            console.log(this.connected)
-            if (this.connected) {
-                this.$router.push({
-                    name: 'loading'
+            if (this.getFlag) {
+                this.getFlag = false
+                this.$http.get(process.env.VUE_APP_URL + '/robot/sdk_ctrl/status').then(res => {
+                    this.getFlag = true
+                    if (this.connected && res.data.data) {
+                        this.$router.push({
+                            name: 'loading'
+                        })
+                    } else {
+                        this.toConnect()
+                    }
+                }).catch(err => {
+                    this.toConnect()
                 })
-            } else {
-                this.toConnect()
             }
-
         },
         toConnect() {
             this.$router.push({

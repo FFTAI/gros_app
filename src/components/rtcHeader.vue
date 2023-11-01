@@ -13,7 +13,7 @@
       </div>
     </div>
     <slot></slot>
-    <div class="headButtonIn" v-if="(connected || isController) && !isLoading">
+    <div class="headButtonIn" v-if="(connected || isController) && !isLoading && !isStartup">
       <!-- 电量和wifi -->
       <div class="spacing">
         <!-- <img class="inImg" src="@/assets/images/icon_battery2.png" />
@@ -31,9 +31,13 @@
       <div class="spacing" v-if="!isSetting" @click="setting()">
         <img class="inImg" src="@/assets/images/icon_setting.png" />
       </div>
+      <div class="divider spacing" v-if="isLogin"></div>
+      <div class="spacing" v-if="isLogin" @click="shutDown()">
+        <img class="inImg" src="@/assets/images/btn_shutDown.png" />
+      </div>
     </div>
     <!-- 连接 -->
-    <div class="rightSlot" @click="toConnect()" v-if="!connected && (isLogin || isSetting) && !isLoading">
+    <div class="rightSlot" @click="toConnect()" v-if="!connected && (isLogin || isSetting) && !isLoading && !isStartup">
       <span class="connect">{{ $t('connect') }}</span>
     </div>
   </div>
@@ -68,6 +72,10 @@ export default {
     isSetting: {
       type: Boolean,
       default: false
+    },
+    isStartup: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -90,7 +98,9 @@ export default {
     routerReturn() {
       //如果是控制页跳过loading返回
       if (this.isController) {
-        this.$router.go(-2)
+        this.$router.push({
+          name: 'login'
+        })
       } else {
         this.$router.go(-1)
       }
@@ -98,6 +108,15 @@ export default {
     openCamera() {
       this.cameraOn = !this.cameraOn
       this.$emit('cameraOn')
+    },
+    shutDown() {
+      fetch(process.env.VUE_APP_URL + '/robot/sdk_ctrl/close')
+        .then((response) => {
+          console.error('shutDown',response);
+        })
+        .catch((error) => {
+          console.error('shutDown',error);
+        });
     }
   }
 };
@@ -150,11 +169,13 @@ export default {
   //   border-color: #004c81 transparent transparent transparent;
   // }
 
-  .headAfter{
+  .headAfter {
     width: 0;
     height: 0;
-    border-right: 2vw solid transparent; /* 左边长 */
-    border-top: 4.45vw solid #004B85; /* 底边长，可以更改颜色 */
+    border-right: 2vw solid transparent;
+    /* 左边长 */
+    border-top: 4.45vw solid #004B85;
+    /* 底边长，可以更改颜色 */
     position: absolute;
     left: 13.2083vw;
     top: 0;

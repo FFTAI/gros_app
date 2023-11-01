@@ -77,5 +77,6 @@
     "logTips": "After the program successfully starts, it will display 'init'",
     "bootCalibration": "Boot calibration",
     "deviceConnected": "The device is connected",
-    "programStartup": "Program startup"
+    "programStartup": "Program startup",
+    "programShutdown": "Program shutdown"
 }

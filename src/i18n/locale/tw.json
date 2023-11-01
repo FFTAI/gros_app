@@ -77,5 +77,6 @@
     "logTips": "程序啟動成功後，顯示init",
     "bootCalibration": "開機校準",
     "deviceConnected": "設備已連接",
-    "programStartup": "程序啟動"
+    "programStartup": "程序啟動",
+    "programShutdown": "程序關閉"
 }

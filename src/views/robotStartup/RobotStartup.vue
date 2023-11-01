@@ -1,10 +1,14 @@
 <template>
     <div class="main">
-        <rtc-header :is-login="true" @connect="toConnect()"></rtc-header>
+        <rtc-header :isStartup="true" @connect="toConnect()">
+            <div class="headState">
+                <span class="headTxt">{{ $t('robotStartup') }}</span>
+            </div>
+        </rtc-header>
         <!-- 开机校准 -->
         <div v-if="step == 'calibration' && !calibrationDialog">
             <img class="openCalibration" src="@/assets/images/image_openCalibration.png" />
-            <div class="tips tip1" @click="openDialog">
+            <div class="tips tip1" @click="openDialog()">
                 <span class="circleTxt ct1">3</span>
                 <span>{{ $t('startupTip1') }}</span>
             </div>
@@ -49,7 +53,7 @@
         <!-- 程序启动 -->
         <div class="startupBox" v-else-if="step == 'startup' && !calibrationDialog">
             <div class="logBox">
-
+                <div v-html="shValue"></div>
             </div>
             <div class="logTips">
                 {{ $t('logTips') }}
@@ -60,7 +64,7 @@
             <img class="calibrationImg" src="@/assets/images/image_calibrationPose1.png" />
             <img class="calibrationImg" style="left:35.0417vw;" src="@/assets/images/image_calibrationPose2.png" />
             <img class="calibrationImg" style="left:63.375vw;" src="@/assets/images/image_calibrationPose3.png" />
-            <img class="closeImg" src="@/assets/images/btn_close.png" @click="closeDialog" />
+            <img class="closeImg" src="@/assets/images/btn_close.png" @click="closeDialog()" />
             <div class="dialogTips">
                 <span class="circleTxt ct2">1</span>
                 <span>{{ $t('calibrationTip1') }}</span>
@@ -91,12 +95,17 @@
                 <span v-if="connected && step != 'calibration'">{{ $t('deviceConnected') }}</span>
                 <span v-else>{{ $t('deviceConnection') }}</span>
             </div>
-            <div :class="{ 'startBtn': step == 'startup', 'readyBtn': step == 'connect' && connected, 'disableBtn': step == 'calibration' || (step == 'connect' && !connected) }"
+            <div v-if="!isReady"
+                :class="{ 'startBtn': step == 'startup', 'readyBtn': step == 'connect' && connected, 'disableBtn': step == 'calibration' || (step == 'connect' && !connected) }"
                 class="btn" @click="changeStep('startup')">
-                <span :class="step == 'startup'?'ct1':step == 'connect'&&connected?'ct3':'ct4'" class="circleTxt">3</span>
+                <span :class="step == 'startup' ? 'ct1' : step == 'connect' && connected ? 'ct3' : 'ct4'"
+                    class="circleTxt">3</span>
                 <span>{{ $t('programStartup') }}</span>
             </div>
-            <div class="btn startBtn" style="justify-content:center;padding-left:initial;width:18.4583vw;">
+            <div v-else class="btn finishBtn noIconBtn" @click="shutDown()">
+                <span>{{ $t('programShutdown') }}</span>
+            </div>
+            <div v-if="isReady" class="btn startBtn noIconBtn" @click="startExplore()">
                 <span>{{ $t('beginToExplore') }}</span>
             </div>
         </div>
@@ -116,7 +125,9 @@ export default {
     data() {
         return {
             step: 'calibration',
-            calibrationDialog: false
+            calibrationDialog: false,
+            isReady: false,
+            shValue: ''
         }
     },
     created() {
@@ -130,13 +141,59 @@ export default {
             this.calibrationDialog = false
         },
         changeStep(e) {
-            if (e == 'connect' && this.step != 'startup')
+            if (e == 'connect' && this.step == 'calibration')
                 this.step = 'connect'
-            if (e == 'startup')
+            if (e == 'startup' && this.step == 'connect' && this.connected) {
                 this.step = 'startup'
+                this.getStartup()
+                setTimeout(() => {
+                    this.isReady = true
+                }, 7000);
+            }
+        },
+        getStartup() {
+            let _this = this
+            fetch(process.env.VUE_APP_URL + '/robot/sdk_ctrl/start')
+                .then((response) => {
+                    const reader = response.body.getReader();
+                    let result = '';
+                    function process() {
+                        reader.read().then(({ done, value }) => {
+                            if (done) {
+                                console.log('处理结束')
+                                return;
+                            }
+                            result += new TextDecoder().decode(value) + '<br>';
+                            _this.shValue = result
+                            console.log(result)
+                            process();
+                        });
+                    }
+                    process();
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
         },
         openDialog() {
             this.calibrationDialog = true
+        },
+        startExplore() {
+            this.$router.push({
+                name: 'loading'
+            })
+        },
+        shutDown() {
+            let _this = this
+            fetch(process.env.VUE_APP_URL + '/robot/sdk_ctrl/close')
+                .then((response) => {
+                    _this.shValue = ''
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+            this.step = 'calibration'
+            this.isReady = false
         }
     }
 }
@@ -150,6 +207,21 @@ export default {
     background-image: url("../../assets/images/image_bkg.png");
     background-repeat: no-repeat;
     background-size: cover;
+}
+
+.headState {
+    position: absolute;
+    top: 1vw;
+    left: 10.9375vw;
+    z-index: 99;
+
+    .headTxt {
+        font-size: 1.9792vw;
+        font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
+        font-weight: normal;
+        color: #FFFFFF;
+        line-height: 2.7083vw;
+    }
 }
 
 .openCalibration {
@@ -355,10 +427,13 @@ export default {
         position: absolute;
         top: 1.8333vw;
         left: 1.8333vw;
-        width: 57.875vw;
-        height: 29.5417vw;
+        width: 55.375vw;
+        height: 27.0417vw;
+        padding: 1.25vw;
         background: rgba(255, 255, 255, 0.1);
         overflow: auto;
+        font-size: 1vw;
+        color: #FFFFFF;
     }
 
     .logTips {
@@ -408,6 +483,12 @@ export default {
 
     .disableBtn {
         color: rgba(255, 255, 255, 0.2);
+    }
+
+    .noIconBtn {
+        justify-content: center;
+        padding-left: initial;
+        width: 18.4583vw;
     }
 }
 
