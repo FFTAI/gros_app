@@ -102,13 +102,14 @@
                     class="circleTxt">3</span>
                 <span>{{ $t('programStartup') }}</span>
             </div>
-            <div v-else class="btn finishBtn noIconBtn" @click="shutDown()">
+            <div v-else class="btn finishBtn noIconBtn" @click="promptBoxOpen()">
                 <span>{{ $t('programShutdown') }}</span>
             </div>
             <div v-if="isReady" class="btn startBtn noIconBtn" @click="startExplore()">
                 <span>{{ $t('beginToExplore') }}</span>
             </div>
         </div>
+        <prompt-box v-if="promptVisible" @cancel="promptBoxOpen()" @confirm="shutDown()"></prompt-box>
     </div>
 </template>
 
@@ -116,9 +117,10 @@
 import rtcHeader from '@/components/rtcHeader.vue';
 import Heartbeat from '@/mixin/Heartbeat';
 import { mapState } from "vuex";
+import promptBox from '@/components/promptBox.vue';
 export default {
     mixins: [Heartbeat],
-    components: { rtcHeader },
+    components: { rtcHeader, promptBox },
     computed: {
         ...mapState(["connected"])
     },
@@ -127,7 +129,8 @@ export default {
             step: 'calibration',
             calibrationDialog: false,
             isReady: false,
-            shValue: ''
+            shValue: '',
+            promptVisible: false
         }
     },
     created() {
@@ -183,6 +186,9 @@ export default {
                 name: 'loading'
             })
         },
+        promptBoxOpen() {
+            this.promptVisible = !this.promptVisible
+        },
         shutDown() {
             let _this = this
             fetch(process.env.VUE_APP_URL + '/robot/sdk_ctrl/close')
@@ -192,6 +198,7 @@ export default {
                 .catch((error) => {
                     console.error(error);
                 });
+            this.promptBoxOpen()
             this.step = 'calibration'
             this.isReady = false
         }
