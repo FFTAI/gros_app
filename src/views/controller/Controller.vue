@@ -77,9 +77,22 @@
             <img class="actionImg" src="@/assets/images/icon_greet.png" @click="choseMode('greet')" />
             <div>{{ $t("greet") }}</div>
           </div>
-          <div class="actionItem"></div>
-          <div class="actionItem"></div>
-          <div class="actionItem"></div>
+          <div class="actionItem">
+            <img class="actionImg" src="@/assets/images/icon_nod.png" @click="choseMode('nod')" />
+            <div>{{ $t("nod") }}</div>
+          </div>
+          <div class="actionItem">
+            <img class="actionImg" src="@/assets/images/icon_shake.png" @click="choseMode('shake')" />
+            <div>{{ $t("shake") }}</div>
+          </div>
+          <div class="actionItem">
+            <img class="actionImg" src="@/assets/images/icon_twist.png" @click="choseMode('twist')" />
+            <div>{{ $t("twist") }}</div>
+          </div>
+          <div class="actionItem">
+            <img class="actionImg" src="@/assets/images/icon_squat.png" @click="choseMode('squat')" />
+            <div>{{ $t("squat") }}</div>
+          </div>
         </div>
         <div class="actionBox" v-else-if="controlExpand && controlModel == 'endGrasping'">
           <div class="actionItem">
@@ -120,15 +133,7 @@
       </div>
       <!-- 当前状态提示 -->
       <div class="stateMessage" v-if="mode != '' && upperAction">
-        <span v-if="mode == 'zero'">{{ $t("zero") }}...</span>
-        <span v-if="mode == 'slowWalk'">{{ $t("normalWalking") }}...</span>
-        <span v-if="mode == 'waveLeftHand'">{{ $t("waveLeftHand") }}...</span>
-        <span v-if="mode == 'swingArms'">{{ $t("swingArms") }}...</span>
-        <span v-if="mode == 'markingTime'">{{ $t("markingTime") }}...</span>
-        <span v-if="mode == 'greet'">{{ $t("greet") }}...</span>
-        <span v-if="mode == 'openHand'">{{ $t("openHand") }}...</span>
-        <span v-if="mode == 'grasp'">{{ $t("grasp") }}...</span>
-        <span v-if="mode == 'tremble'">{{ $t("tremble") }}...</span>
+        <span>{{ $t(mode) }}{{ $t('ing') }}...</span>
       </div>
     </div>
   </div>
@@ -443,8 +448,9 @@ export default {
     },
     //操控头部
     operateHead(pitch, yaw) {
+      console.log(pitch, yaw)
       try {
-        this.robot.head(0, pitch, yaw * -1);
+        this.robot.head(0, pitch, yaw);
       } catch (error) {
         console.log('Head错误。。。。。。', error)
       }
@@ -470,29 +476,61 @@ export default {
       if (e == "markingTime") {
         this.robot.walk(0, 0);
       } else {
-        let data = {
+        let upper_data = {
           arm_action: "",
           hand_action: ""
         }
-        if (e == "zero") {
-          data.arm_action = "RESET"
-        } else if (e == "waveLeftHand") {
-          data.arm_action = "LEFT_ARM_WAVE"
-        } else if (e == "swingArms") {
-          data.arm_action = "ARMS_SWING"
-        } else if (e == "greet") {
-          data.arm_action = "HELLO"
-        } else if (e == "openHand") {
-          data.hand_action = "OPEN"
-        } else if (e == "grasp") {
-          data.hand_action = "GRASP"
-        } else if (e == "tremble") {
-          data.hand_action = "TREMBLE"
+        let lower_data = {
+          lower_body_mode: ""
         }
-        setTimeout(() => {
-          this.upperAction = true
-        }, 500);
-        this.robot.upper_body(data.arm_action, data.hand_action)
+        if (e == "zero") {
+          upper_data.arm_action = "RESET"
+        } else if (e == "waveLeftHand") {
+          upper_data.arm_action = "LEFT_ARM_WAVE"
+        } else if (e == "swingArms") {
+          upper_data.arm_action = "ARMS_SWING"
+        } else if (e == "greet") {
+          upper_data.arm_action = "HELLO"
+        } else if (e == "openHand") {
+          upper_data.hand_action = "OPEN"
+        } else if (e == "grasp") {
+          upper_data.hand_action = "GRASP"
+        } else if (e == "tremble") {
+          upper_data.hand_action = "TREMBLE"
+        } else if (e == "twist") {
+          lower_data.lower_body_mode = "ROTATE_WAIST"
+        } else if (e == "squat") {
+          lower_data.lower_body_mode = "SQUAT"
+        } else if (e == "nod") {
+          this.operateHead(17, 0)
+          setTimeout(() => {
+            this.operateHead(-17, 0)
+          }, 1000);
+          setTimeout(() => {
+            this.operateHead(0, 0)
+          }, 2000);
+        } else if (e == "shake") {
+          this.operateHead(0, 17)
+          setTimeout(() => {
+            this.operateHead(0, -17)
+          }, 1000);
+          setTimeout(() => {
+            this.operateHead(0, 0)
+          }, 2000);
+        }
+        if (lower_data.lower_body_mode == "") {
+          setTimeout(() => {
+            this.upperAction = true
+          }, 500);
+          this.robot.upper_body(upper_data.arm_action, upper_data.hand_action)
+        } else {
+          // this.robot.lower_body(lower_data.lower_body_mode)
+          this.$http.get(process.env.VUE_APP_URL + '/robot/lower_body',lower_data).then(res => {
+              console.log('lower_body',res)
+          }).catch(err => {
+            this.toConnect()
+          })
+        }
       }
     },
     headChange() {

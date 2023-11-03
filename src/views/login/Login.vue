@@ -1,12 +1,13 @@
 <template>
     <div class="loginMain">
-        <rtc-header :is-logo="true" :is-login="true" @connect="startExplore()"></rtc-header>
+        <rtc-header :is-logo="true" :is-login="true" @connect="startExplore()" @shutDown="promptBoxOpen()"></rtc-header>
         <div class="humanBody">
             <img class="openHuman" src="@/assets/images/image_onOpen.png" />
         </div>
         <div class="startContain" @click="startExplore()">
             <span class="startBtn">{{ $t('beginToExplore') }}</span>
         </div>
+        <prompt-box v-if="promptVisible" @cancel="promptBoxOpen()" @confirm="shutDown()"></prompt-box>
     </div>
 </template>
 
@@ -14,15 +15,17 @@
 import rtcHeader from '@/components/rtcHeader.vue';
 import { mapState } from "vuex";
 import Heartbeat from '@/mixin/Heartbeat';
+import promptBox from '@/components/promptBox.vue';
 export default {
     mixins: [Heartbeat],
-    components: { rtcHeader },
+    components: { rtcHeader, promptBox },
     computed: {
         ...mapState(["connected"])
     },
     data() {
         return {
-            getFlag: true
+            getFlag: true,
+            promptVisible: false
         }
     },
     methods: {
@@ -47,6 +50,19 @@ export default {
             this.$router.push({
                 name: "robotStartup"
             })
+        },
+        promptBoxOpen() {
+            this.promptVisible = !this.promptVisible
+        },
+        shutDown() {
+            fetch(process.env.VUE_APP_URL + '/robot/sdk_ctrl/close')
+                .then((response) => {
+                    console.log(response);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+            this.promptBoxOpen()
         }
     }
 }

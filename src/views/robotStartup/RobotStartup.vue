@@ -122,7 +122,7 @@ export default {
     mixins: [Heartbeat],
     components: { rtcHeader, promptBox },
     computed: {
-        ...mapState(["connected"])
+        ...mapState(["connected", "robot"])
     },
     data() {
         return {
@@ -137,7 +137,15 @@ export default {
 
     },
     mounted() {
-
+        this.robot.enable_debug_state(2);
+        this.robot.on_message(data => {
+            let currData = JSON.parse(data.data);
+            console.log('enable_debug_state===upper_action',currData.data.upper_action)
+        });
+    },
+    destroyed() {
+        this.robot.disable_debug_state()
+        this.robot.removeAllListeners()
     },
     methods: {
         closeDialog() {

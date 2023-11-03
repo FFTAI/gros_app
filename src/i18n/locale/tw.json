@@ -78,5 +78,10 @@
     "bootCalibration": "開機校準",
     "deviceConnected": "設備已連接",
     "programStartup": "程序啟動",
-    "programShutdown": "程序關閉"
+    "programShutdown": "程序關閉",
+    "nod": "點頭",
+    "shake": "搖頭",
+    "twist": "扭腰",
+    "squat": "下蹲",
+    "ing": "中"
 }

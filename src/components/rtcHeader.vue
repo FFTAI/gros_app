@@ -42,7 +42,7 @@
     </div>
   </div>
 </template>
-  
+
 <script>
 import { mapState } from "vuex";
 export default {
@@ -110,13 +110,7 @@ export default {
       this.$emit('cameraOn')
     },
     shutDown() {
-      fetch(process.env.VUE_APP_URL + '/robot/sdk_ctrl/close')
-        .then((response) => {
-          console.error('shutDown',response);
-        })
-        .catch((error) => {
-          console.error('shutDown',error);
-        });
+      this.$emit('shutDown')
     }
   }
 };
