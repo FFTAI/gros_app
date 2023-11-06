@@ -20,7 +20,7 @@ export default {
     mixins: [Heartbeat],
     components: { rtcHeader, promptBox },
     computed: {
-        ...mapState(["connected"])
+        ...mapState(["connected", "robot"])
     },
     data() {
         return {
@@ -32,18 +32,20 @@ export default {
         startExplore() {
             if (this.getFlag) {
                 this.getFlag = false
-                this.$http.get(process.env.VUE_APP_URL + '/robot/sdk_ctrl/status').then(res => {
-                    this.getFlag = true
-                    if (this.connected && res.data.data) {
-                        this.$router.push({
-                            name: 'loading'
-                        })
-                    } else {
+                this.robot.control_svr_status()
+                    .then(res => {
+                        this.getFlag = true
+                        console.log(this.connected, res.data.data)
+                        if (this.connected && res.data.data) {
+                            this.$router.push({
+                                name: 'loading'
+                            })
+                        } else {
+                            this.toConnect()
+                        }
+                    }).catch(err => {
                         this.toConnect()
-                    }
-                }).catch(err => {
-                    this.toConnect()
-                })
+                    })
             }
         },
         toConnect() {

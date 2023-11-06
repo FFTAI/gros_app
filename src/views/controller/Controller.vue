@@ -410,7 +410,7 @@ export default {
         })
         .on("move", function (evt, data) {
           let pitch = data.vector.y * 17.1887
-          let yaw = data.vector.x * 17.1887
+          let yaw = data.vector.x * 60
           if (Math.abs(pitch) < 0.1) pitch = 0
           if (Math.abs(yaw) < 0.1) yaw = 0
           _this.operateHead(pitch, yaw)
@@ -524,12 +524,7 @@ export default {
           }, 500);
           this.robot.upper_body(upper_data.arm_action, upper_data.hand_action)
         } else {
-          // this.robot.lower_body(lower_data.lower_body_mode)
-          this.$http.get(process.env.VUE_APP_URL + '/robot/lower_body',lower_data).then(res => {
-              console.log('lower_body',res)
-          }).catch(err => {
-            this.toConnect()
-          })
+          this.robot.lower_body(lower_data.lower_body_mode)
         }
       }
     },

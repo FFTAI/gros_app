@@ -52,11 +52,19 @@
         </div>
         <!-- 程序启动 -->
         <div class="startupBox" v-else-if="step == 'startup' && !calibrationDialog">
-            <div class="logBox">
-                <div v-html="shValue"></div>
+            <div v-if="!isReady">
+                <img class="startupImg1" src="@/assets/images/image_robotStart1.png" />
+                <img class="startupImg2" src="@/assets/images/image_robotStart2.png" />
+                <img class="iconRight" src="@/assets/images/icon_right.png" />
+                <div class="logTips">
+                    {{ $t('initializing') }}
+                </div>
             </div>
-            <div class="logTips">
-                {{ $t('logTips') }}
+            <div v-else>
+                <img class="startupImg3" src="@/assets/images/image_robotStart3.png" />
+                <div class="logTips">
+                    {{ $t('initSuccessfully') }}
+                </div>
             </div>
         </div>
         <!-- 校准提示 -->
@@ -129,7 +137,6 @@ export default {
             step: 'calibration',
             calibrationDialog: false,
             isReady: false,
-            shValue: '',
             promptVisible: false
         }
     },
@@ -137,71 +144,68 @@ export default {
 
     },
     mounted() {
-        this.robot.enable_debug_state(2);
-        this.robot.on_message(data => {
-            let currData = JSON.parse(data.data);
-            console.log('enable_debug_state===upper_action',currData.data.upper_action)
-        });
+
     },
     destroyed() {
-        this.robot.disable_debug_state()
-        this.robot.removeAllListeners()
+        this.stateOff()
     },
     methods: {
+        stateOn() {
+            this.robot.enable_debug_state(2);
+            this.robot.on_message(data => {
+                let currData = JSON.parse(data.data);
+                console.log('enable_debug_state===all_init', currData.data.all_init)
+                if (currData.data.all_init)
+                    this.isReady = true
+            });
+        },
+        stateOff() {
+            this.robot.disable_debug_state()
+            this.robot.removeAllListeners()
+        },
         closeDialog() {
             this.calibrationDialog = false
         },
+        //切换步骤
         changeStep(e) {
             if (e == 'connect' && this.step == 'calibration')
                 this.step = 'connect'
             if (e == 'startup' && this.step == 'connect' && this.connected) {
                 this.step = 'startup'
                 this.getStartup()
-                setTimeout(() => {
-                    this.isReady = true
-                }, 7000);
             }
         },
+        //程序启动
         getStartup() {
-            let _this = this
-            fetch(process.env.VUE_APP_URL + '/robot/sdk_ctrl/start')
+            this.robot.control_svr_start()
                 .then((response) => {
-                    const reader = response.body.getReader();
-                    let result = '';
-                    function process() {
-                        reader.read().then(({ done, value }) => {
-                            if (done) {
-                                console.log('处理结束')
-                                return;
-                            }
-                            result += new TextDecoder().decode(value) + '<br>';
-                            _this.shValue = result
-                            console.log(result)
-                            process();
-                        });
-                    }
-                    process();
+                    console.log('start...', response)
+                    this.stateOn()
                 })
                 .catch((error) => {
                     console.error(error);
                 });
         },
+        //打开开机校准示例图
         openDialog() {
             this.calibrationDialog = true
         },
+        //开始探索
         startExplore() {
             this.$router.push({
                 name: 'loading'
             })
         },
+        //弹出提示框
         promptBoxOpen() {
             this.promptVisible = !this.promptVisible
         },
+        //程序关闭
         shutDown() {
-            let _this = this
-            fetch(process.env.VUE_APP_URL + '/robot/sdk_ctrl/close')
+            this.stateOff()
+            this.robot.control_svr_close()
                 .then((response) => {
-                    _this.shValue = ''
+                    console.log('close...', response)
                 })
                 .catch((error) => {
                     console.error(error);
@@ -438,17 +442,48 @@ export default {
     height: 35.7083vw;
     background: rgba(68, 216, 251, 0.1);
 
-    .logBox {
+    // .logBox {
+    //     position: absolute;
+    //     top: 1.8333vw;
+    //     left: 1.8333vw;
+    //     width: 55.375vw;
+    //     height: 27.0417vw;
+    //     padding: 1.25vw;
+    //     background: rgba(255, 255, 255, 0.1);
+    //     overflow: auto;
+    //     font-size: 1vw;
+    //     color: #FFFFFF;
+    // }
+    .startupImg1 {
         position: absolute;
+        left: 2.7917vw;
         top: 1.8333vw;
-        left: 1.8333vw;
-        width: 55.375vw;
-        height: 27.0417vw;
-        padding: 1.25vw;
-        background: rgba(255, 255, 255, 0.1);
-        overflow: auto;
-        font-size: 1vw;
-        color: #FFFFFF;
+        width: 23.4167vw;
+        height: 27.7083vw;
+    }
+
+    .startupImg2 {
+        position: absolute;
+        right: 2.7917vw;
+        top: 1.8333vw;
+        width: 26.4583vw;
+        height: 27.7083vw;
+    }
+
+    .startupImg3 {
+        position: absolute;
+        left: 6.1667vw;
+        top: 1.8333vw;
+        width: 49.25vw;
+        height: 27.7083vw;
+    }
+
+    .iconRight {
+        position: absolute;
+        left: 28.5vw;
+        top: 15.0833vw;
+        width: 1.5vw;
+        height: 1.25vw;
     }
 
     .logTips {
