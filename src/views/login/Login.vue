@@ -57,9 +57,9 @@ export default {
             this.promptVisible = !this.promptVisible
         },
         shutDown() {
-            fetch(process.env.VUE_APP_URL + '/robot/sdk_ctrl/close')
+            this.robot.control_svr_close()
                 .then((response) => {
-                    console.log(response);
+                    console.log('close...', response)
                 })
                 .catch((error) => {
                     console.error(error);

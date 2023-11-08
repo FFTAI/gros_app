@@ -176,7 +176,7 @@ export default {
         },
         toConnect() {
             this.$router.push({
-                name: "connect"
+                name: "robotStartup"
             })
         },
         openLog() {
