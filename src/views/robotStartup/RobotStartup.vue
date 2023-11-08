@@ -177,14 +177,19 @@ export default {
         },
         //程序启动
         getStartup() {
-            this.robot.control_svr_start()
-                .then((response) => {
-                    console.log('start...', response)
-                    this.stateOn()
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
+            this.$http.request({
+                timeout: 60000,
+                baseURL: process.env.VUE_APP_URL,
+                method: "GET",
+                url: "/robot/sdk_ctrl/start"
+            }).then(response => {
+                console.log('start-response', response)
+            }).catch(error => {
+                console.log('start-error', error)
+            })
+            setTimeout(() => {
+                this.stateOn()
+            }, 30000);
         },
         //打开开机校准示例图
         openDialog() {
