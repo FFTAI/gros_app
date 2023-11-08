@@ -75,7 +75,6 @@
     "screen": "Screen",
     "normal": "Normal",
     "anomaly": "Anomaly",
-    "initialization": "Initialization",
     "robotStartup": "Robot Startup",
     "startupTip1": "Assume the calibration pose correctly",
     "startupTip2": "Unlock the emergency stop button",

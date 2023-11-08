@@ -3,10 +3,10 @@
     <div class="headBk"></div>
     <div class="headBkIn">
       <!-- Logo -->
-      <div class="headLogo" v-if="isInitialization||isLogin">
+      <div class="headLogo" v-if="isLogin">
         <img class="leftSlot" src="@/assets/images/image_logo.png" />
       </div>
-      <div class="headAfter" v-if="isInitialization||isLogin"></div>
+      <div class="headAfter" v-if="isLogin"></div>
       <!-- 返回 -->
       <div class="headReturn" v-else @click="routerReturn()">
         <img class="return" src="@/assets/images/icon_return.png" />
@@ -50,10 +50,6 @@ export default {
   props: {
     currentSpeed: Number,
     camera: {
-      type: Boolean,
-      default: false
-    },
-    isInitialization: {
       type: Boolean,
       default: false
     },

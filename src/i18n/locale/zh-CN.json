@@ -75,7 +75,6 @@
     "screen": "屏幕",
     "normal": "正常",
     "anomaly": "异常",
-    "initialization": "初始化",
     "robotStartup": "机器人启动",
     "startupTip1": "摆好校准姿势",
     "startupTip2": "解锁急停按钮",
