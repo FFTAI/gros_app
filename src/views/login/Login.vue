@@ -1,118 +1,71 @@
 <template>
     <div class="loginMain">
-        <rtc-header :is-logo="true" :is-login="true" @connect="toConnect()"></rtc-header>
+        <rtc-header :is-logo="true" :is-login="true" @connect="startExplore()" @shutDown="promptBoxOpen()"></rtc-header>
         <div class="humanBody">
             <img class="openHuman" src="@/assets/images/image_onOpen.png" />
         </div>
-        <!-- <div class="startContain" style="bottom: 12vw;width: 14vw;right: 28vw;" @click="startSh()">
-            <span class="startBtn">启动脚本</span>
-        </div>
-        <div class="startContain" style="bottom: 12vw;width: 14vw;" @click="startLog()">
-            <span class="startBtn">查看日志</span>
-        </div> -->
         <div class="startContain" @click="startExplore()">
             <span class="startBtn">{{ $t('beginToExplore') }}</span>
         </div>
-        <!-- <div class="circle">
-            <div class="particle"></div>
-        </div> -->
-        <!-- <div class="txtBox" style="right: 56vw;">
-            {{ shValue }}
-        </div>
-        <div class="txtBox">
-            {{ streamValue }}
-        </div> -->
+        <prompt-box v-if="promptVisible" @cancel="promptBoxOpen()" @confirm="shutDown()"></prompt-box>
     </div>
 </template>
 
 <script>
 import rtcHeader from '@/components/rtcHeader.vue';
 import { mapState } from "vuex";
-import { get_robot_type } from "rocs-client";
+import Heartbeat from '@/mixin/Heartbeat';
+import promptBox from '@/components/promptBox.vue';
 export default {
-    components: { rtcHeader },
+    mixins: [Heartbeat],
+    components: { rtcHeader, promptBox },
     computed: {
-        ...mapState(["connected"])
+        ...mapState(["connected", "robot"])
     },
     data() {
         return {
-            // streamValue: '',
-            // shValue: ''
+            getFlag: true,
+            promptVisible: false
         }
-    },
-    mounted() {
-        let ip = process.env.VUE_APP_URL.split('//')[1].split(':')
-        get_robot_type({ host: ip[0], port: ip[1] }).then(res => {
-            this.$store.commit('setConnected', true)
-        })
     },
     methods: {
         startExplore() {
-            console.log(this.connected)
-            if (this.connected) {
-                this.$router.push({
-                    name: 'loading'
-                })
-            } else {
-                this.toConnect()
+            if (this.getFlag) {
+                this.getFlag = false
+                this.robot.control_svr_status()
+                    .then(res => {
+                        this.getFlag = true
+                        console.log(this.connected, res.data.data)
+                        if (this.connected && res.data.data) {
+                            this.$router.push({
+                                name: 'loading'
+                            })
+                        } else {
+                            this.toConnect()
+                        }
+                    }).catch(err => {
+                        this.toConnect()
+                    })
             }
-
         },
         toConnect() {
             this.$router.push({
-                name: "connect"
+                name: "robotStartup"
             })
         },
-        // startSh() {
-        //     let _this = this
-        //     fetch('http://192.168.12.1:8001/robot/sdk_ctrl/start')
-        //         .then((response) => {
-        //             const reader = response.body.getReader();
-        //             let result = '';
-
-        //             function process() {
-        //                 reader.read().then(({ done, value }) => {
-        //                     if (done) {
-        //                         console.log('处理结束')
-        //                         return;
-        //                     }
-        //                     result += new TextDecoder().decode(value);
-        //                     _this.shValue = result
-        //                     console.log(result)
-        //                     process();
-        //                 });
-        //             }
-        //             process();
-        //         })
-        //         .catch((error) => {
-        //             console.error(error);
-        //         });
-        // },
-        // startLog() {
-        //     let _this = this
-        //     fetch('http://192.168.12.1:8001/robot/sdk_ctrl/log')
-        //         .then((response) => {
-        //             const reader = response.body.getReader();
-        //             let result = '';
-
-        //             function process() {
-        //                 reader.read().then(({ done, value }) => {
-        //                     if (done) {
-        //                         console.log('处理结束')
-        //                         return;
-        //                     }
-        //                     result += new TextDecoder().decode(value);
-        //                     _this.streamValue = result
-        //                     console.log(result)
-        //                     process();
-        //                 });
-        //             }
-        //             process();
-        //         })
-        //         .catch((error) => {
-        //             console.error(error);
-        //         });
-        // }
+        promptBoxOpen() {
+            this.promptVisible = !this.promptVisible
+        },
+        shutDown() {
+            fetch(process.env.VUE_APP_URL + '/robot/sdk_ctrl/close')
+                .then((response) => {
+                    console.log(response);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+            this.promptBoxOpen()
+        }
     }
 }
 

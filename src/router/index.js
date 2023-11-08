@@ -47,10 +47,10 @@ const routes = [
       import("../views/setting/Setting.vue"),
   },
   {
-    path: "/initialization",
-    name: "initialization",
+    path: "/robotStartup",
+    name: "robotStartup",
     component: () =>
-      import("../views/initialization/Initialization.vue"),
+      import("../views/robotStartup/RobotStartup.vue"),
   },
   {
     path: "/",

@@ -1,18 +1,17 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import { Human } from "rocs-client";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    robot: new Human({host: process.env.VUE_APP_URL.split('//')[1].split(':')[0]}),
     controlType: 0,
-    iP: {
-      host: '127.0.0.1',
-      port: '4197'
-    },
     connected: false
   },
   getters: {
+    robot: state => state.robot,
     controlType: state => state.controlType,
     connected: state => state.connected
   },
@@ -20,11 +19,11 @@ export default new Vuex.Store({
     setControlType(state,type){
       state.controlType = type
     },
-    setIP(state,iP){
-      state.iP = iP
-    },
     setConnected(state,connected){
       state.connected = connected
+    },
+    setRobot(state){
+      state.robot = new Human({host: process.env.VUE_APP_URL.split('//')[1].split(':')[0]})
     }
   },
   actions: {},

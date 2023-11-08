@@ -1,6 +1,8 @@
 <template>
-    <div class="connectDialog">
-        <slot></slot>
+    <div class="dialog-wrapper">
+        <div class="connectDialog">
+            <slot></slot>
+        </div>
     </div>
 </template>
 
@@ -14,6 +16,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.dialog-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    /* 半透明黑色背景 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .connectDialog {
     position: absolute;
     top: 50%;
@@ -29,5 +43,9 @@ export default {
     justify-content: space-around;
     align-items: center;
     flex-direction: column;
+    font-size: 1.7083vw;
+    font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
+    font-weight: normal;
+    color: #FFFFFF;
 }
 </style>
