@@ -54,29 +54,13 @@
       <div :class="controlExpand ? 'controlActivated' : 'controlStatus'" ref="controlRef">
         <!-- 步态运动展开 -->
         <div class="actionBox" v-if="controlExpand && controlModel == 'gait'">
-          <div class="actionItem" @click="choseMode('slowWalk')">
-            <img class="actionImg" src="@/assets/images/icon_slowWalk.png" />
-            <div>{{ $t("normalWalking") }}</div>
-          </div>
-          <!-- <div class="actionItem" @click="choseMode('fastWalk')">
-            <img class="actionImg" src="@/assets/images/icon_fastWalk.png" />
-            <div>{{ $t("fastWalking") }}</div>
-          </div>
-          <div class="actionItem" @click="choseMode('slowRun')">
-            <img class="actionImg" src="@/assets/images/icon_slowRun.png" />
-            <div>{{ $t("slowRunning") }}</div>
-          </div>
-          <div class="actionItem" @click="choseMode('fastRun')">
-            <img class="actionImg" src="@/assets/images/icon_fastRun.png" />
-            <div>{{ $t("fastRunning") }}</div>
-          </div> -->
-        </div>
-        <!-- 原地运动展开 -->
-        <div class="actionBox" v-else-if="controlExpand && controlModel == 'inPlace'">
           <div class="actionItem">
             <img class="actionImg" src="@/assets/images/icon_markingTime.png" @click="choseMode('markingTime')" />
             <div>{{ $t("markingTime") }}</div>
           </div>
+        </div>
+        <!-- 原地运动展开 -->
+        <div class="actionBox" v-else-if="controlExpand && controlModel == 'inPlace'">
           <div class="actionItem">
             <img class="actionImg" src="@/assets/images/icon_zero.png" @click="choseMode('zero')" />
             <div>{{ $t("zero") }}</div>
@@ -86,10 +70,6 @@
             <div>{{ $t("waveLeftHand") }}</div>
           </div>
           <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_waveTwo.png" @click="choseMode('waveTwoHand')" />
-            <div>{{ $t("waveTwoHand") }}</div>
-          </div>
-          <div class="actionItem">
             <img class="actionImg" src="@/assets/images/icon_swingArms.png" @click="choseMode('swingArms')" />
             <div>{{ $t("swingArms") }}</div>
           </div>
@@ -97,6 +77,24 @@
             <img class="actionImg" src="@/assets/images/icon_greet.png" @click="choseMode('greet')" />
             <div>{{ $t("greet") }}</div>
           </div>
+          <div class="actionItem">
+            <img class="actionImg" src="@/assets/images/icon_nod.png" @click="choseMode('nod')" />
+            <div>{{ $t("nod") }}</div>
+          </div>
+          <div class="actionItem">
+            <img class="actionImg" src="@/assets/images/icon_shake.png" @click="choseMode('shake')" />
+            <div>{{ $t("shake") }}</div>
+          </div>
+          <div class="actionItem">
+            <img class="actionImg" src="@/assets/images/icon_twist.png" @click="choseMode('twist')" />
+            <div>{{ $t("twist") }}</div>
+          </div>
+          <div class="actionItem">
+            <img class="actionImg" src="@/assets/images/icon_squat.png" @click="choseMode('squat')" />
+            <div>{{ $t("squat") }}</div>
+          </div>
+        </div>
+        <div class="actionBox" v-else-if="controlExpand && controlModel == 'endGrasping'">
           <div class="actionItem">
             <img class="actionImg" src="@/assets/images/icon_open.png" @click="choseMode('openHand')" />
             <div>{{ $t("openHand") }}</div>
@@ -127,24 +125,15 @@
             {{ $t("inPlaceMotion") }}
           </div>
           <!-- 末端抓取 -->
-          <div :class="['choseBox', 'txt', controlModel == 'endGrasping' ? 'chose' : '']"
+          <div :class="['choseBox', 'txt', controlModel != 'endGrasping' ? '' : controlExpand ? 'choseBk' : 'chose']"
             @click="changeControl('endGrasping')">
             {{ $t("endGrasping") }}
           </div>
         </div>
       </div>
       <!-- 当前状态提示 -->
-      <div class="stateMessage" v-if="mode != ''">
-        <span v-if="mode == 'zero'">{{ $t("zero") }}...</span>
-        <span v-if="mode == 'slowWalk'">{{ $t("normalWalking") }}...</span>
-        <span v-if="mode == 'waveLeftHand'">{{ $t("waveLeftHand") }}...</span>
-        <span v-if="mode == 'waveTwoHand'">{{ $t("waveTwoHand") }}...</span>
-        <span v-if="mode == 'swingArms'">{{ $t("swingArms") }}...</span>
-        <span v-if="mode == 'markingTime'">{{ $t("markingTime") }}...</span>
-        <span v-if="mode == 'greet'">{{ $t("greet") }}...</span>
-        <span v-if="mode == 'openHand'">{{ $t("openHand") }}...</span>
-        <span v-if="mode == 'grasp'">{{ $t("grasp") }}...</span>
-        <span v-if="mode == 'tremble'">{{ $t("tremble") }}...</span>
+      <div class="stateMessage" v-if="mode != '' && upperAction">
+        <span>{{ $t(mode) }}{{ $t('ing') }}...</span>
       </div>
     </div>
   </div>
@@ -158,7 +147,7 @@ import { mapState } from "vuex";
 export default {
   components: { RtcHeader, rtcLeftControl },
   computed: {
-    ...mapState(["controlType", "iP"])
+    ...mapState(["robot"])
   },
   data() {
     return {
@@ -171,11 +160,13 @@ export default {
       speed: 1,//当前速度档位 1-5
       current_speed: 0, //当前速度，默认0
       videoSrc: "", //摄像头视频路径
-      controlModel: "gait",//当前运动 gait:步态 inPlace:原地
+      controlModel: "gait",//当前运动 gait:步态 inPlace:原地 endGrasping:末端抓取
       controlExpand: false,//运动选择栏展开
       mode: "",//当前运动模式
       headBoxVisible: false,//模式选择框显隐
-      camera: true//是否开启视频
+      camera: true,//是否开启视频
+      upperAction: false,
+      isStand: false
     };
   },
   created() {
@@ -194,6 +185,7 @@ export default {
     let _this = this;
     this.$nextTick(() => {
       window.addEventListener("gamepadconnected", function (e) {
+        console.log('手柄', JSON.stringify(e))
         _this.gamepadConnected = true;
         _this.startGamepad(); // 启动手柄
       });
@@ -212,6 +204,24 @@ export default {
     this.cameraOpen();
     this.startJoystickL(); //生成虚拟摇杆
     this.startJoystickR();
+    this.robot.enable_debug_state(2);
+    this.robot.on_connected(() => {
+      this.robot.enable_debug_state(2);
+    })
+    this.robot.on_message(data => {
+      let currData = JSON.parse(data.data);
+      console.log(currData)
+      if (currData.data)
+        this.upperAction = currData.data.upper_action
+    });
+    this.robot.on_close(() => {
+      console.log("Websocket已断开。。。。。。")
+      this.$store.commit('setRobot')
+    })
+    this.robot.on_error(() => {
+      console.log("Websocket出错啦。。。。。。")
+      this.$store.commit('setRobot')
+    })
   },
   beforeDestroy() {
     let _this = this;
@@ -226,6 +236,9 @@ export default {
   },
   destroyed() {
     clearInterval(this.interval);
+    //关闭监听
+    this.robot.disable_debug_state()
+    this.robot.removeAllListeners()
   },
   watch: {
     //屏幕尺寸变化后，重新生成joystick适配当前尺寸
@@ -287,7 +300,6 @@ export default {
         velocity = 0;
       }
       this.operateWalk(angle * -0.5, (velocity * this.speed) / 6.25);
-
     },
     // 手柄按键
     pressKey(arr) {
@@ -362,28 +374,44 @@ export default {
           }
         })
         .on("move", function (evt, data) {
+
           //同手柄圆心方案（新）
-          let velocity = data.vector.y;
-          let direction = data.vector.x;
-          let v = Math.hypot(Math.abs(velocity), Math.abs(direction));
-          if (v > 1) v = 1;
-          if (velocity < 0) v = v * -1;
-          let sin = direction / Math.abs(v);
-          let angle = (Math.asin(sin) * 180) / Math.PI;
-          if (Math.abs(velocity) < 0.1) v = 0;
-          if (Math.abs(direction) < 0.1) angle = 0;
-          //人形控制
-          if (!_this.gamepadConnected) {
-            if (Math.abs(velocity) < 0.1) {
-              velocity = 0;
+          if (!_this.isStand) {
+            let velocity = data.vector.y;
+            let direction = data.vector.x;
+            let v = Math.hypot(Math.abs(velocity), Math.abs(direction));
+            if (v > 1) v = 1;
+            if (velocity < 0) v = v * -1;
+            let sin = direction / Math.abs(v);
+            let angle = (Math.asin(sin) * 180) / Math.PI;
+            if (Math.abs(velocity) < 0.1) v = 0;
+            if (Math.abs(direction) < 0.1) angle = 0;
+            //人形控制
+            if (!_this.gamepadConnected) {
+              if (Math.abs(velocity) < 0.1) {
+                velocity = 0;
+              }
+              _this.operateWalk(angle * -0.5, (velocity * _this.speed) / 6.25);
             }
-            _this.operateWalk(angle * -0.5, (velocity * _this.speed) / 6.25);
+          } else {
+            let pitch = data.vector.y * 17.1887
+            let rotate_waist = data.vector.x * 14.32
+            if (Math.abs(pitch) < 1.71887) pitch = 0
+            if (Math.abs(rotate_waist) < 1.432) rotate_waist = 0
+            console.log(pitch, rotate_waist)
+            _this.operateHead(pitch, 0)
+            _this.operateBody(0, rotate_waist);
           }
         })
         .on("end", function (evt, data) {
           if (!_this.gamepadConnected) {
             //摇杆回原点后速度方向归零
-            _this.operateWalk(0, 0);
+            if (!_this.isStand) {
+              _this.operateWalk(0, 0);
+            } else {
+              _this.operateHead(0, 0);
+              _this.operateBody(0, 0);
+            }
             clearInterval(_this.time);
             _this.onEnd && _this.onEnd();
           }
@@ -405,24 +433,35 @@ export default {
 
         })
         .on("move", function (evt, data) {
-          let pitch = data.vector.y * 17.1887
-          let yaw = data.vector.x * 17.1887
-          if (Math.abs(pitch) < 0.1) pitch = 0
-          if (Math.abs(yaw) < 0.1) yaw = 0
-          _this.operateHead(pitch, yaw)
+
+          // let pitch = data.vector.y * 17.1887
+          // let yaw = data.vector.x * 60
+          // if (Math.abs(pitch) < 0.1) pitch = 0
+          // if (Math.abs(yaw) < 0.1) yaw = 0
+          // _this.operateHead(pitch, yaw)
+          if (_this.isStand) {
+            let squat = data.vector.y * 0.15
+            let yaw = data.vector.x * 60
+            if (squat > -0.015) squat = 0
+            if (Math.abs(yaw) < 6) yaw = 0
+            console.log(squat, yaw)
+            _this.operateHead(0, yaw)
+            _this.operateBody(squat, 0);
+          }
         })
         .on("end", function (evt, data) {
-          if (!_this.gamepadConnected) {
+          if (!_this.gamepadConnected && _this.isStand) {
             _this.operateHead(0, 0);
+            _this.operateBody(0, 0);
           }
         });
     },
     calibration() {
-      this.$robot.start()
+      this.robot.start()
     },
     //紧急停止
     stop() {
-      this.$robot.stop()
+      this.robot.stop()
     },
     // 速度挡位调节
     speedChange(e) {
@@ -436,23 +475,40 @@ export default {
     },
     //操控行走
     operateWalk(direction, velocity) {
-      this.$robot.walk(direction, velocity);
+      this.isStand = false
+      try {
+        this.robot.walk(direction, velocity);
+      } catch (error) {
+        console.log('Walk错误。。。。。。', error)
+      }
     },
     //操控头部
     operateHead(pitch, yaw) {
-      this.$robot.head(0, pitch, yaw * -1);
+      console.log(pitch, yaw)
+      try {
+        this.robot.head(0, pitch, yaw);
+      } catch (error) {
+        console.log('Head错误。。。。。。', error)
+      }
+    },
+    //操控身体
+    operateBody(squat, rotate_waist) {
+      console.log(squat, rotate_waist)
+      try {
+        this.robot.body(squat, rotate_waist);
+      } catch (error) {
+        console.log('Body错误。。。。。。', error)
+      }
     },
     //开启视频
     cameraOpen() {
-      this.videoSrc = this.$robot.camera.videoStreamUrl;
+      this.videoSrc = this.robot.camera.videoStreamUrl;
     },
     //切换当前控制模式
     changeControl(e) {
-      this.mode = "";
       if (e == "stand") {
-        this.$robot.stand()
-        this.controlExpand = false;
-      } else if (e == "endGrasping") {
+        this.isStand = true
+        this.robot.stand()
         this.controlExpand = false;
       } else {
         this.controlExpand = true;
@@ -460,37 +516,83 @@ export default {
       this.controlModel = e;
     },
     choseMode(e) {
+      if (this.upperAction == true) return
       this.controlExpand = false;
       this.mode = e;
       if (e == "markingTime") {
-        this.$robot.walk(0, 0);
+        this.isStand = false
+        this.robot.walk(0, 0);
       } else {
-        let data = {
+        let upper_data = {
           arm_action: "",
           hand_action: ""
         }
-        if (e == "zero") {
-          data.arm_action = "RESET"
-        } else if (e == "waveLeftHand") {
-          data.arm_action = "LEFT_ARM_WAVE"
-        } else if (e == "waveTwoHand") {
-          data.arm_action = "TWO_ARMS_WAVE"
-        } else if (e == "swingArms") {
-          data.arm_action = "ARMS_SWING"
-        } else if (e == "greet") {
-          data.arm_action = "HELLO"
-        } else if (e == "openHand") {
-          data.hand_action = "OPEN"
-        } else if (e == "grasp") {
-          data.hand_action = "GRASP"
-        } else if (e == "tremble") {
-          data.hand_action = "TREMBLE"
+        let lower_data = {
+          lower_body_mode: ""
         }
-        this.$robot.upper_body(data.arm_action, data.hand_action)
+        setTimeout(() => {
+          this.upperAction = true
+        }, 500);
+        if (e == "zero") {
+          upper_data.arm_action = "RESET"
+        } else if (e == "waveLeftHand") {
+          upper_data.arm_action = "LEFT_ARM_WAVE"
+        } else if (e == "swingArms") {
+          upper_data.arm_action = "ARMS_SWING"
+        } else if (e == "greet") {
+          upper_data.arm_action = "HELLO"
+        } else if (e == "openHand") {
+          upper_data.hand_action = "OPEN"
+        } else if (e == "grasp") {
+          upper_data.hand_action = "GRASP"
+        } else if (e == "tremble") {
+          upper_data.hand_action = "TREMBLE"
+        } else if (e == "twist") {
+          lower_data.lower_body_mode = "ROTATE_WAIST"
+        } else if (e == "squat") {
+          lower_data.lower_body_mode = "SQUAT"
+        } else if (e == "nod") {
+          this.operateHead(17, 0)
+          setTimeout(() => {
+            this.operateHead(-17, 0)
+          }, 1000);
+          setTimeout(() => {
+            this.operateHead(0, 0)
+          }, 3000);
+        } else if (e == "shake") {
+          this.operateHead(0, 17)
+          setTimeout(() => {
+            this.operateHead(0, -17)
+          }, 1000);
+          setTimeout(() => {
+            this.operateHead(0, 0)
+          }, 3000);
+        }
+        if (lower_data.lower_body_mode == "" && e != "nod" && e != "nod") {
+          this.robot.upper_body(upper_data.arm_action, upper_data.hand_action)
+        } else if(lower_data.lower_body_mode != "" && e != "nod" && e != "nod") {
+          // this.robot.lower_body(lower_data.lower_body_mode)
+          this.$http.request({
+            timeout: 30000,
+            baseURL: process.env.VUE_APP_URL,
+            method: "POST",
+            url: "/robot/lower_body",
+            data: {
+              lower_body_mode: lower_data.lower_body_mode
+            }
+          }).then(response => {
+            console.log('lower_body-response', response)
+            this.upperAction = false
+          }).catch(error => {
+            console.log('lower_body-error', error)
+            this.upperAction = false
+          })
+        } else{
+          setTimeout(() => {
+            this.upperAction = false
+          }, 4000);
+        }
       }
-    },
-    stopMode() {
-      this.mode = "";
     },
     headChange() {
       this.headBoxVisible = !this.headBoxVisible;
@@ -724,10 +826,14 @@ export default {
   padding: 3.125vw 3.1333vw 0 3.5917vw;
   display: flex;
   flex-wrap: wrap;
+  // justify-content: flex-start;
+  // align-items: flex-start;
 
   .actionItem {
     text-align: center;
     flex-basis: 33.33%;
+    // height: 6.6667vw;
+    // width: 7.6112vw;
     font-size: 1.25vw;
     font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
     font-weight: normal;

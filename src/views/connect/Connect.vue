@@ -40,10 +40,7 @@
             <div class="connectTxt" style="font-size: 1.4583vw;">{{ $t('connectTips') }}</div>
         </div>
         <!-- 返回主界面及连接失败弹框 -->
-        
-        
-        <div class="dialog-wrapper" v-if="returnMain || connectFail">
-            <r-dialog class="connectTxt">
+        <r-dialog v-if="returnMain || connectFail">
             <div>
                 {{ $t('tip') }}
             </div>
@@ -59,7 +56,6 @@
                 <div class="btn blue">{{ $t('confirm') }}</div>
             </div>
         </r-dialog>
-        </div>
     </div>
 </template>
 
@@ -262,16 +258,5 @@ export default {
     justify-content: space-around;
     align-items: center;
     flex-direction: column;
-}
-.dialog-wrapper {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7); /* 半透明黑色背景 */
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 </style>
