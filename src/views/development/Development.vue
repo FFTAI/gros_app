@@ -16,241 +16,238 @@
         {{ $t("developerMode") }}
       </div>
     </div>
-    <div class="mainBox">
-      <!-- 左侧栏 -->
-      <div class="leftBox">
-        <!-- 人形模型 -->
-        <!-- <img class="humanModel" src="@/assets/images/icon_model.png" v-show="activated == 'dynamic'" /> -->
-        <!-- <iframe ref="unityIfm" src="WebGL/index.html"
+    <!-- 左侧栏 -->
+    <div class="leftBox">
+      <!-- 人形模型 -->
+      <!-- <img class="humanModel" src="@/assets/images/icon_model.png" v-show="activated == 'dynamic'" /> -->
+      <!-- <iframe ref="unityIfm" src="WebGL/index.html"
           style="border: none;width: 26.0417vw;height: 36.4583vw;margin-top:6.25vw;"
           v-show="activated == 'dynamic'"></iframe> -->
-        <div class="humanModel" v-show="activated == 'dynamic'">
-          <iframe ref="unityIfm" style="border: none;margin-top: 3.125vw;width: 26.0417vw;height: 36.4583vw;"
-            :src="iframeUrl"></iframe>
+      <div class="humanModel" v-show="activated == 'dynamic'">
+        <iframe ref="unityIfm" style="border: none;margin-top: 3.125vw;width: 26.0417vw;height: 36.4583vw;"
+          :src="iframeUrl"></iframe>
+      </div>
+      <!-- log日志 -->
+      <div class="logBox" v-show="activated == 'log'">
+        <div class="logTitle">{{ $t("logoFile") }}</div>
+        <div class="logMain">
+          <el-timeline>
+            <el-timeline-item v-for="(activity, index) in logList" :key="index" :type="activity.type"
+              :timestamp="activity.timestamp" :placement="activity.placement">
+              <p class="logTxt">{{ activity.content }}</p>
+            </el-timeline-item>
+          </el-timeline>
         </div>
-        <!-- log日志 -->
-        <div class="logBox" v-show="activated == 'log'">
-          <div class="logTitle">{{ $t("logoFile") }}</div>
-          <div class="logMain">
-            <el-timeline>
-              <el-timeline-item v-for="(activity, index) in logList" :key="index" :type="activity.type"
-                :timestamp="activity.timestamp" :placement="activity.placement">
-                <p class="logTxt">{{ activity.content }}</p>
-              </el-timeline-item>
-            </el-timeline>
+      </div>
+      <!-- 底部切换 -->
+      <div class="modelChose">
+        <div class="modelBtn" :class="{ 'activatedModel': activated == 'dynamic' }" @click="changeModel('dynamic')">
+          <span class="btnTxt">{{ $t("dynamicShowcase") }}</span>
+        </div>
+        <div class="modelBtn" :class="{ 'activatedModel': activated == 'log' }" style="margin-left: .8854vw;"
+          @click="changeModel('log')">
+          <span class="btnTxt">{{ $t("logoFile") }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="rightBox">
+      <div class="rightTitle logTitle">
+        <span>{{ $t("lowerBody") }}</span>
+      </div>
+      <!-- 左右侧图表 -->
+      <div class="sideChart">
+        <div class="chartSize" style="height: 10vw;" id="leftChart"></div>
+        <!-- 切换: 度,度/秒，扭矩(牛.米) -->
+        <div class="typeBox">
+          <img class="typeImg" :class="{ 'notAct': activatedType != 'angle' }" @click="changeType('angle')"
+            src="@/assets/images/icon_angle.png" />
+          <img class="typeImg" :class="{ 'notAct': activatedType != 'Avelocity' }" @click="changeType('Avelocity')"
+            src="@/assets/images/icon_Avelocity.png" />
+          <img class="typeImg" :class="{ 'notAct': activatedType != 'torque' }" @click="changeType('torque')"
+            src="@/assets/images/icon_torque.png" />
+        </div>
+        <div class="chartSize" style="height: 10vw;" id="rightChart"></div>
+      </div>
+      <!-- 数值切换显示Table -->
+      <div class="rightTable">
+        <!-- Hip Pitch -->
+        <div class="tableItem" @click="changeItem('hipPitch')">
+          <div v-if="activatedType == 'angle'" class="itemChild">{{ leftHipPitch_qa ? leftHipPitch_qa + "°" :
+            ""
+          }}
+          </div>
+          <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ leftHipPitch_qdota ?
+            leftHipPitch_qdota + "°/s" : "" }}
+          </div>
+          <div v-else-if="activatedType == 'torque'" class="itemChild">{{ leftHipPitch_taua ?
+            leftHipPitch_taua
+            + "N.m" : "" }}
+          </div>
+          <div class="itemChild" :class="activatedItem == 'hipPitch' ? 'middleCurr' : 'middle'">{{ $t('hipPitch') }}
+            <div class="downArrow" v-if="activatedItem == 'hipPitch'"></div>
+          </div>
+          <div v-if="activatedType == 'angle'" class="itemChild">{{ rightHipPitch_qa ? rightHipPitch_qa + "°"
+            :
+            "" }}
+          </div>
+          <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ rightHipPitch_qdota ?
+            rightHipPitch_qdota + "°/s" : "" }}
+          </div>
+          <div v-else-if="activatedType == 'torque'" class="itemChild">{{ rightHipPitch_taua ?
+            rightHipPitch_taua + "N.m" : "" }}
           </div>
         </div>
-        <!-- 底部切换 -->
-        <div class="modelChose">
-          <div class="modelBtn" :class="{ 'activatedModel': activated == 'dynamic' }" @click="changeModel('dynamic')">
-            <span class="btnTxt">{{ $t("dynamicShowcase") }}</span>
+        <!-- Hip Yaw -->
+        <div class="tableItem" @click="changeItem('hipYaw')">
+          <div v-if="activatedType == 'angle'" class="itemChild">{{ leftHipYaw_qa ? leftHipYaw_qa + "°" : ""
+          }}
           </div>
-          <div class="modelBtn" :class="{ 'activatedModel': activated == 'log' }" style="margin-left: .8854vw;"
-            @click="changeModel('log')">
-            <span class="btnTxt">{{ $t("logoFile") }}</span>
+          <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ leftHipYaw_qdota ?
+            leftHipYaw_qdota
+            + "°/s" : "" }}
+          </div>
+          <div v-else-if="activatedType == 'torque'" class="itemChild">{{ leftHipYaw_taua ? leftHipYaw_taua +
+            "N.m" : "" }}
+          </div>
+          <div class="itemChild" :class="activatedItem == 'hipYaw' ? 'middleCurr' : 'middle'">{{ $t('hipYaw') }}
+            <div class="downArrow" v-if="activatedItem == 'hipYaw'">
+            </div>
+          </div>
+          <div v-if="activatedType == 'angle'" class="itemChild">{{ rightHipYaw_qa ? rightHipYaw_qa + "°" : ""
+          }}
+          </div>
+          <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ rightHipYaw_qdota ?
+            rightHipYaw_qdota + "°/s" : "" }}
+          </div>
+          <div v-else-if="activatedType == 'torque'" class="itemChild">{{ rightHipYaw_taua ? rightHipYaw_taua
+            +
+            "N.m" : "" }}
+          </div>
+        </div>
+        <!-- Hip Roll -->
+        <div class="tableItem" @click="changeItem('hipRoll')">
+          <div v-if="activatedType == 'angle'" class="itemChild">{{ leftHipRoll_qa ? leftHipRoll_qa + "°" : ""
+          }}
+          </div>
+          <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ leftHipRoll_qdota ?
+            leftHipRoll_qdota + "°/s" : "" }}
+          </div>
+          <div v-else-if="activatedType == 'torque'" class="itemChild">{{ leftHipRoll_taua ? leftHipRoll_taua
+            +
+            "N.m" : "" }}
+          </div>
+          <div class="itemChild" :class="activatedItem == 'hipRoll' ? 'middleCurr' : 'middle'">{{ $t('hipRoll') }}
+            <div class="downArrow" v-if="activatedItem == 'hipRoll'">
+            </div>
+          </div>
+          <div v-if="activatedType == 'angle'" class="itemChild">{{ rightHipRoll_qa ? rightHipRoll_qa + "°" :
+            ""
+          }}
+          </div>
+          <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ rightHipRoll_qdota ?
+            rightHipRoll_qdota + "°/s" : "" }}
+          </div>
+          <div v-else-if="activatedType == 'torque'" class="itemChild">{{ rightHipRoll_taua ?
+            rightHipRoll_taua
+            + "N.m" : "" }}
+          </div>
+        </div>
+        <!-- Knee -->
+        <div class="tableItem" @click="changeItem('knee')">
+          <div v-if="activatedType == 'angle'" class="itemChild">{{ leftKnee_qa ? leftKnee_qa + "°" : "" }}
+          </div>
+          <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ leftKnee_qdota ? leftKnee_qdota +
+            "°/s" : "" }}
+          </div>
+          <div v-else-if="activatedType == 'torque'" class="itemChild">{{ leftKnee_taua ? leftKnee_taua +
+            "N.m"
+            : "" }}
+          </div>
+          <div class="itemChild" :class="activatedItem == 'knee' ? 'middleCurr' : 'middle'">{{ $t('knee') }}
+            <div class="downArrow" v-if="activatedItem == 'knee'"></div>
+          </div>
+          <div v-if="activatedType == 'angle'" class="itemChild">{{ rightKnee_qa ? rightKnee_qa + "°" : "" }}
+          </div>
+          <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ rightKnee_qdota ? rightKnee_qdota
+            +
+            "°/s" : "" }}
+          </div>
+          <div v-else-if="activatedType == 'torque'" class="itemChild">{{ rightKnee_taua ? rightKnee_taua +
+            "N.m" : "" }}
+          </div>
+        </div>
+        <!-- Ankle Pitch -->
+        <div class="tableItem" @click="changeItem('anklePitch')">
+          <div v-if="activatedType == 'angle'" class="itemChild">{{ leftAnklePitch_qa ? leftAnklePitch_qa +
+            "°"
+            : "" }}
+          </div>
+          <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ leftAnklePitch_qdota ?
+            leftAnklePitch_qdota + "°/s" : "" }}
+          </div>
+          <div v-else-if="activatedType == 'torque'" class="itemChild">{{ leftAnklePitch_taua ?
+            leftAnklePitch_taua + "N.m" : "" }}
+          </div>
+          <div class="itemChild" :class="activatedItem == 'anklePitch' ? 'middleCurr' : 'middle'">{{ $t('anklePitch') }}
+            <div class="downArrow" v-if="activatedItem == 'anklePitch'"></div>
+          </div>
+          <div v-if="activatedType == 'angle'" class="itemChild">{{ rightAnklePitch_qa ? rightAnklePitch_qa +
+            "°" : "" }}
+          </div>
+          <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ rightAnklePitch_qdota ?
+            rightAnklePitch_qdota + "°/s" : "" }}
+          </div>
+          <div v-else-if="activatedType == 'torque'" class="itemChild">{{ rightAnklePitch_taua ?
+            rightAnklePitch_taua + "N.m" : "" }}
+          </div>
+        </div>
+        <!-- Ankle Roll -->
+        <div class="tableItem" @click="changeItem('ankleRoll')">
+          <div v-if="activatedType == 'angle'" class="itemChild">{{ leftAnkleRoll_qa ? leftAnkleRoll_qa + "°"
+            :
+            "" }}
+          </div>
+          <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ leftAnkleRoll_qdota ?
+            leftAnkleRoll_qdota + "°/s" : "" }}
+          </div>
+          <div v-else-if="activatedType == 'torque'" class="itemChild">{{ leftAnkleRoll_taua ?
+            leftAnkleRoll_taua + "N.m" : "" }}
+          </div>
+          <div class="itemChild" :class="activatedItem == 'ankleRoll' ? 'middleCurr' : 'middle'">{{ $t('ankleRoll') }}
+            <div class="downArrow" v-if="activatedItem == 'ankleRoll'"></div>
+          </div>
+          <div v-if="activatedType == 'angle'" class="itemChild">{{ rightAnkleRoll_qa ? rightAnkleRoll_qa +
+            "°"
+            : "" }}
+          </div>
+          <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ rightAnkleRoll_qdota ?
+            rightAnkleRoll_qdota + "°/s" : "" }}
+          </div>
+          <div v-else-if="activatedType == 'torque'" class="itemChild">{{ rightAnkleRoll_taua ?
+            rightAnkleRoll_taua + "N.m" : "" }}
           </div>
         </div>
       </div>
-      <div class="rightBox">
-        <div class="rightTitle logTitle">
-          <span>{{ $t("leftSide") }}</span>
-          <span>{{ $t("rightSide") }}</span>
-        </div>
-        <!-- 左右侧图表 -->
-        <div class="sideChart">
-          <div class="chartSize" style="height: 10vw;" id="leftChart"></div>
-          <!-- 切换: 度,度/秒，扭矩(牛.米) -->
-          <div class="typeBox">
-            <img class="typeImg" :class="{ 'notAct': activatedType != 'angle' }" @click="changeType('angle')"
-              src="@/assets/images/icon_angle.png" />
-            <img class="typeImg" :class="{ 'notAct': activatedType != 'Avelocity' }" @click="changeType('Avelocity')"
-              src="@/assets/images/icon_Avelocity.png" />
-            <img class="typeImg" :class="{ 'notAct': activatedType != 'torque' }" @click="changeType('torque')"
-              src="@/assets/images/icon_torque.png" />
+      <!-- 速度折线图 -->
+      <div class="speedChart">
+        <!-- X轴速度 -->
+        <div class="xChart">
+          <div class="chatItem" style="flex: 1;">
+            <div>{{ $t("xSpeed") }}</div>
+            <div>{{ xSpeed }}m/s</div>
           </div>
-          <div class="chartSize" style="height: 10vw;" id="rightChart"></div>
-        </div>
-        <!-- 数值切换显示Table -->
-        <div class="rightTable">
-          <!-- Hip Pitch -->
-          <div class="tableItem" @click="changeItem('hipPitch')">
-            <div v-if="activatedType == 'angle'" class="itemChild">{{ leftHipPitch_qa ? leftHipPitch_qa + "°" :
-              ""
-            }}
-            </div>
-            <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ leftHipPitch_qdota ?
-              leftHipPitch_qdota + "°/s" : "" }}
-            </div>
-            <div v-else-if="activatedType == 'torque'" class="itemChild">{{ leftHipPitch_taua ?
-              leftHipPitch_taua
-              + "N.m" : "" }}
-            </div>
-            <div class="itemChild" :class="activatedItem == 'hipPitch' ? 'middleCurr' : 'middle'">{{ $t('hipPitch') }}
-              <div class="downArrow" v-if="activatedItem == 'hipPitch'"></div>
-            </div>
-            <div v-if="activatedType == 'angle'" class="itemChild">{{ rightHipPitch_qa ? rightHipPitch_qa + "°"
-              :
-              "" }}
-            </div>
-            <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ rightHipPitch_qdota ?
-              rightHipPitch_qdota + "°/s" : "" }}
-            </div>
-            <div v-else-if="activatedType == 'torque'" class="itemChild">{{ rightHipPitch_taua ?
-              rightHipPitch_taua + "N.m" : "" }}
-            </div>
-          </div>
-          <!-- Hip Yaw -->
-          <div class="tableItem" @click="changeItem('hipYaw')">
-            <div v-if="activatedType == 'angle'" class="itemChild">{{ leftHipYaw_qa ? leftHipYaw_qa + "°" : ""
-            }}
-            </div>
-            <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ leftHipYaw_qdota ?
-              leftHipYaw_qdota
-              + "°/s" : "" }}
-            </div>
-            <div v-else-if="activatedType == 'torque'" class="itemChild">{{ leftHipYaw_taua ? leftHipYaw_taua +
-              "N.m" : "" }}
-            </div>
-            <div class="itemChild" :class="activatedItem == 'hipYaw' ? 'middleCurr' : 'middle'">{{ $t('hipYaw') }}
-              <div class="downArrow" v-if="activatedItem == 'hipYaw'">
-              </div>
-            </div>
-            <div v-if="activatedType == 'angle'" class="itemChild">{{ rightHipYaw_qa ? rightHipYaw_qa + "°" : ""
-            }}
-            </div>
-            <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ rightHipYaw_qdota ?
-              rightHipYaw_qdota + "°/s" : "" }}
-            </div>
-            <div v-else-if="activatedType == 'torque'" class="itemChild">{{ rightHipYaw_taua ? rightHipYaw_taua
-              +
-              "N.m" : "" }}
-            </div>
-          </div>
-          <!-- Hip Roll -->
-          <div class="tableItem" @click="changeItem('hipRoll')">
-            <div v-if="activatedType == 'angle'" class="itemChild">{{ leftHipRoll_qa ? leftHipRoll_qa + "°" : ""
-            }}
-            </div>
-            <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ leftHipRoll_qdota ?
-              leftHipRoll_qdota + "°/s" : "" }}
-            </div>
-            <div v-else-if="activatedType == 'torque'" class="itemChild">{{ leftHipRoll_taua ? leftHipRoll_taua
-              +
-              "N.m" : "" }}
-            </div>
-            <div class="itemChild" :class="activatedItem == 'hipRoll' ? 'middleCurr' : 'middle'">{{ $t('hipRoll') }}
-              <div class="downArrow" v-if="activatedItem == 'hipRoll'">
-              </div>
-            </div>
-            <div v-if="activatedType == 'angle'" class="itemChild">{{ rightHipRoll_qa ? rightHipRoll_qa + "°" :
-              ""
-            }}
-            </div>
-            <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ rightHipRoll_qdota ?
-              rightHipRoll_qdota + "°/s" : "" }}
-            </div>
-            <div v-else-if="activatedType == 'torque'" class="itemChild">{{ rightHipRoll_taua ?
-              rightHipRoll_taua
-              + "N.m" : "" }}
-            </div>
-          </div>
-          <!-- Knee -->
-          <div class="tableItem" @click="changeItem('knee')">
-            <div v-if="activatedType == 'angle'" class="itemChild">{{ leftKnee_qa ? leftKnee_qa + "°" : "" }}
-            </div>
-            <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ leftKnee_qdota ? leftKnee_qdota +
-              "°/s" : "" }}
-            </div>
-            <div v-else-if="activatedType == 'torque'" class="itemChild">{{ leftKnee_taua ? leftKnee_taua +
-              "N.m"
-              : "" }}
-            </div>
-            <div class="itemChild" :class="activatedItem == 'knee' ? 'middleCurr' : 'middle'">{{ $t('knee') }}
-              <div class="downArrow" v-if="activatedItem == 'knee'"></div>
-            </div>
-            <div v-if="activatedType == 'angle'" class="itemChild">{{ rightKnee_qa ? rightKnee_qa + "°" : "" }}
-            </div>
-            <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ rightKnee_qdota ? rightKnee_qdota
-              +
-              "°/s" : "" }}
-            </div>
-            <div v-else-if="activatedType == 'torque'" class="itemChild">{{ rightKnee_taua ? rightKnee_taua +
-              "N.m" : "" }}
-            </div>
-          </div>
-          <!-- Ankle Pitch -->
-          <div class="tableItem" @click="changeItem('anklePitch')">
-            <div v-if="activatedType == 'angle'" class="itemChild">{{ leftAnklePitch_qa ? leftAnklePitch_qa +
-              "°"
-              : "" }}
-            </div>
-            <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ leftAnklePitch_qdota ?
-              leftAnklePitch_qdota + "°/s" : "" }}
-            </div>
-            <div v-else-if="activatedType == 'torque'" class="itemChild">{{ leftAnklePitch_taua ?
-              leftAnklePitch_taua + "N.m" : "" }}
-            </div>
-            <div class="itemChild" :class="activatedItem == 'anklePitch' ? 'middleCurr' : 'middle'">{{ $t('anklePitch') }}
-              <div class="downArrow" v-if="activatedItem == 'anklePitch'"></div>
-            </div>
-            <div v-if="activatedType == 'angle'" class="itemChild">{{ rightAnklePitch_qa ? rightAnklePitch_qa +
-              "°" : "" }}
-            </div>
-            <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ rightAnklePitch_qdota ?
-              rightAnklePitch_qdota + "°/s" : "" }}
-            </div>
-            <div v-else-if="activatedType == 'torque'" class="itemChild">{{ rightAnklePitch_taua ?
-              rightAnklePitch_taua + "N.m" : "" }}
-            </div>
-          </div>
-          <!-- Ankle Roll -->
-          <div class="tableItem" @click="changeItem('ankleRoll')">
-            <div v-if="activatedType == 'angle'" class="itemChild">{{ leftAnkleRoll_qa ? leftAnkleRoll_qa + "°"
-              :
-              "" }}
-            </div>
-            <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ leftAnkleRoll_qdota ?
-              leftAnkleRoll_qdota + "°/s" : "" }}
-            </div>
-            <div v-else-if="activatedType == 'torque'" class="itemChild">{{ leftAnkleRoll_taua ?
-              leftAnkleRoll_taua + "N.m" : "" }}
-            </div>
-            <div class="itemChild" :class="activatedItem == 'ankleRoll' ? 'middleCurr' : 'middle'">{{ $t('ankleRoll') }}
-              <div class="downArrow" v-if="activatedItem == 'ankleRoll'"></div>
-            </div>
-            <div v-if="activatedType == 'angle'" class="itemChild">{{ rightAnkleRoll_qa ? rightAnkleRoll_qa +
-              "°"
-              : "" }}
-            </div>
-            <div v-else-if="activatedType == 'Avelocity'" class="itemChild">{{ rightAnkleRoll_qdota ?
-              rightAnkleRoll_qdota + "°/s" : "" }}
-            </div>
-            <div v-else-if="activatedType == 'torque'" class="itemChild">{{ rightAnkleRoll_taua ?
-              rightAnkleRoll_taua + "N.m" : "" }}
-            </div>
+          <div class="chatItem" style="flex: 2;">
+            <div class="sChartSize" style="height: 13vw;" id="xChart"></div>
           </div>
         </div>
-        <!-- 速度折线图 -->
-        <div class="speedChart">
-          <!-- X轴速度 -->
-          <div class="xChart">
-            <div class="chatItem" style="flex: 1;">
-              <div>{{ $t("xSpeed") }}</div>
-              <div>{{ xSpeed }}m/s</div>
-            </div>
-            <div class="chatItem" style="flex: 2;">
-              <div class="sChartSize" style="height: 13vw;" id="xChart"></div>
-            </div>
+        <!-- Y轴速度 -->
+        <div class="yChart">
+          <div class="chatItem" style="flex: 1;">
+            <div>{{ $t("ySpeed") }}</div>
+            <div>{{ ySpeed }}m/s</div>
           </div>
-          <!-- Y轴速度 -->
-          <div class="yChart">
-            <div class="chatItem" style="flex: 1;">
-              <div>{{ $t("ySpeed") }}</div>
-              <div>{{ ySpeed }}m/s</div>
-            </div>
-            <div class="chatItem" style="flex: 2;">
-              <div class="sChartSize" style="height: 13vw;" id="yChart"></div>
-            </div>
+          <div class="chatItem" style="flex: 2;">
+            <div class="sChartSize" style="height: 13vw;" id="yChart"></div>
           </div>
         </div>
       </div>
@@ -319,7 +316,7 @@ export default {
       activatedType: "angle",
       headBoxVisible: false,
       robotCount: 1,
-      iframeUrl: process.env.VUE_APP_URL.replace(process.env.VUE_APP_URL.split('//')[1].split(':')[1],'3002')
+      iframeUrl: process.env.VUE_APP_URL.replace(process.env.VUE_APP_URL.split('//')[1].split(':')[1], '3002')
     };
   },
   created() {
@@ -358,7 +355,7 @@ export default {
         this.robotCount = this.robotCount + 1
       }
     });
-    this.robot.on_close(()=>{
+    this.robot.on_close(() => {
       console.log("Websocket已断开。。。。。。")
       this.$store.commit('setRobot')
     })
@@ -374,6 +371,7 @@ export default {
   },
   methods: {
     changeModel(e) {
+      console.log('changeModel',e)
       this.activated = e;
       if (window.vuplex) {
         if (e == "dynamic") {
@@ -1028,250 +1026,235 @@ export default {
   }
 }
 
-.mainBox {
-  position: absolute;
-  display: flex;
-  top: 5.7083vw;
-  left: 2.4583vw;
-  height: 38.0417vw;
-  width: 95.0833vw;
+.logTitle {
+  font-size: 1.5833vw;
+  font-family: Alibaba-PuHuiTi-M;
+  font-weight: normal;
+  color: #FFFFFF;
+}
 
-  .logTitle {
-    font-size: 1.6146vw;
-    font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
-    font-weight: normal;
-    color: #FFFFFF;
+.leftBox {
+  position: absolute;
+  left: 3.0833vw;
+  top: 5.7917vw;
+  height: 38.2083vw;
+  width: 553px;
+
+  .humanModel {
+    height: 32.125vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
-  .leftBox {
-    flex: 2;
+  .logBox {
+    height: 30.8333vw;
+    padding: 1.2917vw 1.25vw 0 2.4583vw;
+    box-shadow: 0 .1042vw .2083vw 0 rgba(41, 72, 152, 0.01), 0 .4688vw .4167vw 0 rgba(41, 72, 152, 0.02);
+    border-radius: .2604vw;
+    background-color: rgba(255, 255, 255, 0.1);
+
+    .logMain {
+      margin-top: 1.0417vw;
+      overflow-y: auto;
+      height: 26.6667vw;
+      width: 33.8333vw;
+
+      .logTxt {
+        font-size: 1.25vw;
+        font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
+        font-weight: normal;
+        color: #FFFFFF;
+      }
+
+      .txtErr {
+        color: #DC4253;
+      }
+    }
+
+    .logMain::-webkit-scrollbar {
+      width: .5vw;
+    }
+
+    // .logMain::-webkit-scrollbar-track {
+    //   background-color: rgba(81, 82, 85, 0.1);
+    // }
+
+    .logMain::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: .125vw;
+    }
+
+    .logMain::-webkit-scrollbar-corner {
+      background-color: transparent;
+    }
+  }
+
+
+
+  .modelChose {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3.7083vw;
+    width: 23.0417vw;
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
     align-items: center;
 
-    .humanModel {
-      width: 37.5417vw;
-      height: 32.125vw;
+    .modelBtn {
+      flex: 1;
+      width: 11.0938vw;
+      height: 3.6979vw;
       display: flex;
       justify-content: center;
       align-items: center;
+
+      .btnTxt {
+        font-size: 1.4583vw;
+        font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
+        font-weight: normal;
+        color: #FFFFFF;
+        opacity: 1;
+        line-height: 2.0313vw;
+      }
     }
 
-    .logBox {
-      height: 30.8333vw;
-      width: 33.8333vw;
-      padding: 1.2917vw 1.25vw 0 2.4583vw;
-      box-shadow: 0 .1042vw .2083vw 0 rgba(41, 72, 152, 0.01), 0 .4688vw .4167vw 0 rgba(41, 72, 152, 0.02);
-      border-radius: .2604vw;
+    .activatedModel {
+      border-radius: 1.8229vw;
       background-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
 
-      .logMain {
-        margin-top: 1.0417vw;
-        overflow-y: auto;
-        height: 26.6667vw;
-        width: 33.8333vw;
+.rightBox {
+  position: absolute;
+  top: 5.7917vw;
+  right: 2.5833vw;
+  width: 33.25vw;
+  height: 38.7917vw;
+  box-shadow: 0 .1042vw .2083vw 0 rgba(41, 72, 152, 0.01), 0 .4688vw .4167vw 0 rgba(41, 72, 152, 0.02);
+  border-radius: .2604vw;
 
-        .logTxt {
-          font-size: 1.25vw;
-          font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
-          font-weight: normal;
-          color: #FFFFFF;
-        }
+  .rightTitle {
+    padding: 1.2917vw 0 0 1.8333vw;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: .2604vw .2604vw 0 0;
+  }
 
-        .txtErr {
-          color: #DC4253;
-        }
+  .sideChart {
+    height: 6.4167vw;
+    background-color: rgba(255, 255, 255, 0.08);
+    display: flex;
+    justify-content: space-between;
+
+    .chartSize {
+      // width: 26.0417vw;
+      height: 18vh;
+    }
+
+    .typeBox {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      margin-bottom: 1.9583vw;
+
+      .typeImg {
+        width: 1.4583vw;
+        height: 1.4583vw;
       }
 
-      .logMain::-webkit-scrollbar {
-        width: .5vw;
-      }
-
-      // .logMain::-webkit-scrollbar-track {
-      //   background-color: rgba(81, 82, 85, 0.1);
-      // }
-
-      .logMain::-webkit-scrollbar-thumb {
-        background-color: rgba(255, 255, 255, 0.1);
-        border-radius: .125vw;
-      }
-
-      .logMain::-webkit-scrollbar-corner {
-        background-color: transparent;
+      .notAct {
+        opacity: 0.3;
       }
     }
 
+  }
 
+  .rightTable {
+    padding-top: 1.4167vw;
+    height: 14.0833vw;
+    padding: 0 2.4583vw;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 0 0 .2604vw .2604vw;
 
-    .modelChose {
-      height: 4.5021vw;
-      width: 23.0729vw;
+    .tableItem {
+      height: 16.67%;
+      width: 100%;
       display: flex;
-      justify-content: space-between;
       align-items: center;
 
-      .modelBtn {
-        flex: 1;
-        width: 11.0938vw;
-        height: 3.6979vw;
+      .itemChild {
+        color: #FFFFFF;
+        flex: 3;
+        font-size: 1.0417vw;
+        text-align: center;
+      }
+
+      .middleCurr {
+        flex: 2;
+        background-color: #0075B8;
+        height: 100%;
         display: flex;
-        justify-content: center;
         align-items: center;
-
-        .btnTxt {
-          font-size: 1.4583vw;
-          font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
-          font-weight: normal;
-          color: #FFFFFF;
-          opacity: 1;
-          line-height: 2.0313vw;
-        }
+        justify-content: center;
       }
 
-      .activatedModel {
-        border-radius: 1.8229vw;
-        background-color: rgba(255, 255, 255, 0.1);
+      .middle {
+        flex: 2;
+        color: #85888b;
       }
+
+      .downArrow {
+        margin-left: .2604vw;
+        width: 0;
+        height: 0;
+        background: linear-gradient(274deg, #1a1919 0%, #004c81 100%);
+        border-left: .3125vw solid transparent;
+        border-right: .3125vw solid transparent;
+        border-bottom: .5208vw solid #FFFFFF;
+      }
+    }
+
+    .tableItem:nth-child(odd) {
+      background-color: rgba(255, 255, 255, 0.1);
     }
   }
 
-  .rightBox {
-    flex: 3;
-    width: 56.2917vw;
-    height: 38.7917vw;
-    box-shadow: 0 .1042vw .2083vw 0 rgba(41, 72, 152, 0.01), 0 .4688vw .4167vw 0 rgba(41, 72, 152, 0.02);
-    border-radius: .2604vw;
+  .speedChart {
+    height: 9.25vw;
+    margin: 1.5625vw 0 0 1.5625vw;
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
 
-    .rightTitle {
-      // height: 6vh;
-      width: 51.0833vw;
-      display: flex;
-      justify-content: space-between;
-      margin-left: 1.5625vw;
-      padding: 1.0417vw 2.6042vw 0 2.6042vw;
-      background-color: rgba(255, 255, 255, 0.08);
-      border-radius: .2604vw .2604vw 0 0;
-    }
-
-    .sideChart {
-      width: 56.2917vw;
+    .sChartSize {
+      // width: 20vw;
       height: 18vh;
-      background-color: rgba(255, 255, 255, 0.08);
-      margin-left: 1.5625vw;
-      display: flex;
-      justify-content: space-between;
-
-      .chartSize {
-        width: 26.0417vw;
-        height: 18vh;
-      }
-
-      .typeBox {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-        margin-bottom: 1.9583vw;
-
-        .typeImg {
-          width: 1.4583vw;
-          height: 1.4583vw;
-        }
-
-        .notAct {
-          opacity: 0.3;
-        }
-      }
-
     }
 
-    .rightTable {
-      width: 51.375vw;
-      height: 15.5vw;
-      padding: 0 2.4583vw;
+    .xChart {
+      // width: 27.4583vw;
       background-color: rgba(255, 255, 255, 0.08);
-      margin-left: 1.5625vw;
-      border-radius: 0 0 .2604vw .2604vw;
-
-      .tableItem {
-        height: 16.67%;
-        width: 100%;
-        display: flex;
-        align-items: center;
-
-        .itemChild {
-          color: #FFFFFF;
-          flex: 3;
-          font-size: 1.25vw;
-          text-align: center;
-        }
-
-        .middleCurr {
-          flex: 1;
-          background-color: #0075B8;
-          height: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .middle {
-          flex: 1;
-          color: #85888b;
-        }
-
-        .downArrow {
-          margin-left: .2604vw;
-          width: 0;
-          height: 0;
-          background: linear-gradient(274deg, #1a1919 0%, #004c81 100%);
-          border-left: .3125vw solid transparent;
-          border-right: .3125vw solid transparent;
-          border-bottom: .5208vw solid #FFFFFF;
-        }
-      }
-
-      .tableItem:nth-child(odd) {
-        background-color: rgba(255, 255, 255, 0.1);
-      }
+      display: flex;
+      border-radius: .2604vw .2604vw;
     }
 
-    .speedChart {
-      width: 56.2917vw;
-      height: 9.25vw;
-      margin: 1.5625vw 0 0 1.5625vw;
+    .yChart {
+      // width: 27.4583vw;
+      background-color: rgba(255, 255, 255, 0.08);
       display: flex;
-      justify-content: space-between;
+      border-radius: .2604vw .2604vw;
+    }
+
+    .chatItem {
+      display: flex;
+      justify-content: space-evenly;
       align-content: center;
-
-      .sChartSize {
-        width: 20vw;
-        height: 18vh;
-      }
-
-      .xChart {
-        width: 27.4583vw;
-        background-color: rgba(255, 255, 255, 0.08);
-        display: flex;
-        border-radius: .2604vw .2604vw;
-      }
-
-      .yChart {
-        width: 27.4583vw;
-        background-color: rgba(255, 255, 255, 0.08);
-        display: flex;
-        border-radius: .2604vw .2604vw;
-      }
-
-      .chatItem {
-        display: flex;
-        justify-content: space-evenly;
-        align-content: center;
-        flex-direction: column;
-        margin-left: 1.25vw;
-        color: #FFFFFF;
-        font-size: 1.25vw;
-      }
+      flex-direction: column;
+      margin-left: 1.25vw;
+      color: #FFFFFF;
+      font-size: 1.25vw;
     }
   }
 }
