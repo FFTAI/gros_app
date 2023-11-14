@@ -73,67 +73,67 @@
       <div class="rightTable">
         <!-- Shoulder Pitch -->
         <div class="tableItem" @click="changeUpperItem('shoulderPitch')">
-          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ leftHipPitch_qa ? leftHipPitch_qa + "°" :
+          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ leftPitchShoulder_qa ? leftPitchShoulder_qa + "°" :
             ""
           }}
           </div>
-          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ leftHipPitch_qdota ?
-            leftHipPitch_qdota + "°/s" : "" }}
+          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ leftPitchShoulder_qdota ?
+            leftPitchShoulder_qdota + "°/s" : "" }}
           </div>
-          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ leftHipPitch_taua ?
-            leftHipPitch_taua
+          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ leftPitchShoulder_taua ?
+            leftPitchShoulder_taua
             + "N.m" : "" }}
           </div>
           <div class="itemChild" :class="activatedUpperItem == 'shoulderPitch' ? 'middleCurr' : 'middle'">{{ $t('shoulderPitch') }}
             <div class="downArrow" v-if="activatedUpperItem == 'shoulderPitch'"></div>
           </div>
-          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ rightHipPitch_qa ? rightHipPitch_qa + "°"
+          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ rightPitchShoulder_qa ? rightPitchShoulder_qa + "°"
             :
             "" }}
           </div>
-          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ rightHipPitch_qdota ?
-            rightHipPitch_qdota + "°/s" : "" }}
+          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ rightPitchShoulder_qdota ?
+            rightPitchShoulder_qdota + "°/s" : "" }}
           </div>
-          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ rightHipPitch_taua ?
-            rightHipPitch_taua + "N.m" : "" }}
+          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ rightPitchShoulder_taua ?
+            rightPitchShoulder_taua + "N.m" : "" }}
           </div>
         </div>
         <!-- Shoulder Yaw -->
         <div class="tableItem" @click="changeUpperItem('shoulderYaw')">
-          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ leftHipYaw_qa ? leftHipYaw_qa + "°" : ""
+          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ leftYawShoulder_qa ? leftYawShoulder_qa + "°" : ""
           }}
           </div>
-          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ leftHipYaw_qdota ?
-            leftHipYaw_qdota
+          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ leftYawShoulder_qdota ?
+            leftYawShoulder_qdota
             + "°/s" : "" }}
           </div>
-          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ leftHipYaw_taua ? leftHipYaw_taua +
+          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ leftYawShoulder_taua ? leftYawShoulder_taua +
             "N.m" : "" }}
           </div>
           <div class="itemChild" :class="activatedUpperItem == 'shoulderYaw' ? 'middleCurr' : 'middle'">{{ $t('shoulderYaw') }}
             <div class="downArrow" v-if="activatedUpperItem == 'shoulderYaw'">
             </div>
           </div>
-          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ rightHipYaw_qa ? rightHipYaw_qa + "°" : ""
+          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ rightYawShoulder_qa ? rightYawShoulder_qa + "°" : ""
           }}
           </div>
-          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ rightHipYaw_qdota ?
-            rightHipYaw_qdota + "°/s" : "" }}
+          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ rightYawShoulder_qdota ?
+            rightYawShoulder_qdota + "°/s" : "" }}
           </div>
-          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ rightHipYaw_taua ? rightHipYaw_taua
+          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ rightYawShoulder_taua ? rightYawShoulder_taua
             +
             "N.m" : "" }}
           </div>
         </div>
         <!-- Shoulder Roll -->
         <div class="tableItem" @click="changeUpperItem('shoulderRoll')">
-          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ leftHipRoll_qa ? leftHipRoll_qa + "°" : ""
+          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ leftRollShoulder_qa ? leftRollShoulder_qa + "°" : ""
           }}
           </div>
-          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ leftHipRoll_qdota ?
-            leftHipRoll_qdota + "°/s" : "" }}
+          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ leftRollShoulder_qdota ?
+            leftRollShoulder_qdota + "°/s" : "" }}
           </div>
-          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ leftHipRoll_taua ? leftHipRoll_taua
+          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ leftRollShoulder_taua ? leftRollShoulder_taua
             +
             "N.m" : "" }}
           </div>
@@ -141,117 +141,117 @@
             <div class="downArrow" v-if="activatedUpperItem == 'shoulderRoll'">
             </div>
           </div>
-          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ rightHipRoll_qa ? rightHipRoll_qa + "°" :
+          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ rightRollShoulder_qa ? rightRollShoulder_qa + "°" :
             ""
           }}
           </div>
-          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ rightHipRoll_qdota ?
-            rightHipRoll_qdota + "°/s" : "" }}
+          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ rightRollShoulder_qdota ?
+            rightRollShoulder_qdota + "°/s" : "" }}
           </div>
-          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ rightHipRoll_taua ?
-            rightHipRoll_taua
+          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ rightRollShoulder_taua ?
+            rightRollShoulder_taua
             + "N.m" : "" }}
           </div>
         </div>
         <!-- Elbow -->
         <div class="tableItem" @click="changeUpperItem('elbow')">
-          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ leftKnee_qa ? leftKnee_qa + "°" : "" }}
+          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ leftElbow_qa ? leftElbow_qa + "°" : "" }}
           </div>
-          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ leftKnee_qdota ? leftKnee_qdota +
+          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ leftElbow_qdota ? leftElbow_qdota +
             "°/s" : "" }}
           </div>
-          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ leftKnee_taua ? leftKnee_taua +
+          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ leftElbow_taua ? leftElbow_taua +
             "N.m"
             : "" }}
           </div>
           <div class="itemChild" :class="activatedUpperItem == 'elbow' ? 'middleCurr' : 'middle'">{{ $t('elbow') }}
             <div class="downArrow" v-if="activatedUpperItem == 'elbow'"></div>
           </div>
-          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ rightKnee_qa ? rightKnee_qa + "°" : "" }}
+          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ rightElbow_qa ? rightElbow_qa + "°" : "" }}
           </div>
-          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ rightKnee_qdota ? rightKnee_qdota
+          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ rightElbow_qdota ? rightElbow_qdota
             +
             "°/s" : "" }}
           </div>
-          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ rightKnee_taua ? rightKnee_taua +
+          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ rightElbow_taua ? rightElbow_taua +
             "N.m" : "" }}
           </div>
         </div>
         <!-- Wrist Pitch -->
         <div class="tableItem" @click="changeUpperItem('wristPitch')">
-          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ leftAnklePitch_qa ? leftAnklePitch_qa +
+          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ leftPitchWrist_qa ? leftPitchWrist_qa +
             "°"
             : "" }}
           </div>
-          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ leftAnklePitch_qdota ?
-            leftAnklePitch_qdota + "°/s" : "" }}
+          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ leftPitchWrist_qdota ?
+            leftPitchWrist_qdota + "°/s" : "" }}
           </div>
-          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ leftAnklePitch_taua ?
-            leftAnklePitch_taua + "N.m" : "" }}
+          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ leftPitchWrist_taua ?
+            leftPitchWrist_taua + "N.m" : "" }}
           </div>
           <div class="itemChild" :class="activatedUpperItem == 'wristPitch' ? 'middleCurr' : 'middle'">{{ $t('wristPitch') }}
             <div class="downArrow" v-if="activatedUpperItem == 'wristPitch'"></div>
           </div>
-          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ rightAnklePitch_qa ? rightAnklePitch_qa +
+          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ rightPitchWrist_qa ? rightPitchWrist_qa +
             "°" : "" }}
           </div>
-          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ rightAnklePitch_qdota ?
-            rightAnklePitch_qdota + "°/s" : "" }}
+          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ rightPitchWrist_qdota ?
+            rightPitchWrist_qdota + "°/s" : "" }}
           </div>
-          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ rightAnklePitch_taua ?
-            rightAnklePitch_taua + "N.m" : "" }}
+          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ rightPitchWrist_taua ?
+            rightPitchWrist_taua + "N.m" : "" }}
           </div>
         </div>
         <!-- Wrist Yaw -->
         <div class="tableItem" @click="changeUpperItem('wristYaw')">
-          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ leftAnkleRoll_qa ? leftAnkleRoll_qa + "°"
+          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ leftYawWrist_qa ? leftYawWrist_qa + "°"
             :
             "" }}
           </div>
-          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ leftAnkleRoll_qdota ?
-            leftAnkleRoll_qdota + "°/s" : "" }}
+          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ leftYawWrist_qdota ?
+            leftYawWrist_qdota + "°/s" : "" }}
           </div>
-          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ leftAnkleRoll_taua ?
-            leftAnkleRoll_taua + "N.m" : "" }}
+          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ leftYawWrist_taua ?
+            leftYawWrist_taua + "N.m" : "" }}
           </div>
           <div class="itemChild" :class="activatedUpperItem == 'wristYaw' ? 'middleCurr' : 'middle'">{{ $t('wristYaw') }}
             <div class="downArrow" v-if="activatedUpperItem == 'wristYaw'"></div>
           </div>
-          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ rightAnkleRoll_qa ? rightAnkleRoll_qa +
+          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ rightYawWrist_qa ? rightYawWrist_qa +
             "°"
             : "" }}
           </div>
-          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ rightAnkleRoll_qdota ?
-            rightAnkleRoll_qdota + "°/s" : "" }}
+          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ rightYawWrist_qdota ?
+            rightYawWrist_qdota + "°/s" : "" }}
           </div>
-          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ rightAnkleRoll_taua ?
-            rightAnkleRoll_taua + "N.m" : "" }}
+          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ rightYawWrist_taua ?
+            rightYawWrist_taua + "N.m" : "" }}
           </div>
         </div>
        <!-- Wrist Roll -->
        <div class="tableItem" @click="changeUpperItem('wristRoll')">
-          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ leftAnkleRoll_qa ? leftAnkleRoll_qa + "°"
+          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ leftRollWrist_qa ? leftRollWrist_qa + "°"
             :
             "" }}
           </div>
-          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ leftAnkleRoll_qdota ?
-            leftAnkleRoll_qdota + "°/s" : "" }}
+          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ leftRollWrist_qdota ?
+            leftRollWrist_qdota + "°/s" : "" }}
           </div>
-          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ leftAnkleRoll_taua ?
-            leftAnkleRoll_taua + "N.m" : "" }}
+          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ leftRollWrist_taua ?
+            leftRollWrist_taua + "N.m" : "" }}
           </div>
           <div class="itemChild" :class="activatedUpperItem == 'wristRoll' ? 'middleCurr' : 'middle'">{{ $t('wristRoll') }}
             <div class="downArrow" v-if="activatedUpperItem == 'wristRoll'"></div>
           </div>
-          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ rightAnkleRoll_qa ? rightAnkleRoll_qa +
+          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ rightRollWrist_qa ? rightRollWrist_qa +
             "°"
             : "" }}
           </div>
-          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ rightAnkleRoll_qdota ?
-            rightAnkleRoll_qdota + "°/s" : "" }}
+          <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ rightRollWrist_qdota ?
+            rightRollWrist_qdota + "°/s" : "" }}
           </div>
-          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ rightAnkleRoll_taua ?
-            rightAnkleRoll_taua + "N.m" : "" }}
+          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ rightRollWrist_taua ?
+            rightRollWrist_taua + "N.m" : "" }}
           </div>
         </div>
       </div>
@@ -478,9 +478,58 @@ export default {
       activated: "log",//动态展示:dynamic Log日志:log
       logList: [],//日志列表
       /**
+       * 上肢部分关节数据
+       * qa:弧度 qdota:弧度/秒 taua:力矩(牛.米)
+       */
+      //左侧
+       leftPitchShoulder_qa: "",
+       leftPitchShoulder_qdota: "",
+       leftPitchShoulder_taua: "",
+       leftRollShoulder_qa: "",
+       leftRollShoulder_qdota: "",
+       leftRollShoulder_taua: "",
+       leftYawShoulder_qa: "",
+       leftYawShoulder_qdota: "",
+       leftYawShoulder_taua: "",
+       leftElbow_qa: "",
+       leftElbow_qdota: "",
+       leftElbow_taua: "",
+       leftYawWrist_qa: "",
+       leftYawWrist_qdota: "",
+       leftYawWrist_taua: "",
+       leftRollWrist_qa: "",
+       leftRollWrist_qdota: "",
+       leftRollWrist_taua: "",
+       leftPitchWrist_qa: "",
+       leftPitchWrist_qdota: "",
+       leftPitchWrist_taua: "",
+       //右侧
+       rightPitchShoulder_qa: "",
+       rightPitchShoulder_qdota: "",
+       rightPitchShoulder_taua: "",
+       rightRollShoulder_qa: "",
+       rightRollShoulder_qdota: "",
+       rightRollShoulder_taua: "",
+       rightYawShoulder_qa: "",
+       rightYawShoulder_qdota: "",
+       rightYawShoulder_taua: "",
+       rightElbow_qa: "",
+       rightElbow_qdota: "",
+       rightElbow_taua: "",
+       rightYawWrist_qa: "",
+       rightYawWrist_qdota: "",
+       rightYawWrist_taua: "",
+       rightRollWrist_qa: "",
+       rightRollWrist_qdota: "",
+       rightRollWrist_taua: "",
+       rightPitchWrist_qa: "",
+       rightPitchWrist_qdota: "",
+       rightPitchWrist_taua: "",
+      /**
        * 下肢部分关节数据
        * qa:弧度 qdota:弧度/秒 taua:力矩(牛.米)
        */
+      //左侧
       leftHipPitch_qa: "",
       leftHipPitch_qdota: "",
       leftHipPitch_taua: "",
@@ -499,6 +548,7 @@ export default {
       leftAnkleRoll_qa: "",
       leftAnkleRoll_qdota: "",
       leftAnkleRoll_taua: "",
+      //右侧
       rightHipPitch_qa: "",
       rightHipPitch_qdota: "",
       rightHipPitch_taua: "",
@@ -1282,7 +1332,7 @@ export default {
       margin-top: 1.0417vw;
       overflow-y: auto;
       height: 26.6667vw;
-      width: 33.8333vw;
+      // width: 33.8333vw;
 
       .logTxt {
         font-size: 1.25vw;
