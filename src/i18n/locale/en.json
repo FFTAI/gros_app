@@ -96,5 +96,13 @@
     "twist": "Twist",
     "squat": "Squat",
     "ing": "ing",
-    "lowerBody": "Lower Body"
+    "lowerBody": "Lower Body",
+    "upperBody": "Upper Body",
+    "shoulderPitch": "Shoulder Pitch",
+    "shoulderYaw": "Shoulder Yaw",
+    "shoulderRoll": "Shoulder Roll",
+    "elbow": "Elbow",
+    "wristPitch": "Wrist Pitch",
+    "wristYaw": "Wrist Yaw",
+    "wristRoll": "Wrist Roll"
 }

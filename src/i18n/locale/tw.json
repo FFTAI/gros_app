@@ -96,5 +96,13 @@
     "twist": "扭腰",
     "squat": "下蹲",
     "ing": "中",
-    "lowerBody": "下肢"
+    "lowerBody": "下肢",
+    "upperBody": "上肢",
+    "shoulderPitch": "肩部傾斜度",
+    "shoulderYaw": "肩部偏角",
+    "shoulderRoll": "肩部晃動",
+    "elbow": "肘部",
+    "wristPitch": "腕部傾斜度",
+    "wristYaw": "腕部偏角",
+    "wristRoll": "腕部晃動"
 }
