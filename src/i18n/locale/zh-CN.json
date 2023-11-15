@@ -104,5 +104,7 @@
     "elbow": "肘部",
     "wristPitch": "腕部倾斜度",
     "wristYaw": "腕部偏角",
-    "wristRoll": "腕部晃动"
+    "wristRoll": "腕部晃动",
+    "head": "头部",
+    "waist": "腰部"
 }

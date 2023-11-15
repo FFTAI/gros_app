@@ -52,25 +52,20 @@
     </div>
     <div class="chartBox">
       <div class="leftSide">
-
+        <div class="chartSize" style="height: 12vw;" id="leftChartLower"></div>
+        <div class="chartSize" style="height: 12vw;" id="rightChartLower"></div>
       </div>
-      <div class="middleDivider">
-
-      </div>
+      <div class="middleDivider"></div>
       <div class="rightSide">
 
       </div>
     </div>
-    <!-- 上肢数据 -->
+    <!-- 头部上肢 -->
     <div class="rightBox upper">
-      <div class="rightTitle logTitle">
-        <span>{{ $t("upperBody") }}</span>
-      </div>
-      <!-- 左右侧图表 -->
-      <div class="sideChart">
-        <div class="chartSize" style="height: 10vw;" id="leftChartUpper"></div>
+      <div class="rightTitle">
+        <div>{{ $t("head") }}</div>
         <!-- 切换: 度,度/秒，扭矩(牛.米) -->
-        <div class="typeBox">
+        <div>
           <img class="typeImg" :class="{ 'notAct': activatedUpperType != 'angle' }" @click="changeTypeUpper('angle')"
             src="@/assets/images/icon_angle.png" />
           <img class="typeImg" :class="{ 'notAct': activatedUpperType != 'Avelocity' }"
@@ -78,7 +73,10 @@
           <img class="typeImg" :class="{ 'notAct': activatedUpperType != 'torque' }" @click="changeTypeUpper('torque')"
             src="@/assets/images/icon_torque.png" />
         </div>
-        <div class="chartSize" style="height: 10vw;" id="rightChartUpper"></div>
+      </div>
+      <!-- 左右侧图表 -->
+      <div class="sideChart">
+
       </div>
       <!-- 数值切换显示Table -->
       <div class="rightTable">
@@ -283,14 +281,9 @@
     </div>
     <!-- 下肢数据 -->
     <div class="rightBox lower">
-      <div class="rightTitle logTitle">
-        <span>{{ $t("lowerBody") }}</span>
-      </div>
-      <!-- 左右侧图表 -->
-      <div class="sideChart">
-        <div class="chartSize" style="height: 10vw;" id="leftChartLower"></div>
-        <!-- 切换: 度,度/秒，扭矩(牛.米) -->
-        <div class="typeBox">
+      <div class="rightTitle">
+        <div>{{ $t("waist") }}</div>
+        <div>
           <img class="typeImg" :class="{ 'notAct': activatedLowerType != 'angle' }" @click="changeTypeLower('angle')"
             src="@/assets/images/icon_angle.png" />
           <img class="typeImg" :class="{ 'notAct': activatedLowerType != 'Avelocity' }"
@@ -298,6 +291,12 @@
           <img class="typeImg" :class="{ 'notAct': activatedLowerType != 'torque' }" @click="changeTypeLower('torque')"
             src="@/assets/images/icon_torque.png" />
         </div>
+      </div>
+      <!-- 左右侧图表 -->
+      <div class="sideChart">
+        <div class="chartSize" style="height: 10vw;" id="leftChartLower"></div>
+        <!-- 切换: 度,度/秒，扭矩(牛.米) -->
+        
         <div class="chartSize" style="height: 10vw;" id="rightChartLower"></div>
       </div>
       <!-- 数值切换显示Table -->
@@ -1255,6 +1254,14 @@ export default {
 
   .leftSide {
     width: 33.75vw;
+    height: 8.625vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .chartSize {
+      width: 16.875vw;
+    }
   }
 
   .middleDivider {
@@ -1285,37 +1292,31 @@ export default {
   border-radius: .2604vw;
 
   .rightTitle {
-    padding: 1.8542vw 0 0 1.8333vw;
+    display: flex;
+    justify-content: space-between;
+    padding: 1.1667vw 1.25vw 0 2.4583vw;
     background-color: rgba(255, 255, 255, 0.08);
     border-radius: .2604vw .2604vw 0 0;
+    font-size: 1.25vw;
+    font-family: AlibabaPuHuiTiM;
+    color: #FFFFFF;
+
+    .typeImg {
+      width: 1.4583vw;
+      height: 1.4583vw;
+      margin-left: 1.25vw;
+    }
+
+    .notAct {
+      opacity: 0.3;
+    }
   }
 
   .sideChart {
-    height: 6.4167vw;
+    height: 6.2917vw;
     background-color: rgba(255, 255, 255, 0.08);
     display: flex;
     justify-content: space-between;
-
-    .chartSize {
-      // width: 26.0417vw;
-      height: 18vh;
-    }
-
-    .typeBox {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-
-      .typeImg {
-        width: 1.4583vw;
-        height: 1.4583vw;
-      }
-
-      .notAct {
-        opacity: 0.3;
-      }
-    }
-
   }
 
   .rightTable {

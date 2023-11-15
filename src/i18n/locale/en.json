@@ -104,5 +104,7 @@
     "elbow": "Elbow",
     "wristPitch": "Wrist Pitch",
     "wristYaw": "Wrist Yaw",
-    "wristRoll": "Wrist Roll"
+    "wristRoll": "Wrist Roll",
+    "head": "Head",
+    "waist": "Waist"
 }
