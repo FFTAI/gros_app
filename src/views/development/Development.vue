@@ -50,6 +50,17 @@
         </div>
       </div>
     </div>
+    <div class="chartBox">
+      <div class="leftSide">
+
+      </div>
+      <div class="middleDivider">
+
+      </div>
+      <div class="rightSide">
+
+      </div>
+    </div>
     <!-- 上肢数据 -->
     <div class="rightBox upper">
       <div class="rightTitle logTitle">
@@ -62,8 +73,8 @@
         <div class="typeBox">
           <img class="typeImg" :class="{ 'notAct': activatedUpperType != 'angle' }" @click="changeTypeUpper('angle')"
             src="@/assets/images/icon_angle.png" />
-          <img class="typeImg" :class="{ 'notAct': activatedUpperType != 'Avelocity' }" @click="changeTypeUpper('Avelocity')"
-            src="@/assets/images/icon_Avelocity.png" />
+          <img class="typeImg" :class="{ 'notAct': activatedUpperType != 'Avelocity' }"
+            @click="changeTypeUpper('Avelocity')" src="@/assets/images/icon_Avelocity.png" />
           <img class="typeImg" :class="{ 'notAct': activatedUpperType != 'torque' }" @click="changeTypeUpper('torque')"
             src="@/assets/images/icon_torque.png" />
         </div>
@@ -73,7 +84,8 @@
       <div class="rightTable">
         <!-- Shoulder Pitch -->
         <div class="tableItem" @click="changeUpperItem('shoulderPitch')">
-          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ leftPitchShoulder_qa ? leftPitchShoulder_qa + "°" :
+          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ leftPitchShoulder_qa ? leftPitchShoulder_qa + "°"
+            :
             ""
           }}
           </div>
@@ -84,10 +96,12 @@
             leftPitchShoulder_taua
             + "N.m" : "" }}
           </div>
-          <div class="itemChild" :class="activatedUpperItem == 'shoulderPitch' ? 'middleCurr' : 'middle'">{{ $t('shoulderPitch') }}
+          <div class="itemChild" :class="activatedUpperItem == 'shoulderPitch' ? 'middleCurr' : 'middle'">{{
+            $t('shoulderPitch') }}
             <div class="downArrow" v-if="activatedUpperItem == 'shoulderPitch'"></div>
           </div>
-          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ rightPitchShoulder_qa ? rightPitchShoulder_qa + "°"
+          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ rightPitchShoulder_qa ? rightPitchShoulder_qa +
+            "°"
             :
             "" }}
           </div>
@@ -100,48 +114,57 @@
         </div>
         <!-- Shoulder Yaw -->
         <div class="tableItem" @click="changeUpperItem('shoulderYaw')">
-          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ leftYawShoulder_qa ? leftYawShoulder_qa + "°" : ""
+          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ leftYawShoulder_qa ? leftYawShoulder_qa + "°" :
+            ""
           }}
           </div>
           <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ leftYawShoulder_qdota ?
             leftYawShoulder_qdota
             + "°/s" : "" }}
           </div>
-          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ leftYawShoulder_taua ? leftYawShoulder_taua +
+          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ leftYawShoulder_taua ? leftYawShoulder_taua
+            +
             "N.m" : "" }}
           </div>
-          <div class="itemChild" :class="activatedUpperItem == 'shoulderYaw' ? 'middleCurr' : 'middle'">{{ $t('shoulderYaw') }}
+          <div class="itemChild" :class="activatedUpperItem == 'shoulderYaw' ? 'middleCurr' : 'middle'">{{
+            $t('shoulderYaw') }}
             <div class="downArrow" v-if="activatedUpperItem == 'shoulderYaw'">
             </div>
           </div>
-          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ rightYawShoulder_qa ? rightYawShoulder_qa + "°" : ""
+          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ rightYawShoulder_qa ? rightYawShoulder_qa + "°" :
+            ""
           }}
           </div>
           <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ rightYawShoulder_qdota ?
             rightYawShoulder_qdota + "°/s" : "" }}
           </div>
-          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ rightYawShoulder_taua ? rightYawShoulder_taua
+          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ rightYawShoulder_taua ?
+            rightYawShoulder_taua
             +
             "N.m" : "" }}
           </div>
         </div>
         <!-- Shoulder Roll -->
         <div class="tableItem" @click="changeUpperItem('shoulderRoll')">
-          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ leftRollShoulder_qa ? leftRollShoulder_qa + "°" : ""
+          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ leftRollShoulder_qa ? leftRollShoulder_qa + "°" :
+            ""
           }}
           </div>
           <div v-else-if="activatedUpperType == 'Avelocity'" class="itemChild">{{ leftRollShoulder_qdota ?
             leftRollShoulder_qdota + "°/s" : "" }}
           </div>
-          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ leftRollShoulder_taua ? leftRollShoulder_taua
+          <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ leftRollShoulder_taua ?
+            leftRollShoulder_taua
             +
             "N.m" : "" }}
           </div>
-          <div class="itemChild" :class="activatedUpperItem == 'shoulderRoll' ? 'middleCurr' : 'middle'">{{ $t('shoulderRoll') }}
+          <div class="itemChild" :class="activatedUpperItem == 'shoulderRoll' ? 'middleCurr' : 'middle'">{{
+            $t('shoulderRoll') }}
             <div class="downArrow" v-if="activatedUpperItem == 'shoulderRoll'">
             </div>
           </div>
-          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ rightRollShoulder_qa ? rightRollShoulder_qa + "°" :
+          <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ rightRollShoulder_qa ? rightRollShoulder_qa + "°"
+            :
             ""
           }}
           </div>
@@ -189,7 +212,8 @@
           <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ leftPitchWrist_taua ?
             leftPitchWrist_taua + "N.m" : "" }}
           </div>
-          <div class="itemChild" :class="activatedUpperItem == 'wristPitch' ? 'middleCurr' : 'middle'">{{ $t('wristPitch') }}
+          <div class="itemChild" :class="activatedUpperItem == 'wristPitch' ? 'middleCurr' : 'middle'">{{ $t('wristPitch')
+          }}
             <div class="downArrow" v-if="activatedUpperItem == 'wristPitch'"></div>
           </div>
           <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ rightPitchWrist_qa ? rightPitchWrist_qa +
@@ -228,8 +252,8 @@
             rightYawWrist_taua + "N.m" : "" }}
           </div>
         </div>
-       <!-- Wrist Roll -->
-       <div class="tableItem" @click="changeUpperItem('wristRoll')">
+        <!-- Wrist Roll -->
+        <div class="tableItem" @click="changeUpperItem('wristRoll')">
           <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ leftRollWrist_qa ? leftRollWrist_qa + "°"
             :
             "" }}
@@ -240,7 +264,8 @@
           <div v-else-if="activatedUpperType == 'torque'" class="itemChild">{{ leftRollWrist_taua ?
             leftRollWrist_taua + "N.m" : "" }}
           </div>
-          <div class="itemChild" :class="activatedUpperItem == 'wristRoll' ? 'middleCurr' : 'middle'">{{ $t('wristRoll') }}
+          <div class="itemChild" :class="activatedUpperItem == 'wristRoll' ? 'middleCurr' : 'middle'">{{ $t('wristRoll')
+          }}
             <div class="downArrow" v-if="activatedUpperItem == 'wristRoll'"></div>
           </div>
           <div v-if="activatedUpperType == 'angle'" class="itemChild">{{ rightRollWrist_qa ? rightRollWrist_qa +
@@ -268,8 +293,8 @@
         <div class="typeBox">
           <img class="typeImg" :class="{ 'notAct': activatedLowerType != 'angle' }" @click="changeTypeLower('angle')"
             src="@/assets/images/icon_angle.png" />
-          <img class="typeImg" :class="{ 'notAct': activatedLowerType != 'Avelocity' }" @click="changeTypeLower('Avelocity')"
-            src="@/assets/images/icon_Avelocity.png" />
+          <img class="typeImg" :class="{ 'notAct': activatedLowerType != 'Avelocity' }"
+            @click="changeTypeLower('Avelocity')" src="@/assets/images/icon_Avelocity.png" />
           <img class="typeImg" :class="{ 'notAct': activatedLowerType != 'torque' }" @click="changeTypeLower('torque')"
             src="@/assets/images/icon_torque.png" />
         </div>
@@ -395,7 +420,8 @@
           <div v-else-if="activatedLowerType == 'torque'" class="itemChild">{{ leftAnklePitch_taua ?
             leftAnklePitch_taua + "N.m" : "" }}
           </div>
-          <div class="itemChild" :class="activatedLowerItem == 'anklePitch' ? 'middleCurr' : 'middle'">{{ $t('anklePitch') }}
+          <div class="itemChild" :class="activatedLowerItem == 'anklePitch' ? 'middleCurr' : 'middle'">{{ $t('anklePitch')
+          }}
             <div class="downArrow" v-if="activatedLowerItem == 'anklePitch'"></div>
           </div>
           <div v-if="activatedLowerType == 'angle'" class="itemChild">{{ rightAnklePitch_qa ? rightAnklePitch_qa +
@@ -420,7 +446,8 @@
           <div v-else-if="activatedLowerType == 'torque'" class="itemChild">{{ leftAnkleRoll_taua ?
             leftAnkleRoll_taua + "N.m" : "" }}
           </div>
-          <div class="itemChild" :class="activatedLowerItem == 'ankleRoll' ? 'middleCurr' : 'middle'">{{ $t('ankleRoll') }}
+          <div class="itemChild" :class="activatedLowerItem == 'ankleRoll' ? 'middleCurr' : 'middle'">{{ $t('ankleRoll')
+          }}
             <div class="downArrow" v-if="activatedLowerItem == 'ankleRoll'"></div>
           </div>
           <div v-if="activatedLowerType == 'angle'" class="itemChild">{{ rightAnkleRoll_qa ? rightAnkleRoll_qa +
@@ -435,29 +462,6 @@
           </div>
         </div>
         <div class="tableItem"></div>
-      </div>
-    </div>
-    <!-- 速度折线图 -->
-    <div class="speedChart">
-      <!-- X轴速度 -->
-      <div class="xChart">
-        <div class="chatItem" style="flex: 1;">
-          <div>{{ $t("xSpeed") }}</div>
-          <div>{{ xSpeed }}m/s</div>
-        </div>
-        <div class="chatItem" style="flex: 2;">
-          <div class="sChartSize" style="height: 13vw;" id="xChart"></div>
-        </div>
-      </div>
-      <!-- Y轴速度 -->
-      <div class="yChart">
-        <div class="chatItem" style="flex: 1;">
-          <div>{{ $t("ySpeed") }}</div>
-          <div>{{ ySpeed }}m/s</div>
-        </div>
-        <div class="chatItem" style="flex: 2;">
-          <div class="sChartSize" style="height: 13vw;" id="yChart"></div>
-        </div>
       </div>
     </div>
   </div>
@@ -482,49 +486,49 @@ export default {
        * qa:弧度 qdota:弧度/秒 taua:力矩(牛.米)
        */
       //左侧
-       leftPitchShoulder_qa: "",
-       leftPitchShoulder_qdota: "",
-       leftPitchShoulder_taua: "",
-       leftRollShoulder_qa: "",
-       leftRollShoulder_qdota: "",
-       leftRollShoulder_taua: "",
-       leftYawShoulder_qa: "",
-       leftYawShoulder_qdota: "",
-       leftYawShoulder_taua: "",
-       leftElbow_qa: "",
-       leftElbow_qdota: "",
-       leftElbow_taua: "",
-       leftYawWrist_qa: "",
-       leftYawWrist_qdota: "",
-       leftYawWrist_taua: "",
-       leftRollWrist_qa: "",
-       leftRollWrist_qdota: "",
-       leftRollWrist_taua: "",
-       leftPitchWrist_qa: "",
-       leftPitchWrist_qdota: "",
-       leftPitchWrist_taua: "",
-       //右侧
-       rightPitchShoulder_qa: "",
-       rightPitchShoulder_qdota: "",
-       rightPitchShoulder_taua: "",
-       rightRollShoulder_qa: "",
-       rightRollShoulder_qdota: "",
-       rightRollShoulder_taua: "",
-       rightYawShoulder_qa: "",
-       rightYawShoulder_qdota: "",
-       rightYawShoulder_taua: "",
-       rightElbow_qa: "",
-       rightElbow_qdota: "",
-       rightElbow_taua: "",
-       rightYawWrist_qa: "",
-       rightYawWrist_qdota: "",
-       rightYawWrist_taua: "",
-       rightRollWrist_qa: "",
-       rightRollWrist_qdota: "",
-       rightRollWrist_taua: "",
-       rightPitchWrist_qa: "",
-       rightPitchWrist_qdota: "",
-       rightPitchWrist_taua: "",
+      leftPitchShoulder_qa: "",
+      leftPitchShoulder_qdota: "",
+      leftPitchShoulder_taua: "",
+      leftRollShoulder_qa: "",
+      leftRollShoulder_qdota: "",
+      leftRollShoulder_taua: "",
+      leftYawShoulder_qa: "",
+      leftYawShoulder_qdota: "",
+      leftYawShoulder_taua: "",
+      leftElbow_qa: "",
+      leftElbow_qdota: "",
+      leftElbow_taua: "",
+      leftYawWrist_qa: "",
+      leftYawWrist_qdota: "",
+      leftYawWrist_taua: "",
+      leftRollWrist_qa: "",
+      leftRollWrist_qdota: "",
+      leftRollWrist_taua: "",
+      leftPitchWrist_qa: "",
+      leftPitchWrist_qdota: "",
+      leftPitchWrist_taua: "",
+      //右侧
+      rightPitchShoulder_qa: "",
+      rightPitchShoulder_qdota: "",
+      rightPitchShoulder_taua: "",
+      rightRollShoulder_qa: "",
+      rightRollShoulder_qdota: "",
+      rightRollShoulder_taua: "",
+      rightYawShoulder_qa: "",
+      rightYawShoulder_qdota: "",
+      rightYawShoulder_taua: "",
+      rightElbow_qa: "",
+      rightElbow_qdota: "",
+      rightElbow_taua: "",
+      rightYawWrist_qa: "",
+      rightYawWrist_qdota: "",
+      rightYawWrist_taua: "",
+      rightRollWrist_qa: "",
+      rightRollWrist_qdota: "",
+      rightRollWrist_taua: "",
+      rightPitchWrist_qa: "",
+      rightPitchWrist_qdota: "",
+      rightPitchWrist_taua: "",
       /**
        * 下肢部分关节数据
        * qa:弧度 qdota:弧度/秒 taua:力矩(牛.米)
@@ -836,232 +840,91 @@ export default {
       });
     },
     initSpeedCharts() {
-      var xChart = echarts.init(document.getElementById("xChart"));
-      var yChart = echarts.init(document.getElementById("yChart"));
-      xChart.setOption({
-        tooltip: {
-          trigger: 'axis'
-        },
-        xAxis: {
-          type: "time",
-          axisLabel: {
-            show: false
-          },
-          axisLine: {
-            onZero: false,
-            show: false
-          },
-          axisTick: {
-            length: 1,
-            lineStyle: {
-              type: 'dotted',
-              color: '#ffffff',
-              width: 2,
-              cap: 'round'
-            }
-          }
-        },
-        yAxis: {
-          type: "value",
-          show: false
-        },
-        series: [
-          {
-            name: "speed",
-            data: this.leftSpeedChartData,
-            type: "line",
-            showSymbol: false,
-            lineStyle: {
-              normal: {
-                width: 3,
-                color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
-                  {
-                    offset: 0,
-                    color: 'rgba(255, 255, 255, 0.3)'
-                  },
-                  {
-                    offset: 0.2,
-                    color: 'rgba(255, 255, 255, 0.3)'
-                  },
-                  {
-                    offset: 0.4,
-                    color: '#ffffff'
-                  },
-                  {
-                    offset: 0.6,
-                    color: '#ffffff'
-                  },
-                  {
-                    offset: 0.8,
-                    color: 'rgba(255, 255, 255, 0.3)'
-                  },
-                  {
-                    offset: 1,
-                    color: 'rgba(255, 255, 255, 0.3)'
-                  }
-                ])
-              }
-            },
-            smooth: true,
-            areaStyle: {
-              opacity: 0.8,
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                {
-                  offset: 0,
-                  color: 'rgb(255,255,255,0.12)'
 
-                },
-                {
-                  offset: 1,
-                  color: 'rgb(0,76,129,0)'
-                }
-              ]),
-              origin: 'start'
-            }
-          }
-        ],
-        dataZoom: [
-          {
-            type: "inside",
-            realtime: true,
-            start: 12,
-            end: 100,
-            xAxisIndex: [0],
-            filterMode: 'none'
-          }
-        ]
-      });
-      yChart.setOption({
-        tooltip: {
-          trigger: 'axis'
-        },
-        xAxis: {
-          type: "time",
-          axisLabel: {
-            show: false
-          },
-          axisLine: {
-            onZero: false,
-            show: false
-          },
-          axisTick: {
-            length: 1,
-            lineStyle: {
-              type: 'dotted',
-              color: '#ffffff',
-              width: 2,
-              cap: 'round'
-            }
-          }
-        },
-        yAxis: {
-          type: "value",
-          show: false
-        },
-        series: [
-          {
-            name: "speed",
-            data: this.rightSpeedChartData,
-            type: "line",
-            showSymbol: false,
-            lineStyle: {
-              normal: {
-                width: 3,
-                color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
-                  {
-                    offset: 0,
-                    color: 'rgba(255, 255, 255, 0.3)'
-                  },
-                  {
-                    offset: 0.2,
-                    color: 'rgba(255, 255, 255, 0.3)'
-                  },
-                  {
-                    offset: 0.4,
-                    color: '#ffffff'
-                  },
-                  {
-                    offset: 0.6,
-                    color: '#ffffff'
-                  },
-                  {
-                    offset: 0.8,
-                    color: 'rgba(255, 255, 255, 0.3)'
-                  },
-                  {
-                    offset: 1,
-                    color: 'rgba(255, 255, 255, 0.3)'
-                  }
-                ])
-              }
-            },
-            smooth: true,
-            areaStyle: {
-              opacity: 0.8,
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                {
-                  offset: 0,
-                  color: 'rgb(255,255,255,0.12)'
-                },
-                {
-                  offset: 1,
-                  color: 'rgb(0,76,129,0)'
-                }
-              ]),
-              origin: 'start'
-            }
-          }
-        ],
-        dataZoom: [
-          {
-            type: "inside",
-            realtime: true,
-            start: 12,
-            end: 100,
-            xAxisIndex: [0],
-            filterMode: 'none'
-          }
-        ]
-      });
     },
     // 格式化当前数据
     assignData(data) {
-      this.leftHipPitch_qa = this.toDegrees(data.jointStates[2].qa);
-      this.leftHipPitch_qdota = this.toDegrees(data.jointStates[2].qdota);
-      this.leftHipPitch_taua = data.jointStates[2].taua.toFixed(2);
-      this.leftHipYaw_qa = this.toDegrees(data.jointStates[1].qa);
-      this.leftHipYaw_qdota = this.toDegrees(data.jointStates[1].qdota);
-      this.leftHipYaw_taua = data.jointStates[1].taua.toFixed(2);
-      this.leftHipRoll_qa = this.toDegrees(data.jointStates[0].qa);
-      this.leftHipRoll_qdota = this.toDegrees(data.jointStates[0].qdota);
-      this.leftHipRoll_taua = data.jointStates[0].taua.toFixed(2);
-      this.leftKnee_qa = this.toDegrees(data.jointStates[3].qa);
-      this.leftKnee_qdota = this.toDegrees(data.jointStates[3].qdota);
-      this.leftKnee_taua = data.jointStates[3].taua.toFixed(2);
-      this.leftAnklePitch_qa = this.toDegrees(data.jointStates[4].qa);
-      this.leftAnklePitch_qdota = this.toDegrees(data.jointStates[4].qdota);
-      this.leftAnklePitch_taua = data.jointStates[4].taua.toFixed(2);
-      this.leftAnkleRoll_qa = this.toDegrees(data.jointStates[5].qa);
-      this.leftAnkleRoll_qdota = this.toDegrees(data.jointStates[5].qdota);
-      this.leftAnkleRoll_taua = data.jointStates[5].taua.toFixed(2);
-      this.rightHipPitch_qa = this.toDegrees(data.jointStates[8].qa);
-      this.rightHipPitch_qdota = this.toDegrees(data.jointStates[8].qdota);
-      this.rightHipPitch_taua = data.jointStates[8].taua.toFixed(2);
-      this.rightHipYaw_qa = this.toDegrees(data.jointStates[7].qa);
-      this.rightHipYaw_qdota = this.toDegrees(data.jointStates[7].qdota);
-      this.rightHipYaw_taua = data.jointStates[7].taua.toFixed(2);
-      this.rightHipRoll_qa = this.toDegrees(data.jointStates[6].qa);
-      this.rightHipRoll_qdota = this.toDegrees(data.jointStates[6].qdota);
-      this.rightHipRoll_taua = data.jointStates[6].taua.toFixed(2);
-      this.rightKnee_qa = this.toDegrees(data.jointStates[9].qa);
-      this.rightKnee_qdota = this.toDegrees(data.jointStates[9].qdota);
-      this.rightKnee_taua = data.jointStates[9].taua.toFixed(2);
-      this.rightAnklePitch_qa = this.toDegrees(data.jointStates[10].qa);
-      this.rightAnklePitch_qdota = this.toDegrees(data.jointStates[10].qdota);
-      this.rightAnklePitch_taua = data.jointStates[10].taua.toFixed(2);
-      this.rightAnkleRoll_qa = this.toDegrees(data.jointStates[11].qa);
-      this.rightAnkleRoll_qdota = this.toDegrees(data.jointStates[11].qdota);
-      this.rightAnkleRoll_taua = data.jointStates[11].taua.toFixed(2);
+      let states = data.jointStates
+      //上肢部分
+      this.leftPitchShoulder_qa = this.toDegrees(states.find(obj => obj.name === "left_pitch_shoulder").qa);
+      this.leftPitchShoulder_qdota = this.toDegrees(states.find(obj => obj.name === "left_pitch_shoulder").qdota);
+      this.leftPitchShoulder_taua = states.find(obj => obj.name === "left_pitch_shoulder").taua.toFixed(2);
+      this.leftRollShoulder_qa = this.toDegrees(states.find(obj => obj.name === "left_roll_shoulder").qa);
+      this.leftRollShoulder_qdota = this.toDegrees(states.find(obj => obj.name === "left_roll_shoulder").qdota);
+      this.leftRollShoulder_taua = states.find(obj => obj.name === "left_roll_shoulder").taua.toFixed(2);
+      this.leftYawShoulder_qa = this.toDegrees(states.find(obj => obj.name === "left_yaw_shoulder").qa);
+      this.leftYawShoulder_qdota = this.toDegrees(states.find(obj => obj.name === "left_yaw_shoulder").qdota);
+      this.leftYawShoulder_taua = states.find(obj => obj.name === "left_yaw_shoulder").taua.toFixed(2);
+      this.leftElbow_qa = this.toDegrees(states.find(obj => obj.name === "left_elbow").qa);
+      this.leftElbow_qdota = this.toDegrees(states.find(obj => obj.name === "left_elbow").qdota);
+      this.leftElbow_taua = states.find(obj => obj.name === "left_elbow").taua.toFixed(2);
+      this.leftYawWrist_qa = this.toDegrees(states.find(obj => obj.name === "left_yaw_wrist").qa);
+      this.leftYawWrist_qdota = this.toDegrees(states.find(obj => obj.name === "left_yaw_wrist").qdota);
+      this.leftYawWrist_taua = states.find(obj => obj.name === "left_yaw_wrist").taua.toFixed(2);
+      this.leftRollWrist_qa = this.toDegrees(states.find(obj => obj.name === "left_roll_wrist").qa);
+      this.leftRollWrist_qdota = this.toDegrees(states.find(obj => obj.name === "left_roll_wrist").qdota);
+      this.leftRollWrist_taua = states.find(obj => obj.name === "left_roll_wrist").taua.toFixed(2);
+      this.leftPitchWrist_qa = this.toDegrees(states.find(obj => obj.name === "left_pitch_wrist").qa);
+      this.leftPitchWrist_qdota = this.toDegrees(states.find(obj => obj.name === "left_pitch_wrist").qdota);
+      this.leftPitchWrist_taua = states.find(obj => obj.name === "left_pitch_wrist").taua.toFixed(2);
+      this.rightPitchShoulder_qa = this.toDegrees(states.find(obj => obj.name === "right_pitch_shoulder").qa);
+      this.rightPitchShoulder_qdota = this.toDegrees(states.find(obj => obj.name === "right_pitch_shoulder").qdota);
+      this.rightPitchShoulder_taua = states.find(obj => obj.name === "right_pitch_shoulder").taua.toFixed(2);
+      this.rightRollShoulder_qa = this.toDegrees(states.find(obj => obj.name === "right_roll_shoulder").qa);
+      this.rightRollShoulder_qdota = this.toDegrees(states.find(obj => obj.name === "right_roll_shoulder").qdota);
+      this.rightRollShoulder_taua = states.find(obj => obj.name === "right_roll_shoulder").taua.toFixed(2);
+      this.rightYawShoulder_qa = this.toDegrees(states.find(obj => obj.name === "right_yaw_shoulder").qa);
+      this.rightYawShoulder_qdota = this.toDegrees(states.find(obj => obj.name === "right_yaw_shoulder").qdota);
+      this.rightYawShoulder_taua = states.find(obj => obj.name === "right_yaw_shoulder").taua.toFixed(2);
+      this.rightElbow_qa = this.toDegrees(states.find(obj => obj.name === "right_elbow").qa);
+      this.rightElbow_qdota = this.toDegrees(states.find(obj => obj.name === "right_elbow").qdota);
+      this.rightElbow_taua = states.find(obj => obj.name === "right_elbow").taua.toFixed(2);
+      this.rightYawWrist_qa = this.toDegrees(states.find(obj => obj.name === "right_yaw_wrist").qa);
+      this.rightYawWrist_qdota = this.toDegrees(states.find(obj => obj.name === "right_yaw_wrist").qdota);
+      this.rightYawWrist_taua = states.find(obj => obj.name === "right_yaw_wrist").taua.toFixed(2);
+      this.rightRollWrist_qa = this.toDegrees(states.find(obj => obj.name === "right_roll_wrist").qa);
+      this.rightRollWrist_qdota = this.toDegrees(states.find(obj => obj.name === "right_roll_wrist").qdota);
+      this.rightRollWrist_taua = states.find(obj => obj.name === "right_roll_wrist").taua.toFixed(2);
+      this.rightPitchWrist_qa = this.toDegrees(states.find(obj => obj.name === "right_pitch_wrist").qa);
+      this.rightPitchWrist_qdota = this.toDegrees(states.find(obj => obj.name === "right_pitch_wrist").qdota);
+      this.rightPitchWrist_taua = states.find(obj => obj.name === "right_pitch_wrist").taua.toFixed(2);
+      //下肢部分
+      this.leftHipPitch_qa = this.toDegrees(states.find(obj => obj.name === "left_hip_pitch").qa);
+      this.leftHipPitch_qdota = this.toDegrees(states.find(obj => obj.name === "left_hip_pitch").qdota);
+      this.leftHipPitch_taua = states.find(obj => obj.name === "left_hip_pitch").taua.toFixed(2);
+      this.leftHipYaw_qa = this.toDegrees(states.find(obj => obj.name === "left_hip_yaw").qa);
+      this.leftHipYaw_qdota = this.toDegrees(states.find(obj => obj.name === "left_hip_yaw").qdota);
+      this.leftHipYaw_taua = states.find(obj => obj.name === "left_hip_yaw").taua.toFixed(2);
+      this.leftHipRoll_qa = this.toDegrees(states.find(obj => obj.name === "left_hip_roll").qa);
+      this.leftHipRoll_qdota = this.toDegrees(states.find(obj => obj.name === "left_hip_roll").qdota);
+      this.leftHipRoll_taua = states.find(obj => obj.name === "left_hip_roll").taua.toFixed(2);
+      this.leftKnee_qa = this.toDegrees(states.find(obj => obj.name === "left_knee_pitch").qa);
+      this.leftKnee_qdota = this.toDegrees(states.find(obj => obj.name === "left_knee_pitch").qdota);
+      this.leftKnee_taua = states.find(obj => obj.name === "left_knee_pitch").taua.toFixed(2);
+      this.leftAnklePitch_qa = this.toDegrees(states.find(obj => obj.name === "left_ankle_pitch").qa);
+      this.leftAnklePitch_qdota = this.toDegrees(states.find(obj => obj.name === "left_ankle_pitch").qdota);
+      this.leftAnklePitch_taua = states.find(obj => obj.name === "left_ankle_pitch").taua.toFixed(2);
+      this.leftAnkleRoll_qa = this.toDegrees(states.find(obj => obj.name === "left_ankle_roll").qa);
+      this.leftAnkleRoll_qdota = this.toDegrees(states.find(obj => obj.name === "left_ankle_roll").qdota);
+      this.leftAnkleRoll_taua = states.find(obj => obj.name === "left_ankle_roll").taua.toFixed(2);
+      this.rightHipPitch_qa = this.toDegrees(states.find(obj => obj.name === "right_hip_pitch").qa);
+      this.rightHipPitch_qdota = this.toDegrees(states.find(obj => obj.name === "right_hip_pitch").qdota);
+      this.rightHipPitch_taua = states.find(obj => obj.name === "right_hip_pitch").taua.toFixed(2);
+      this.rightHipYaw_qa = this.toDegrees(states.find(obj => obj.name === "right_hip_yaw").qa);
+      this.rightHipYaw_qdota = this.toDegrees(states.find(obj => obj.name === "right_hip_yaw").qdota);
+      this.rightHipYaw_taua = states.find(obj => obj.name === "right_hip_yaw").taua.toFixed(2);
+      this.rightHipRoll_qa = this.toDegrees(states.find(obj => obj.name === "right_hip_roll").qa);
+      this.rightHipRoll_qdota = this.toDegrees(states.find(obj => obj.name === "right_hip_roll").qdota);
+      this.rightHipRoll_taua = states.find(obj => obj.name === "right_hip_roll").taua.toFixed(2);
+      this.rightKnee_qa = this.toDegrees(states.find(obj => obj.name === "right_knee_pitch").qa);
+      this.rightKnee_qdota = this.toDegrees(states.find(obj => obj.name === "right_knee_pitch").qdota);
+      this.rightKnee_taua = states.find(obj => obj.name === "right_knee_pitch").taua.toFixed(2);
+      this.rightAnklePitch_qa = this.toDegrees(states.find(obj => obj.name === "right_ankle_pitch").qa);
+      this.rightAnklePitch_qdota = this.toDegrees(states.find(obj => obj.name === "right_ankle_pitch").qdota);
+      this.rightAnklePitch_taua = states.find(obj => obj.name === "right_ankle_pitch").taua.toFixed(2);
+      this.rightAnkleRoll_qa = this.toDegrees(states.find(obj => obj.name === "right_ankle_roll").qa);
+      this.rightAnkleRoll_qdota = this.toDegrees(states.find(obj => obj.name === "right_ankle_roll").qdota);
+      this.rightAnkleRoll_taua = states.find(obj => obj.name === "right_ankle_roll").taua.toFixed(2);
       this.xSpeed = data.basestate.vx.toFixed(2);
       this.ySpeed = data.basestate.vy.toFixed(2);
     },
@@ -1195,30 +1058,7 @@ export default {
     },
     //更新速度图表
     updateSpeedCharts() {
-      let xChart = echarts.getInstanceByDom(document.getElementById("xChart"));
-      if (this.leftSpeedChartData.length > 11)
-        this.leftSpeedChartData.shift();
-      this.leftSpeedChartData.push(this.xAxisDataFmt(this.xSpeed));
-      xChart.setOption({
-        series: [
-          {
-            name: "speed",
-            data: this.leftSpeedChartData
-          }
-        ]
-      });
-      let yChart = echarts.getInstanceByDom(document.getElementById("yChart"));
-      if (this.rightSpeedChartData.length > 11)
-        this.rightSpeedChartData.shift();
-      this.rightSpeedChartData.push(this.xAxisDataFmt(this.ySpeed));
-      yChart.setOption({
-        series: [
-          {
-            name: "speed",
-            data: this.rightSpeedChartData
-          }
-        ]
-      });
+
     },
     // x轴格式化成时间轴数据
     xAxisDataFmt(e) {
@@ -1401,17 +1241,44 @@ export default {
   }
 }
 
-.upper{
+.chartBox {
+  position: absolute;
+  top: 5.7083vw;
+  right: 2.5833vw;
+  width: 67.75vw;
+  height: 8.625vw;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: .25vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .leftSide {
+    width: 33.75vw;
+  }
+
+  .middleDivider {
+    width: .125vw;
+    height: 4.4167vw;
+    background: rgba(255, 255, 255, 0.1)
+  }
+
+  .rightSide {
+    width: 33.875vw;
+  }
+}
+
+.upper {
   right: 37.0833vw;
 }
 
-.lower{
+.lower {
   right: 2.5833vw;
 }
 
 .rightBox {
   position: absolute;
-  top: 5.7083vw;
+  top: 16vw;
   width: 33.25vw;
   height: 27.5833vw;
   box-shadow: 0 .1042vw .2083vw 0 rgba(41, 72, 152, 0.01), 0 .4688vw .4167vw 0 rgba(41, 72, 152, 0.02);
@@ -1498,46 +1365,6 @@ export default {
     .tableItem:nth-child(even) {
       background-color: rgba(255, 255, 255, 0.1);
     }
-  }
-}
-
-.speedChart {
-  position: absolute;
-  right: 2.5833vw;
-  top: 34.5vw;
-  height: 9.25vw;
-  width: 67.75vw;
-  display: flex;
-  justify-content: space-between;
-  align-content: center;
-
-  .sChartSize {
-    // width: 20vw;
-    height: 18vh;
-  }
-
-  .xChart {
-    width: 33.25vw;
-    background-color: rgba(255, 255, 255, 0.08);
-    display: flex;
-    border-radius: .2604vw .2604vw;
-  }
-
-  .yChart {
-    width: 33.25vw;
-    background-color: rgba(255, 255, 255, 0.08);
-    display: flex;
-    border-radius: .2604vw .2604vw;
-  }
-
-  .chatItem {
-    display: flex;
-    justify-content: space-evenly;
-    align-content: center;
-    flex-direction: column;
-    margin-left: 1.25vw;
-    color: #FFFFFF;
-    font-size: 1.25vw;
   }
 }
 
