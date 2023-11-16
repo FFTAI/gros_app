@@ -87,7 +87,7 @@
     "calibrationTip3": "腰部保持直立",
     "initializing": "程序启动中…",
     "initSuccessfully": "程序启动成功",
-    "bootCalibration": "开机校准",
+    "bootCalibration": "开机指引",
     "deviceConnected": "设备已连接",
     "programStartup": "程序启动",
     "programShutdown": "程序关闭",
@@ -106,5 +106,11 @@
     "wristYaw": "腕部偏角",
     "wristRoll": "腕部晃动",
     "head": "头部",
-    "waist": "腰部"
+    "waist": "腰部",
+    "yaw": "偏航",
+    "roll": "翻滚",
+    "pitch": "俯仰",
+    "left": "左",
+    "right": "右",
+    "axle": "轴"
 }

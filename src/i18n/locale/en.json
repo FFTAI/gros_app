@@ -106,5 +106,11 @@
     "wristYaw": "Wrist Yaw",
     "wristRoll": "Wrist Roll",
     "head": "Head",
-    "waist": "Waist"
+    "waist": "Waist",
+    "yaw": "Yaw",
+    "roll": "Roll",
+    "pitch": "Pitch",
+    "left": "Left",
+    "right": "Right",
+    "axle": "Axle"
 }

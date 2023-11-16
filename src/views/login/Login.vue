@@ -1,6 +1,6 @@
 <template>
     <div class="loginMain">
-        <rtc-header :is-logo="true" :is-login="true" @connect="startExplore()" @shutDown="promptBoxOpen()"></rtc-header>
+        <rtc-header :is-logo="true" :is-login="true" @connect="toConnect()" @shutDown="promptBoxOpen()"></rtc-header>
         <div class="humanBody">
             <img class="openHuman" src="@/assets/images/image_onOpen.png" />
         </div>

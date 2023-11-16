@@ -106,5 +106,11 @@
     "wristYaw": "腕部偏角",
     "wristRoll": "腕部晃動",
     "head": "頭部",
-    "waist": "腰部"
+    "waist": "腰部",
+    "yaw": "偏航",
+    "roll": "翻滾",
+    "pitch": "俯仰",
+    "left": "左",
+    "right": "右",
+    "axle": "軸"
 }
