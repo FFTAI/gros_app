@@ -7,7 +7,7 @@
         <div class="startContain" @click="startExplore()">
             <span class="startBtn">{{ $t('beginToExplore') }}</span>
         </div>
-        <prompt-box v-if="promptVisible" @cancel="promptBoxOpen()" @confirm="shutDown()"></prompt-box>
+        <prompt-box v-if="promptVisible" :prompt="'closeSh'" @cancel="promptBoxOpen()" @confirm="shutDown()"></prompt-box>
     </div>
 </template>
 

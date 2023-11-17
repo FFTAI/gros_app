@@ -17,7 +17,7 @@
                 </div>
             </div>
             <!-- 设备设置 -->
-            <div class="txt" :class="{ 'activeTab': isActivated == 'deviceSettings' }" style="top: 47%;"
+            <!-- <div class="txt" :class="{ 'activeTab': isActivated == 'deviceSettings' }" style="top: 47%;"
                 @click="changeTab('deviceSettings')">
                 <div class="tab" :class="{ 'opt': isActivated != 'deviceSettings' }">
                     <img class="iconSysState" src="@/assets/images/icon_sysState.png" />
@@ -25,7 +25,7 @@
                         {{ $t('deviceSettings') }}
                     </div>
                 </div>
-            </div>
+            </div> -->
             <!-- 系统信息 -->
             <div class="txt" :class="{ 'activeTab': isActivated == 'status' }" style="top: 94%;"
                 @click="changeTab('status')">
@@ -39,15 +39,15 @@
         </div>
         <!-- 连接标签页 -->
         <div class="listBox" v-if="isActivated == 'connect'">
-            <div class="item" v-if="connected">
+            <div class="item">
                 <span>{{ $t('connectionStatus') }}</span>
                 <span>{{ $t('connected') }}</span>
             </div>
-            <div class="item" v-if="!connected" @click="toConnect()">
+            <!-- <div class="item" v-if="!connected" @click="toConnect()">
                 <span>{{ $t('connectionStatus') }}</span>
                 <span class="itemTxt">{{ $t('notConnected') }}</span>
                 <img class="iconTo" src="@/assets/images/icon_to.png" />
-            </div>
+            </div> -->
             <div class="item" v-if="connected">
                 <span>{{ $t('robotIP') }}</span>
                 <span>192.168.12.1</span>
@@ -62,7 +62,7 @@
             </div>
         </div>
         <!-- 设备设置标签页 -->
-        <div class="listBox" v-if="isActivated == 'deviceSettings'">
+        <!-- <div class="listBox" v-if="isActivated == 'deviceSettings'">
             <div class="item">
                 <span>{{ $t('defaultNickname') }}</span>
                 <span>小傅小傅</span>
@@ -123,7 +123,7 @@
                     {{ $t('powerOff') }}
                 </div>
             </div>
-        </div>
+        </div> -->
         <!-- 系统信息标签页 -->
         <div class="listBox" v-if="isActivated == 'status'">
             <div class="item">
@@ -175,20 +175,24 @@
                 </div>
             </div>
         </div>
+        <prompt-box :prompt="'reconnect'"></prompt-box>
     </div>
 </template>
 
 <script>
 import rtcHeader from '@/components/rtcHeader.vue';
+import promptBox from '@/components/promptBox.vue';
 import { mapState } from "vuex";
+import Heartbeat from '@/mixin/Heartbeat';
 export default {
-    components: { rtcHeader },
+    mixins: [Heartbeat],
+    components: { rtcHeader,promptBox },
     computed: {
         ...mapState(["connected"])
     },
     data() {
         return {
-            isActivated: 'deviceSettings',//当前活动Tab
+            isActivated: 'connect',//当前活动Tab
             logOpen: true,
             nickname: false,
             microphone: false,

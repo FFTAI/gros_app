@@ -4,12 +4,16 @@
             <div class="promptContent">
                 <img class="warningIcon" src="@/assets/images/warning1.png"/>
                 <div style="font-size: 1.4583vw;width: 10.2083vw;display: inline-block;">
-                    确定是否关闭 机器人算法程序
+                    <span v-if="prompt=='closeSh'">{{ $t('closeShPrompt') }}</span>
+                    <span v-else-if="prompt=='reconnect'">{{ $t('reconnectPrompt') }}</span>
                 </div>
             </div>
-            <div class="btnBox">
+            <div v-if="prompt=='closeSh'" class="btnBox">
                 <div class="btn blue" @click="cancel()">{{ $t('cancel') }}</div>
                 <div class="btn white" @click="confirm()">{{ $t('confirm') }}</div>
+            </div>
+            <div v-else-if="prompt=='reconnect'" class="btnBox" style="left: 11.7083vw;">
+                <div class="btn blue" @click="reconnect()">{{ $t('reconnect') }}</div>
             </div>
             <slot></slot>
         </div>
@@ -20,7 +24,10 @@
 export default {
     name: "promptBox",
     props: {
-
+        prompt: {
+            type: String,
+            default: ""
+        }
     },
     data(){
         return{
@@ -33,6 +40,9 @@ export default {
         },
         confirm(){
             this.$emit('confirm')
+        },
+        reconnect() {
+            
         }
     }
 }

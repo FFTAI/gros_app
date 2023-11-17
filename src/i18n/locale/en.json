@@ -112,5 +112,8 @@
     "pitch": "Pitch",
     "left": "Left",
     "right": "Right",
-    "axle": "Axle"
+    "axle": "Axle",
+    "closeShPrompt": "Confirm whether to close the robot algorithm program",
+    "reconnectPrompt": "Disconnect, please reconnect",
+    "reconnect": "Reconnect"
 }

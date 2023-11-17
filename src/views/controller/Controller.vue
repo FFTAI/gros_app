@@ -157,7 +157,7 @@ export default {
       joystickR: undefined,//右侧虚拟摇杆
       screenWidth: document.body.clientWidth,//当前屏幕宽度
       gamepadConnected: false,//是否连接手柄监听
-      speed: 1,//当前速度档位 1-5
+      speed: 1,//当前速度档位 1-3
       current_speed: 0, //当前速度，默认0
       videoSrc: "", //摄像头视频路径
       controlModel: "gait",//当前运动 gait:步态 inPlace:原地 endGrasping:末端抓取
@@ -314,7 +314,7 @@ export default {
             }
             if (i === 5) {
               this.buttons = "右手1";
-              if (this.speed < 5) this.speed += 1;
+              if (this.speed < 3) this.speed += 1;
             }
             this.speedTime = setTimeout(() => {
               this.speedTime = null;
@@ -466,7 +466,7 @@ export default {
     // 速度挡位调节
     speedChange(e) {
       if (!this.speedTime) {
-        if (e == "add" && this.speed < 5) this.speed += 1;
+        if (e == "add" && this.speed < 3) this.speed += 1;
         if (e == "reduce" && this.speed > 1) this.speed -= 1;
         this.speedTime = setTimeout(() => {
           this.speedTime = null;

@@ -72,7 +72,12 @@
           </div>
         </div>
         <div class="axleImg">
-          <img src="@/assets/images/image_point.png" class="pointer" :style="{ transform: pointerTransform }" />
+          <img src="@/assets/images/image_Dashboard.png" class="dashboard"/>
+          <img src="@/assets/images/image_point.png" class="pointer" :style="{ transform: pointerTransformX }" />
+        </div>
+        <div class="axleImg" style="right: 1.25vw;">
+          <img src="@/assets/images/image_Dashboard.png" class="dashboard"/>
+          <img src="@/assets/images/image_point.png" class="pointer" :style="{ transform: pointerTransformY }" />
         </div>
       </div>
     </div>
@@ -761,7 +766,8 @@ export default {
       headBoxVisible: false,
       robotCount: 1,
       iframeUrl: process.env.VUE_APP_URL.replace(process.env.VUE_APP_URL.split('//')[1].split(':')[1], '3002'),
-      pointerTransform: 'translate(-50%, -100%) rotate(0deg)'
+      pointerTransformX: 'translate(-50%, -100%) rotate(0deg)',
+      pointerTransformY: 'translate(-50%, -100%) rotate(0deg)'
     };
   },
   created() {
@@ -1221,7 +1227,8 @@ export default {
       this.waistRoll_taua = states.find(obj => obj.name === "waist_roll").taua.toFixed(2);
       this.xSpeed = data.basestate.vx.toFixed(2);
       this.ySpeed = data.basestate.vy.toFixed(2);
-      this.updatePointer(this.xSpeed)
+      this.updatePointer('x', this.xSpeed)
+      this.updatePointer('y', this.ySpeed)
     },
     //获取log列表
     getLog(data) {
@@ -1552,9 +1559,12 @@ export default {
         this.headBoxVisible = false;
       }
     },
-    updatePointer(value) {
+    updatePointer(e, value) {
       const rotation = value * 90;
-      this.pointerTransform = `translate(-50%, -100%) rotate(${rotation}deg)`;
+      if (e == 'x')
+        this.pointerTransformX = `translate(-50%, -100%) rotate(${rotation}deg)`;
+      if (e == 'y')
+        this.pointerTransformY = `translate(-50%, -100%) rotate(${rotation}deg)`;
     }
   }
 };
@@ -1769,10 +1779,16 @@ export default {
       width: 207px;
       height: 103px;
 
+      .dashboard{
+        width: 8.625vw;
+        height: 4.2917vw;
+      }
       .pointer {
         position: absolute;
-        top: 50%;
-        left: 50%;
+        top: 3.75vw;
+        right: 3.5vw;
+        width: .8125vw;
+        height: 2.5625vw;
         transform-origin: bottom;
         transition: transform 0.5s ease-in-out;
       }
