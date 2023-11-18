@@ -90,7 +90,14 @@ export default {
     methods: {
         //打开/关闭弹窗
         openDialog() {
-            this.showDialog = !this.showDialog
+            // console.log(JSON.stringify(navigator))
+            // console.log(JSON.stringify(navigator.getGamepads()))
+            return
+            var main = plus.android.runtimeMainActivity();
+            var Intent = plus.android.importClass("android.content.Intent");
+            var mIntent = new Intent('android.settings.WIFI_SETTINGS');
+            main.startActivity(mIntent);
+            // this.showDialog = !this.showDialog
         }
     }
 }

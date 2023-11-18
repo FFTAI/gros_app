@@ -42,7 +42,7 @@ export default {
             this.$emit('confirm')
         },
         reconnect() {
-            
+            this.$emit('reconnect')
         }
     }
 }
