@@ -319,7 +319,8 @@ export default {
       activatedType: "angle",
       headBoxVisible: false,
       robotCount: 1,
-      iframeUrl: process.env.VUE_APP_URL.replace(process.env.VUE_APP_URL.split('//')[1].split(':')[1],'3002')
+      // iframeUrl: process.env.VUE_APP_URL.replace(process.env.VUE_APP_URL.split('//')[1].split(':')[1],'3002')
+      iframeUrl: "Bulid/index.html"
     };
   },
   created() {
