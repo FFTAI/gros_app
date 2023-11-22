@@ -1,13 +1,13 @@
 <template>
     <div class="loginMain">
-        <rtc-header :is-logo="true" :is-login="true" @connect="startExplore()" @shutDown="promptBoxOpen()"></rtc-header>
+        <rtc-header :is-logo="true" :is-login="true" @connect="toConnect()" @shutDown="promptBoxOpen()"></rtc-header>
         <div class="humanBody">
             <img class="openHuman" src="@/assets/images/image_onOpen.png" />
         </div>
         <div class="startContain" @click="startExplore()">
             <span class="startBtn">{{ $t('beginToExplore') }}</span>
         </div>
-        <prompt-box v-if="promptVisible" @cancel="promptBoxOpen()" @confirm="shutDown()"></prompt-box>
+        <prompt-box v-if="promptVisible" :prompt="'closeSh'" @cancel="promptBoxOpen()" @confirm="shutDown()"></prompt-box>
     </div>
 </template>
 
@@ -32,20 +32,24 @@ export default {
         startExplore() {
             if (this.getFlag) {
                 this.getFlag = false
-                this.robot.control_svr_status()
-                    .then(res => {
-                        this.getFlag = true
-                        console.log(this.connected, res.data.data)
-                        if (this.connected && res.data.data) {
-                            this.$router.push({
-                                name: 'loading'
-                            })
-                        } else {
+                if (this.connected) {
+                    this.robot.control_svr_status()
+                        .then(res => {
+                            this.getFlag = true
+                            console.log(this.connected, res.data.data)
+                            if (this.connected && res.data.data) {
+                                this.$router.push({
+                                    name: 'loading'
+                                })
+                            } else {
+                                this.toConnect()
+                            }
+                        }).catch(err => {
                             this.toConnect()
-                        }
-                    }).catch(err => {
-                        this.toConnect()
-                    })
+                        })
+                } else {
+                    this.toConnect()
+                }
             }
         },
         toConnect() {

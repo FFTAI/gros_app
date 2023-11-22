@@ -26,7 +26,7 @@
         <!-- <div class="stopControl">
           <img class="stopImg" src="@/assets/images/icon_chStop.png" @click="stop()" />
         </div> -->
-        <!--校准-->
+        <!--初始-->
         <div class="calibration">
           <img class="calibrationImg" src="@/assets/images/icon_calibration.png" @click="calibration()" />
         </div>
@@ -132,7 +132,7 @@
         </div>
       </div>
       <!-- 当前状态提示 -->
-      <div class="stateMessage" v-if="mode != '' && upperAction">
+      <div class="stateMessage" v-if="(mode != '' && upperAction) || mode == 'initial'">
         <span>{{ $t(mode) }}{{ $t('ing') }}...</span>
       </div>
     </div>
@@ -157,7 +157,7 @@ export default {
       joystickR: undefined,//右侧虚拟摇杆
       screenWidth: document.body.clientWidth,//当前屏幕宽度
       gamepadConnected: false,//是否连接手柄监听
-      speed: 1,//当前速度档位 1-5
+      speed: 1,//当前速度档位 1-3
       current_speed: 0, //当前速度，默认0
       videoSrc: "", //摄像头视频路径
       controlModel: "gait",//当前运动 gait:步态 inPlace:原地 endGrasping:末端抓取
@@ -166,7 +166,9 @@ export default {
       headBoxVisible: false,//模式选择框显隐
       camera: true,//是否开启视频
       upperAction: false,
-      isStand: false
+      isStand: false,
+      velocity: 0,
+      direction: 0
     };
   },
   created() {
@@ -261,7 +263,6 @@ export default {
       this.interval = setInterval(function () {
         let gamepad = null;
         console.log(JSON.stringify(navigator))
-        console.log(navigator.getGamepads())
         console.log(JSON.stringify(navigator.getGamepads()))
         navigator.getGamepads().forEach((item) => {
           if (item) gamepad = item;
@@ -314,7 +315,7 @@ export default {
             }
             if (i === 5) {
               this.buttons = "右手1";
-              if (this.speed < 5) this.speed += 1;
+              if (this.speed < 3) this.speed += 1;
             }
             this.speedTime = setTimeout(() => {
               this.speedTime = null;
@@ -377,22 +378,25 @@ export default {
 
           //同手柄圆心方案（新）
           if (!_this.isStand) {
-            let velocity = data.vector.y;
-            let direction = data.vector.x;
-            let v = Math.hypot(Math.abs(velocity), Math.abs(direction));
-            if (v > 1) v = 1;
-            if (velocity < 0) v = v * -1;
-            let sin = direction / Math.abs(v);
-            let angle = (Math.asin(sin) * 180) / Math.PI;
-            if (Math.abs(velocity) < 0.1) v = 0;
-            if (Math.abs(direction) < 0.1) angle = 0;
-            //人形控制
-            if (!_this.gamepadConnected) {
-              if (Math.abs(velocity) < 0.1) {
-                velocity = 0;
-              }
-              _this.operateWalk(angle * -0.5, (velocity * _this.speed) / 6.25);
-            }
+            // let velocity = data.vector.y;
+            // let direction = data.vector.x;
+            // let v = Math.hypot(Math.abs(velocity), Math.abs(direction));
+            // if (v > 1) v = 1;
+            // if (velocity < 0) v = v * -1;
+            // let sin = direction / Math.abs(v);
+            // let angle = (Math.asin(sin) * 180) / Math.PI;
+            // if (Math.abs(velocity) < 0.1) v = 0;
+            // if (Math.abs(direction) < 0.1) angle = 0;
+            // //人形控制
+            // if (!_this.gamepadConnected) {
+            //   if (Math.abs(velocity) < 0.1) {
+            //     velocity = 0;
+            //   }
+            //   _this.operateWalk(angle * -0.5, (velocity * _this.speed) / 6.25);
+            // }
+            _this.velocity = data.vector.y;
+            if (Math.abs(_this.velocity) < 0.1) _this.velocity = 0;
+            _this.operateWalk(_this.direction * -45, (_this.velocity * _this.speed) / 6.25);
           } else {
             let pitch = data.vector.y * 17.1887
             let rotate_waist = data.vector.x * 14.32
@@ -447,17 +451,28 @@ export default {
             console.log(squat, yaw)
             _this.operateHead(0, yaw)
             _this.operateBody(squat, 0);
+          } else {
+            _this.direction = data.vector.x;
+            if (Math.abs(_this.direction) < 0.1) _this.direction = 0;
+            _this.operateWalk(_this.direction * -45, (_this.velocity * _this.speed) / 6.25);
           }
         })
         .on("end", function (evt, data) {
           if (!_this.gamepadConnected && _this.isStand) {
             _this.operateHead(0, 0);
             _this.operateBody(0, 0);
+          }else{
+            _this.direction = 0
+            _this.operateWalk(0,0)
           }
         });
     },
     calibration() {
       this.robot.start()
+      this.mode = "initial"
+      setTimeout(() => {
+        this.mode = ""
+      }, 7000);
     },
     //紧急停止
     stop() {
@@ -466,7 +481,7 @@ export default {
     // 速度挡位调节
     speedChange(e) {
       if (!this.speedTime) {
-        if (e == "add" && this.speed < 5) this.speed += 1;
+        if (e == "add" && this.speed < 3) this.speed += 1;
         if (e == "reduce" && this.speed > 1) this.speed -= 1;
         this.speedTime = setTimeout(() => {
           this.speedTime = null;
@@ -570,7 +585,7 @@ export default {
         }
         if (lower_data.lower_body_mode == "" && e != "nod" && e != "nod") {
           this.robot.upper_body(upper_data.arm_action, upper_data.hand_action)
-        } else if(lower_data.lower_body_mode != "" && e != "nod" && e != "nod") {
+        } else if (lower_data.lower_body_mode != "" && e != "nod" && e != "nod") {
           // this.robot.lower_body(lower_data.lower_body_mode)
           this.$http.request({
             timeout: 30000,
@@ -587,7 +602,7 @@ export default {
             console.log('lower_body-error', error)
             this.upperAction = false
           })
-        } else{
+        } else {
           setTimeout(() => {
             this.upperAction = false
           }, 4000);

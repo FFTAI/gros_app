@@ -31,9 +31,6 @@
         <!-- 设备连接 -->
         <div v-else-if="step == 'connect' && !calibrationDialog">
             <img class="openCalibration" src="@/assets/images/image_deviceConnect.png" />
-            <div class="connectTitle">
-                {{ $t('connectRobot') }}
-            </div>
             <div class="connectBox">
                 <div class="txtFlex">
                     <div>{{ $t('initialAccount') }}</div>
@@ -90,23 +87,23 @@
         </div>
         <!-- 右侧操作按钮 -->
         <div class="operateArea" v-if="!calibrationDialog">
-            <div :class="step == 'calibration' ? 'startBtn' : 'finishBtn'" class="btn">
+            <div :class="{ 'startBtn': step == 'calibration' }" class="btn" @click="changeStep('connect')">
                 <span v-if="step == 'calibration'" class="circleTxt ct1">1</span>
                 <img v-else class="finishImg" src="@/assets/images/icon_finish.png" />
                 <span>{{ $t('bootCalibration') }}</span>
             </div>
-            <div :class="step == 'calibration' ? 'readyBtn' : step == 'connect' ? 'startBtn' : 'finishBtn'" class="btn"
-                @click="changeStep('connect')">
+            <div :class="{ 'disableBtn': step == 'calibration', 'startBtn': step == 'connect' }" class="btn"
+                @click="changeStep('startup')">
                 <img v-if="step == 'connect' && connected" class="finishImg" src="@/assets/images/icon_finish2.png" />
                 <img v-else-if="step == 'startup' && connected" class="finishImg" src="@/assets/images/icon_finish.png" />
-                <span v-else :class="step == 'connect' ? 'ct1' : 'ct3'" class="circleTxt">2</span>
+                <span v-else :class="step == 'connect' ? 'ct1' : 'ct4'" class="circleTxt">2</span>
                 <span v-if="connected && step != 'calibration'">{{ $t('deviceConnected') }}</span>
                 <span v-else>{{ $t('deviceConnection') }}</span>
             </div>
             <div v-if="!isReady"
-                :class="{ 'startBtn': step == 'startup', 'readyBtn': step == 'connect' && connected, 'disableBtn': step == 'calibration' || (step == 'connect' && !connected) }"
-                class="btn" @click="changeStep('startup')">
-                <span :class="step == 'startup' ? 'ct1' : step == 'connect' && connected ? 'ct3' : 'ct4'"
+                :class="{ 'startBtn': step == 'startup', 'disableBtn': step == 'calibration' || step == 'connect' }"
+                class="btn">
+                <span :class="step == 'startup'?'ct1':'ct4'"
                     class="circleTxt">3</span>
                 <span>{{ $t('programStartup') }}</span>
             </div>
@@ -117,7 +114,7 @@
                 <span>{{ $t('beginToExplore') }}</span>
             </div>
         </div>
-        <prompt-box v-if="promptVisible" @cancel="promptBoxOpen()" @confirm="shutDown()"></prompt-box>
+        <prompt-box v-if="promptVisible" :prompt="'closeSh'" @cancel="promptBoxOpen()" @confirm="shutDown()"></prompt-box>
     </div>
 </template>
 
@@ -170,9 +167,17 @@ export default {
         changeStep(e) {
             if (e == 'connect' && this.step == 'calibration')
                 this.step = 'connect'
-            if (e == 'startup' && this.step == 'connect' && this.connected) {
-                this.step = 'startup'
-                this.getStartup()
+            if (e == 'startup' && this.step == 'connect') {
+                if (this.connected) {
+                    this.step = 'startup'
+                    this.getStartup()
+                } else {
+                    let main = plus.android.runtimeMainActivity();
+                    let Intent = plus.android.importClass("android.content.Intent");
+                    let mIntent = new Intent('android.settings.WIFI_SETTINGS');
+                    main.startActivity(mIntent);
+                }
+
             }
         },
         //程序启动
@@ -187,9 +192,10 @@ export default {
             }).catch(error => {
                 console.log('start-error', error)
             })
+            
             setTimeout(() => {
                 this.stateOn()
-            }, 30000);
+            }, 25000);
         },
         //打开开机校准示例图
         openDialog() {
@@ -305,23 +311,24 @@ export default {
     background: #0086D1;
     border-radius: 1.4583vw;
     color: #FFFFFF;
+    top: 26.5vw;
 }
 
 .tip2 {
-    top: 17.9583vw;
+    top: 31.2vw;
     color: #44D8FB;
 }
 
 .tip3 {
     color: #44D8FB;
     width: 11.8vw;
-    top: 26.0417vw;
+    top: 11.1vw;
 }
 
 .tip4 {
     color: #44D8FB;
     width: 14.3vw;
-    top: 31.875vw;
+    top: 15.3vw;
 }
 
 .warning {
@@ -345,9 +352,9 @@ export default {
 
 .connectBox {
     position: absolute;
-    top: 20.7083vw;
-    left: 34.0417vw;
-    width: 27.0833vw;
+    top: 28vw;
+    left: 36.5vw;
+    width: 24.625vw;
     height: 8.25vw;
     padding-top: 2.1667vw;
     padding-bottom: 1.9167vw;
@@ -378,8 +385,8 @@ export default {
 
 .connectTip {
     position: absolute;
-    top: 35vw;
-    left: 36.5833vw;
+    top: 24.7083vw;
+    left: 39.5vw;
     font-size: 1.25vw;
     font-family: AlibabaPuHuiTiR;
     color: #44D8FB;
@@ -525,10 +532,6 @@ export default {
     .startBtn {
         font-weight: normal;
         background: #0075B8;
-    }
-
-    .readyBtn {
-        border: .0417vw solid #0086D1;
     }
 
     .finishBtn {

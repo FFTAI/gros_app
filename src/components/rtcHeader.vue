@@ -3,10 +3,10 @@
     <div class="headBk"></div>
     <div class="headBkIn">
       <!-- Logo -->
-      <div class="headLogo" v-if="isLogo">
+      <div class="headLogo" v-if="isLogin">
         <img class="leftSlot" src="@/assets/images/image_logo.png" />
       </div>
-      <div class="headAfter" v-if="isLogo"></div>
+      <div class="headAfter" v-if="isLogin"></div>
       <!-- 返回 -->
       <div class="headReturn" v-else @click="routerReturn()">
         <img class="return" src="@/assets/images/icon_return.png" />
@@ -50,10 +50,6 @@ export default {
   props: {
     currentSpeed: Number,
     camera: {
-      type: Boolean,
-      default: false
-    },
-    isLogo: {
       type: Boolean,
       default: false
     },
@@ -128,8 +124,9 @@ export default {
   left: 0;
   height: 4.4444vw;
   z-index: 10;
-  background: linear-gradient(274deg, #1a1919 0%, #004c81 100%);
-  opacity: 0.4;
+  // background: linear-gradient(274deg, #1a1919 0%, #004c81 100%);
+  background: linear-gradient(274deg, rgba(26, 25, 25, 0.4) 0%, rgba(0, 76, 129, 0.4) 100%);
+  // opacity: 0.4;
 }
 
 .headBkIn {
@@ -252,7 +249,7 @@ export default {
   top: 0;
   right: 0;
   width: 7.5vw;
-  height: 4.4444vw;
+  height: 4.375vw;
   background: #0075B8;
   float: right;
   display: flex;
@@ -260,11 +257,10 @@ export default {
   align-items: center;
 
   .connect {
-    font-size: 1.25vw;
+    font-size: 1.4583vw;
     font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
     font-weight: normal;
     color: #FFFFFF;
-    line-height: 1.7188vw;
     z-index: 99;
   }
 }
