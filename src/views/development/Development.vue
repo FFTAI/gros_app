@@ -53,7 +53,7 @@
     <div class="chartBox">
       <div class="leftSide">
         <div v-show="doubleChart" class="chartTitle">{{ $t('left') }}{{ $t('upperBody') }}</div>
-        <div v-show="doubleChart" class="chartTitle" style="left: 436px;">{{ $t('right') }}{{ $t('upperBody') }}</div>
+        <div v-show="doubleChart" class="chartTitle" style="left: 18.1667vw;">{{ $t('right') }}{{ $t('upperBody') }}</div>
         <div v-show="doubleChart" class="doubleChartSize" id="leftChart"></div>
         <div v-show="doubleChart" class="doubleChartSize" id="rightChart"></div>
         <div v-show="!doubleChart" class="chartTitle">{{ $t('head') }}</div>
@@ -634,7 +634,7 @@ export default {
   },
   data() {
     return {
-      activated: "log",//动态展示:dynamic Log日志:log
+      activated: "dynamic",//动态展示:dynamic Log日志:log
       logList: [],//日志列表
       /**
        * 上肢部分关节数据
@@ -1616,7 +1616,7 @@ export default {
   left: 3.0833vw;
   top: 5.7083vw;
   height: 38.2083vw;
-  width: 553px;
+  width: 23.0417vw;
 
   .humanModel {
     height: 32.125vw;
@@ -1776,8 +1776,8 @@ export default {
       position: absolute;
       right: 11.7083vw;
       top: 2.4167vw;
-      width: 207px;
-      height: 103px;
+      width: 8.625vw;
+      height: 4.2917vw;
 
       .dashboard{
         width: 8.625vw;
