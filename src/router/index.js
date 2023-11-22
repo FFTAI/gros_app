@@ -54,7 +54,7 @@ const routes = [
   },
   {
     path: "/",
-    redirect: "/startUp"
+    redirect: "/connect"
   }
 ];
 

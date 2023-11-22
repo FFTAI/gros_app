@@ -32,20 +32,24 @@ export default {
         startExplore() {
             if (this.getFlag) {
                 this.getFlag = false
-                this.robot.control_svr_status()
-                    .then(res => {
-                        this.getFlag = true
-                        console.log(this.connected, res.data.data)
-                        if (this.connected && res.data.data) {
-                            this.$router.push({
-                                name: 'loading'
-                            })
-                        } else {
+                if (this.connected) {
+                    this.robot.control_svr_status()
+                        .then(res => {
+                            this.getFlag = true
+                            console.log(this.connected, res.data.data)
+                            if (this.connected && res.data.data) {
+                                this.$router.push({
+                                    name: 'loading'
+                                })
+                            } else {
+                                this.toConnect()
+                            }
+                        }).catch(err => {
                             this.toConnect()
-                        }
-                    }).catch(err => {
-                        this.toConnect()
-                    })
+                        })
+                } else {
+                    this.toConnect()
+                }
             }
         },
         toConnect() {

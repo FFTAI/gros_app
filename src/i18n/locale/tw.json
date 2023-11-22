@@ -115,5 +115,6 @@
     "axle": "軸",
     "closeShPrompt": "確定是否關閉 機器人算法程序",
     "reconnectPrompt": "斷開連接，請重新連接",
-    "reconnect": "重新連接"
+    "reconnect": "重新連接",
+    "initial": "回到初始位置"
 }
