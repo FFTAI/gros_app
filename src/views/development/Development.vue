@@ -765,7 +765,7 @@ export default {
       activatedType: "angle",
       headBoxVisible: false,
       robotCount: 1,
-      iframeUrl: "Bulid/index.html",
+      iframeUrl: "Build/index.html",
       pointerTransformX: 'translate(-50%, -100%) rotate(0deg)',
       pointerTransformY: 'translate(-50%, -100%) rotate(0deg)'
     };
