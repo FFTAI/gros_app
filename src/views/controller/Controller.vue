@@ -185,17 +185,17 @@ export default {
   },
   async mounted() {
     let _this = this;
-    this.$nextTick(() => {
-      window.addEventListener("gamepadconnected", function (e) {
-        console.log('手柄', JSON.stringify(e))
-        _this.gamepadConnected = true;
-        _this.startGamepad(); // 启动手柄
-      });
-      window.addEventListener("gamepaddisconnected", function (e) {
-        _this.gamepadConnected = false;
-        clearInterval(this.interval); // 停止获取手柄数据
-      });
-    });
+    // this.$nextTick(() => {
+    //   window.addEventListener("gamepadconnected", function (e) {
+    //     console.log('手柄', JSON.stringify(e))
+    //     _this.gamepadConnected = true;
+    //     _this.startGamepad(); // 启动手柄
+    //   });
+    //   window.addEventListener("gamepaddisconnected", function (e) {
+    //     _this.gamepadConnected = false;
+    //     clearInterval(this.interval); // 停止获取手柄数据
+    //   });
+    // });
 
     this.videoContainer = this.$refs.videoContainer;
     window.onresize = () => {
@@ -227,14 +227,14 @@ export default {
   },
   beforeDestroy() {
     let _this = this;
-    window.removeEventListener("gamepadconnected", function (e) {
-      _this.gamepadConnected = true;
-      _this.startGamepad(); // 启动手柄
-    });
-    window.removeEventListener("gamepaddisconnected", function (e) {
-      _this.gamepadConnected = false;
-      clearInterval(this.interval); // 停止获取手柄数据
-    });
+    // window.removeEventListener("gamepadconnected", function (e) {
+    //   _this.gamepadConnected = true;
+    //   _this.startGamepad(); // 启动手柄
+    // });
+    // window.removeEventListener("gamepaddisconnected", function (e) {
+    //   _this.gamepadConnected = false;
+    //   clearInterval(this.interval); // 停止获取手柄数据
+    // });
   },
   destroyed() {
     clearInterval(this.interval);

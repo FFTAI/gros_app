@@ -24,7 +24,7 @@
           style="border: none;width: 26.0417vw;height: 36.4583vw;margin-top:6.25vw;"
           v-show="activated == 'dynamic'"></iframe> -->
       <div class="humanModel" v-show="activated == 'dynamic'">
-        <iframe ref="unityIfm" style="border: none;margin-top: 3.125vw;width: 26.0417vw;height: 36.4583vw;"
+        <iframe ref="unityIfm" style="border: none;margin-top: 6vw;width: 26.0417vw;height: 32.4583vw;"
           :src="iframeUrl"></iframe>
       </div>
       <!-- log日志 -->
@@ -797,7 +797,7 @@ export default {
       if (currData.data.log && currData.data.log.logBuffer)
         this.getLog(currData.data.log.logBuffer);
       // if (this.$refs.unityIfm.contentWindow.myGameInstance)
-      //   this.$refs.unityIfm.contentWindow.myGameInstance.SendMessage('UnityJsCommunication', 'ReceiveMsg', JSON.stringify({ 'jointStates': currData.data.states.jointStates }))
+        // this.$refs.unityIfm.contentWindow.myGameInstance.SendMessage('UnityJsCommunication', 'ReceiveMsg', JSON.stringify({ 'jointStates': currData.data.states.jointStates }))
       if (this.robotCount == 50) {
         this.assignData(JSON.parse(data.data).data.states);
         this.singleOrDouble(this.activatedItem)

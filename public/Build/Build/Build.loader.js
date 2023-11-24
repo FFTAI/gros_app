@@ -245,58 +245,6 @@ function createUnityInstance(t, n, c) {
         })
     }, l.fetchWithProgress = function (e, t) {
         let n = function () {};
-        // function fileToReadableStream(filePath) {
-        //     return new Promise((resolve, reject) => {
-        //         const xhr = new XMLHttpRequest();
-        //         xhr.open('GET', filePath, true);
-        //         xhr.responseType = 'blob';
-        //         xhr.onload = () => {
-        //             if (xhr.status === 200) {
-        //                 const blob = xhr.response;
-        //                 const reader = new FileReader();
-        //                 reader.onloadend = function () {
-        //                     const arrayBuffer = reader.result;
-        //                     const readableStream = new ReadableStream({
-        //                         start(controller) {
-        //                             const uint8Array = new Uint8Array(arrayBuffer);
-        //                             const chunkSize = 1024;
-        //                             let offset = 0;
-        //                             function push() {
-        //                                 if (offset >= uint8Array.length) {
-        //                                     controller.close();
-        //                                     return;
-        //                                 }
-        //                                 const chunk = uint8Array.subarray(offset, offset + chunkSize);
-        //                                 offset += chunkSize;
-        //                                 controller.enqueue(chunk);
-        //                                 setTimeout(push, 0); // 异步推入下一个数据块
-        //                             }
-        //                             push(); // 开始推入数据块
-        //                         },
-        //                     });
-        //                     let headers = { headers: { 'Content-Type': 'application/octet-stream' } }
-        //                     const response = new Response(readableStream, headers);
-        //                     // response.type = 'basic'
-        //                     // response.statusText = "OK"
-        //                     // response.bodyUsed = true;
-        //                     // response.url = filePath
-        //                     resolve(response);
-        //                 };
-        //                 reader.onerror = function (error) {
-        //                     reject(error);
-        //                 };
-        //                 reader.readAsArrayBuffer(blob);
-        //             } else {
-        //                 reject(xhr.statusText);
-        //             }
-        //         };
-        //         xhr.onerror = error => {
-        //             reject(error);
-        //         };
-        //         xhr.send();
-        //     });
-        // }
-
         function fileToReadableStream(filePath) {
             return new Promise((resolve, reject) => {
                 const xhr = new XMLHttpRequest();
