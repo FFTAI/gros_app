@@ -147,7 +147,7 @@ import { mapState } from "vuex";
 export default {
   components: { RtcHeader, rtcLeftControl },
   computed: {
-    ...mapState(["robot"])
+    ...mapState(["robot", "gamepadConnected"])
   },
   data() {
     return {
@@ -156,7 +156,6 @@ export default {
       joystickL: undefined,//左侧虚拟摇杆
       joystickR: undefined,//右侧虚拟摇杆
       screenWidth: document.body.clientWidth,//当前屏幕宽度
-      gamepadConnected: false,//是否连接手柄监听
       speed: 1,//当前速度档位 1-3
       current_speed: 0, //当前速度，默认0
       videoSrc: "", //摄像头视频路径
@@ -184,19 +183,6 @@ export default {
     );
   },
   async mounted() {
-    let _this = this;
-    // this.$nextTick(() => {
-    //   window.addEventListener("gamepadconnected", function (e) {
-    //     console.log('手柄', JSON.stringify(e))
-    //     _this.gamepadConnected = true;
-    //     _this.startGamepad(); // 启动手柄
-    //   });
-    //   window.addEventListener("gamepaddisconnected", function (e) {
-    //     _this.gamepadConnected = false;
-    //     clearInterval(this.interval); // 停止获取手柄数据
-    //   });
-    // });
-
     this.videoContainer = this.$refs.videoContainer;
     window.onresize = () => {
       return (() => {
@@ -206,6 +192,7 @@ export default {
     this.cameraOpen();
     this.startJoystickL(); //生成虚拟摇杆
     this.startJoystickR();
+    this.startGamepad()
     this.robot.enable_debug_state(2);
     this.robot.on_connected(() => {
       this.robot.enable_debug_state(2);
@@ -224,17 +211,6 @@ export default {
       console.log("Websocket出错啦。。。。。。")
       this.$store.commit('setRobot')
     })
-  },
-  beforeDestroy() {
-    let _this = this;
-    // window.removeEventListener("gamepadconnected", function (e) {
-    //   _this.gamepadConnected = true;
-    //   _this.startGamepad(); // 启动手柄
-    // });
-    // window.removeEventListener("gamepaddisconnected", function (e) {
-    //   _this.gamepadConnected = false;
-    //   clearInterval(this.interval); // 停止获取手柄数据
-    // });
   },
   destroyed() {
     clearInterval(this.interval);
@@ -261,24 +237,24 @@ export default {
       const _this = this;
       // 每10ms 获取一次手柄数据，查看是否按下手柄按键
       this.interval = setInterval(function () {
-        let gamepad = null;
-        console.log(JSON.stringify(navigator))
-        console.log(JSON.stringify(navigator.getGamepads()))
-        navigator.getGamepads().forEach((item) => {
-          if (item) gamepad = item;
-        });
-        _this.pressKey(gamepad.buttons);
-        _this.remoteSensing(gamepad.axes);
+        if (_this.gamepadConnected) {
+          let gamepad = null;
+          // navigator.getGamepads()[0].axes[0],navigator.getGamepads()[0].axes[1],navigator.getGamepads()[0].axes[2],navigator.getGamepads()[0].axes[3]
+          gamepad = navigator.getGamepads()[0] ? navigator.getGamepads()[0] : navigator.getGamepads()[1] ? navigator.getGamepads()[1] : navigator.getGamepads()[2] ? navigator.getGamepads()[2] : navigator.getGamepads()[3]
+          console.log(navigator.getGamepads(), gamepad)
+          _this.pressKey(gamepad.buttons);
+          _this.remoteSensing(gamepad.axes);
 
-        let size = (_this.screenWidth * 100) / 1440;
-        _this.joystickL[0].setPosition(1, {
-          x: gamepad.axes.slice(0, 2)[0] * size,
-          y: gamepad.axes.slice(0, 2)[1] * size
-        });
-        _this.joystickR[0].setPosition(1, {
-          x: gamepad.axes.slice(2, 4)[0] * size,
-          y: gamepad.axes.slice(2, 4)[1] * size
-        });
+          let size = (_this.screenWidth * 100) / 1440;
+          _this.joystickL[0].setPosition(1, {
+            x: gamepad.axes.slice(0, 2)[0] * size,
+            y: gamepad.axes.slice(0, 2)[1] * size
+          });
+          _this.joystickR[0].setPosition(1, {
+            x: gamepad.axes.slice(2, 4)[0] * size,
+            y: gamepad.axes.slice(2, 4)[1] * size
+          });
+        }
       }, 10);
     },
     /**
@@ -300,7 +276,7 @@ export default {
       if (Math.abs(velocity) < 0.1) {
         velocity = 0;
       }
-      this.operateWalk(angle * -0.5, (velocity * this.speed) / 6.25);
+      this.operateWalk(angle * -0.5, (velocity * this.speed) / -6.25);
     },
     // 手柄按键
     pressKey(arr) {
@@ -358,7 +334,6 @@ export default {
     startJoystickL() {
       const _this = this;
       let sWidth = parseInt(this.screenWidth * 14.8 * 0.01);
-      console.log(this.screenWidth, sWidth)
       _this.joystickL = nipplejs.create({
         zone: document.getElementById("zone_joystickL"),
         mode: "static",
@@ -461,9 +436,9 @@ export default {
           if (!_this.gamepadConnected && _this.isStand) {
             _this.operateHead(0, 0);
             _this.operateBody(0, 0);
-          }else{
+          } else {
             _this.direction = 0
-            _this.operateWalk(0,0)
+            _this.operateWalk(0, 0)
           }
         });
     },
