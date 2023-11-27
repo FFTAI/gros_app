@@ -167,7 +167,9 @@ export default {
       upperAction: false,
       isStand: false,
       velocity: 0,
-      direction: 0
+      direction: 0,
+      interval: null,
+      intervalCount: 0
     };
   },
   created() {
@@ -238,12 +240,16 @@ export default {
       // 每10ms 获取一次手柄数据，查看是否按下手柄按键
       this.interval = setInterval(function () {
         if (_this.gamepadConnected) {
+          _this.intervalCount++
           let gamepad = null;
-          // navigator.getGamepads()[0].axes[0],navigator.getGamepads()[0].axes[1],navigator.getGamepads()[0].axes[2],navigator.getGamepads()[0].axes[3]
           gamepad = navigator.getGamepads()[0] ? navigator.getGamepads()[0] : navigator.getGamepads()[1] ? navigator.getGamepads()[1] : navigator.getGamepads()[2] ? navigator.getGamepads()[2] : navigator.getGamepads()[3]
-          console.log(navigator.getGamepads(), gamepad)
-          _this.pressKey(gamepad.buttons);
-          _this.remoteSensing(gamepad.axes);
+          // console.log(navigator.getGamepads(), gamepad)
+          if (_this.intervalCount >= 10) {
+            // navigator.getGamepads()[0].axes[0],navigator.getGamepads()[0].axes[1],navigator.getGamepads()[0].axes[2],navigator.getGamepads()[0].axes[3]
+            _this.pressKey(gamepad.buttons);
+            _this.remoteSensing(gamepad.axes);
+            _this.intervalCount = 0
+          }
 
           let size = (_this.screenWidth * 100) / 1440;
           _this.joystickL[0].setPosition(1, {
@@ -255,7 +261,7 @@ export default {
             y: gamepad.axes.slice(2, 4)[1] * size
           });
         }
-      }, 10);
+      }, 1);
     },
     /**
      * 手柄遥感 --- 圆心方案整改（新）
