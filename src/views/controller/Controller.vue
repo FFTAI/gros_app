@@ -132,7 +132,7 @@
         </div>
       </div>
       <!-- 当前状态提示 -->
-      <div class="stateMessage" v-if="(mode != '' && upperAction) || mode == 'initial'">
+      <div class="stateMessage" v-if="(mode != '' && doAction) || mode == 'initial'">
         <span>{{ $t(mode) }}{{ $t('ing') }}...</span>
       </div>
     </div>
@@ -164,7 +164,7 @@ export default {
       mode: "",//当前运动模式
       headBoxVisible: false,//模式选择框显隐
       camera: true,//是否开启视频
-      upperAction: false,
+      doAction: false,
       isStand: false,
       velocity: 0,
       direction: 0,
@@ -203,7 +203,7 @@ export default {
       let currData = JSON.parse(data.data);
       console.log(currData)
       if (currData.data)
-        this.upperAction = currData.data.upper_action
+        this.doAction = currData.data.upper_action
     });
     this.robot.on_close(() => {
       console.log("Websocket已断开。。。。。。")
@@ -267,22 +267,41 @@ export default {
      * 手柄遥感 --- 圆心方案整改（新）
      */
     remoteSensing(arr) {
-      let velocity = arr[1];
-      let direction = arr[0];
-      //圆的半径设为前后速度
-      let v = Math.hypot(Math.abs(velocity), Math.abs(direction));
-      if (v > 1) v = 1;
-      if (velocity < 0) v = v * -1;
-      //计算正弦值，根据反正弦算出角度
-      let sin = direction / Math.abs(v);
-      let angle = (Math.asin(sin) * 180) / Math.PI;
-      //设定低值死区
-      if (Math.abs(velocity) < 0.1) v = 0;
-      if (Math.abs(direction) < 0.1) angle = 0;
-      if (Math.abs(velocity) < 0.1) {
-        velocity = 0;
+      // let velocity = arr[1];
+      // let direction = arr[0];
+      // //圆的半径设为前后速度
+      // let v = Math.hypot(Math.abs(velocity), Math.abs(direction));
+      // if (v > 1) v = 1;
+      // if (velocity < 0) v = v * -1;
+      // //计算正弦值，根据反正弦算出角度
+      // let sin = direction / Math.abs(v);
+      // let angle = (Math.asin(sin) * 180) / Math.PI;
+      // //设定低值死区
+      // if (Math.abs(velocity) < 0.1) v = 0;
+      // if (Math.abs(direction) < 0.1) angle = 0;
+      // if (Math.abs(velocity) < 0.1) {
+      //   velocity = 0;
+      // }
+      // this.operateWalk(angle * -0.5, (velocity * this.speed) / -6.25);
+      if (!this.isStand) {
+        this.velocity = arr[1];
+        console.log(arr[1], arr[2])
+        if (Math.abs(this.velocity) < 0.1) this.velocity = 0;
+        this.direction = arr[2];
+        if (Math.abs(this.direction) < 0.1) this.direction = 0;
+        this.operateWalk(this.direction * -45, (this.velocity * this.speed) / -6.25);
+      } else {
+        let pitch = arr[1] * -17.1887
+        let rotate_waist = arr[0] * -14.32
+        if (Math.abs(pitch) < 1.71887) pitch = 0
+        if (Math.abs(rotate_waist) < 1.432) rotate_waist = 0
+        let squat = arr[3] * -0.15
+        let yaw = arr[2] * 60
+        if (squat > -0.015) squat = 0
+        if (Math.abs(yaw) < 6) yaw = 0
+        this.operateHead(pitch, yaw)
+        this.operateBody(squat, rotate_waist);
       }
-      this.operateWalk(angle * -0.5, (velocity * this.speed) / -6.25);
     },
     // 手柄按键
     pressKey(arr) {
@@ -315,27 +334,6 @@ export default {
       }
       if (stopL && stopR) this.stop();
     },
-    //强制全屏进入
-    startFullScreen() {
-      var el = document.documentElement;
-      var rfs = el.requestFullScreen || el.webkitRequestFullScreen;
-      if (typeof rfs != "undefined" && rfs) {
-        rfs.call(el);
-      } else if (typeof window.ActiveXObject != "undefined") {
-        var wscript = new ActiveXObject("WScript.Shell");
-        if (wscript != null) {
-          wscript.SendKeys("{F11}");
-        }
-      } else if (el.msRequestFullscreen) {
-        el.msRequestFullscreen();
-      } else if (el.oRequestFullscreen) {
-        el.oRequestFullscreen();
-      } else if (el.mozRequestFullScreen) {
-        el.mozRequestFullScreen();
-      } else {
-        alert("浏览器不支持全屏调用！");
-      }
-    },
     //开启左侧虚拟触控摇杆
     startJoystickL() {
       const _this = this;
@@ -356,36 +354,20 @@ export default {
           }
         })
         .on("move", function (evt, data) {
-
-          //同手柄圆心方案（新）
-          if (!_this.isStand) {
-            // let velocity = data.vector.y;
-            // let direction = data.vector.x;
-            // let v = Math.hypot(Math.abs(velocity), Math.abs(direction));
-            // if (v > 1) v = 1;
-            // if (velocity < 0) v = v * -1;
-            // let sin = direction / Math.abs(v);
-            // let angle = (Math.asin(sin) * 180) / Math.PI;
-            // if (Math.abs(velocity) < 0.1) v = 0;
-            // if (Math.abs(direction) < 0.1) angle = 0;
-            // //人形控制
-            // if (!_this.gamepadConnected) {
-            //   if (Math.abs(velocity) < 0.1) {
-            //     velocity = 0;
-            //   }
-            //   _this.operateWalk(angle * -0.5, (velocity * _this.speed) / 6.25);
-            // }
-            _this.velocity = data.vector.y;
-            if (Math.abs(_this.velocity) < 0.1) _this.velocity = 0;
-            _this.operateWalk(_this.direction * -45, (_this.velocity * _this.speed) / 6.25);
-          } else {
-            let pitch = data.vector.y * 17.1887
-            let rotate_waist = data.vector.x * 14.32
-            if (Math.abs(pitch) < 1.71887) pitch = 0
-            if (Math.abs(rotate_waist) < 1.432) rotate_waist = 0
-            console.log(pitch, rotate_waist)
-            _this.operateHead(pitch, 0)
-            _this.operateBody(0, rotate_waist);
+          if (!_this.gamepadConnected) {
+            if (!_this.isStand) {
+              _this.velocity = data.vector.y;
+              if (Math.abs(_this.velocity) < 0.1) _this.velocity = 0;
+              _this.operateWalk(_this.direction * -45, (_this.velocity * _this.speed) / 6.25);
+            } else {
+              let pitch = data.vector.y * 17.1887
+              let rotate_waist = data.vector.x * 14.32
+              if (Math.abs(pitch) < 1.71887) pitch = 0
+              if (Math.abs(rotate_waist) < 1.432) rotate_waist = 0
+              console.log(pitch, rotate_waist)
+              _this.operateHead(pitch, 0)
+              _this.operateBody(0, rotate_waist);
+            }
           }
         })
         .on("end", function (evt, data) {
@@ -418,24 +400,20 @@ export default {
 
         })
         .on("move", function (evt, data) {
-
-          // let pitch = data.vector.y * 17.1887
-          // let yaw = data.vector.x * 60
-          // if (Math.abs(pitch) < 0.1) pitch = 0
-          // if (Math.abs(yaw) < 0.1) yaw = 0
-          // _this.operateHead(pitch, yaw)
-          if (_this.isStand) {
-            let squat = data.vector.y * 0.15
-            let yaw = data.vector.x * 60
-            if (squat > -0.015) squat = 0
-            if (Math.abs(yaw) < 6) yaw = 0
-            console.log(squat, yaw)
-            _this.operateHead(0, yaw)
-            _this.operateBody(squat, 0);
-          } else {
-            _this.direction = data.vector.x;
-            if (Math.abs(_this.direction) < 0.1) _this.direction = 0;
-            _this.operateWalk(_this.direction * -45, (_this.velocity * _this.speed) / 6.25);
+          if (!_this.gamepadConnected) {
+            if (_this.isStand) {
+              let squat = data.vector.y * 0.15
+              let yaw = data.vector.x * 60
+              if (squat > -0.015) squat = 0
+              if (Math.abs(yaw) < 6) yaw = 0
+              console.log(squat, yaw)
+              _this.operateHead(0, yaw)
+              _this.operateBody(squat, 0);
+            } else {
+              _this.direction = data.vector.x;
+              if (Math.abs(_this.direction) < 0.1) _this.direction = 0;
+              _this.operateWalk(_this.direction * -45, (_this.velocity * _this.speed) / 6.25);
+            }
           }
         })
         .on("end", function (evt, data) {
@@ -512,22 +490,25 @@ export default {
       this.controlModel = e;
     },
     choseMode(e) {
-      if (this.upperAction == true) return
+      if (this.doAction == true) return
       this.controlExpand = false;
       this.mode = e;
+      //原地踏步，速度位置发0
       if (e == "markingTime") {
         this.isStand = false
         this.robot.walk(0, 0);
       } else {
+        //上肢data
         let upper_data = {
           arm_action: "",
           hand_action: ""
         }
+        //下肢data
         let lower_data = {
           lower_body_mode: ""
         }
         setTimeout(() => {
-          this.upperAction = true
+          this.doAction = true
         }, 500);
         if (e == "zero") {
           upper_data.arm_action = "RESET"
@@ -547,7 +528,7 @@ export default {
           lower_data.lower_body_mode = "ROTATE_WAIST"
         } else if (e == "squat") {
           lower_data.lower_body_mode = "SQUAT"
-        } else if (e == "nod") {
+        } else if (e == "nod") {//上下点头
           this.operateHead(17, 0)
           setTimeout(() => {
             this.operateHead(-17, 0)
@@ -555,7 +536,7 @@ export default {
           setTimeout(() => {
             this.operateHead(0, 0)
           }, 3000);
-        } else if (e == "shake") {
+        } else if (e == "shake") {//左右摇头
           this.operateHead(0, 17)
           setTimeout(() => {
             this.operateHead(0, -17)
@@ -565,7 +546,13 @@ export default {
           }, 3000);
         }
         if (lower_data.lower_body_mode == "" && e != "nod" && e != "nod") {
-          this.robot.upper_body(upper_data.arm_action, upper_data.hand_action)
+          this.robot.upper_body(upper_data.arm_action, upper_data.hand_action).then(response => {
+            console.log('upper_body-response', response)
+            this.doAction = false
+          }).catch(error => {
+            console.log('upper_body-error', error)
+            this.doAction = false
+          })
         } else if (lower_data.lower_body_mode != "" && e != "nod" && e != "nod") {
           // this.robot.lower_body(lower_data.lower_body_mode)
           this.$http.request({
@@ -578,14 +565,14 @@ export default {
             }
           }).then(response => {
             console.log('lower_body-response', response)
-            this.upperAction = false
+            this.doAction = false
           }).catch(error => {
             console.log('lower_body-error', error)
-            this.upperAction = false
+            this.doAction = false
           })
         } else {
           setTimeout(() => {
-            this.upperAction = false
+            this.doAction = false
           }, 4000);
         }
       }
