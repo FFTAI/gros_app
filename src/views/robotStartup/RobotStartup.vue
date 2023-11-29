@@ -182,20 +182,40 @@ export default {
         },
         //程序启动
         getStartup() {
-            this.$http.request({
-                timeout: 60000,
-                baseURL: process.env.VUE_APP_URL,
-                method: "GET",
-                url: "/robot/sdk_ctrl/start"
-            }).then(response => {
-                console.log('start-response', response)
-            }).catch(error => {
-                console.log('start-error', error)
-            })
-            
-            setTimeout(() => {
-                this.stateOn()
-            }, 25000);
+            let _this = this
+            fetch(process.env.VUE_APP_URL + '/robot/sdk_ctrl/start')
+                .then((response) => {
+                    const reader = response.body.getReader();
+                    let result = '';
+                    function process() {
+                        reader.read().then(({ done, value }) => {
+                            if (done) {
+                                console.log('处理结束')
+                                setTimeout(() => {
+                                    _this.stateOn()
+                                }, 1000);
+                                return;
+                            }
+                            result += new TextDecoder().decode(value) + '<br>';
+                            console.log(new TextDecoder().decode(value))
+                            process();
+                        });
+                    }
+                    process();
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+            // this.$http.request({
+            //     timeout: 60000,
+            //     baseURL: process.env.VUE_APP_URL,
+            //     method: "GET",
+            //     url: "/robot/sdk_ctrl/start"
+            // }).then(response => {
+            //     console.log('start-response', response)
+            // }).catch(error => {
+            //     console.log('start-error', error)
+            // })
         },
         //打开开机校准示例图
         openDialog() {

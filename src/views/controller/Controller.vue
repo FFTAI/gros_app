@@ -172,7 +172,8 @@ export default {
       interval: null,
       intervalCount: 0,
       promptVisible: false,
-      promptVal: ""
+      promptVal: "",
+      lastMessageReceivedTime: Date.now()
     };
   },
   created() {
@@ -204,6 +205,7 @@ export default {
     })
     this.robot.on_message(data => {
       let currData = JSON.parse(data.data);
+      this.lastMessageReceivedTime = Date.now();
       console.log(currData)
       if (currData.data)
         this.doAction = currData.data.upper_action
@@ -216,6 +218,17 @@ export default {
       console.log("Websocket出错啦。。。。。。")
       this.$store.commit('setRobot')
     })
+    setInterval(() => {
+      const currentTime = Date.now();
+      const timeSinceLastMessage = currentTime - this.lastMessageReceivedTime;
+      // 如果超过了阈值3秒，认为连接断开
+      const threshold = 3000;
+      console.log('sadahusfdh.............',timeSinceLastMessage)
+      if (timeSinceLastMessage > threshold) {
+        console.log('WebSocket connection might be disconnected.');
+        this.$store.commit('setRobot')
+      }
+    }, 1000); // 每秒检查一次
   },
   destroyed() {
     clearInterval(this.interval);
