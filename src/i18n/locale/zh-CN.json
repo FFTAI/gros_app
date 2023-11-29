@@ -116,5 +116,7 @@
     "closeShPrompt": "确定是否关闭 机器人算法程序",
     "reconnectPrompt": "断开连接，请重新连接",
     "reconnect": "重新连接",
-    "initial": "回到初始位置"
+    "initial": "回到初始位置",
+    "returnMain": "返回主界面?",
+    "calibrationTips": "机器人未被悬吊保护， 严禁“确认”为初始状态"
 }

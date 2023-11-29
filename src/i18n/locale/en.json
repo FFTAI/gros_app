@@ -116,5 +116,7 @@
     "closeShPrompt": "Confirm whether to close the robot algorithm program",
     "reconnectPrompt": "Disconnect, please reconnect",
     "reconnect": "Reconnect",
-    "initial": "Return to the initial position"
+    "initial": "Return to the initial position",
+    "returnMain": "Return to the main interface?",
+    "calibrationTips": "The robot is not protected from suspension. It is strictly forbidden to 'confirm' as the initial state"
 }

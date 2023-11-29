@@ -94,9 +94,7 @@ export default {
     routerReturn() {
       //如果是控制页跳过loading返回
       if (this.isController) {
-        this.$router.push({
-          name: 'login'
-        })
+        this.$emit('returnMain')
       } else {
         this.$router.go(-1)
       }

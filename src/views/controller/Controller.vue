@@ -7,7 +7,8 @@
         </div>
       </div>
       <div class="videoBox">
-        <rtc-header :currentSpeed="current_speed" :isController="true" :camera="true" @cameraOn="openCamera()">
+        <rtc-header :currentSpeed="current_speed" :isController="true" :camera="true" @cameraOn="openCamera()"
+          @returnMain="promptBoxOpen('returnMain')">
           <div class="headState" @click="headChange()">
             <span class="headTxt">{{ $t("remoteMode") }}</span>
             <div class="arrow"></div>
@@ -61,10 +62,6 @@
         </div>
         <!-- 原地运动展开 -->
         <div class="actionBox" v-else-if="controlExpand && controlModel == 'inPlace'">
-          <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_zero.png" @click="choseMode('zero')" />
-            <div>{{ $t("zero") }}</div>
-          </div>
           <div class="actionItem">
             <img class="actionImg" src="@/assets/images/icon_waveLeft.png" @click="choseMode('waveLeftHand')" />
             <div>{{ $t("waveLeftHand") }}</div>
@@ -135,6 +132,8 @@
       <div class="stateMessage" v-if="(mode != '' && doAction) || mode == 'initial'">
         <span>{{ $t(mode) }}{{ $t('ing') }}...</span>
       </div>
+      <prompt-box v-if="promptVisible || !connected" :prompt="connected ? promptVal : 'reconnect'" @cancel="cancel()"
+        @confirm="confirm()"></prompt-box>
     </div>
   </div>
 </template>
@@ -142,12 +141,14 @@
 import nipplejs from "nipplejs";
 import RtcHeader from "@/components/rtcHeader.vue";
 import rtcLeftControl from "@/components/rtcLeftControl.vue";
+import promptBox from '@/components/promptBox.vue';
 import { mapState } from "vuex";
-
+import Heartbeat from '@/mixin/Heartbeat';
 export default {
-  components: { RtcHeader, rtcLeftControl },
+  mixins: [Heartbeat],
+  components: { RtcHeader, rtcLeftControl, promptBox },
   computed: {
-    ...mapState(["robot", "gamepadConnected"])
+    ...mapState(["robot", "gamepadConnected", "connected"])
   },
   data() {
     return {
@@ -159,7 +160,7 @@ export default {
       speed: 1,//当前速度档位 1-3
       current_speed: 0, //当前速度，默认0
       videoSrc: "", //摄像头视频路径
-      controlModel: "gait",//当前运动 gait:步态 inPlace:原地 endGrasping:末端抓取
+      controlModel: "",//当前运动 gait:步态 inPlace:原地 endGrasping:末端抓取
       controlExpand: false,//运动选择栏展开
       mode: "",//当前运动模式
       headBoxVisible: false,//模式选择框显隐
@@ -169,7 +170,9 @@ export default {
       velocity: 0,
       direction: 0,
       interval: null,
-      intervalCount: 0
+      intervalCount: 0,
+      promptVisible: false,
+      promptVal: ""
     };
   },
   created() {
@@ -427,6 +430,9 @@ export default {
         });
     },
     calibration() {
+      this.promptBoxOpen('calibration')
+    },
+    doCalibration() {
       this.robot.start()
       this.mode = "initial"
       setTimeout(() => {
@@ -591,6 +597,28 @@ export default {
     },
     openCamera() {
       this.camera = !this.camera;
+    },
+    promptBoxOpen(e) {
+      this.promptVal = e
+      this.promptVisible = !this.promptVisible
+    },
+    confirm() {
+      switch (this.promptVal) {
+        case 'calibration':
+          this.doCalibration()
+          break;
+        case 'returnMain':
+          this.$router.push({
+            name: 'login'
+          })
+          break;
+        default:
+          break;
+      }
+      this.promptVisible = false
+    },
+    cancel() {
+      this.promptVisible = !this.promptVisible
     }
   }
 };

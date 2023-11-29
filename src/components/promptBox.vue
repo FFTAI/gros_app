@@ -1,18 +1,23 @@
 <template>
     <div class="dialog-wrapper">
         <div class="prompt">
-            <div class="promptContent">
-                <img class="warningIcon" src="@/assets/images/warning1.png"/>
-                <div style="font-size: 1.4583vw;width: 10.2083vw;display: inline-block;">
-                    <span v-if="prompt=='closeSh'">{{ $t('closeShPrompt') }}</span>
-                    <span v-else-if="prompt=='reconnect'">{{ $t('reconnectPrompt') }}</span>
+            <div class="title" v-if="prompt == 'returnMain'">
+                {{ $t('tip') }}
+            </div>
+            <div class="promptContent" :style="contentStyle">
+                <img v-if="prompt != 'returnMain'" class="warningIcon" src="@/assets/images/warning1.png" />
+                <div class="promptTxt" :style="txtStyle">
+                    <span v-if="prompt == 'closeSh'">{{ $t('closeShPrompt') }}</span>
+                    <span v-else-if="prompt == 'reconnect'">{{ $t('reconnectPrompt') }}</span>
+                    <span v-else-if="prompt == 'returnMain'">{{ $t('returnMain') }}</span>
+                    <span v-else-if="prompt == 'calibration'">{{ $t('calibrationTips') }}</span>
                 </div>
             </div>
-            <div v-if="prompt=='closeSh'" class="btnBox">
+            <div v-if="prompt != 'reconnect'" class="btnBox">
                 <div class="btn blue" @click="cancel()">{{ $t('cancel') }}</div>
                 <div class="btn white" @click="confirm()">{{ $t('confirm') }}</div>
             </div>
-            <div v-else-if="prompt=='reconnect'" class="btnBox" style="left: 11.7083vw;">
+            <div v-else class="btnBox" style="left: 11.7083vw;">
                 <div class="btn blue" @click="reconnect()">{{ $t('reconnect') }}</div>
             </div>
             <slot></slot>
@@ -29,16 +34,32 @@ export default {
             default: ""
         }
     },
-    data(){
-        return{
+    computed: {
+        contentStyle() {
+            let style = { left: '9.5417vw' }
+            if (this.prompt == 'returnMain')
+                style.left = '13.9167vw'
+            if (this.prompt == 'calibration')
+                style.left = '5.1667vw'
+            return style
+        },
+        txtStyle() {
+            let style = { width: '10.2083vw '}
+            if (this.prompt == 'calibration')
+                style.width = '16vw'
+            return style
+        }
+    },
+    data() {
+        return {
 
         }
     },
-    methods:{
-        cancel(){
+    methods: {
+        cancel() {
             this.$emit('cancel')
         },
-        confirm(){
+        confirm() {
             this.$emit('confirm')
         },
         reconnect() {
@@ -60,6 +81,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 9999;
 }
 
 .prompt {
@@ -78,13 +100,25 @@ export default {
     font-weight: normal;
     color: #FFFFFF;
 }
-.promptContent{
+
+.title {
+    position: absolute;
+    top: 1.7917vw;
+    left: 15.875vw;
+}
+
+.promptContent {
     display: flex;
     position: absolute;
-    left: 9.5417vw;
     bottom: 11.2083vw;
+
+    .promptTxt {
+        font-size: 1.4583vw;
+        display: inline-block;
+    }
 }
-.warningIcon{
+
+.warningIcon {
     width: 4.9167vw;
     height: 4.5417vw;
     margin-right: 1.4583vw;
