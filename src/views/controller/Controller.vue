@@ -173,7 +173,8 @@ export default {
       intervalCount: 0,
       promptVisible: false,
       promptVal: "",
-      lastMessageReceivedTime: Date.now()
+      lastMessageReceivedTime: Date.now(),
+      wsInterval: null
     };
   },
   created() {
@@ -218,7 +219,7 @@ export default {
       console.log("Websocket出错啦。。。。。。")
       this.$store.commit('setRobot')
     })
-    setInterval(() => {
+    this.wsInterval = setInterval(() => {
       const currentTime = Date.now();
       const timeSinceLastMessage = currentTime - this.lastMessageReceivedTime;
       // 如果超过了阈值3秒，认为连接断开
@@ -232,6 +233,7 @@ export default {
   },
   destroyed() {
     clearInterval(this.interval);
+    clearInterval(this.wsInterval);
     //关闭监听
     this.robot.disable_debug_state()
     this.robot.removeAllListeners()
