@@ -63,6 +63,10 @@
         <!-- 原地运动展开 -->
         <div class="actionBox" v-else-if="controlExpand && controlModel == 'inPlace'">
           <div class="actionItem">
+            <img class="actionImg" src="@/assets/images/icon_zero.png" @click="choseMode('zero')" />
+            <div>{{ $t("zero") }}</div>
+          </div>
+          <div class="actionItem">
             <img class="actionImg" src="@/assets/images/icon_waveLeft.png" @click="choseMode('waveLeftHand')" />
             <div>{{ $t("waveLeftHand") }}</div>
           </div>
@@ -222,8 +226,8 @@ export default {
     this.wsInterval = setInterval(() => {
       const currentTime = Date.now();
       const timeSinceLastMessage = currentTime - this.lastMessageReceivedTime;
-      // 如果超过了阈值3秒，认为连接断开
-      const threshold = 3000;
+      // 如果超过了阈值4秒，认为连接断开
+      const threshold = 4000;
       console.log('sadahusfdh.............',timeSinceLastMessage)
       if (timeSinceLastMessage > threshold) {
         console.log('WebSocket connection might be disconnected.');
@@ -841,25 +845,14 @@ export default {
 }
 
 .actionBox {
-  // position: absolute;
-  // bottom: 5vw;
-  // right: 1vw;
-  // height: 20vw;
-  // width: 22.8333vw;
   height: 23vw;
   width: 27.775vw;
-  // padding: 2.2083vw 4.3333vw 0 4.7917vw;
   padding: 3.125vw 3.1333vw 0 3.5917vw;
   display: flex;
   flex-wrap: wrap;
-  // justify-content: flex-start;
-  // align-items: flex-start;
-
   .actionItem {
     text-align: center;
     flex-basis: 33.33%;
-    // height: 6.6667vw;
-    // width: 7.6112vw;
     font-size: 1.25vw;
     font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
     font-weight: normal;
