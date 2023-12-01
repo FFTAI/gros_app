@@ -7,8 +7,13 @@
         </div>
       </div>
       <div class="videoBox">
-        <rtc-header :currentSpeed="current_speed" :isController="true" :camera="true" @cameraOn="openCamera()"
-          @returnMain="promptBoxOpen('returnMain')">
+        <rtc-header
+          :currentSpeed="current_speed"
+          :isController="true"
+          :camera="true"
+          @cameraOn="openCamera()"
+          @returnMain="promptBoxOpen('returnMain')"
+        >
           <div class="headState" @click="headChange()">
             <span class="headTxt">{{ $t("remoteMode") }}</span>
             <div class="arrow"></div>
@@ -29,115 +34,220 @@
         </div> -->
         <!--初始-->
         <div class="calibration">
-          <img class="calibrationImg" src="@/assets/images/icon_calibration.png" @click="calibration()" />
+          <img
+            class="calibrationImg"
+            src="@/assets/images/icon_calibration.png"
+            @click="calibration()"
+          />
         </div>
         <!-- 速度挡位调节 -->
         <div class="speedBox">
           <div class="speedControl">
             <div class="speedDirection">
-              <img class="speedAdd" @click="speedChange('add')" src="@/assets/images/btn_add.png" />
+              <img
+                class="speedAdd"
+                @click="speedChange('add')"
+                src="@/assets/images/btn_add.png"
+              />
               <span class="speedNum">{{ speed }}</span>
-              <img class="speedReduce" @click="speedChange('reduce')" src="@/assets/images/btn_reduce.png" />
+              <img
+                class="speedReduce"
+                @click="speedChange('reduce')"
+                src="@/assets/images/btn_reduce.png"
+              />
             </div>
           </div>
         </div>
       </div>
       <!-- 虚拟摇杆 joystick-start-->
-      <div class="joystickBorder" style="left: 11.0833vw;">
+      <div class="joystickBorder" style="left: 11.0833vw">
         <img class="joystickImg" src="@/assets/images/image_direction.png" />
       </div>
-      <div class="joystickBorder" style="right: 11.0833vw;">
+      <div class="joystickBorder" style="right: 11.0833vw">
         <img class="joystickImg" src="@/assets/images/image_direction.png" />
       </div>
       <div id="zone_joystickL"></div>
       <div id="zone_joystickR"></div>
       <!-- joystick-end -->
-      <div :class="controlExpand ? 'controlActivated' : 'controlStatus'" ref="controlRef">
+      <div
+        :class="controlExpand ? 'controlActivated' : 'controlStatus'"
+        ref="controlRef"
+      >
         <!-- 步态运动展开 -->
         <div class="actionBox" v-if="controlExpand && controlModel == 'gait'">
           <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_markingTime.png" @click="choseMode('markingTime')" />
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_markingTime.png"
+              @click="choseMode('markingTime')"
+            />
             <div>{{ $t("markingTime") }}</div>
           </div>
         </div>
         <!-- 原地运动展开 -->
-        <div class="actionBox" v-else-if="controlExpand && controlModel == 'inPlace'">
+        <div
+          class="actionBox"
+          v-else-if="controlExpand && controlModel == 'inPlace'"
+        >
           <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_zero.png" @click="choseMode('zero')" />
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_zero.png"
+              @click="choseMode('zero')"
+            />
             <div>{{ $t("zero") }}</div>
           </div>
           <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_waveLeft.png" @click="choseMode('waveLeftHand')" />
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_waveLeft.png"
+              @click="choseMode('waveLeftHand')"
+            />
             <div>{{ $t("waveLeftHand") }}</div>
           </div>
           <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_swingArms.png" @click="choseMode('swingArms')" />
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_swingArms.png"
+              @click="choseMode('swingArms')"
+            />
             <div>{{ $t("swingArms") }}</div>
           </div>
           <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_greet.png" @click="choseMode('greet')" />
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_greet.png"
+              @click="choseMode('greet')"
+            />
             <div>{{ $t("greet") }}</div>
           </div>
           <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_nod.png" @click="choseMode('nod')" />
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_nod.png"
+              @click="choseMode('nod')"
+            />
             <div>{{ $t("nod") }}</div>
           </div>
           <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_shake.png" @click="choseMode('shake')" />
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_shake.png"
+              @click="choseMode('shake')"
+            />
             <div>{{ $t("shake") }}</div>
           </div>
           <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_twist.png" @click="choseMode('twist')" />
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_twist.png"
+              @click="choseMode('twist')"
+            />
             <div>{{ $t("twist") }}</div>
           </div>
           <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_squat.png" @click="choseMode('squat')" />
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_squat.png"
+              @click="choseMode('squat')"
+            />
             <div>{{ $t("squat") }}</div>
           </div>
         </div>
-        <div class="actionBox" v-else-if="controlExpand && controlModel == 'endGrasping'">
+        <div
+          class="actionBox"
+          v-else-if="controlExpand && controlModel == 'endGrasping'"
+        >
           <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_open.png" @click="choseMode('openHand')" />
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_open.png"
+              @click="choseMode('openHand')"
+            />
             <div>{{ $t("openHand") }}</div>
           </div>
           <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_grasp.png" @click="choseMode('grasp')" />
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_grasp.png"
+              @click="choseMode('grasp')"
+            />
             <div>{{ $t("grasp") }}</div>
           </div>
           <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_tremble.png" @click="choseMode('tremble')" />
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_tremble.png"
+              @click="choseMode('tremble')"
+            />
             <div>{{ $t("tremble") }}</div>
           </div>
         </div>
         <!-- action box -->
         <div class="controlBox">
           <!-- 站立 -->
-          <div :class="['choseBox', 'txt', controlModel == 'stand' ? 'chose' : '']" @click="changeControl('stand')">
+          <div
+            :class="['choseBox', 'txt', controlModel == 'stand' ? 'chose' : '']"
+            @click="changeControl('stand')"
+          >
             {{ $t("stand") }}
           </div>
           <!-- 步态运动 -->
-          <div :class="['choseBox', 'txt', controlModel != 'gait' ? '' : controlExpand ? 'choseBk' : 'chose']"
-            @click="changeControl('gait')">
+          <div
+            :class="[
+              'choseBox',
+              'txt',
+              controlModel != 'gait' ? '' : controlExpand ? 'choseBk' : 'chose',
+            ]"
+            @click="changeControl('gait')"
+          >
             {{ $t("gaitMotion") }}
           </div>
           <!-- 原地运动 -->
-          <div :class="['choseBox', 'txt', controlModel != 'inPlace' ? '' : controlExpand ? 'choseBk' : 'chose']"
-            @click="changeControl('inPlace')">
+          <div
+            :class="[
+              'choseBox',
+              'txt',
+              controlModel != 'inPlace'
+                ? ''
+                : controlExpand
+                ? 'choseBk'
+                : 'chose',
+            ]"
+            @click="changeControl('inPlace')"
+          >
             {{ $t("inPlaceMotion") }}
           </div>
           <!-- 末端抓取 -->
-          <div :class="['choseBox', 'txt', controlModel != 'endGrasping' ? '' : controlExpand ? 'choseBk' : 'chose']"
-            @click="changeControl('endGrasping')">
+          <div
+            :class="[
+              'choseBox',
+              'txt',
+              controlModel != 'endGrasping'
+                ? ''
+                : controlExpand
+                ? 'choseBk'
+                : 'chose',
+            ]"
+            @click="changeControl('endGrasping')"
+          >
             {{ $t("endGrasping") }}
           </div>
         </div>
       </div>
       <!-- 当前状态提示 -->
-      <div class="stateMessage" v-if="(mode != '' && doAction) || mode == 'initial'">
-        <span>{{ $t(mode) }}{{ $t('ing') }}...</span>
+      <div
+        class="stateMessage"
+        v-if="(mode != '' && doAction) || mode == 'initial'"
+      >
+        <span>{{ $t(mode) }}{{ $t("ing") }}...</span>
       </div>
-      <prompt-box v-if="promptVisible || !connected" :prompt="connected ? promptVal : 'reconnect'" @cancel="cancel()"
-        @confirm="confirm()"></prompt-box>
+      <prompt-box
+        v-if="promptVisible || !connected"
+        :prompt="connected ? promptVal : 'reconnect'"
+        @cancel="cancel()"
+        @confirm="confirm()"
+      ></prompt-box>
     </div>
   </div>
 </template>
@@ -145,30 +255,30 @@
 import nipplejs from "nipplejs";
 import RtcHeader from "@/components/rtcHeader.vue";
 import rtcLeftControl from "@/components/rtcLeftControl.vue";
-import promptBox from '@/components/promptBox.vue';
+import promptBox from "@/components/promptBox.vue";
 import { mapState } from "vuex";
-import Heartbeat from '@/mixin/Heartbeat';
+import Heartbeat from "@/mixin/Heartbeat";
 export default {
   mixins: [Heartbeat],
   components: { RtcHeader, rtcLeftControl, promptBox },
   computed: {
-    ...mapState(["robot", "gamepadConnected", "connected"])
+    ...mapState(["robot", "gamepadConnected", "connected"]),
   },
   data() {
     return {
-      videoContainer: "",//视频
-      buttons: "",//当前按键
-      joystickL: undefined,//左侧虚拟摇杆
-      joystickR: undefined,//右侧虚拟摇杆
-      screenWidth: document.body.clientWidth,//当前屏幕宽度
-      speed: 1,//当前速度档位 1-3
+      videoContainer: "", //视频
+      buttons: "", //当前按键
+      joystickL: undefined, //左侧虚拟摇杆
+      joystickR: undefined, //右侧虚拟摇杆
+      screenWidth: document.body.clientWidth, //当前屏幕宽度
+      speed: 1, //当前速度档位 1-3
       current_speed: 0, //当前速度，默认0
       videoSrc: "", //摄像头视频路径
-      controlModel: "",//当前运动 gait:步态 inPlace:原地 endGrasping:末端抓取
-      controlExpand: false,//运动选择栏展开
-      mode: "",//当前运动模式
-      headBoxVisible: false,//模式选择框显隐
-      camera: true,//是否开启视频
+      controlModel: "", //当前运动 gait:步态 inPlace:原地 endGrasping:末端抓取
+      controlExpand: false, //运动选择栏展开
+      mode: "", //当前运动模式
+      headBoxVisible: false, //模式选择框显隐
+      camera: true, //是否开启视频
       doAction: false,
       isStand: false,
       velocity: 0,
@@ -178,7 +288,7 @@ export default {
       promptVisible: false,
       promptVal: "",
       lastMessageReceivedTime: Date.now(),
-      wsInterval: null
+      wsInterval: null,
     };
   },
   created() {
@@ -203,35 +313,34 @@ export default {
     this.cameraOpen();
     this.startJoystickL(); //生成虚拟摇杆
     this.startJoystickR();
-    this.startGamepad()
+    this.startGamepad();
     this.robot.enable_debug_state(2);
     this.robot.on_connected(() => {
       this.robot.enable_debug_state(2);
-    })
-    this.robot.on_message(data => {
+    });
+    this.robot.on_message((data) => {
       let currData = JSON.parse(data.data);
       this.lastMessageReceivedTime = Date.now();
-      console.log(currData)
-      if (currData.data)
-        this.doAction = currData.data.upper_action
+      console.log(currData);
+      if (currData.data) this.doAction = currData.data.upper_action;
     });
     this.robot.on_close(() => {
-      console.log("Websocket已断开。。。。。。")
-      this.$store.commit('setRobot')
-    })
+      console.log("Websocket已断开。。。。。。");
+      this.$store.commit("setRobot");
+    });
     this.robot.on_error(() => {
-      console.log("Websocket出错啦。。。。。。")
-      this.$store.commit('setRobot')
-    })
+      console.log("Websocket出错啦。。。。。。");
+      this.$store.commit("setRobot");
+    });
     this.wsInterval = setInterval(() => {
       const currentTime = Date.now();
       const timeSinceLastMessage = currentTime - this.lastMessageReceivedTime;
       // 如果超过了阈值4秒，认为连接断开
       const threshold = 4000;
-      console.log('sadahusfdh.............',timeSinceLastMessage)
+      console.log("sadahusfdh.............", timeSinceLastMessage);
       if (timeSinceLastMessage > threshold) {
-        console.log('WebSocket connection might be disconnected.');
-        this.$store.commit('setRobot')
+        console.log("WebSocket connection might be disconnected.");
+        this.$store.commit("setRobot");
       }
     }, 1000); // 每秒检查一次
   },
@@ -239,8 +348,8 @@ export default {
     clearInterval(this.interval);
     clearInterval(this.wsInterval);
     //关闭监听
-    this.robot.disable_debug_state()
-    this.robot.removeAllListeners()
+    this.robot.disable_debug_state();
+    this.robot.removeAllListeners();
   },
   watch: {
     //屏幕尺寸变化后，重新生成joystick适配当前尺寸
@@ -253,7 +362,7 @@ export default {
         this.joystickR.destroy();
         this.startJoystickR();
       }
-    }
+    },
   },
   methods: {
     // 启动手柄
@@ -262,25 +371,31 @@ export default {
       // 每10ms 获取一次手柄数据，查看是否按下手柄按键
       this.interval = setInterval(function () {
         if (_this.gamepadConnected) {
-          _this.intervalCount++
+          _this.intervalCount++;
           let gamepad = null;
-          gamepad = navigator.getGamepads()[0] ? navigator.getGamepads()[0] : navigator.getGamepads()[1] ? navigator.getGamepads()[1] : navigator.getGamepads()[2] ? navigator.getGamepads()[2] : navigator.getGamepads()[3]
+          gamepad = navigator.getGamepads()[0]
+            ? navigator.getGamepads()[0]
+            : navigator.getGamepads()[1]
+            ? navigator.getGamepads()[1]
+            : navigator.getGamepads()[2]
+            ? navigator.getGamepads()[2]
+            : navigator.getGamepads()[3];
           // console.log(navigator.getGamepads(), gamepad)
           if (_this.intervalCount >= 10) {
             // navigator.getGamepads()[0].axes[0],navigator.getGamepads()[0].axes[1],navigator.getGamepads()[0].axes[2],navigator.getGamepads()[0].axes[3]
             _this.pressKey(gamepad.buttons);
             _this.remoteSensing(gamepad.axes);
-            _this.intervalCount = 0
+            _this.intervalCount = 0;
           }
 
           let size = (_this.screenWidth * 100) / 1440;
           _this.joystickL[0].setPosition(1, {
             x: gamepad.axes.slice(0, 2)[0] * size,
-            y: gamepad.axes.slice(0, 2)[1] * size
+            y: gamepad.axes.slice(0, 2)[1] * size,
           });
           _this.joystickR[0].setPosition(1, {
             x: gamepad.axes.slice(2, 4)[0] * size,
-            y: gamepad.axes.slice(2, 4)[1] * size
+            y: gamepad.axes.slice(2, 4)[1] * size,
           });
         }
       }, 1);
@@ -307,21 +422,24 @@ export default {
       // this.operateWalk(angle * -0.5, (velocity * this.speed) / -6.25);
       if (!this.isStand) {
         this.velocity = arr[1];
-        console.log(arr[1], arr[2])
+        console.log(arr[1], arr[2]);
         if (Math.abs(this.velocity) < 0.1) this.velocity = 0;
         this.direction = arr[2];
         if (Math.abs(this.direction) < 0.1) this.direction = 0;
-        this.operateWalk(this.direction * -45, (this.velocity * this.speed) / -6.25);
+        this.operateWalk(
+          this.direction * -45,
+          (this.velocity * this.speed) / -6.25
+        );
       } else {
-        let pitch = arr[1] * -17.1887
-        let rotate_waist = arr[0] * -14.32
-        if (Math.abs(pitch) < 1.71887) pitch = 0
-        if (Math.abs(rotate_waist) < 1.432) rotate_waist = 0
-        let squat = arr[3] * -0.15
-        let yaw = arr[2] * 60
-        if (squat > -0.015) squat = 0
-        if (Math.abs(yaw) < 6) yaw = 0
-        this.operateHead(pitch, yaw)
+        let pitch = arr[1] * -17.1887;
+        let rotate_waist = arr[0] * -14.32;
+        if (Math.abs(pitch) < 1.71887) pitch = 0;
+        if (Math.abs(rotate_waist) < 1.432) rotate_waist = 0;
+        let squat = arr[3] * -0.15;
+        let yaw = arr[2] * 60;
+        if (squat > -0.015) squat = 0;
+        if (Math.abs(yaw) < 6) yaw = 0;
+        this.operateHead(pitch, yaw);
         this.operateBody(squat, rotate_waist);
       }
     },
@@ -365,7 +483,7 @@ export default {
         mode: "static",
         position: { left: "20%", top: "70%" },
         color: "white",
-        size: sWidth
+        size: sWidth,
       });
       _this.joystickL
         .on("start", function (evt, data) {
@@ -380,14 +498,17 @@ export default {
             if (!_this.isStand) {
               _this.velocity = data.vector.y;
               if (Math.abs(_this.velocity) < 0.1) _this.velocity = 0;
-              _this.operateWalk(_this.direction * -45, (_this.velocity * _this.speed) / 6.25);
+              _this.operateWalk(
+                _this.direction * -45,
+                (_this.velocity * _this.speed) / 6.25
+              );
             } else {
-              let pitch = data.vector.y * 17.1887
-              let rotate_waist = data.vector.x * 14.32
-              if (Math.abs(pitch) < 1.71887) pitch = 0
-              if (Math.abs(rotate_waist) < 1.432) rotate_waist = 0
-              console.log(pitch, rotate_waist)
-              _this.operateHead(pitch, 0)
+              let pitch = data.vector.y * 17.1887;
+              let rotate_waist = data.vector.x * 14.32;
+              if (Math.abs(pitch) < 1.71887) pitch = 0;
+              if (Math.abs(rotate_waist) < 1.432) rotate_waist = 0;
+              console.log(pitch, rotate_waist);
+              _this.operateHead(pitch, 0);
               _this.operateBody(0, rotate_waist);
             }
           }
@@ -415,26 +536,27 @@ export default {
         mode: "static",
         position: { right: "20%", top: "70%" },
         color: "white",
-        size: sWidth
+        size: sWidth,
       });
       _this.joystickR
-        .on("start", function (evt, data) {
-
-        })
+        .on("start", function (evt, data) {})
         .on("move", function (evt, data) {
           if (!_this.gamepadConnected) {
             if (_this.isStand) {
-              let squat = data.vector.y * 0.15
-              let yaw = data.vector.x * 60
-              if (squat > -0.015) squat = 0
-              if (Math.abs(yaw) < 6) yaw = 0
-              console.log(squat, yaw)
-              _this.operateHead(0, yaw)
+              let squat = data.vector.y * 0.15;
+              let yaw = data.vector.x * 60;
+              if (squat > -0.015) squat = 0;
+              if (Math.abs(yaw) < 6) yaw = 0;
+              console.log(squat, yaw);
+              _this.operateHead(0, yaw);
               _this.operateBody(squat, 0);
             } else {
               _this.direction = data.vector.x;
               if (Math.abs(_this.direction) < 0.1) _this.direction = 0;
-              _this.operateWalk(_this.direction * -45, (_this.velocity * _this.speed) / 6.25);
+              _this.operateWalk(
+                _this.direction * -45,
+                (_this.velocity * _this.speed) / 6.25
+              );
             }
           }
         })
@@ -443,24 +565,24 @@ export default {
             _this.operateHead(0, 0);
             _this.operateBody(0, 0);
           } else {
-            _this.direction = 0
-            _this.operateWalk(0, 0)
+            _this.direction = 0;
+            _this.operateWalk(0, 0);
           }
         });
     },
     calibration() {
-      this.promptBoxOpen('calibration')
+      this.promptBoxOpen("calibration");
     },
     doCalibration() {
-      this.robot.start()
-      this.mode = "initial"
+      this.robot.start();
+      this.mode = "initial";
       setTimeout(() => {
-        this.mode = ""
+        this.mode = "";
       }, 7000);
     },
     //紧急停止
     stop() {
-      this.robot.stop()
+      this.robot.stop();
     },
     // 速度挡位调节
     speedChange(e) {
@@ -474,29 +596,29 @@ export default {
     },
     //操控行走
     operateWalk(direction, velocity) {
-      this.isStand = false
+      this.isStand = false;
       try {
         this.robot.walk(direction, velocity);
       } catch (error) {
-        console.log('Walk错误。。。。。。', error)
+        console.log("Walk错误。。。。。。", error);
       }
     },
     //操控头部
     operateHead(pitch, yaw) {
-      console.log(pitch, yaw)
+      console.log(pitch, yaw);
       try {
         this.robot.head(0, pitch, yaw);
       } catch (error) {
-        console.log('Head错误。。。。。。', error)
+        console.log("Head错误。。。。。。", error);
       }
     },
     //操控身体
     operateBody(squat, rotate_waist) {
-      console.log(squat, rotate_waist)
+      console.log(squat, rotate_waist);
       try {
         this.robot.body(squat, rotate_waist);
       } catch (error) {
-        console.log('Body错误。。。。。。', error)
+        console.log("Body错误。。。。。。", error);
       }
     },
     //开启视频
@@ -506,8 +628,8 @@ export default {
     //切换当前控制模式
     changeControl(e) {
       if (e == "stand") {
-        this.isStand = true
-        this.robot.stand()
+        this.isStand = true;
+        this.robot.stand();
         this.controlExpand = false;
       } else {
         this.controlExpand = true;
@@ -515,89 +637,101 @@ export default {
       this.controlModel = e;
     },
     choseMode(e) {
-      if (this.doAction == true) return
+      if (this.doAction == true) return;
       this.controlExpand = false;
       this.mode = e;
       //原地踏步，速度位置发0
       if (e == "markingTime") {
-        this.isStand = false
+        this.isStand = false;
         this.robot.walk(0, 0);
       } else {
         //上肢data
         let upper_data = {
           arm_action: "",
-          hand_action: ""
-        }
+          hand_action: "",
+        };
         //下肢data
         let lower_data = {
-          lower_body_mode: ""
-        }
+          lower_body_mode: "",
+        };
         setTimeout(() => {
-          this.doAction = true
+          this.doAction = true;
         }, 500);
         if (e == "zero") {
-          upper_data.arm_action = "RESET"
+          upper_data.arm_action = "RESET";
         } else if (e == "waveLeftHand") {
-          upper_data.arm_action = "LEFT_ARM_WAVE"
+          upper_data.arm_action = "LEFT_ARM_WAVE";
         } else if (e == "swingArms") {
-          upper_data.arm_action = "ARMS_SWING"
+          upper_data.arm_action = "ARMS_SWING";
         } else if (e == "greet") {
-          upper_data.arm_action = "HELLO"
+          upper_data.arm_action = "HELLO";
         } else if (e == "openHand") {
-          upper_data.hand_action = "OPEN"
+          upper_data.hand_action = "OPEN";
         } else if (e == "grasp") {
-          upper_data.hand_action = "GRASP"
+          upper_data.hand_action = "GRASP";
         } else if (e == "tremble") {
-          upper_data.hand_action = "TREMBLE"
+          upper_data.hand_action = "TREMBLE";
         } else if (e == "twist") {
-          lower_data.lower_body_mode = "ROTATE_WAIST"
+          lower_data.lower_body_mode = "ROTATE_WAIST";
         } else if (e == "squat") {
-          lower_data.lower_body_mode = "SQUAT"
-        } else if (e == "nod") {//上下点头
-          this.operateHead(17, 0)
+          lower_data.lower_body_mode = "SQUAT";
+        } else if (e == "nod") {
+          //上下点头
+          this.operateHead(17, 0);
           setTimeout(() => {
-            this.operateHead(-17, 0)
+            this.operateHead(-17, 0);
           }, 1000);
           setTimeout(() => {
-            this.operateHead(0, 0)
+            this.operateHead(0, 0);
           }, 3000);
-        } else if (e == "shake") {//左右摇头
-          this.operateHead(0, 17)
+        } else if (e == "shake") {
+          //左右摇头
+          this.operateHead(0, 17);
           setTimeout(() => {
-            this.operateHead(0, -17)
+            this.operateHead(0, -17);
           }, 1000);
           setTimeout(() => {
-            this.operateHead(0, 0)
+            this.operateHead(0, 0);
           }, 3000);
         }
         if (lower_data.lower_body_mode == "" && e != "nod" && e != "nod") {
-          this.robot.upper_body(upper_data.arm_action, upper_data.hand_action).then(response => {
-            console.log('upper_body-response', response)
-            this.doAction = false
-          }).catch(error => {
-            console.log('upper_body-error', error)
-            this.doAction = false
-          })
-        } else if (lower_data.lower_body_mode != "" && e != "nod" && e != "nod") {
+          this.robot
+            .upper_body(upper_data.arm_action, upper_data.hand_action)
+            .then((response) => {
+              console.log("upper_body-response", response);
+              this.doAction = false;
+            })
+            .catch((error) => {
+              console.log("upper_body-error", error);
+              this.doAction = false;
+            });
+        } else if (
+          lower_data.lower_body_mode != "" &&
+          e != "nod" &&
+          e != "nod"
+        ) {
           // this.robot.lower_body(lower_data.lower_body_mode)
-          this.$http.request({
-            timeout: 30000,
-            baseURL: process.env.VUE_APP_URL,
-            method: "POST",
-            url: "/robot/lower_body",
-            data: {
-              lower_body_mode: lower_data.lower_body_mode
-            }
-          }).then(response => {
-            console.log('lower_body-response', response)
-            this.doAction = false
-          }).catch(error => {
-            console.log('lower_body-error', error)
-            this.doAction = false
-          })
+          this.$http
+            .request({
+              timeout: 30000,
+              baseURL: process.env.VUE_APP_URL,
+              method: "POST",
+              url: "/robot/lower_body",
+              data: {
+                lower_body_mode: lower_data.lower_body_mode,
+              },
+            })
+            .then((response) => {
+              console.log("lower_body-response", response);
+              this.doAction = false;
+            })
+            .catch((error) => {
+              console.log("lower_body-error", error);
+              this.doAction = false;
+            });
         } else {
           setTimeout(() => {
-            this.doAction = false
+            this.doAction = false;
           }, 4000);
         }
       }
@@ -610,7 +744,7 @@ export default {
         this.headBoxVisible = false;
       } else if (e == "developerMode") {
         this.$router.push({
-          name: "development"
+          name: "development",
         });
       }
     },
@@ -618,28 +752,28 @@ export default {
       this.camera = !this.camera;
     },
     promptBoxOpen(e) {
-      this.promptVal = e
-      this.promptVisible = !this.promptVisible
+      this.promptVal = e;
+      this.promptVisible = !this.promptVisible;
     },
     confirm() {
       switch (this.promptVal) {
-        case 'calibration':
-          this.doCalibration()
+        case "calibration":
+          this.doCalibration();
           break;
-        case 'returnMain':
+        case "returnMain":
           this.$router.push({
-            name: 'login'
-          })
+            name: "login",
+          });
           break;
         default:
           break;
       }
-      this.promptVisible = false
+      this.promptVisible = false;
     },
     cancel() {
-      this.promptVisible = !this.promptVisible
-    }
-  }
+      this.promptVisible = !this.promptVisible;
+    },
+  },
 };
 </script>
 <style lang="scss">
@@ -750,8 +884,6 @@ export default {
   }
 }
 
-
-
 .joystickBorder {
   position: absolute;
   bottom: 3.7083vw;
@@ -790,8 +922,8 @@ export default {
   width: 31.75vw;
   height: 3.4583vw;
   border-radius: 2.7917vw;
-  padding: .9167vw 1.25vw;
-  border: .125vw solid rgba(255, 255, 255, 0.3);
+  padding: 0.9167vw 1.25vw;
+  border: 0.125vw solid rgba(255, 255, 255, 0.3);
   z-index: 999;
 }
 
@@ -803,7 +935,7 @@ export default {
   height: 31.75vw;
   // padding: .9167vw 1.25vw;
   border-radius: 3.0833vw;
-  border: .125vw solid rgba(255, 255, 255, 0.3);
+  border: 0.125vw solid rgba(255, 255, 255, 0.3);
   background-color: rgba(0, 75, 133, 0.5);
   z-index: 999;
 }
@@ -811,7 +943,7 @@ export default {
 .controlBox {
   position: absolute;
   left: 1.25vw;
-  bottom: .9167vw;
+  bottom: 0.9167vw;
   width: 31.75vw;
   height: 3.4583vw;
   display: flex;
@@ -840,7 +972,7 @@ export default {
     font-size: 1.4583vw;
     font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
     font-weight: normal;
-    color: #FFFFFF;
+    color: #ffffff;
   }
 }
 
@@ -856,7 +988,7 @@ export default {
     font-size: 1.25vw;
     font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
     font-weight: normal;
-    color: #FFFFFF;
+    color: #ffffff;
   }
 
   .actionImg {
@@ -878,7 +1010,7 @@ export default {
   font-size: 1.7188vw;
   font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
   font-weight: normal;
-  color: #FFFFFF;
+  color: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -894,7 +1026,7 @@ export default {
     font-size: 1.9792vw;
     font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
     font-weight: normal;
-    color: #FFFFFF;
+    color: #ffffff;
   }
 
   .arrow {
@@ -904,9 +1036,9 @@ export default {
     width: 0;
     height: 0;
     background: linear-gradient(274deg, #1a1919 0%, #004c81 100%);
-    border-left: .4167vw solid transparent;
-    border-right: .4167vw solid transparent;
-    border-top: .5208vw solid #FFFFFF;
+    border-left: 0.4167vw solid transparent;
+    border-right: 0.4167vw solid transparent;
+    border-top: 0.5208vw solid #ffffff;
   }
 }
 
@@ -918,7 +1050,7 @@ export default {
   height: 11.4334vw;
   padding: 1.4708vw 0;
   background: rgba(0, 75, 133, 0.3);
-  border: .1042vw solid rgba(68, 216, 251, 0.3);
+  border: 0.1042vw solid rgba(68, 216, 251, 0.3);
   z-index: 99;
   display: flex;
   flex-direction: column;
@@ -926,7 +1058,7 @@ export default {
   justify-content: space-around;
   font-size: 1.7188vw;
   font-family: AlibabaPuHuiTiR;
-  color: #FFFFFF;
+  color: #ffffff;
 
   .divider {
     height: 0.1042vw;
@@ -948,10 +1080,9 @@ export default {
   z-index: 999;
   font-size: 1.25vw;
   font-family: AlibabaPuHuiTiR;
-  color: #FFFFFF;
+  color: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 </style>
-   

@@ -7,55 +7,47 @@ const routes = [
   {
     path: "/startUp",
     name: "startUp",
-    component: () =>
-      import("../views/startUp/StartUp.vue"),
+    component: () => import("../views/startUp/StartUp.vue"),
   },
   {
     path: "/login",
     name: "login",
-    component: () =>
-      import("../views/login/Login.vue"),
+    component: () => import("../views/login/Login.vue"),
   },
   {
     path: "/connect",
     name: "connect",
-    component: () =>
-      import("../views/connect/Connect.vue"),
+    component: () => import("../views/connect/Connect.vue"),
   },
   {
     path: "/loading",
     name: "loading",
-    component: () =>
-      import("../views/loading/Loading.vue"),
+    component: () => import("../views/loading/Loading.vue"),
   },
   {
     path: "/controller",
     name: "controller",
-    component: () =>
-      import("../views/controller/Controller.vue"),
+    component: () => import("../views/controller/Controller.vue"),
   },
   {
     path: "/development",
     name: "development",
-    component: () =>
-      import("../views/development/Development.vue"),
+    component: () => import("../views/development/Development.vue"),
   },
   {
     path: "/setting",
     name: "setting",
-    component: () =>
-      import("../views/setting/Setting.vue"),
+    component: () => import("../views/setting/Setting.vue"),
   },
   {
     path: "/robotStartup",
     name: "robotStartup",
-    component: () =>
-      import("../views/robotStartup/RobotStartup.vue"),
+    component: () => import("../views/robotStartup/RobotStartup.vue"),
   },
   {
     path: "/",
-    redirect: "/startUp"
-  }
+    redirect: "/startUp",
+  },
 ];
 
 const router = new VueRouter({

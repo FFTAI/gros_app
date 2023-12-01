@@ -5,18 +5,17 @@
 </template>
 
 <script>
-
 export default {
-  name: 'app',
+  name: "app",
   mounted() {
-    let lang = localStorage.getItem('lang')
-    if (lang == 'en') {
-      this.$i18n.locale = 'en';
-    } else if (lang == 'tw') {
-      this.$i18n.locale = 'tw';
+    let lang = localStorage.getItem("lang");
+    if (lang == "en") {
+      this.$i18n.locale = "en";
+    } else if (lang == "tw") {
+      this.$i18n.locale = "tw";
     } else {
-      this.$i18n.locale = 'zh';
-      localStorage.setItem('lang', 'zh')
+      this.$i18n.locale = "zh";
+      localStorage.setItem("lang", "zh");
     }
     window.addEventListener("gamepadconnected", this.gamepadcted);
     window.addEventListener("gamepaddisconnected", this.gamepaddiscted);
@@ -27,14 +26,13 @@ export default {
   },
   methods: {
     gamepadcted() {
-      this.$store.commit('setGamepadConnected',true)
+      this.$store.commit("setGamepadConnected", true);
     },
     gamepaddiscted() {
-      this.$store.commit('setGamepadConnected',false)
+      this.$store.commit("setGamepadConnected", false);
     },
-  }
-}
+  },
+};
 </script>
-
 
 <style></style>

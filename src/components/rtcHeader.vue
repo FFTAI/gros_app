@@ -13,17 +13,28 @@
       </div>
     </div>
     <slot></slot>
-    <div class="headButtonIn" v-if="(connected || isController) && !isLoading && !isStartup">
+    <div
+      class="headButtonIn"
+      v-if="(connected || isController) && !isLoading && !isStartup"
+    >
       <!-- 电量和wifi -->
       <div class="spacing">
         <!-- <img class="inImg" src="@/assets/images/icon_battery2.png" />
         <span class="inTxt">43%</span> -->
-        <img class="inImg" style="height: 1.6667vw;width: 2.2917vw;" src="@/assets/images/icon_Wifi.png" />
+        <img
+          class="inImg"
+          style="height: 1.6667vw; width: 2.2917vw"
+          src="@/assets/images/icon_Wifi.png"
+        />
       </div>
       <div class="divider spacing" v-if="camera"></div>
       <!-- 视频显示开关 -->
       <div class="spacing" @click="openCamera()" v-if="camera">
-        <img class="inImg" src="@/assets/images/icon_cameraOn.png" v-if="cameraOn" />
+        <img
+          class="inImg"
+          src="@/assets/images/icon_cameraOn.png"
+          v-if="cameraOn"
+        />
         <img class="inImg" src="@/assets/images/icon_cameraOff.png" v-else />
       </div>
       <div class="divider spacing" v-if="!isSetting"></div>
@@ -37,8 +48,12 @@
       </div>
     </div>
     <!-- 连接 -->
-    <div class="rightSlot" @click="toConnect()" v-if="!connected && (isLogin || isSetting) && !isLoading && !isStartup">
-      <span class="connect">{{ $t('connect') }}</span>
+    <div
+      class="rightSlot"
+      @click="toConnect()"
+      v-if="!connected && (isLogin || isSetting) && !isLoading && !isStartup"
+    >
+      <span class="connect">{{ $t("connect") }}</span>
     </div>
   </div>
 </template>
@@ -51,65 +66,65 @@ export default {
     currentSpeed: Number,
     camera: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isLogin: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isLoading: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isController: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isSetting: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isStartup: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   computed: {
-    ...mapState(["connected"])
+    ...mapState(["connected"]),
   },
   data() {
     return {
-      cameraOn: true
-    }
+      cameraOn: true,
+    };
   },
   methods: {
     toConnect() {
-      this.$emit('connect')
+      this.$emit("connect");
     },
     setting() {
       this.$router.push({
-        name: 'setting'
-      })
+        name: "setting",
+      });
     },
     routerReturn() {
       //如果是控制页跳过loading返回
       if (this.isController) {
-        this.$emit('returnMain')
+        this.$emit("returnMain");
       } else {
-        this.$router.go(-1)
+        this.$router.go(-1);
       }
     },
     openCamera() {
-      this.cameraOn = !this.cameraOn
-      this.$emit('cameraOn')
+      this.cameraOn = !this.cameraOn;
+      this.$emit("cameraOn");
     },
     shutDown() {
-      this.$emit('shutDown')
-    }
-  }
+      this.$emit("shutDown");
+    },
+  },
 };
 </script>
-  
+
 <style lang="scss">
 .main {
   position: relative;
@@ -123,7 +138,11 @@ export default {
   height: 4.4444vw;
   z-index: 10;
   // background: linear-gradient(274deg, #1a1919 0%, #004c81 100%);
-  background: linear-gradient(274deg, rgba(26, 25, 25, 0.4) 0%, rgba(0, 76, 129, 0.4) 100%);
+  background: linear-gradient(
+    274deg,
+    rgba(26, 25, 25, 0.4) 0%,
+    rgba(0, 76, 129, 0.4) 100%
+  );
   // opacity: 0.4;
 }
 
@@ -140,13 +159,13 @@ export default {
     height: 2.604vw;
     position: absolute;
     left: 1.8333vw;
-    top: .9167vw;
+    top: 0.9167vw;
   }
 
   .headLogo {
     height: 4.4167vw;
     width: 13.25vw;
-    background: #004B85;
+    background: #004b85;
     // line-height: 5.8vw;
   }
 
@@ -163,7 +182,7 @@ export default {
     height: 0;
     border-right: 2vw solid transparent;
     /* 左边长 */
-    border-top: 4.45vw solid #004B85;
+    border-top: 4.45vw solid #004b85;
     /* 底边长，可以更改颜色 */
     position: absolute;
     left: 13.2083vw;
@@ -183,7 +202,7 @@ export default {
   .return {
     width: 2.0833vw;
     height: 1.7708vw;
-    margin-left: .9375vw;
+    margin-left: 0.9375vw;
   }
 
   .headReturn {
@@ -248,7 +267,7 @@ export default {
   right: 0;
   width: 7.5vw;
   height: 4.375vw;
-  background: #0075B8;
+  background: #0075b8;
   float: right;
   display: flex;
   justify-content: center;
@@ -258,9 +277,8 @@ export default {
     font-size: 1.4583vw;
     font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
     font-weight: normal;
-    color: #FFFFFF;
+    color: #ffffff;
     z-index: 99;
   }
 }
 </style>
-  

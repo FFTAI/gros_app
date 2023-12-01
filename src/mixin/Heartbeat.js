@@ -36,7 +36,7 @@ export default {
         })
         .catch((err) => {
           this.$store.commit("setConnected", false);
-          console.log("gettype失败",err);
+          console.log("gettype失败", err);
         });
     },
   },

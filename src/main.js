@@ -5,9 +5,9 @@ import store from "./store";
 import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 import i18n from "./i18n/i18n";
-import axios from 'axios'
+import axios from "axios";
 
-Vue.prototype.$http= axios
+Vue.prototype.$http = axios;
 Vue.prototype.$store = store;
 Vue.prototype.$webview = null;
 
@@ -16,6 +16,8 @@ Vue.use(ElementUI);
 Vue.config.productionTip = false;
 
 new Vue({
-  router, store, i18n, render: (h) => h(App)
+  router,
+  store,
+  i18n,
+  render: (h) => h(App),
 }).$mount("#app");
- 
