@@ -262,7 +262,7 @@ export default {
   mixins: [Heartbeat],
   components: { RtcHeader, rtcLeftControl, promptBox },
   computed: {
-    ...mapState(["robot", "gamepadConnected", "connected"]),
+    ...mapState(["gamepadConnected", "connected"]),
   },
   data() {
     return {
@@ -314,42 +314,22 @@ export default {
     this.startJoystickL(); //生成虚拟摇杆
     this.startJoystickR();
     this.startGamepad();
-    this.robot.enable_debug_state(2);
-    this.robot.on_connected(() => {
-      this.robot.enable_debug_state(2);
-    });
-    this.robot.on_message((data) => {
-      let currData = JSON.parse(data.data);
+    this.createWsInterval();
+    this.$nextTick(()=>{
+      this.robotWs.robot.enable_debug_state(2);
+    })
+    this.$bus.$on('robotOnmessage',(data)=>{
       this.lastMessageReceivedTime = Date.now();
-      console.log(currData);
-      if (currData.data) this.doAction = currData.data.upper_action;
+      console.log('controller===========',data);
+      if (data.data) this.doAction = data.data.upper_action;
     });
-    this.robot.on_close(() => {
-      console.log("Websocket已断开。。。。。。");
-      this.$store.commit("setRobot");
-    });
-    this.robot.on_error(() => {
-      console.log("Websocket出错啦。。。。。。");
-      this.$store.commit("setRobot");
-    });
-    this.wsInterval = setInterval(() => {
-      const currentTime = Date.now();
-      const timeSinceLastMessage = currentTime - this.lastMessageReceivedTime;
-      // 如果超过了阈值4秒，认为连接断开
-      const threshold = 4000;
-      console.log("sadahusfdh.............", timeSinceLastMessage);
-      if (timeSinceLastMessage > threshold) {
-        console.log("WebSocket connection might be disconnected.");
-        this.$store.commit("setRobot");
-      }
-    }, 1000); // 每秒检查一次
   },
   destroyed() {
     clearInterval(this.interval);
     clearInterval(this.wsInterval);
     //关闭监听
-    this.robot.disable_debug_state();
-    this.robot.removeAllListeners();
+    this.robotWs.robot.disable_debug_state();
+    this.$bus.$off('robotOnmessage')
   },
   watch: {
     //屏幕尺寸变化后，重新生成joystick适配当前尺寸
@@ -365,6 +345,24 @@ export default {
     },
   },
   methods: {
+    //创建定时器监听websocket是否断连
+    createWsInterval() {
+      if (!this.wsInterval) {
+        this.wsInterval = setInterval(() => {
+          const currentTime = Date.now();
+          const timeSinceLastMessage =
+            currentTime - this.lastMessageReceivedTime;
+          // 如果超过了阈值3秒，认为连接断开
+          const threshold = 2000;
+          console.log("sadahusfdh.............", timeSinceLastMessage);
+          if (timeSinceLastMessage > threshold) {
+            console.log("WebSocket connection might be disconnected.");
+            this.robotWs.robot.enable_debug_state(2);
+            clearInterval(this.wsInterval);
+          }
+        }, 1000); // 每秒检查一次
+      }
+    },
     // 启动手柄
     startGamepad() {
       const _this = this;
@@ -574,7 +572,7 @@ export default {
       this.promptBoxOpen("calibration");
     },
     doCalibration() {
-      this.robot.start();
+      this.robotWs.robot.start();
       this.mode = "initial";
       setTimeout(() => {
         this.mode = "";
@@ -582,7 +580,7 @@ export default {
     },
     //紧急停止
     stop() {
-      this.robot.stop();
+      this.robotWs.robot.stop();
     },
     // 速度挡位调节
     speedChange(e) {
@@ -598,7 +596,7 @@ export default {
     operateWalk(direction, velocity) {
       this.isStand = false;
       try {
-        this.robot.walk(direction, velocity);
+        this.robotWs.robot.walk(direction, velocity);
       } catch (error) {
         console.log("Walk错误。。。。。。", error);
       }
@@ -607,7 +605,7 @@ export default {
     operateHead(pitch, yaw) {
       console.log(pitch, yaw);
       try {
-        this.robot.head(0, pitch, yaw);
+        this.robotWs.robot.head(0, pitch, yaw);
       } catch (error) {
         console.log("Head错误。。。。。。", error);
       }
@@ -616,20 +614,20 @@ export default {
     operateBody(squat, rotate_waist) {
       console.log(squat, rotate_waist);
       try {
-        this.robot.body(squat, rotate_waist);
+        this.robotWs.robot.body(squat, rotate_waist);
       } catch (error) {
         console.log("Body错误。。。。。。", error);
       }
     },
     //开启视频
     cameraOpen() {
-      this.videoSrc = this.robot.camera.videoStreamUrl;
+      this.videoSrc = this.robotWs.robot.camera.videoStreamUrl;
     },
     //切换当前控制模式
     changeControl(e) {
       if (e == "stand") {
         this.isStand = true;
-        this.robot.stand();
+        this.robotWs.robot.stand();
         this.controlExpand = false;
       } else {
         this.controlExpand = true;
@@ -643,7 +641,7 @@ export default {
       //原地踏步，速度位置发0
       if (e == "markingTime") {
         this.isStand = false;
-        this.robot.walk(0, 0);
+        this.robotWs.robot.walk(0, 0);
       } else {
         //上肢data
         let upper_data = {
@@ -695,7 +693,7 @@ export default {
           }, 3000);
         }
         if (lower_data.lower_body_mode == "" && e != "nod" && e != "nod") {
-          this.robot
+          this.robotWs.robot
             .upper_body(upper_data.arm_action, upper_data.hand_action)
             .then((response) => {
               console.log("upper_body-response", response);
@@ -710,7 +708,7 @@ export default {
           e != "nod" &&
           e != "nod"
         ) {
-          // this.robot.lower_body(lower_data.lower_body_mode)
+          // this.robotWs.robot.lower_body(lower_data.lower_body_mode)
           this.$http
             .request({
               timeout: 30000,

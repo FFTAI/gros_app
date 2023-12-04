@@ -30,7 +30,7 @@ export default {
   mixins: [Heartbeat],
   components: { rtcHeader, promptBox },
   computed: {
-    ...mapState(["connected", "robot"]),
+    ...mapState(["connected"]),
   },
   data() {
     return {
@@ -43,7 +43,8 @@ export default {
       if (this.getFlag) {
         this.getFlag = false;
         if (this.connected) {
-          this.robot
+          console.log(this.robotWs)
+          this.robotWs.robot
             .control_svr_status()
             .then((res) => {
               this.getFlag = true;
@@ -73,7 +74,7 @@ export default {
       this.promptVisible = !this.promptVisible;
     },
     shutDown() {
-      this.robot
+      this.robotWs.robot
         .control_svr_close()
         .then((response) => {
           console.log("close...", response);

@@ -767,11 +767,10 @@
 import rtcHeader from "@/components/rtcHeader.vue";
 import * as echarts from "echarts";
 import { mapState } from "vuex";
-
 export default {
   components: { rtcHeader },
   computed: {
-    ...mapState(["robot"]),
+    ...mapState(["connected"]),
   },
   data() {
     return {
@@ -909,38 +908,35 @@ export default {
       iframeUrl: "Build/index.html",
       pointerTransformX: "translate(-50%, -100%) rotate(0deg)",
       pointerTransformY: "translate(-50%, -100%) rotate(0deg)",
+      lastMessageReceivedTime: Date.now(),
+      wsInterval: null
     };
   },
   created() {
-    if (window.vuplex) {
-      window.vuplex.postMessage({ type: "robot", message: "on" });
-    }
+    
   },
-  beforeDestroy() {
-    //关闭状态发送
-    this.robot.disable_debug_state();
-    //关闭所有监听
-    this.robot.removeAllListeners();
+  destroyed() {
+    clearInterval(this.wsInterval);
+    //关闭监听
+    this.robotWs.robot.disable_debug_state();
+    this.$bus.$off('robotOnmessage')
   },
   mounted() {
     // 初始化图表
     this.initSideCharts();
     this.initSpeedCharts();
     //开启状态发送
-    this.robot.enable_debug_state(50);
-    this.robot.on_connected(() => {
-      this.robot.enable_debug_state(50);
-    });
-    //开启监听数据并处理
-    this.robot.on_message((data) => {
-      let currData = JSON.parse(data.data);
-      // console.log(currData.data.states.jointStates[12],currData.data.states.jointStates[13],currData.data.states.jointStates[14])
-      if (currData.data.log && currData.data.log.logBuffer)
-        this.getLog(currData.data.log.logBuffer);
-      // if (this.$refs.unityIfm.contentWindow.myGameInstance)
-      // this.$refs.unityIfm.contentWindow.myGameInstance.SendMessage('UnityJsCommunication', 'ReceiveMsg', JSON.stringify({ 'jointStates': currData.data.states.jointStates }))
+    this.$nextTick(()=>{
+      this.robotWs.robot.enable_debug_state(50);
+    })
+    this.createWsInterval()
+    this.$bus.$on('robotOnmessage',(data)=>{
+      console.log('development=============',data)
+      this.lastMessageReceivedTime = Date.now();
+      if (data.data.log && data.data.log.logBuffer)
+        this.getLog(data.data.log.logBuffer);
       if (this.robotCount == 50) {
-        this.assignData(JSON.parse(data.data).data.states);
+        this.assignData(data.data.states);
         this.singleOrDouble(this.activatedItem);
         this.updateSideCharts(this.activatedItem, this.activatedType);
         this.updateSpeedCharts();
@@ -948,14 +944,6 @@ export default {
       } else {
         this.robotCount = this.robotCount + 1;
       }
-    });
-    this.robot.on_close(() => {
-      console.log("Websocket已断开。。。。。。");
-      this.$store.commit("setRobot");
-    });
-    this.robot.on_error(() => {
-      console.log("Websocket出错啦。。。。。。");
-      this.$store.commit("setRobot");
     });
   },
   watch: {
@@ -969,16 +957,25 @@ export default {
     },
   },
   methods: {
+    createWsInterval() {
+      if (!this.wsInterval) {
+        this.wsInterval = setInterval(() => {
+          const currentTime = Date.now();
+          const timeSinceLastMessage =
+            currentTime - this.lastMessageReceivedTime;
+          // 如果超过了阈值2秒，认为连接断开
+          const threshold = 2000;
+          if (timeSinceLastMessage > threshold) {
+            console.log("WebSocket connection might be disconnected.");
+            this.robotWs.robot.enable_debug_state(50);
+            clearInterval(this.wsInterval);
+          }
+        }, 1000); // 每秒检查一次
+      }
+    },
     changeModel(e) {
       console.log("changeModel", e);
       this.activated = e;
-      if (window.vuplex) {
-        if (e == "dynamic") {
-          window.vuplex.postMessage({ type: "robot", message: "on" });
-        } else if (e == "log") {
-          window.vuplex.postMessage({ type: "robot", message: "off" });
-        }
-      }
     },
     initSideCharts() {
       var leftChart = echarts.init(document.getElementById("leftChart"));

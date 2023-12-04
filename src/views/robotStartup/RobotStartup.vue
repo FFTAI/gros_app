@@ -187,7 +187,7 @@ export default {
   mixins: [Heartbeat],
   components: { rtcHeader, promptBox },
   computed: {
-    ...mapState(["connected", "robot"]),
+    ...mapState(["connected"]),
   },
   data() {
     return {
@@ -197,23 +197,23 @@ export default {
       promptVisible: false,
     };
   },
-  created() {},
+  created() {
+    this.$bus.$on('robotOnmessage',(data)=>{
+      console.log("enable_debug_state===all_init", data.data.all_init);
+        if (data.data.all_init) this.isReady = true;
+    });
+  },
   mounted() {},
   destroyed() {
     this.stateOff();
+    this.$bus.$off('robotOnmessage')
   },
   methods: {
     stateOn() {
-      this.robot.enable_debug_state(2);
-      this.robot.on_message((data) => {
-        let currData = JSON.parse(data.data);
-        console.log("enable_debug_state===all_init", currData.data.all_init);
-        if (currData.data.all_init) this.isReady = true;
-      });
+      this.robotWs.robot.enable_debug_state(2);
     },
     stateOff() {
-      this.robot.disable_debug_state();
-      this.robot.removeAllListeners();
+      this.robotWs.robot.disable_debug_state();
     },
     closeDialog() {
       this.calibrationDialog = false;
@@ -289,7 +289,7 @@ export default {
     //程序关闭
     shutDown() {
       this.stateOff();
-      this.robot
+      this.robotWs.robot
         .control_svr_close()
         .then((response) => {
           console.log("close...", response);
