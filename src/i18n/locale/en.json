@@ -118,5 +118,6 @@
     "reconnect": "Reconnect",
     "initial": "Return to the initial position",
     "returnMain": "Return to the main interface?",
-    "calibrationTips": "The robot is not protected from suspension. It is strictly forbidden to 'confirm' as the initial state"
+    "calibrationTips": "The robot is not protected from suspension. It is strictly forbidden to 'confirm' as the initial state",
+    "loading": "Loading"
 }

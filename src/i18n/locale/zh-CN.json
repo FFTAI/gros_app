@@ -118,5 +118,6 @@
     "reconnect": "重新连接",
     "initial": "回到初始位置",
     "returnMain": "返回主界面?",
-    "calibrationTips": "机器人未被悬吊保护， 严禁“确认”为初始状态"
+    "calibrationTips": "机器人未被悬吊保护， 严禁“确认”为初始状态",
+    "loading": "加载中"
 }

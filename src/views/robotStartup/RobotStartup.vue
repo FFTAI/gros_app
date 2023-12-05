@@ -1,8 +1,8 @@
 <template>
-  <div class="main">
+  <div class="main common-bkg">
     <rtc-header :isStartup="true" @connect="toConnect()">
       <div class="headState">
-        <span class="headTxt">{{ $t("robotStartup") }}</span>
+        <span class="headTxt common-font">{{ $t("robotStartup") }}</span>
       </div>
     </rtc-header>
     <!-- 开机初始 -->
@@ -11,20 +11,20 @@
         class="openCalibration"
         src="@/assets/images/image_openCalibration.png"
       />
-      <div class="tips tip1" @click="openDialog()">
-        <span class="circleTxt ct1">3</span>
+      <div class="tips flex-center tip1" @click="openDialog()">
+        <span class="circleTxt flex-center ct1">3</span>
         <span>{{ $t("startupTip1") }}</span>
       </div>
-      <div class="tips tip2">
-        <span class="circleTxt ct2">4</span>
+      <div class="tips flex-center tip2">
+        <span class="circleTxt flex-center ct2">4</span>
         <span>{{ $t("startupTip2") }}</span>
       </div>
-      <div class="tips tip3">
-        <span class="circleTxt ct2">1</span>
+      <div class="tips flex-center tip3">
+        <span class="circleTxt flex-center ct2">1</span>
         <span>{{ $t("startupTip3") }}</span>
       </div>
-      <div class="tips tip4">
-        <span class="circleTxt ct2">2</span>
+      <div class="tips flex-center tip4">
+        <span class="circleTxt flex-center ct2">2</span>
         <span>{{ $t("startupTip4") }}</span>
       </div>
       <div class="warning">
@@ -37,13 +37,13 @@
         class="openCalibration"
         src="@/assets/images/image_deviceConnect.png"
       />
-      <div class="connectBox">
-        <div class="txtFlex">
+      <div class="connectBox flex-column white01-bkg">
+        <div class="txtFlex flex-between common-font">
           <div>{{ $t("initialAccount") }}</div>
           <div>gr1********</div>
         </div>
         <div class="line"></div>
-        <div class="txtFlex">
+        <div class="txtFlex flex-between common-font">
           <span>{{ $t("initialPassword") }}</span>
           <span>66668888</span>
         </div>
@@ -90,18 +90,18 @@
         src="@/assets/images/btn_close.png"
         @click="closeDialog()"
       />
-      <div class="dialogTips">
-        <span class="circleTxt ct2">1</span>
+      <div class="dialogTips flex-center">
+        <span class="circleTxt flex-center ct2">1</span>
         <span>{{ $t("calibrationTip1") }}</span>
       </div>
-      <div class="circleTxt ct2 circle2">2</div>
-      <div class="dialogTips dialogTip2">
+      <div class="circleTxt flex-center ct2 circle2">2</div>
+      <div class="dialogTips flex-center dialogTip2">
         <span>
           {{ $t("calibrationTip2") }}
         </span>
       </div>
-      <div class="dialogTips dialogTip3">
-        <span class="circleTxt ct2">3</span>
+      <div class="dialogTips flex-center dialogTip3">
+        <span class="circleTxt flex-center ct2">3</span>
         <span>{{ $t("calibrationTip3") }}</span>
       </div>
     </div>
@@ -112,7 +112,7 @@
         class="btn"
         @click="changeStep('connect')"
       >
-        <span v-if="step == 'calibration'" class="circleTxt ct1">1</span>
+        <span v-if="step == 'calibration'" class="circleTxt flex-center ct1">1</span>
         <img v-else class="finishImg" src="@/assets/images/icon_finish.png" />
         <span>{{ $t("bootCalibration") }}</span>
       </div>
@@ -137,7 +137,7 @@
         <span
           v-else
           :class="step == 'connect' ? 'ct1' : 'ct4'"
-          class="circleTxt"
+          class="circleTxt flex-center"
           >2</span
         >
         <span v-if="connected && step != 'calibration'">{{
@@ -153,7 +153,7 @@
         }"
         class="btn"
       >
-        <span :class="step == 'startup' ? 'ct1' : 'ct4'" class="circleTxt"
+        <span :class="step == 'startup' ? 'ct1' : 'ct4'" class="circleTxt flex-center"
           >3</span
         >
         <span>{{ $t("programStartup") }}</span>
@@ -308,11 +308,7 @@ export default {
 <style lang="scss" scoped>
 .main {
   position: relative;
-  width: 100%;
-  height: 100vh;
   background-image: url("../../assets/images/image_bkg.png");
-  background-repeat: no-repeat;
-  background-size: cover;
 }
 
 .headState {
@@ -322,10 +318,8 @@ export default {
   z-index: 99;
 
   .headTxt {
-    font-size: 1.9792vw;
-    font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
-    font-weight: normal;
-    color: #ffffff;
+    font-size: $size-47;
+    color: $white;
     line-height: 2.7083vw;
   }
 }
@@ -342,13 +336,9 @@ export default {
   position: absolute;
   left: 46.0417vw;
   top: 13.3333vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   width: 10.5833vw;
   height: 2.9583vw;
-  font-size: 1.25vw;
-  font-family: AlibabaPuHuiTiR;
+  font-size: $size-30;
 }
 
 .circleTxt {
@@ -356,25 +346,22 @@ export default {
   height: 1.375vw;
   font-size: 0.7083vw;
   border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   margin-right: 0.5vw;
   font-weight: 900;
 }
 
 .ct1 {
-  background: #ffffff;
+  background: $white;
   color: #0086d1;
 }
 
 .ct2 {
-  background: #44d8fb;
+  background: $light-blue;
   color: #17303d;
 }
 
 .ct3 {
-  background: #ffffff;
+  background: $white;
   color: #17303d;
 }
 
@@ -386,23 +373,23 @@ export default {
 .tip1 {
   background: #0086d1;
   border-radius: 1.4583vw;
-  color: #ffffff;
+  color: $white;
   top: 26.5vw;
 }
 
 .tip2 {
   top: 31.2vw;
-  color: #44d8fb;
+  color: $light-blue;
 }
 
 .tip3 {
-  color: #44d8fb;
+  color: $light-blue;
   width: 11.8vw;
   top: 11.1vw;
 }
 
 .tip4 {
-  color: #44d8fb;
+  color: $light-blue;
   width: 14.3vw;
   top: 15.3vw;
 }
@@ -411,19 +398,8 @@ export default {
   position: absolute;
   left: 27.4583vw;
   top: 38.75vw;
-  font-size: 1.25vw;
-  font-family: AlibabaPuHuiTiR;
-  color: #ffffff;
-}
-
-.connectTitle {
-  position: absolute;
-  top: 16.7083vw;
-  left: 36.5vw;
-  font-size: 1.4583vw;
-  font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
-  font-weight: normal;
-  color: #ffffff;
+  font-size: $size-30;
+  color: $white;
 }
 
 .connectBox {
@@ -434,28 +410,21 @@ export default {
   height: 8.25vw;
   padding-top: 2.1667vw;
   padding-bottom: 1.9167vw;
-  background: rgba(255, 255, 255, 0.1);
   border-radius: 0.25vw;
-  display: flex;
-  flex-direction: column;
   justify-content: space-between;
   align-items: center;
 
   .line {
     width: 22.1667vw;
     height: 0.125vw;
-    background: #ffffff;
+    background: $white;
     opacity: 0.2;
   }
 
   .txtFlex {
-    display: flex;
-    justify-content: space-between;
     width: 21.6667vw;
-    font-size: 1.4583vw;
-    font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
-    font-weight: normal;
-    color: #ffffff;
+    font-size: $size-35;
+    color: $white;
   }
 }
 
@@ -463,9 +432,8 @@ export default {
   position: absolute;
   top: 24.7083vw;
   left: 39.5vw;
-  font-size: 1.25vw;
-  font-family: AlibabaPuHuiTiR;
-  color: #44d8fb;
+  font-size: $size-30;
+  color: $light-blue;
 }
 
 .calibrationDialog {
@@ -497,12 +465,8 @@ export default {
     top: 30.7083vw;
     left: 15.0833vw;
     height: 1.6667vw;
-    font-size: 1.25vw;
-    font-family: AlibabaPuHuiTiR;
-    color: #44d8fb;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    font-size: $size-30;
+    color: $light-blue;
   }
 
   .dialogTip2 {
@@ -578,9 +542,8 @@ export default {
     position: absolute;
     top: 32.625vw;
     left: 3.375vw;
-    font-size: 1.25vw;
-    font-family: AlibabaPuHuiTiR;
-    color: #44d8fb;
+    font-size: $size-30;
+    color: $light-blue;
   }
 }
 
@@ -599,19 +562,19 @@ export default {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    font-size: 1.7083vw;
+    font-size: $size-41;
     font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
     margin-bottom: 2.4583vw;
-    color: #ffffff;
+    color: $white;
   }
 
   .startBtn {
     font-weight: normal;
-    background: #0075b8;
+    background: $base-bkg;
   }
 
   .finishBtn {
-    color: #44d8fb;
+    color: $light-blue;
     background: rgba(68, 216, 251, 0.1);
   }
 

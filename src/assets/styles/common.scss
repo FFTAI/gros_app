@@ -28,6 +28,9 @@
 .white01-bkg {
   background-color: rgba(255, 255, 255, 0.1);
 }
+.white02-bkg {
+  background-color: rgba(255, 255, 255, 0.2);
+}
 .vertically-centered {
   position: absolute;
   top: 50%;
@@ -42,4 +45,10 @@
   height: 100%;
   background: rgba(0, 0, 0, 0.7);
   z-index: 9999;
+}
+.black-bkg {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background-color: #121e29;
 }

@@ -1,11 +1,11 @@
 <template>
-  <div class="container">
+  <div class="black-bkg">
     <rtc-header :isLoading="true">
       <div class="headState">
-        <span class="headTxt">Loading...</span>
+        <span class="headTxt common-font">{{ $t('loading') }}...</span>
       </div>
     </rtc-header>
-    <div class="loadingMain">
+    <div class="vertically-centered">
       <img class="imgLoading" src="@/assets/images/image_loading.png" />
     </div>
     <div class="progress">
@@ -47,12 +47,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  background-color: #121e29;
-}
 
 .headState {
   position: absolute;
@@ -61,26 +55,15 @@ export default {
   z-index: 99;
 
   .headTxt {
-    font-size: 1.9792vw;
-    font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
-    font-weight: normal;
-    color: #ffffff;
+    font-size: $size-47;
+    color: $white;
     line-height: 2.7083vw;
   }
 }
-
-.loadingMain {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
-  .imgLoading {
-    width: 85.9167vw;
-    height: 28.8333vw;
-  }
+.imgLoading {
+  width: 85.9167vw;
+  height: 28.8333vw;
 }
-
 .progress {
   position: absolute;
   left: 50%;
