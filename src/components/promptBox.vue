@@ -1,6 +1,6 @@
 <template>
-  <div class="dialog-wrapper">
-    <div class="prompt">
+  <div class="wrapper flex-center">
+    <div class="prompt vertically-centered common-font">
       <div class="title" v-if="prompt == 'returnMain'">
         {{ $t("tip") }}
       </div>
@@ -21,11 +21,11 @@
           }}</span>
         </div>
       </div>
-      <div v-if="prompt != 'reconnect'" class="btnBox">
+      <div v-if="prompt != 'reconnect'" class="btnBox flex-between">
         <div class="btn blue" @click="cancel()">{{ $t("cancel") }}</div>
-        <div class="btn white" @click="confirm()">{{ $t("confirm") }}</div>
+        <div class="btn white01-bkg" @click="confirm()">{{ $t("confirm") }}</div>
       </div>
-      <div v-else class="btnBox" style="left: 11.7083vw">
+      <div v-else class="btnBox flex-between" style="left: 11.7083vw">
         <div class="btn blue" @click="reconnect()">{{ $t("reconnect") }}</div>
       </div>
       <slot></slot>
@@ -73,35 +73,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.dialog-wrapper {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  /* 半透明黑色背景 */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
 
 .prompt {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   z-index: 999;
   width: 35.7083vw;
   height: 20.9167vw;
   background-image: url("../assets/images/image_card.png");
   background-repeat: no-repeat;
   background-size: cover;
-  font-size: 1.7083vw;
-  font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
-  font-weight: normal;
-  color: #ffffff;
+  font-size: $size-41;
+  color: $white;
 }
 
 .title {
@@ -116,7 +97,7 @@ export default {
   bottom: 11.2083vw;
 
   .promptTxt {
-    font-size: 1.4583vw;
+    font-size: $size-35;
     display: inline-block;
   }
 }
@@ -124,12 +105,10 @@ export default {
 .warningIcon {
   width: 4.9167vw;
   height: 4.5417vw;
-  margin-right: 1.4583vw;
+  margin-right: $size-35;
 }
 
 .btnBox {
-  display: flex;
-  justify-content: space-between;
   width: 27.125vw;
   font-size: 1.7083vw;
   position: absolute;
@@ -146,10 +125,6 @@ export default {
 }
 
 .blue {
-  background: #0075b8;
-}
-
-.white {
-  background-color: rgba(255, 255, 255, 0.1);
+  background: $base-bkg;
 }
 </style>

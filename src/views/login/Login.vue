@@ -1,5 +1,5 @@
 <template>
-  <div class="loginMain">
+  <div class="loginMain common-bkg">
     <rtc-header
       :is-logo="true"
       :is-login="true"
@@ -9,8 +9,8 @@
     <div class="humanBody">
       <img class="openHuman" src="@/assets/images/image_onOpen.png" />
     </div>
-    <div class="startContain" @click="startExplore()">
-      <span class="startBtn">{{ $t("beginToExplore") }}</span>
+    <div class="startContain flex-center" @click="startExplore()">
+      <span class="startBtn common-font">{{ $t("beginToExplore") }}</span>
     </div>
     <prompt-box
       v-if="promptVisible"
@@ -91,11 +91,7 @@ export default {
 <style lang="scss" scoped>
 .loginMain {
   position: relative;
-  width: 100%;
-  height: 100vh;
   background-image: url("../../assets/images/image_bkg.png");
-  background-repeat: no-repeat;
-  background-size: cover;
 }
 
 .humanBody {
@@ -115,73 +111,20 @@ export default {
   right: 13.0208vw;
   width: 28.3333vw;
   height: 4.1667vw;
-  background: #0075b8;
+  background: $base-bkg;
   border-radius: 2.0833vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .startBtn {
-  font-size: 1.7188vw;
-  font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
-  font-weight: normal;
-  color: #ffffff;
-  line-height: 2.3438vw;
+  font-size: $size-41;
+  color: $white;
 }
-
-// .circle {
-//     width: 100px;
-//     height: 100px;
-//     position: absolute;
-//     bottom: 15.7292vw;
-//     right: 13.0208vw;
-//     animation: expand 5s infinite;
-//     border: 8px solid rgb(55, 127, 234);
-//     border-radius: 50%;
-//     overflow: hidden;
-// }
-
-// .particle {
-//     position: absolute;
-//     width: 10px;
-//     height: 10px;
-//     background-color: rgb(71, 71, 218);
-//     border-radius: 50%;
-//     animation: particleExpand 2s infinite;
-// }
-
-// @keyframes expand {
-//     0% {
-//         transform: scale(1);
-//     }
-
-//     50% {
-//         transform: scale(2);
-//     }
-
-//     100% {
-//         transform: scale(1);
-//     }
-// }
-
-// @keyframes particleExpand {
-//     0% {
-//         transform: scale(0);
-//         opacity: 1;
-//     }
-
-//     100% {
-//         transform: scale(2);
-//         opacity: 0;
-//     }
-// }
 .txtBox {
   width: 33.3333vw;
   height: 20.8333vw;
   position: absolute;
   right: 8.3333vw;
   bottom: 17.5vw;
-  color: #ffffff;
+  color: $white;
 }
 </style>

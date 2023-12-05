@@ -14,13 +14,13 @@
     </div>
     <slot></slot>
     <div
-      class="headButtonIn"
+      class="headButtonIn flex-between"
       v-if="(connected || isController) && !isLoading && !isStartup"
     >
       <!-- 电量和wifi -->
       <div class="spacing">
         <!-- <img class="inImg" src="@/assets/images/icon_battery2.png" />
-        <span class="inTxt">43%</span> -->
+        <span class="inTxt title-font">43%</span> -->
         <img
           class="inImg"
           style="height: 1.6667vw; width: 2.2917vw"
@@ -49,11 +49,11 @@
     </div>
     <!-- 连接 -->
     <div
-      class="rightSlot"
+      class="rightSlot flex-center"
       @click="toConnect()"
       v-if="!connected && (isLogin || isSetting) && !isLoading && !isStartup"
     >
-      <span class="connect">{{ $t("connect") }}</span>
+      <span class="connect common-font">{{ $t("connect") }}</span>
     </div>
   </div>
 </template>
@@ -137,13 +137,11 @@ export default {
   left: 0;
   height: 4.4444vw;
   z-index: 10;
-  // background: linear-gradient(274deg, #1a1919 0%, #004c81 100%);
   background: linear-gradient(
     274deg,
     rgba(26, 25, 25, 0.4) 0%,
     rgba(0, 76, 129, 0.4) 100%
   );
-  // opacity: 0.4;
 }
 
 .headBkIn {
@@ -166,38 +164,17 @@ export default {
     height: 4.4167vw;
     width: 13.25vw;
     background: #004b85;
-    // line-height: 5.8vw;
   }
-
-  // .headLogo::after {
-  //   position: absolute;
-  //   content: " ";
-  //   border-width: 106px 64px;
-  //   border-style: solid;
-  //   border-color: #004c81 transparent transparent transparent;
-  // }
 
   .headAfter {
     width: 0;
     height: 0;
     border-right: 2vw solid transparent;
-    /* 左边长 */
     border-top: 4.45vw solid #004b85;
-    /* 底边长，可以更改颜色 */
     position: absolute;
     left: 13.2083vw;
     top: 0;
   }
-
-  // .headTitle {
-  //   font-size: 1.9444vw;
-  //   font-family: Roboto-Bold, Roboto;
-  //   color: #ffffff;
-  //   width: 13.0556vw;
-  //   height: 2.3611vw;
-  //   line-height: 4.4444vw;
-  //   z-index: 999;
-  // }
 
   .return {
     width: 2.0833vw;
@@ -227,15 +204,13 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
-  display: flex;
-  justify-content: space-between;
   line-height: 4.4vw;
   z-index: 99;
 
   .divider {
     width: 0.1042vw;
     height: 4.4271vw;
-    background: #ffffff;
+    background: $white;
     opacity: 0.3;
   }
 
@@ -247,10 +222,8 @@ export default {
   }
 
   .inTxt {
-    font-size: 1.7361vw;
-    font-family: Roboto-Bold, Roboto;
-    font-weight: bold;
-    color: #ffffff;
+    font-size: $size-41;
+    color: $white;
     margin-right: 1.9444vw;
     margin-left: 0.6944vw;
     vertical-align: middle;
@@ -269,15 +242,10 @@ export default {
   height: 4.375vw;
   background: #0075b8;
   float: right;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 
   .connect {
-    font-size: 1.4583vw;
-    font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
-    font-weight: normal;
-    color: #ffffff;
+    font-size: $size-35;
+    color: $white;
     z-index: 99;
   }
 }

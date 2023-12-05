@@ -1,0 +1,45 @@
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+}
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+.common-bkg {
+  width: 100%;
+  height: 100vh;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.common-font {
+  font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
+  font-weight: normal;
+}
+.title-font {
+  font-family: Roboto-Bold, Roboto;
+  font-weight: bold;
+}
+.white01-bkg {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.vertically-centered {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+}

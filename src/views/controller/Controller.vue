@@ -353,7 +353,7 @@ export default {
           const timeSinceLastMessage =
             currentTime - this.lastMessageReceivedTime;
           // 如果超过了阈值3秒，认为连接断开
-          const threshold = 2000;
+          const threshold = 3000;
           console.log("sadahusfdh.............", timeSinceLastMessage);
           if (timeSinceLastMessage > threshold) {
             console.log("WebSocket connection might be disconnected.");

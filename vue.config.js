@@ -1,8 +1,10 @@
 const { defineConfig } = require("@vue/cli-service");
+// vue.config.js
+const path = require('path')
 module.exports = defineConfig({
   transpileDependencies: true,
   publicPath: "./",
-  lintOnSave: false,
+
   // devServer: {
   //   proxy: {
   //     "/api": {
@@ -15,4 +17,15 @@ module.exports = defineConfig({
   //     },
   //   },
   // },
+  lintOnSave: false,
+
+  pluginOptions: {
+    "style-resources-loader": {
+      preProcessor: 'scss',
+      patterns: [
+        path.resolve(__dirname,"./src/assets/styles/common.scss"),
+        path.resolve(__dirname,"./src/assets/styles/base.scss")
+      ]
+    },
+  },
 });

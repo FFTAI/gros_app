@@ -963,8 +963,8 @@ export default {
           const currentTime = Date.now();
           const timeSinceLastMessage =
             currentTime - this.lastMessageReceivedTime;
-          // 如果超过了阈值2秒，认为连接断开
-          const threshold = 2000;
+          // 如果超过了阈值3秒，认为连接断开
+          const threshold = 3000;
           if (timeSinceLastMessage > threshold) {
             console.log("WebSocket connection might be disconnected.");
             this.robotWs.robot.enable_debug_state(50);

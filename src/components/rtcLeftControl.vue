@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 左侧操控区 -->
-    <div class="leftControl">
+    <div class="leftControl flex-column">
       <div class="firstControl">
         <img class="controlImg" @click="choseMode(0)" :src="modeSrc[0].src" />
         <div class="controlTxt">Mode</div>
@@ -23,7 +23,7 @@
         <div style="font-size: 0.9722vw; color: #ffffff">Camera</div>
       </div>
     </div>
-    <div class="leftControlBranch branch1">
+    <div class="leftControlBranch flex-column branch1">
       <el-row :gutter="20">
         <el-col :span="8">
           <img
@@ -51,7 +51,7 @@
         </el-col>
       </el-row>
     </div>
-    <div class="leftControlBranch branch2">
+    <div class="leftControlBranch flex-column branch2">
       <el-row :gutter="20">
         <el-col :span="6">
           <img
@@ -114,8 +114,6 @@ export default {
 
 <style lang="scss">
 .leftControl {
-  display: flex;
-  flex-direction: column;
   align-items: flex-start;
   position: absolute;
   left: 5vw;
@@ -133,13 +131,11 @@ export default {
 
 .controlTxt {
   font-size: 0.9722vw;
-  color: #ffffff;
+  color: $white;
   z-index: 999;
 }
 
 .leftControlBranch {
-  display: flex;
-  flex-direction: column;
   align-items: flex-start;
   position: absolute;
   left: 12vw;

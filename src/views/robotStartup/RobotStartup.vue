@@ -5,7 +5,7 @@
         <span class="headTxt">{{ $t("robotStartup") }}</span>
       </div>
     </rtc-header>
-    <!-- 开机校准 -->
+    <!-- 开机初始 -->
     <div v-if="step == 'calibration' && !calibrationDialog">
       <img
         class="openCalibration"
@@ -69,7 +69,7 @@
         </div>
       </div>
     </div>
-    <!-- 校准提示 -->
+    <!-- 初始提示 -->
     <div class="calibrationDialog" v-if="calibrationDialog">
       <img
         class="calibrationImg"
@@ -272,7 +272,7 @@ export default {
       //     console.log('start-error', error)
       // })
     },
-    //打开开机校准示例图
+    //打开开机初始示例图
     openDialog() {
       this.calibrationDialog = true;
     },

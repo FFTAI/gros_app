@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="main flex-center common-bkg">
     <img src="../../assets/images/image_logo.png" />
   </div>
 </template>
@@ -22,13 +22,6 @@ export default {
 
 <style lang="scss" scoped>
 .main {
-  width: 100%;
-  height: 100vh;
   background-image: url("../../assets/images/image_bkg.png");
-  background-repeat: no-repeat;
-  background-size: cover;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 </style>
