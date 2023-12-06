@@ -2,7 +2,7 @@
   <div>
     <div class="container">
       <div ref="videoContainer" align="center" class="video-container">
-        <div class="video-item">
+        <div class="video-item common-bkg ">
           <img class="video-play" :src="videoSrc" v-show="camera" />
         </div>
       </div>
@@ -15,11 +15,11 @@
           @returnMain="promptBoxOpen('returnMain')"
         >
           <div class="headState" @click="headChange()">
-            <span class="headTxt">{{ $t("remoteMode") }}</span>
+            <span class="headTxt common-font">{{ $t("remoteMode") }}</span>
             <div class="arrow"></div>
           </div>
         </rtc-header>
-        <div class="headBox" v-if="headBoxVisible" ref="headBoxRef">
+        <div class="headBox flex-column" v-if="headBoxVisible" ref="headBoxRef">
           <div @click="changeMode('remoteMode')">
             {{ $t("remoteMode") }}
           </div>
@@ -43,13 +43,13 @@
         <!-- 速度挡位调节 -->
         <div class="speedBox">
           <div class="speedControl">
-            <div class="speedDirection">
+            <div class="speedDirection flex-column">
               <img
                 class="speedAdd"
                 @click="speedChange('add')"
                 src="@/assets/images/btn_add.png"
               />
-              <span class="speedNum">{{ speed }}</span>
+              <span class="speedNum title-font">{{ speed }}</span>
               <img
                 class="speedReduce"
                 @click="speedChange('reduce')"
@@ -60,10 +60,10 @@
         </div>
       </div>
       <!-- 虚拟摇杆 joystick-start-->
-      <div class="joystickBorder" style="left: 11.0833vw">
+      <div class="joystickBorder flex-center" style="left: 11.0833vw">
         <img class="joystickImg" src="@/assets/images/image_direction.png" />
       </div>
-      <div class="joystickBorder" style="right: 11.0833vw">
+      <div class="joystickBorder flex-center" style="right: 11.0833vw">
         <img class="joystickImg" src="@/assets/images/image_direction.png" />
       </div>
       <div id="zone_joystickL"></div>
@@ -184,7 +184,7 @@
           </div>
         </div>
         <!-- action box -->
-        <div class="controlBox">
+        <div class="controlBox flex-between">
           <!-- 站立 -->
           <div
             :class="['choseBox', 'txt', controlModel == 'stand' ? 'chose' : '']"
@@ -237,7 +237,7 @@
       </div>
       <!-- 当前状态提示 -->
       <div
-        class="stateMessage"
+        class="stateMessage flex-center"
         v-if="(mode != '' && doAction) || mode == 'initial'"
       >
         <span>{{ $t(mode) }}{{ $t("ing") }}...</span>
@@ -781,14 +781,9 @@ export default {
 }
 
 .video-item {
-  width: 100%;
-  height: 100%;
   position: fixed;
-  // background-color: #121E29;
   z-index: 3;
   background-image: url("../../assets/images/image_cameraBk.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
 }
 
 .video-play {
@@ -855,8 +850,6 @@ export default {
       position: absolute;
       left: 1.28vw;
       bottom: 1.2556vw;
-      display: flex;
-      flex-direction: column;
       justify-content: space-around;
       align-items: center;
 
@@ -874,9 +867,7 @@ export default {
 
       .speedNum {
         font-size: 1.7188vw;
-        font-family: Roboto-Bold, Roboto;
-        font-weight: bold;
-        color: #ffffff;
+        color: $white;
       }
     }
   }
@@ -890,9 +881,6 @@ export default {
   border: 3px solid rgba(255, 255, 255, 0.3);
   z-index: 999;
   border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .joystickImg {
@@ -931,7 +919,6 @@ export default {
   bottom: 3.7083vw;
   width: 34.25vw;
   height: 31.75vw;
-  // padding: .9167vw 1.25vw;
   border-radius: 3.0833vw;
   border: 0.125vw solid rgba(255, 255, 255, 0.3);
   background-color: rgba(0, 75, 133, 0.5);
@@ -944,8 +931,6 @@ export default {
   bottom: 0.9167vw;
   width: 31.75vw;
   height: 3.4583vw;
-  display: flex;
-  justify-content: space-between;
   align-items: center;
 
   .choseBox {
@@ -970,7 +955,7 @@ export default {
     font-size: 1.4583vw;
     font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
     font-weight: normal;
-    color: #ffffff;
+    color: $white;
   }
 }
 
@@ -986,32 +971,13 @@ export default {
     font-size: 1.25vw;
     font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
     font-weight: normal;
-    color: #ffffff;
+    color: $white;
   }
 
   .actionImg {
     width: 2.7083vw;
     height: 2.7083vw;
   }
-}
-
-.modeBox {
-  height: 14.375vw;
-  width: 13.5417vw;
-}
-
-.stateBox {
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 75, 133, 0.3);
-  border-radius: 3.0729vw;
-  font-size: 1.7188vw;
-  font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
-  font-weight: normal;
-  color: #ffffff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .headState {
@@ -1022,9 +988,7 @@ export default {
 
   .headTxt {
     font-size: 1.9792vw;
-    font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
-    font-weight: normal;
-    color: #ffffff;
+    color: $white;
   }
 
   .arrow {
@@ -1036,7 +1000,7 @@ export default {
     background: linear-gradient(274deg, #1a1919 0%, #004c81 100%);
     border-left: 0.4167vw solid transparent;
     border-right: 0.4167vw solid transparent;
-    border-top: 0.5208vw solid #ffffff;
+    border-top: 0.5208vw solid $white;
   }
 }
 
@@ -1050,18 +1014,15 @@ export default {
   background: rgba(0, 75, 133, 0.3);
   border: 0.1042vw solid rgba(68, 216, 251, 0.3);
   z-index: 99;
-  display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: space-around;
-  font-size: 1.7188vw;
-  font-family: AlibabaPuHuiTiR;
-  color: #ffffff;
+  font-size: $size-41;
+  color: $white;
 
   .divider {
     height: 0.1042vw;
     width: 11.9792vw;
-    background: #ffffff;
+    background: $white;
     opacity: 0.3;
   }
 }
@@ -1076,11 +1037,7 @@ export default {
   background: rgba(0, 0, 0, 0.8);
   border-radius: 4px;
   z-index: 999;
-  font-size: 1.25vw;
-  font-family: AlibabaPuHuiTiR;
-  color: #ffffff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  font-size: $size-30;
+  color: $white;
 }
 </style>

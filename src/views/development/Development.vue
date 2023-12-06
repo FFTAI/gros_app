@@ -1,8 +1,8 @@
 <template>
-  <div class="container">
+  <div class="black-bkg">
     <rtc-header>
       <div class="headState" @click="headChange()">
-        <span class="headTxt">{{ $t("developerMode") }}</span>
+        <span class="headTxt common-font">{{ $t("developerMode") }}</span>
         <div class="arrow"></div>
       </div>
     </rtc-header>
@@ -19,11 +19,11 @@
     <!-- 左侧栏 -->
     <div class="leftBox">
       <!-- 人形模型 -->
-      <!-- <img class="humanModel" src="@/assets/images/icon_model.png" v-show="activated == 'dynamic'" /> -->
+      <!-- <img class="humanModel flex-center" src="@/assets/images/icon_model.png" v-show="activated == 'dynamic'" /> -->
       <!-- <iframe ref="unityIfm" src="WebGL/index.html"
           style="border: none;width: 26.0417vw;height: 36.4583vw;margin-top:6.25vw;"
           v-show="activated == 'dynamic'"></iframe> -->
-      <div class="humanModel" v-show="activated == 'dynamic'">
+      <div class="humanModel flex-center" v-show="activated == 'dynamic'">
         <iframe
           ref="unityIfm"
           style="
@@ -37,7 +37,7 @@
       </div>
       <!-- log日志 -->
       <div class="logBox" v-show="activated == 'log'">
-        <div class="logTitle">{{ $t("logoFile") }}</div>
+        <div class="logTitle common-font">{{ $t("logoFile") }}</div>
         <div class="logMain">
           <el-timeline>
             <el-timeline-item
@@ -47,57 +47,57 @@
               :timestamp="activity.timestamp"
               :placement="activity.placement"
             >
-              <p class="logTxt">{{ activity.content }}</p>
+              <p class="logTxt common-font">{{ activity.content }}</p>
             </el-timeline-item>
           </el-timeline>
         </div>
       </div>
       <!-- 底部切换 -->
-      <div class="modelChose">
+      <div class="modelChose flex-between">
         <div
-          class="modelBtn"
+          class="modelBtn flex-center"
           :class="{ activatedModel: activated == 'dynamic' }"
           @click="changeModel('dynamic')"
         >
-          <span class="btnTxt">{{ $t("dynamicShowcase") }}</span>
+          <span class="btnTxt common-font">{{ $t("dynamicShowcase") }}</span>
         </div>
         <div
-          class="modelBtn"
+          class="modelBtn flex-center"
           :class="{ activatedModel: activated == 'log' }"
           style="margin-left: 0.8854vw"
           @click="changeModel('log')"
         >
-          <span class="btnTxt">{{ $t("logoFile") }}</span>
+          <span class="btnTxt common-font">{{ $t("logoFile") }}</span>
         </div>
       </div>
     </div>
-    <div class="chartBox">
+    <div class="chartBox flex-center">
       <div class="leftSide">
-        <div v-show="doubleChart" class="chartTitle">
+        <div v-show="doubleChart" class="chartTitle common-font">
           {{ $t("left") }}{{ $t("upperBody") }}
         </div>
-        <div v-show="doubleChart" class="chartTitle" style="left: 18.1667vw">
+        <div v-show="doubleChart" class="chartTitle common-font" style="left: 18.1667vw">
           {{ $t("right") }}{{ $t("upperBody") }}
         </div>
         <div v-show="doubleChart" class="doubleChartSize" id="leftChart"></div>
         <div v-show="doubleChart" class="doubleChartSize" id="rightChart"></div>
-        <div v-show="!doubleChart" class="chartTitle">{{ $t("head") }}</div>
+        <div v-show="!doubleChart" class="chartTitle common-font">{{ $t("head") }}</div>
         <div
           v-show="!doubleChart"
           class="singleChartSize"
           id="singleChart"
         ></div>
       </div>
-      <div class="middleDivider"></div>
+      <div class="middleDivider white01-bkg"></div>
       <div class="rightSide">
         <div class="axleVal">
           <div>
             <span class="val1">X{{ $t("axle") }}：</span>
-            <span class="val2">{{ xSpeed }}m/s</span>
+            <span class="val2 title-font">{{ xSpeed }}m/s</span>
           </div>
           <div>
             <span class="val1">Y{{ $t("axle") }}：</span>
-            <span class="val2">{{ ySpeed }}m/s</span>
+            <span class="val2 title-font">{{ ySpeed }}m/s</span>
           </div>
         </div>
         <div class="axleImg">
@@ -1986,12 +1986,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container {
-  width: 100%;
-  height: 100vh;
-  background: #121e29;
-  position: relative;
-}
 
 .headState {
   position: absolute;
@@ -2001,9 +1995,7 @@ export default {
 
   .headTxt {
     font-size: 1.9792vw;
-    font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
-    font-weight: normal;
-    color: #ffffff;
+    color: $white;
   }
 
   .arrow {
@@ -2015,15 +2007,13 @@ export default {
     background: linear-gradient(274deg, #1a1919 0%, #004c81 100%);
     border-left: 0.4167vw solid transparent;
     border-right: 0.4167vw solid transparent;
-    border-top: 0.5208vw solid #ffffff;
+    border-top: 0.5208vw solid $white;
   }
 }
 
 .logTitle {
   font-size: 1.5833vw;
-  font-family: Alibaba-PuHuiTi-M;
-  font-weight: normal;
-  color: #ffffff;
+  color: $white;
 }
 
 .leftBox {
@@ -2035,9 +2025,6 @@ export default {
 
   .humanModel {
     height: 32.125vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
   }
 
   .logBox {
@@ -2054,10 +2041,8 @@ export default {
       height: 26.6667vw;
 
       .logTxt {
-        font-size: 1.25vw;
-        font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
-        font-weight: normal;
-        color: #ffffff;
+        font-size: $size-30;
+        color: $white;
       }
 
       .txtErr {
@@ -2085,23 +2070,16 @@ export default {
     left: 0;
     height: 3.7083vw;
     width: 23.0417vw;
-    display: flex;
-    justify-content: space-between;
     align-items: center;
 
     .modelBtn {
       flex: 1;
       width: 11.0938vw;
       height: 3.6979vw;
-      display: flex;
-      justify-content: center;
-      align-items: center;
 
       .btnTxt {
-        font-size: 1.4583vw;
-        font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
-        font-weight: normal;
-        color: #ffffff;
+        font-size: $size-35;
+        color: $white;
         opacity: 1;
         line-height: 2.0313vw;
       }
@@ -2122,9 +2100,6 @@ export default {
   height: 8.625vw;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 0.25vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 
   .leftSide {
     width: 33.75vw;
@@ -2150,8 +2125,6 @@ export default {
       left: 1.25vw;
       top: 0.875vw;
       font-size: 1vw;
-      font-family: Alibaba-PuHuiTi-R, Alibaba-PuHuiTi;
-      font-weight: normal;
       color: #85888b;
     }
   }
@@ -2159,7 +2132,6 @@ export default {
   .middleDivider {
     width: 0.125vw;
     height: 4.4167vw;
-    background: rgba(255, 255, 255, 0.1);
   }
 
   .rightSide {
@@ -2178,9 +2150,7 @@ export default {
       }
 
       .val2 {
-        font-size: 1.25vw;
-        font-family: Roboto-Regular, Roboto;
-        font-weight: 400;
+        font-size: $size-30;
         color: #ffffff;
         margin-left: 0.25vw;
       }
@@ -2233,9 +2203,8 @@ export default {
     padding: 1.1667vw 1.25vw 0.75vw 2.4583vw;
     background-color: rgba(255, 255, 255, 0.08);
     border-radius: 0.2604vw 0.2604vw 0 0;
-    font-size: 1.25vw;
-    font-family: AlibabaPuHuiTiM;
-    color: #ffffff;
+    font-size: $size-30;
+    color: $white;
 
     .typeImg {
       width: 1.4583vw;
@@ -2272,10 +2241,6 @@ export default {
   .tableItem:nth-of-type(odd) {
     background-color: rgba(255, 255, 255, 0.1);
   }
-
-  // .tableItem:nth-child(5) {
-  //   background-color: rgba(255, 255, 255, 0.1);
-  // }
   .itemChild {
     flex: 1;
     font-size: 1vw;
@@ -2283,11 +2248,11 @@ export default {
   }
 
   .itemTxt {
-    color: #ffffff;
+    color: $white;
   }
 
   .currentItem {
-    background-color: #0075b8 !important;
+    background-color: $base-bkg !important;
   }
 }
 
@@ -2306,13 +2271,12 @@ export default {
   align-items: center;
   justify-content: space-around;
   font-size: 1.7188vw;
-  font-family: AlibabaPuHuiTiR;
-  color: #ffffff;
+  color: $white;
 
   .divider {
     height: 0.1042vw;
     width: 11.9792vw;
-    background: #ffffff;
+    background: $white;
     opacity: 0.3;
   }
 }

@@ -1,8 +1,8 @@
 <template>
-  <div class="main">
+  <div class="black-bkg">
     <rtc-header :isSetting="true" @connect="toConnect()">
       <div class="headState">
-        <span class="headTxt">{{ $t("systemSettings") }}</span>
+        <span class="headTxt common-font">{{ $t("systemSettings") }}</span>
       </div>
     </rtc-header>
     <!-- 左侧Tab标签栏 -->
@@ -13,7 +13,7 @@
         :class="{ activeTab: isActivated == 'connect' }"
         @click="changeTab('connect')"
       >
-        <div class="tab" :class="{ opt: isActivated != 'connect' }">
+        <div class="tab common-font" :class="{ opt: isActivated != 'connect' }">
           <img class="iconConnect" src="@/assets/images/icon_connect.png" />
           <div style="margin-left: 1.25vw">
             {{ $t("connect") }}
@@ -23,7 +23,7 @@
       <!-- 设备设置 -->
       <!-- <div class="txt" :class="{ 'activeTab': isActivated == 'deviceSettings' }" style="top: 47%;"
                 @click="changeTab('deviceSettings')">
-                <div class="tab" :class="{ 'opt': isActivated != 'deviceSettings' }">
+                <div class="tab common-font" :class="{ 'opt': isActivated != 'deviceSettings' }">
                     <img class="iconSysState" src="@/assets/images/icon_sysState.png" />
                     <div style="margin-left: 1.25vw;">
                         {{ $t('deviceSettings') }}
@@ -37,7 +37,7 @@
         style="top: 94%"
         @click="changeTab('status')"
       >
-        <div class="tab" :class="{ opt: isActivated != 'status' }">
+        <div class="tab common-font" :class="{ opt: isActivated != 'status' }">
           <img class="iconSysState" src="@/assets/images/icon_sysState.png" />
           <div style="margin-left: 1.25vw">
             {{ $t("systemInfo") }}
@@ -47,7 +47,7 @@
     </div>
     <!-- 连接标签页 -->
     <div class="listBox" v-if="isActivated == 'connect'">
-      <div class="item">
+      <div class="item flex-between common-font">
         <span>{{ $t("connectionStatus") }}</span>
         <span>{{ $t("connected") }}</span>
       </div>
@@ -56,55 +56,55 @@
                 <span class="itemTxt">{{ $t('notConnected') }}</span>
                 <img class="iconTo" src="@/assets/images/icon_to.png" />
             </div> -->
-      <div class="item" v-if="connected">
+      <div class="item flex-between common-font" v-if="connected">
         <span>{{ $t("robotIP") }}</span>
         <span>192.168.12.1</span>
       </div>
-      <div class="item" v-if="connected">
+      <div class="item flex-between common-font" v-if="connected">
         <span>{{ $t("wifiName") }}</span>
         <span>gr1********</span>
       </div>
-      <div class="item" v-if="connected">
+      <div class="item flex-between common-font" v-if="connected">
         <span>{{ $t("wifiPwd") }}</span>
         <span>66668888</span>
       </div>
     </div>
     <!-- 设备设置标签页 -->
     <!-- <div class="listBox" v-if="isActivated == 'deviceSettings'">
-            <div class="item">
+            <div class="item flex-between common-font">
                 <span>{{ $t('defaultNickname') }}</span>
                 <span>小傅小傅</span>
             </div>
-            <div class="item">
+            <div class="item flex-between common-font">
                 <span>{{ $t('customNickname') }}</span>
                 <span class="itemTxt">小傅小傅</span>
                 <img class="iconTo" src="@/assets/images/icon_to.png" />
             </div>
-            <div class="item">
+            <div class="item flex-between common-font">
                 <span>{{ $t('volumeAdjustment') }}</span>
                 <div style="display: flex;align-items: center;justify-content: space-between;">
                     <el-slider class="splider" v-model="volume"></el-slider>
                     <span style="font-size: 1.4583vw;">{{ volume }}</span>
                 </div>
             </div>
-            <div class="item" :class="{ 'expandLabel': microphoneOpen }">
+            <div class="item flex-between common-font" :class="{ 'expandLabel': microphoneOpen }">
                 <span>{{ $t('microphone') }}</span>
                 <div class="switch" :class="{ 'isChecked': microphoneOpen }" @click="openMicrophone()">
                     <span class="switchCore"></span>
                 </div>
             </div>
-            <div class="item" style="border-radius: 0 0 .25vw .25vw;" v-if="microphoneOpen">
+            <div class="item flex-between common-font" style="border-radius: 0 0 .25vw .25vw;" v-if="microphoneOpen">
                 <span>{{ $t('speechRecognition') }}</span>
                 <div class="switch" :class="{ 'isChecked': speechOpen }" @click="openSpeech()">
                     <span class="switchCore"></span>
                 </div>
             </div>
-            <div class="item" :class="{ 'expandLabel': selfCheckActivated }" @click="selfCheckExpand()">
+            <div class="item flex-between common-font" :class="{ 'expandLabel': selfCheckActivated }" @click="selfCheckExpand()">
                 <span>{{ $t('selfCheck') }}</span>
                 <span class="itemTxt">{{ $t('normal') }}</span>
                 <img class="iconTo" src="@/assets/images/icon_to.png" />
             </div>
-            <div class="item scItem" v-if="selfCheckActivated">
+            <div class="item flex-between common-font scItem" v-if="selfCheckActivated">
                 <div class="scChild">
                     <span>{{ $t('visionCamera') }}</span>
                     <span>{{ $t('normal') }}</span>
@@ -126,7 +126,7 @@
                     <span>{{ $t('normal') }}</span>
                 </div>
             </div>
-            <div class="powerBtn">
+            <div class="powerBtn flex-center common-font">
                 <div>
                     {{ $t('powerOff') }}
                 </div>
@@ -134,41 +134,41 @@
         </div> -->
     <!-- 系统信息标签页 -->
     <div class="listBox" v-if="isActivated == 'status'">
-      <div class="item">
+      <div class="item flex-between common-font">
         <span>{{ $t("productModel") }}</span>
         <span>GR-1R</span>
       </div>
-      <div class="item">
+      <div class="item flex-between common-font">
         <span>{{ $t("serialNumber") }}</span>
         <span>GR1R23OT0001</span>
       </div>
-      <div class="item">
+      <div class="item flex-between common-font">
         <span>{{ $t("robotVersion") }}</span>
         <span>V1.0.0</span>
       </div>
-      <div class="item">
+      <div class="item flex-between common-font">
         <span>{{ $t("appVersion") }}</span>
         <span>V1.0.0</span>
       </div>
       <div
-        class="item"
+        class="item flex-between common-font"
         :class="{ expandLabel: languageActivated }"
         @click="languageExpand()"
       >
         <span>{{ $t("appLanguage") }}</span>
         <span class="itemTxt" v-if="currLanguage == 'zh'">简体中文</span>
-        <span class="itemTxt" v-if="currLanguage == 'tw'">繁体中文</span>
+        <span class="itemTxt" v-if="currLanguage == 'tw'">繁體中文</span>
         <span class="itemTxt" v-if="currLanguage == 'en'">English</span>
         <img class="iconTo" src="@/assets/images/icon_to.png" />
       </div>
       <!-- 多语言选择 -->
       <div
-        class="item"
+        class="item flex-between common-font"
         style="border-radius: 0 0 0.25vw 0.25vw"
         v-if="languageActivated"
       >
         <div
-          class="languageItem"
+          class="languageItem white01-bkg"
           :class="{ chosedLanguage: currLanguage == 'zh' }"
           @click="changeLanguage('zh')"
         >
@@ -180,11 +180,11 @@
           />
         </div>
         <div
-          class="languageItem"
+          class="languageItem white01-bkg"
           :class="{ chosedLanguage: currLanguage == 'tw' }"
           @click="changeLanguage('tw')"
         >
-          <span>繁体中文</span>
+          <span>繁體中文</span>
           <img
             class="iconChose"
             :class="{ visibility: currLanguage != 'tw' }"
@@ -192,7 +192,7 @@
           />
         </div>
         <div
-          class="languageItem"
+          class="languageItem white01-bkg"
           :class="{ chosedLanguage: currLanguage == 'en' }"
           @click="changeLanguage('en')"
         >
@@ -205,7 +205,7 @@
         </div>
       </div>
       <!-- 是否开启日志 -->
-      <div class="item">
+      <div class="item flex-between common-font">
         <span>{{ $t("logRecording") }}</span>
         <div class="switch" :class="{ isChecked: logOpen }" @click="openLog">
           <span class="switchCore"></span>
@@ -285,12 +285,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.main {
-  width: 100%;
-  height: 100vh;
-  background: #121e29;
-  position: relative;
-}
 
 .headState {
   position: absolute;
@@ -299,10 +293,8 @@ export default {
   z-index: 99;
 
   .headTxt {
-    font-size: 1.9792vw;
-    font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
-    font-weight: normal;
-    color: #ffffff;
+    font-size: $size-47;
+    color: $white;
     line-height: 2.7083vw;
   }
 }
@@ -319,10 +311,8 @@ export default {
     left: 20%;
     width: 23.4167vw;
     height: 6.1667vw;
-    font-size: 1.8229vw;
-    font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
-    font-weight: normal;
-    color: #ffffff;
+    font-size: 1.8333vw;
+    color: $white;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -348,7 +338,7 @@ export default {
     left: 0;
     border-width: 6.1vw 3.3021vw 2.3021vw 0;
     border-style: solid;
-    border-color: #44d8fb transparent transparent transparent;
+    border-color: $light-blue transparent transparent transparent;
   }
 
   .iconConnect {
@@ -380,14 +370,10 @@ export default {
     background-color: rgba(255, 255, 255, 0.08);
     margin-bottom: 1.25vw;
     padding: 0 3.5vw 0 2.4583vw;
-    font-size: 1.7188vw;
-    font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
-    font-weight: normal;
-    color: #ffffff;
-    display: flex;
-    justify-content: space-between;
+    font-size: $size-41;
     align-items: center;
     border-radius: 0.25vw;
+    color: $white;
   }
 
   .expandLabel {
@@ -403,14 +389,12 @@ export default {
   }
 
   .itemTxt {
-    color: #44d8fb;
-    // margin-right: .625vw;
+    color: $light-blue;
   }
 
   .languageItem {
     width: 17.2396vw;
     height: 4.1667vw;
-    background: rgba(255, 255, 255, 0.1);
     border-radius: 0.2604vw;
     display: flex;
     justify-content: space-around;
@@ -419,7 +403,7 @@ export default {
 
   .chosedLanguage {
     background: rgba(68, 216, 251, 0.1);
-    border: 0.1042vw solid #44d8fb;
+    border: 0.1042vw solid $light-blue;
   }
 
   .iconChose {
@@ -443,15 +427,10 @@ export default {
   .powerBtn {
     width: 34.5vw;
     height: 4.1667vw;
-    background: #0075b8;
+    background: $base-bkg;
     border-radius: 2.0833vw;
-    font-size: 1.7083vw;
-    font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
-    font-weight: normal;
-    color: #ffffff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    font-size: $size-41;
+    color: $white;
     margin-left: 14.8333vw;
     margin-top: 2.4583vw;
   }
@@ -486,10 +465,6 @@ export default {
 .listBox::-webkit-scrollbar-corner {
   background-color: transparent;
 }
-
-// .listBox::-webkit-scrollbar {
-//     width: 0;
-// }
 
 .switch {
   display: inline-flex;
@@ -528,8 +503,8 @@ export default {
 }
 
 .switch.isChecked .switchCore {
-  border-color: #44d8fb;
-  background-color: #44d8fb;
+  border-color: $light-blue;
+  background-color: $light-blue;
 }
 
 .switch.isChecked .switchCore::after {
@@ -538,7 +513,7 @@ export default {
 }
 
 .el-slider__button {
-  width: 32px;
-  height: 32px;
+  width: 1.3333vw;
+  height: 1.3333vw;
 }
 </style>
