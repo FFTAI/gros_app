@@ -574,6 +574,7 @@ export default {
       this.promptBoxOpen("calibration");
     },
     doCalibration() {
+      this.isStand = false
       this.robotWs.robot.start();
       this.mode = "initial";
       setTimeout(() => {
@@ -604,7 +605,7 @@ export default {
     },
     //操控头部
     operateHead(pitch, yaw) {
-      console.log('头部。。。。。',pitch, yaw);
+      console.log("头部。。。。。", pitch, yaw);
       try {
         this.robotWs.robot.head(0, pitch, yaw);
       } catch (error) {
@@ -613,7 +614,7 @@ export default {
     },
     //操控身体
     operateBody(squat, rotate_waist) {
-      console.log('身体。。。。。',squat, rotate_waist);
+      console.log("身体。。。。。", squat, rotate_waist);
       try {
         this.robotWs.robot.body(squat, rotate_waist);
       } catch (error) {
