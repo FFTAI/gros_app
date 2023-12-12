@@ -249,7 +249,10 @@ export default {
               result = new TextDecoder().decode(value);
               console.log(result);
               if(result.includes("init!")){
-                _this.isReady = true;
+                reader.cancel();
+                setTimeout(() => {
+                  _this.isReady = true;
+                }, 3000);
               }
               process();
             });
@@ -286,7 +289,6 @@ export default {
     },
     //程序关闭
     shutDown() {
-      this.stateOff();
       this.robotWs.robot
         .control_svr_close()
         .then((response) => {

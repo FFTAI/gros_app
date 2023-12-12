@@ -89,14 +89,14 @@
           class="actionBox"
           v-else-if="controlExpand && controlModel == 'inPlace'"
         >
-          <div class="actionItem">
+          <!-- <div class="actionItem">
             <img
               class="actionImg"
               src="@/assets/images/icon_zero.png"
               @click="choseMode('zero')"
             />
             <div>{{ $t("zero") }}</div>
-          </div>
+          </div> -->
           <div class="actionItem">
             <img
               class="actionImg"
@@ -121,7 +121,7 @@
             />
             <div>{{ $t("greet") }}</div>
           </div>
-          <div class="actionItem">
+          <!-- <div class="actionItem">
             <img
               class="actionImg"
               src="@/assets/images/icon_nod.png"
@@ -136,7 +136,7 @@
               @click="choseMode('shake')"
             />
             <div>{{ $t("shake") }}</div>
-          </div>
+          </div> -->
           <div class="actionItem">
             <img
               class="actionImg"
@@ -355,7 +355,7 @@ export default {
             currentTime - this.lastMessageReceivedTime;
           // 如果超过了阈值3秒，认为连接断开
           const threshold = 3000;
-          console.log("sadahusfdh.............", timeSinceLastMessage);
+          console.log("websocketHeartBeat.............", timeSinceLastMessage);
           if (timeSinceLastMessage > threshold) {
             console.log("WebSocket connection might be disconnected.");
             this.robotWs.robot.enable_debug_state(2);
@@ -629,6 +629,7 @@ export default {
     changeControl(e) {
       if (e == "stand") {
         this.isStand = true;
+        this.isWalking = false;
         this.robotWs.robot.stand();
         this.controlExpand = false;
       } else {
