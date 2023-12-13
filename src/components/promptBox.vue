@@ -11,11 +11,12 @@
           src="@/assets/images/warning1.png"
         />
         <div class="promptTxt" :style="txtStyle">
-          <span v-if="prompt == 'closeSh'">{{ $t("closeShPrompt") }}</span>
+          <span v-if="prompt == 'closeProgram'">{{ $t("closeShPrompt") }}</span>
+          <span v-else-if="prompt == 'returnMain'">{{ $t("returnMain") }}</span>
           <span v-else-if="prompt == 'reconnect'">{{
             $t("reconnectPrompt")
           }}</span>
-          <span v-else-if="prompt == 'returnMain'">{{ $t("returnMain") }}</span>
+          <span v-else-if="prompt == 'powerOff'">{{ $t("powerOffTip") }}</span>
           <span v-else-if="prompt == 'calibration'">{{
             $t("calibrationTips")
           }}</span>
@@ -103,6 +104,7 @@ export default {
   .promptTxt {
     font-size: $size-35;
     display: inline-block;
+    margin: auto;
   }
 }
 

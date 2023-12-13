@@ -114,7 +114,7 @@
       >
         <span v-if="step == 'calibration'" class="circleTxt flex-center ct1">1</span>
         <img v-else class="finishImg" src="@/assets/images/icon_finish.png" />
-        <span>{{ $t("bootCalibration") }}</span>
+        <span>{{ $t("Calibration") }}</span>
       </div>
       <div
         :class="{
@@ -143,7 +143,7 @@
         <span v-if="connected && step != 'calibration'">{{
           $t("deviceConnected")
         }}</span>
-        <span v-else>{{ $t("deviceConnection") }}</span>
+        <span v-else>{{ $t("connection") }}</span>
       </div>
       <div
         v-if="!isReady"
@@ -156,7 +156,7 @@
         <span :class="step == 'startup' ? 'ct1' : 'ct4'" class="circleTxt flex-center"
           >3</span
         >
-        <span>{{ $t("programStartup") }}</span>
+        <span>{{ $t("startup") }}</span>
       </div>
       <div v-else class="btn finishBtn noIconBtn" @click="promptBoxOpen()">
         <span>{{ $t("programShutdown") }}</span>
@@ -171,7 +171,7 @@
     </div>
     <prompt-box
       v-if="promptVisible"
-      :prompt="'closeSh'"
+      :prompt="'closeProgram'"
       @cancel="promptBoxOpen()"
       @confirm="shutDown()"
     ></prompt-box>
@@ -193,7 +193,7 @@ export default {
     return {
       step: "calibration",
       calibrationDialog: false,
-      isReady: false,
+      isReady: true,
       promptVisible: false,
     };
   },

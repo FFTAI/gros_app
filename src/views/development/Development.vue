@@ -37,7 +37,7 @@
       </div>
       <!-- log日志 -->
       <div class="logBox" v-show="activated == 'log'">
-        <div class="logTitle common-font">{{ $t("logoFile") }}</div>
+        <div class="logTitle common-font">{{ $t("logFile") }}</div>
         <div class="logMain">
           <el-timeline>
             <el-timeline-item
@@ -67,7 +67,7 @@
           style="margin-left: 0.8854vw"
           @click="changeModel('log')"
         >
-          <span class="btnTxt common-font">{{ $t("logoFile") }}</span>
+          <span class="btnTxt common-font">{{ $t("logFile") }}</span>
         </div>
       </div>
     </div>

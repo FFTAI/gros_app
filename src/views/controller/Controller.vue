@@ -19,7 +19,7 @@
             <div class="arrow"></div>
           </div>
         </rtc-header>
-        <div class="headBox flex-column" v-if="headBoxVisible" ref="headBoxRef">
+        <div class="headBox flex-column" v-if="headBoxVisible">
           <div @click="changeMode('remoteMode')">
             {{ $t("remoteMode") }}
           </div>
@@ -156,7 +156,7 @@
         </div>
         <div
           class="actionBox"
-          v-else-if="controlExpand && controlModel == 'endGrasping'"
+          v-else-if="controlExpand && controlModel == 'grasping'"
         >
           <div class="actionItem">
             <img
@@ -223,15 +223,15 @@
             :class="[
               'choseBox',
               'txt',
-              controlModel != 'endGrasping'
+              controlModel != 'grasping'
                 ? ''
                 : controlExpand
                 ? 'choseBk'
                 : 'chose',
             ]"
-            @click="changeControl('endGrasping')"
+            @click="changeControl('grasping')"
           >
-            {{ $t("endGrasping") }}
+            {{ $t("grasping") }}
           </div>
         </div>
       </div>
@@ -274,7 +274,7 @@ export default {
       speed: 1, //当前速度档位 1-3
       current_speed: 0, //当前速度，默认0
       videoSrc: "", //摄像头视频路径
-      controlModel: "", //当前运动 gait:步态 inPlace:原地 endGrasping:末端抓取
+      controlModel: "", //当前运动 gait:步态 inPlace:原地 grasping:末端抓取
       controlExpand: false, //运动选择栏展开
       mode: "", //当前运动模式
       headBoxVisible: false, //模式选择框显隐
