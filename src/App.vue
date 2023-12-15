@@ -42,6 +42,7 @@ export default {
       });
       this.robotWs.setWs(robot);
       robot.on_connected(() => {
+        console.log('robotWs成功！')
         Bus.$emit("robotOnconnected");
         this.reWs = false;
       });
@@ -50,9 +51,11 @@ export default {
         Bus.$emit("robotOnmessage", currData);
       });
       robot.on_close(() => {
+        console.log('robotWs关闭！')
         this.reconnectWs();
       });
       robot.on_error(() => {
+        console.log('robotWs出错！')
         this.reconnectWs();
       });
     },

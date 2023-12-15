@@ -144,11 +144,11 @@
       </div>
       <div class="item flex-between common-font">
         <span>{{ $t("robotVersion") }}</span>
-        <span>V1.0.0</span>
+        <span>{{ robotVersion ? robotVersion : "V1.0.0" }}</span>
       </div>
       <div class="item flex-between common-font">
         <span>{{ $t("appVersion") }}</span>
-        <span>V1.1.42</span>
+        <span>V1.1.44</span>
       </div>
       <div
         class="item flex-between common-font"
@@ -212,10 +212,7 @@
         </div>
       </div>
     </div>
-    <prompt-box
-      :prompt="'reconnect'"
-      v-if="!connected"
-    ></prompt-box>
+    <prompt-box :prompt="'reconnect'" v-if="!connected"></prompt-box>
   </div>
 </template>
 
@@ -243,10 +240,12 @@ export default {
       microphoneOpen: true,
       speechOpen: false,
       selfCheckActivated: false,
+      robotVersion: "",
     };
   },
   mounted() {
     this.currLanguage = localStorage.getItem("lang");
+    this.getVersion();
   },
   methods: {
     changeTab(e) {
@@ -277,13 +276,27 @@ export default {
     },
     selfCheckExpand() {
       this.selfCheckActivated = !this.selfCheckActivated;
-    }
+    },
+    getVersion() {
+      this.$http
+        .request({
+          baseURL: process.env.VUE_APP_URL,
+          method: "GET",
+          url: "/system/version",
+        })
+        .then((response) => {
+          this.robotVersion = response.data.data.server;
+          console.log("success---version", response.data.data);
+        })
+        .catch((error) => {
+          console.log("error---version", error);
+        });
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-
 .headState {
   position: absolute;
   top: 1vw;

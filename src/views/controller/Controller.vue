@@ -121,7 +121,7 @@
             />
             <div>{{ $t("greet") }}</div>
           </div>
-          <!-- <div class="actionItem">
+          <div class="actionItem">
             <img
               class="actionImg"
               src="@/assets/images/icon_nod.png"
@@ -136,7 +136,7 @@
               @click="choseMode('shake')"
             />
             <div>{{ $t("shake") }}</div>
-          </div> -->
+          </div>
           <div class="actionItem">
             <img
               class="actionImg"
@@ -290,6 +290,7 @@ export default {
       promptVal: "",
       lastMessageReceivedTime: Date.now(),
       wsInterval: null,
+      reconnectWs: false
     };
   },
   created() {
@@ -353,11 +354,11 @@ export default {
           const currentTime = Date.now();
           const timeSinceLastMessage =
             currentTime - this.lastMessageReceivedTime;
-          // 如果超过了阈值3秒，认为连接断开
-          const threshold = 3000;
           console.log("websocketHeartBeat.............", timeSinceLastMessage);
-          if (timeSinceLastMessage > threshold) {
+          console.log(this.robotWs)
+          if (timeSinceLastMessage > 3000) {// 如果超过了阈值3秒，认为连接断开
             console.log("WebSocket connection might be disconnected.");
+            console.log(this.robotWs)
             this.robotWs.robot.enable_debug_state(2);
             clearInterval(this.wsInterval);
           }

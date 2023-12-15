@@ -112,7 +112,9 @@
         class="btn"
         @click="changeStep('connect')"
       >
-        <span v-if="step == 'calibration'" class="circleTxt flex-center ct1">1</span>
+        <span v-if="step == 'calibration'" class="circleTxt flex-center ct1"
+          >1</span
+        >
         <img v-else class="finishImg" src="@/assets/images/icon_finish.png" />
         <span>{{ $t("Calibration") }}</span>
       </div>
@@ -153,7 +155,9 @@
         }"
         class="btn"
       >
-        <span :class="step == 'startup' ? 'ct1' : 'ct4'" class="circleTxt flex-center"
+        <span
+          :class="step == 'startup' ? 'ct1' : 'ct4'"
+          class="circleTxt flex-center"
           >3</span
         >
         <span>{{ $t("startup") }}</span>
@@ -193,7 +197,7 @@ export default {
     return {
       step: "calibration",
       calibrationDialog: false,
-      isReady: true,
+      isReady: false,
       promptVisible: false,
     };
   },
@@ -234,44 +238,55 @@ export default {
       }
     },
     //程序启动
-    getStartup() {
+    async getStartup() {
       let _this = this;
-      fetch(process.env.VUE_APP_URL + "/robot/sdk_ctrl/start")
-        .then((response) => {
-          const reader = response.body.getReader();
-          let result = "";
-          function process() {
-            reader.read().then(({ done, value }) => {
-              if (done) {
-                console.log("处理结束");
-                return;
-              }
-              result = new TextDecoder().decode(value);
-              console.log(result);
-              if(result.includes("init!")){
-                reader.cancel();
-                setTimeout(() => {
-                  _this.isReady = true;
-                }, 3000);
-              }
-              process();
-            });
-          }
-          process();
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-      // this.$http.request({
-      //     timeout: 60000,
-      //     baseURL: process.env.VUE_APP_URL,
-      //     method: "GET",
-      //     url: "/robot/sdk_ctrl/start"
-      // }).then(response => {
-      //     console.log('start-response', response)
-      // }).catch(error => {
-      //     console.log('start-error', error)
-      // })
+      // fetch(process.env.VUE_APP_URL + "/robot/sdk_ctrl/start")
+      //   .then((response) => {
+      //     const reader = response.body.getReader();
+      //     let result = "";
+      //     function process() {
+      //       reader.read().then(({ done, value }) => {
+      //         if (done) {
+      //           console.log("处理结束");
+      //           return;
+      //         }
+      //         result = new TextDecoder().decode(value);
+      //         console.log(result);
+      //         if(result.includes("init!")){
+      //           reader.cancel();
+      //           setTimeout(() => {
+      //             _this.isReady = true;
+      //           }, 3000);
+      //         }
+      //         process();
+      //       });
+      //     }
+      //     process();
+      //   })
+      //   .catch((error) => {
+      //     console.error(error);
+      //   });
+
+      await this.$http.request({
+        // timeout: 30000,
+        baseURL: process.env.VUE_APP_URL,
+        method: "GET",
+        url: "/robot/sdk_ctrl/start",
+      });
+      setTimeout(() => {
+        this.robotWs.robot
+          .control_svr_status()
+          .then((res) => {
+            if (res.data.data) {
+              _this.isReady = true;
+            } else {
+              
+            }
+          })
+          .catch((err) => {
+            
+          });
+      }, 10000);
     },
     //打开开机初始示例图
     openDialog() {

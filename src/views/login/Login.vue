@@ -100,7 +100,18 @@ export default {
     },
     shutDown() {
       if (this.promptValue == "powerOff") {
-        
+        this.$http
+            .request({
+              baseURL: process.env.VUE_APP_URL,
+              method: "GET",
+              url: "/system/shutdown"
+            })
+            .then((response) => {
+              console.log('success---shutdown',response)
+            })
+            .catch((error) => {
+              console.log('error---shutdown',error)
+            });
       } else if (this.promptValue == "closeProgram") {
         this.robotWs.robot
           .control_svr_close()
