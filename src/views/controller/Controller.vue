@@ -990,6 +990,8 @@ export default {
   top: 1vw;
   left: 10.9375vw;
   z-index: 99;
+  display: flex;
+  align-items: center;
 
   .headTxt {
     font-size: 1.9792vw;
@@ -997,9 +999,7 @@ export default {
   }
 
   .arrow {
-    position: absolute;
-    top: 1.2vw;
-    left: 8.34vw;
+    margin-left: .5vw;
     width: 0;
     height: 0;
     background: linear-gradient(274deg, #1a1919 0%, #004c81 100%);

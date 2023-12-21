@@ -11,21 +11,23 @@
         class="openCalibration"
         src="@/assets/images/image_openCalibration.png"
       />
-      <div class="tips flex-center tip1" @click="openDialog()">
-        <span class="circleTxt flex-center ct1">3</span>
-        <span>{{ $t("startupTip1") }}</span>
-      </div>
-      <div class="tips flex-center tip2">
-        <span class="circleTxt flex-center ct2">4</span>
-        <span>{{ $t("startupTip2") }}</span>
-      </div>
-      <div class="tips flex-center tip3">
-        <span class="circleTxt flex-center ct2">1</span>
-        <span>{{ $t("startupTip3") }}</span>
-      </div>
-      <div class="tips flex-center tip4">
-        <span class="circleTxt flex-center ct2">2</span>
-        <span>{{ $t("startupTip4") }}</span>
+      <div class="tips">
+        <div class="flex-center tip1">
+          <span class="circleTxt flex-center ct2">1</span>
+          <span>{{ $t("startupTip3") }}</span>
+        </div>
+        <div class="flex-center tip2">
+          <span class="circleTxt flex-center ct2">2</span>
+          <span>{{ $t("startupTip4") }}</span>
+        </div>
+        <div class="flex-center tip3" @click="openDialog()">
+          <span class="circleTxt flex-center ct1">3</span>
+          <span>{{ $t("startupTip1") }}</span>
+        </div>
+        <div class="flex-center tip4">
+          <span class="circleTxt flex-center ct2">4</span>
+          <span>{{ $t("startupTip2") }}</span>
+        </div>
       </div>
       <div class="warning">
         {{ $t("startupWarning") }}
@@ -240,53 +242,53 @@ export default {
     //程序启动
     async getStartup() {
       let _this = this;
-      // fetch(process.env.VUE_APP_URL + "/robot/sdk_ctrl/start")
-      //   .then((response) => {
-      //     const reader = response.body.getReader();
-      //     let result = "";
-      //     function process() {
-      //       reader.read().then(({ done, value }) => {
-      //         if (done) {
-      //           console.log("处理结束");
-      //           return;
-      //         }
-      //         result = new TextDecoder().decode(value);
-      //         console.log(result);
-      //         if(result.includes("init!")){
-      //           reader.cancel();
-      //           setTimeout(() => {
-      //             _this.isReady = true;
-      //           }, 3000);
-      //         }
-      //         process();
-      //       });
-      //     }
-      //     process();
-      //   })
-      //   .catch((error) => {
-      //     console.error(error);
-      //   });
+      fetch(process.env.VUE_APP_URL + "/robot/sdk_ctrl/start")
+        .then((response) => {
+          const reader = response.body.getReader();
+          let result = "";
+          function process() {
+            reader.read().then(({ done, value }) => {
+              if (done) {
+                console.log("处理结束");
+                return;
+              }
+              result = new TextDecoder().decode(value);
+              console.log(result);
+              if (result.includes("init!")) {
+                reader.cancel();
+                setTimeout(() => {
+                  _this.isReady = true;
+                }, 3000);
+              }
+              process();
+            });
+          }
+          process();
+        })
+        .catch((error) => {
+          console.error(error);
+        });
 
-      await this.$http.request({
-        // timeout: 30000,
-        baseURL: process.env.VUE_APP_URL,
-        method: "GET",
-        url: "/robot/sdk_ctrl/start",
-      });
-      setTimeout(() => {
-        this.robotWs.robot
-          .control_svr_status()
-          .then((res) => {
-            if (res.data.data) {
-              _this.isReady = true;
-            } else {
-              
-            }
-          })
-          .catch((err) => {
-            
-          });
-      }, 10000);
+      // await this.$http.request({
+      //   // timeout: 30000,
+      //   baseURL: process.env.VUE_APP_URL,
+      //   method: "GET",
+      //   url: "/robot/sdk_ctrl/start",
+      // });
+      // setTimeout(() => {
+      //   this.robotWs.robot
+      //     .control_svr_status()
+      //     .then((res) => {
+      //       if (res.data.data) {
+      //         _this.isReady = true;
+      //       } else {
+
+      //       }
+      //     })
+      //     .catch((err) => {
+
+      //     });
+      // }, 10000);
     },
     //打开开机初始示例图
     openDialog() {
@@ -348,11 +350,11 @@ export default {
 }
 
 .tips {
-  position: absolute;
-  left: 46.0417vw;
-  top: 13.3333vw;
-  width: 10.5833vw;
-  height: 2.9583vw;
+  position: relative;
+  left: 46.25vw;
+  top: 11.6667vw;
+  width: 16.6667vw;
+  height: 22.5vw;
   font-size: $size-30;
 }
 
@@ -386,33 +388,38 @@ export default {
 }
 
 .tip1 {
-  background: #0086d1;
-  border-radius: 1.4583vw;
-  color: $white;
-  top: 26.5vw;
+  color: $light-blue;
+  position: absolute;
 }
 
 .tip2 {
-  top: 31.2vw;
   color: $light-blue;
+  position: absolute;
+  top: 3.4vw;
 }
 
 .tip3 {
-  color: $light-blue;
-  width: 11.8vw;
-  top: 11.1vw;
+  background: #0086d1;
+  border-radius: 1.4583vw;
+  width: 9.5833vw;
+  height: 2.5833vw;
+  color: $white;
+  position: absolute;
+  top: 15.5vw;
+  left: -0.7vw;
 }
 
 .tip4 {
+  position: absolute;
+  top: 20.1vw;
   color: $light-blue;
-  width: 14.3vw;
-  top: 15.3vw;
 }
 
 .warning {
   position: absolute;
   left: 27.4583vw;
-  top: 38.75vw;
+  top: 37.75vw;
+  width: 38.3333vw;
   font-size: $size-30;
   color: $white;
 }

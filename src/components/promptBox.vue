@@ -4,13 +4,13 @@
       <div class="title" v-if="prompt == 'returnMain'">
         {{ $t("tip") }}
       </div>
-      <div class="promptContent" :style="contentStyle">
+      <div class="promptContent">
         <img
           v-if="prompt != 'returnMain'"
           class="warningIcon"
           src="@/assets/images/warning1.png"
         />
-        <div class="promptTxt" :style="txtStyle">
+        <div class="promptTxt">
           <span v-if="prompt == 'closeProgram'">{{ $t("closeShPrompt") }}</span>
           <span v-else-if="prompt == 'returnMain'">{{ $t("returnMain") }}</span>
           <span v-else-if="prompt == 'reconnect'">{{
@@ -88,18 +88,20 @@ export default {
   background-size: cover;
   font-size: $size-41;
   color: $white;
+  display: flex;
+  justify-content: center;
 }
 
 .title {
   position: absolute;
   top: 1.7917vw;
-  left: 15.875vw;
 }
 
 .promptContent {
   display: flex;
   position: absolute;
   bottom: 11.2083vw;
+  padding: 0 3.5vw;
 
   .promptTxt {
     font-size: $size-35;
@@ -118,7 +120,6 @@ export default {
   width: 27.125vw;
   font-size: 1.7083vw;
   position: absolute;
-  left: 4.2917vw;
   bottom: 2.7083vw;
 }
 

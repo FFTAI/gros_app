@@ -12,7 +12,7 @@
     <div class="startContain flex-center" @click="startExplore()">
       <span class="startBtn common-font">{{ $t("beginToExplore") }}</span>
     </div>
-    <div class="headBox flex-column" v-if="headBoxVisible">
+    <div class="closeBox flex-column" :style="closeBoxWidth" v-if="headBoxVisible">
       <div style="margin-left: 2.2396vw" @click="off('powerOff')">
         <img
           style="width: 1.4063vw; height: 1.4583vw"
@@ -54,8 +54,18 @@ export default {
       getFlag: true,
       promptVisible: false,
       headBoxVisible: false,
-      promptValue: "",
+      promptValue: ""
     };
+  },
+  computed: {
+    closeBoxWidth() {
+      let style = { "width": "12.4479vw","font-size": "1.7083vw" };
+      if (this.$i18n.locale == "en"){
+        style.width = "14.8229vw";
+        style["font-size"] = "1.4583vw";
+      } 
+      return style;
+    },
   },
   methods: {
     startExplore() {
@@ -182,11 +192,10 @@ export default {
   bottom: 17.5vw;
   color: $white;
 }
-.headBox {
+.closeBox {
   position: absolute;
   top: 4.4443vw;
   right: 0;
-  width: 12.4479vw;
   height: 6.7188vw;
   padding: 1.3021vw 0;
   background: rgba(0, 75, 133, 0.3);
@@ -195,7 +204,6 @@ export default {
   z-index: 99;
   // align-items: center;
   justify-content: space-between;
-  font-size: $size-41;
   color: $white;
 
   .divider {
