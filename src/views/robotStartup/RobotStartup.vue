@@ -401,12 +401,12 @@ export default {
 .tip3 {
   background: #0086d1;
   border-radius: 1.4583vw;
-  width: 9.5833vw;
-  height: 2.5833vw;
+  width: 10.4167vw;
+  height: 3vw;
   color: $white;
   position: absolute;
   top: 15.5vw;
-  left: -0.7vw;
+  left: -0.5vw;
 }
 
 .tip4 {
