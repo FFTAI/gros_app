@@ -48,16 +48,6 @@ export default {
   components: { rtcHeader, promptBox },
   computed: {
     ...mapState(["connected"]),
-  },
-  data() {
-    return {
-      getFlag: true,
-      promptVisible: false,
-      headBoxVisible: false,
-      promptValue: ""
-    };
-  },
-  computed: {
     closeBoxWidth() {
       let style = { "width": "12.4479vw","font-size": "1.7083vw" };
       if (this.$i18n.locale == "en"){
@@ -66,6 +56,14 @@ export default {
       } 
       return style;
     },
+  },
+  data() {
+    return {
+      getFlag: true,
+      promptVisible: false,
+      headBoxVisible: false,
+      promptValue: ""
+    };
   },
   methods: {
     startExplore() {
