@@ -40,6 +40,11 @@ const routes = [
     component: () => import("../views/robotStartup/RobotStartup.vue"),
   },
   {
+    path: "/pointCloud",
+    name: "pointCloud",
+    component: () => import("../views/pointCloud/PointCloud.vue"),
+  },
+  {
     path: "/",
     redirect: "/startUp",
   },

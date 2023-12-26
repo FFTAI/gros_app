@@ -89,7 +89,7 @@
             <div>
               {{ $t("perceptualInteraction") }}
             </div>
-            <div>X</div>
+            <div @click="closeDrawer()">X</div>
           </div>
           <div class="operationDivider"></div>
           <div class="itemChild flex-between">
@@ -165,7 +165,7 @@
             <div>
               {{ $t("powerManagement") }}
             </div>
-            <div>X</div>
+            <div @click="closeDrawer()">X</div>
           </div>
           <div class="operationDivider"></div>
           <div class="itemChild flex-between">
@@ -237,7 +237,7 @@ export default {
   data() {
     return {
       cameraOn: true,
-      drawerVisible: true,
+      drawerVisible: false,
       chosedBar: 2,
       voiceOpen: false,
       volume: 60,
@@ -290,6 +290,9 @@ export default {
     },
     openLowPower() {
       this.lowPowerOpen = !this.lowPowerOpen
+    },
+    closeDrawer() {
+      this.drawerVisible = false
     }
   },
 };
