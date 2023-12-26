@@ -121,5 +121,14 @@
     "calibrationTips": "如未被懸吊保護，嚴禁恢復至初始狀態！",
     "loading": "加載中",
     "closeProgram": "關閉程序",
-    "powerOffTip": "確定是否關機"
+    "powerOffTip": "確定是否關機",
+    "perceptualInteraction": "感知交互",
+    "voice": "語音",
+    "volume": "音量",
+    "imageTransmission": "圖傳",
+    "perceptualPointCloud": "感知點雲",
+    "obstacleAvoidance": "避障",
+    "powerManagement": "電源管理",
+    "lowPowerMode": "低功耗模式",
+    "lowBatteryAlert": "低電量警報"
 }

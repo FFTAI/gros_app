@@ -121,5 +121,14 @@
     "calibrationTips": "Do not set robot to initial state without securing to the support stand.Proceed anyway?",
     "loading": "Loading",
     "closeProgram": "Close program",
-    "powerOffTip": "Are you sure to shut down the embedded computer?"
+    "powerOffTip": "Are you sure to shut down the embedded computer?",
+    "perceptualInteraction": "Perceptual Interaction",
+    "voice": "Voice",
+    "volume": "Volume",
+    "imageTransmission": "Image Transmission",
+    "perceptualPointCloud": "Perceptual point cloud",
+    "obstacleAvoidance": "Obstacle avoidance",
+    "powerManagement": "Power management",
+    "lowPowerMode": "Low power mode",
+    "lowBatteryAlert": "Low battery alert"
 }

@@ -29,7 +29,7 @@
       </div>
       <div class="divider spacing" v-if="camera"></div>
       <!-- 视频显示开关 -->
-      <div class="spacing" @click="openCamera()" v-if="camera">
+      <!-- <div class="spacing" @click="openCamera()" v-if="camera">
         <img
           class="inImg"
           src="@/assets/images/icon_cameraOn.png"
@@ -37,7 +37,7 @@
         />
         <img class="inImg" src="@/assets/images/icon_cameraOff.png" v-else />
       </div>
-      <div class="divider spacing" v-if="!isSetting"></div>
+      <div class="divider spacing" v-if="!isSetting"></div> -->
       <!-- 设置 -->
       <div class="spacing" v-if="!isSetting" @click="setting()">
         <img class="inImg" src="@/assets/images/icon_setting.png" />
@@ -54,6 +54,148 @@
       v-if="!connected && (isLogin || isSetting) && !isLoading && !isStartup"
     >
       <span class="connect common-font">{{ $t("connect") }}</span>
+    </div>
+    <div class="drawer" v-if="drawerVisible">
+      <div class="side">
+        <div
+          class="sideItem flex-center"
+          :class="{ chosed: chosedBar == 1 }"
+          @click="choseBar(1)"
+        >
+          <div class="bar" v-if="chosedBar == 1"></div>
+          <img class="sideImg" src="@/assets/images/icon_temperature.png" />
+        </div>
+        <div
+          class="sideItem flex-center"
+          :class="{ chosed: chosedBar == 2 }"
+          @click="choseBar(2)"
+        >
+          <div class="bar" v-if="chosedBar == 2"></div>
+          <img class="sideImg" src="@/assets/images/icon_temperature.png" />
+        </div>
+        <div
+          class="sideItem flex-center"
+          :class="{ chosed: chosedBar == 3 }"
+          @click="choseBar(3)"
+        >
+          <div class="bar" v-if="chosedBar == 3"></div>
+          <img class="sideImg" src="@/assets/images/icon_temperature.png" />
+        </div>
+      </div>
+      <div class="operation">
+        <div class="operationContent common-font" v-if="chosedBar == 2">
+          <div class="itemTitle flex-between">
+            <div></div>
+            <div>
+              {{ $t("perceptualInteraction") }}
+            </div>
+            <div>X</div>
+          </div>
+          <div class="operationDivider"></div>
+          <div class="itemChild flex-between">
+            <div>
+              {{ $t("voice") }}
+            </div>
+            <div
+              class="switch"
+              :class="{ isChecked: voiceOpen }"
+              @click="openVoice"
+            >
+              <span class="switchCore"></span>
+            </div>
+          </div>
+          <div class="operationDivider"></div>
+          <div class="itemChild flex-between">
+            <div>
+              {{ $t("volume") }}
+            </div>
+            <div class="flex-center">
+              <span style="margin-right: 1.1667vw;">{{ volume }}</span>
+              <el-slider
+                class="splider"
+                v-model="volume"
+                :show-tooltip="false"
+              ></el-slider>
+            </div>
+          </div>
+          <div class="operationDivider"></div>
+          <div style="height: 11.5833vw">
+            <div class="itemDb flex-between">
+              <div>
+                {{ $t("perceptualPointCloud") }}
+              </div>
+              <div
+                class="switch"
+                :class="{ isChecked: pointCloudOpen }"
+                @click="openPointCloud()"
+              >
+                <span class="switchCore"></span>
+              </div>
+            </div>
+            <div class="itemDb flex-between">
+              <div>
+                {{ $t("obstacleAvoidance") }}
+              </div>
+              <div
+                class="switch"
+                :class="{ isChecked: obstacleAvoidanceOpen }"
+                @click="openObstacleAvoidance()"
+              >
+                <span class="switchCore"></span>
+              </div>
+            </div>
+          </div>
+          <div class="operationDivider"></div>
+          <div class="itemChild flex-between">
+            <div>
+              {{ $t("imageTransmission") }}
+            </div>
+            <div
+              class="switch"
+              :class="{ isChecked: imageOpen }"
+              @click="openImage()"
+            >
+              <span class="switchCore"></span>
+            </div>
+          </div>
+        </div>
+        <div class="operationContent common-font" v-if="chosedBar == 3">
+          <div class="itemTitle flex-between">
+            <div></div>
+            <div>
+              {{ $t("powerManagement") }}
+            </div>
+            <div>X</div>
+          </div>
+          <div class="operationDivider"></div>
+          <div class="itemChild flex-between">
+            <div>
+              {{ $t("lowPowerMode") }}
+            </div>
+            <div
+              class="switch"
+              :class="{ isChecked: lowPowerOpen }"
+              @click="openLowPower()"
+            >
+              <span class="switchCore"></span>
+            </div>
+          </div>
+          <div class="operationDivider"></div>
+          <div class="itemChild flex-between">
+            <div>
+              {{ $t("lowBatteryAlert") }}
+            </div>
+            <div class="flex-center">
+              <span style="margin-right: 1.1667vw;">{{ batteryLimit }}</span>
+              <el-slider
+                class="splider"
+                v-model="batteryLimit"
+                :show-tooltip="false"
+              ></el-slider>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -95,6 +237,15 @@ export default {
   data() {
     return {
       cameraOn: true,
+      drawerVisible: true,
+      chosedBar: 2,
+      voiceOpen: false,
+      volume: 60,
+      pointCloudOpen: false,
+      obstacleAvoidanceOpen: false,
+      imageOpen: false,
+      lowPowerOpen: false,
+      batteryLimit: 20
     };
   },
   methods: {
@@ -102,9 +253,10 @@ export default {
       this.$emit("connect");
     },
     setting() {
-      this.$router.push({
-        name: "setting",
-      });
+      // this.$router.push({
+      //   name: "setting",
+      // });
+      this.drawerVisible = !this.drawerVisible;
     },
     routerReturn() {
       //如果是控制页跳过loading返回
@@ -121,6 +273,24 @@ export default {
     shutDown() {
       this.$emit("shutDown");
     },
+    choseBar(e) {
+      this.chosedBar = e;
+    },
+    openVoice() {
+      this.voiceOpen = !this.voiceOpen;
+    },
+    openPointCloud() {
+      this.pointCloudOpen = !this.pointCloudOpen;
+    },
+    openObstacleAvoidance() {
+      this.obstacleAvoidanceOpen = !this.obstacleAvoidanceOpen
+    },
+    openImage() {
+      this.imageOpen = !this.imageOpen;
+    },
+    openLowPower() {
+      this.lowPowerOpen = !this.lowPowerOpen
+    }
   },
 };
 </script>
@@ -248,5 +418,133 @@ export default {
     color: $white;
     z-index: 99;
   }
+}
+.drawer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  z-index: 9999;
+  display: flex;
+  .side {
+    width: 6.7917vw;
+    background: rgba(27, 26, 26, 0.9);
+    .sideItem {
+      width: 6.7917vw;
+      height: 6.7917vw;
+    }
+    .bar {
+      position: absolute;
+      left: 0;
+      width: 0.625vw;
+      height: 6.7917vw;
+      background: #44d8fb;
+    }
+    .chosed {
+      background: linear-gradient(
+        274deg,
+        rgba(0, 76, 129, 0.2) 0%,
+        #004c81 100%
+      );
+    }
+    .sideImg {
+      width: 2.4583vw;
+      height: 2.4583vw;
+    }
+  }
+  .operation {
+    width: 34.5vw;
+    padding: 0 2.4583vw;
+    background: linear-gradient(
+      274deg,
+      rgba(27, 26, 26, 0.7) 0%,
+      rgba(27, 37, 45, 0.7) 100%
+    );
+    .operationContent {
+      color: $white;
+      font-size: $size-35;
+      .itemTitle {
+        font-size: $size-41;
+        height: 6.7083vw;
+        align-items: center;
+      }
+      .operationDivider {
+        width: 34.5vw;
+        height: 0.0417vw;
+        background: rgba(255, 255, 255, 0.2);
+      }
+      .itemChild {
+        height: 7.375vw;
+        align-items: center;
+      }
+      .itemDb {
+        height: 5.7917vw;
+        align-items: center;
+      }
+    }
+  }
+}
+.switch {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  font-size: 0.5833vw;
+  line-height: 0.8333vw;
+  height: 2.7083vw;
+  vertical-align: middle;
+
+  .switchCore {
+    margin: 0;
+    position: relative;
+    width: 5.1667vw;
+    height: 2.5833vw;
+    outline: 0;
+    border-radius: 1.2917vw;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.2);
+    transition: border-color 0.3s, background-color 0.3s;
+    vertical-align: middle;
+  }
+
+  .switchCore::after {
+    content: "";
+    position: absolute;
+    top: 0.2083vw;
+    left: 0.0417vw;
+    border-radius: 100%;
+    transition: all 0.3s;
+    width: 2.1667vw;
+    height: 2.1667vw;
+    background-color: #fff;
+  }
+}
+
+.switch.isChecked .switchCore {
+  border-color: linear-gradient(230deg, #198bff 0%, #0086d1 100%);
+  background: linear-gradient(230deg, #198bff 0%, #0086d1 100%);
+}
+
+.switch.isChecked .switchCore::after {
+  left: 100%;
+  margin-left: -2.1667vw;
+}
+.splider {
+  width: 13.9583vw;
+}
+.el-slider__runway{
+  height: .5vw;
+  background-color: rgba(216, 216, 216, 0.2);
+}
+.el-slider__bar{
+  height: .5vw;
+}
+.el-slider__button-wrapper{
+  top: -0.8333vw;
+}
+.el-slider__button {
+  width: 2.0833vw;
+  height: 2.0833vw;
+  box-shadow: 0px 3 7px 0px rgba(63,63,63,0.5);
+  border: 0;
 }
 </style>
