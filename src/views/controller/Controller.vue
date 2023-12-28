@@ -1,10 +1,16 @@
 <template>
   <div>
     <div class="container">
-      <div ref="videoContainer" align="center" class="video-container">
-        <div class="video-item common-bkg">
-          <img class="video-play" :src="videoSrc" v-show="camera" />
-        </div>
+      <div class="pc" ref="sceneContainer"></div>
+      <div class="video-item">
+        <img class="video-play" :src="videoSrc" v-show="camera" />
+      </div>
+      <div class="humanModel flex-center">
+        <iframe
+          ref="unityIfm"
+          style="border: none; width: 26.0417vw; height: 32.4583vw"
+          src="Build/index.html"
+        ></iframe>
       </div>
       <div class="videoBox">
         <rtc-header
@@ -19,6 +25,7 @@
             <div class="arrow"></div>
           </div>
         </rtc-header>
+
         <div class="headBox flex-column" v-if="headBoxVisible">
           <div @click="changeMode('remoteMode')">
             {{ $t("remoteMode") }}
@@ -258,6 +265,9 @@ import rtcLeftControl from "@/components/rtcLeftControl.vue";
 import promptBox from "@/components/promptBox.vue";
 import { mapState } from "vuex";
 import Heartbeat from "@/mixin/Heartbeat";
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 export default {
   mixins: [Heartbeat],
   components: { RtcHeader, rtcLeftControl, promptBox },
@@ -266,7 +276,6 @@ export default {
   },
   data() {
     return {
-      videoContainer: "", //视频
       buttons: "", //当前按键
       joystickL: undefined, //左侧虚拟摇杆
       joystickR: undefined, //右侧虚拟摇杆
@@ -290,7 +299,11 @@ export default {
       promptVal: "",
       lastMessageReceivedTime: Date.now(),
       wsInterval: null,
-      reconnectWs: false
+      reconnectWs: false,
+      scene: null,
+      camera: null,
+      renderer: null,
+      points: null,
     };
   },
   created() {
@@ -306,12 +319,13 @@ export default {
     );
   },
   async mounted() {
-    this.videoContainer = this.$refs.videoContainer;
     window.onresize = () => {
       return (() => {
         this.screenWidth = document.body.clientWidth;
       })();
     };
+    this.createPc();
+    this.addHelpers();
     this.cameraOpen();
     this.startJoystickL(); //生成虚拟摇杆
     this.startJoystickR();
@@ -355,10 +369,11 @@ export default {
           const timeSinceLastMessage =
             currentTime - this.lastMessageReceivedTime;
           console.log("websocketHeartBeat.............", timeSinceLastMessage);
-          console.log(this.robotWs)
-          if (timeSinceLastMessage > 3000) {// 如果超过了阈值3秒，认为连接断开
+          console.log(this.robotWs);
+          if (timeSinceLastMessage > 3000) {
+            // 如果超过了阈值3秒，认为连接断开
             console.log("WebSocket connection might be disconnected.");
-            console.log(this.robotWs)
+            console.log(this.robotWs);
             this.robotWs.robot.enable_debug_state(2);
             clearInterval(this.wsInterval);
           }
@@ -575,7 +590,7 @@ export default {
       this.promptBoxOpen("calibration");
     },
     doCalibration() {
-      this.isStand = false
+      this.isStand = false;
       this.robotWs.robot.start();
       this.mode = "initial";
       setTimeout(() => {
@@ -776,18 +791,180 @@ export default {
     cancel() {
       this.promptVisible = !this.promptVisible;
     },
+    createPc() {
+      // 创建场景
+      this.scene = new THREE.Scene();
+
+      // 创建相机
+      this.camera = new THREE.PerspectiveCamera(
+        120,
+        this.$el.clientWidth / this.$el.clientHeight,
+        0.1,
+        1000
+      );
+      this.camera.position.set(0, 0, 15);
+
+      // 创建渲染器
+      this.renderer = new THREE.WebGLRenderer();
+      this.renderer.setSize(this.$el.clientWidth, this.$el.clientHeight);
+      this.$refs.sceneContainer.appendChild(this.renderer.domElement);
+
+      // 创建点云材质
+      const material = new THREE.PointsMaterial({
+        // color: 0x44d8fb,
+        size: 0.03,
+        vertexColors: true
+      });
+
+      material.onBeforeCompile = (shader) => {
+        //修改片元着色器
+        shader.fragmentShader = shader.fragmentShader.replace(
+          `gl_FragColor = vec4( outgoingLight, diffuseColor.a );`,
+          `float d=distance(gl_PointCoord, vec2(0.5, 0.5));if(d>0.5) discard;gl_FragColor = vec4(outgoingLight , diffuseColor.a );`
+        );
+      };
+
+      // 加载CSV格式的点云数据
+      const loader = new THREE.FileLoader();
+      loader.load("./dianyun.Csv", (data) => {
+        const geometry = new THREE.BufferGeometry();
+
+        // 将CSV数据解析为Float32Array
+        const lines = data.split("\n");
+        console.log("dianyun", lines);
+        const positions = new Float32Array(lines.length * 3);
+        const colors = new Float32Array(lines.length * 3);
+        let index = 0;
+
+        for (let i = 2; i < lines.length; i++) {
+          const parts = lines[i].split(",");
+          const reflectivity = parseFloat(parts[3] / 255);
+          colors[index] = reflectivity
+          colors[index+1] = 0.1
+          colors[index+2] = 1 - reflectivity
+          positions[index++] = parseFloat(parts[0]);
+          positions[index++] = parseFloat(parts[1]);
+          positions[index++] = parseFloat(parts[2]);
+        }
+
+        console.log(positions);
+        console.log(colors);
+
+        geometry.setAttribute(
+          "position",
+          new THREE.BufferAttribute(positions, 3)
+        );
+      //   const colors = new Float32Array([
+      //       1, 0, 0, //顶点1颜色
+      //       0, 1, 0, //顶点2颜色
+      //       0, 0, 1, //顶点3颜色
+      //       1, 1, 0, //顶点4颜色
+      //       0, 1, 1, //顶点5颜色
+      //       1, 0, 1, //顶点6颜色
+      //  ]);
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        const points = new THREE.Points(geometry, material);
+        this.scene.add(points);
+      });
+      // const geometry = new THREE.BufferGeometry();
+      // const positions = new Float32Array(0);
+      // const colors = new Float32Array(0);
+
+      // geometry.setAttribute(
+      //   "position",
+      //   new THREE.BufferAttribute(positions, 3)
+      // );
+      // geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+
+      // this.points = new THREE.Points(geometry, material);
+      // this.scene.add(this.points);
+
+      // 手动相机控制
+      const mouse = new THREE.Vector2();
+      const raycaster = new THREE.Raycaster();
+
+      let x = 0;
+      let y = 0;
+      let width = 0;
+      let height = 0;
+
+      const transformControls = new TransformControls(
+        this.camera,
+        this.renderer.domElement
+      );
+      this.renderer.domElement.addEventListener("mousemove", (event) => {
+        x = event.offsetX;
+        y = event.offsetY;
+        width = this.renderer.domElement.offsetWidth;
+        height = this.renderer.domElement.offsetHeight;
+        mouse.x = (x / width) * 2 - 1;
+        mouse.y = (-y * 2) / height + 1;
+      });
+      let transing = false;
+      transformControls.addEventListener("mouseDown", (event) => {
+        transing = true;
+        return event;
+      });
+      // 鼠标点击事件
+      this.renderer.domElement.addEventListener("click", (event) => {
+        if (transing) {
+          transing = false;
+          return;
+        }
+        this.scene.remove(transformControls); // 移除变换控制器
+        transformControls.enabled = false; // 停用变换控制器
+        raycaster.setFromCamera(mouse, this.camera); // 配置射线发射器，传递鼠标和相机对象
+        const intersection = raycaster.intersectObjects(this.scene.children); // 获取射线发射器捕获的模型列表，传进场景中模型，返回穿透
+        if (intersection.length) {
+          const object = intersection[0].object; // 获取第一个模型
+          console.log(object);
+          this.scene.add(transformControls); // 添加变换控制器
+          transformControls.enabled = true; // 启用变换控制器
+          transformControls.attach(object);
+        }
+        return event;
+      });
+
+      const orbitControls = new OrbitControls(
+        this.camera,
+        this.renderer.domElement
+      );
+      orbitControls.mouseButtons = {
+        // 设置鼠标功能键（轨道控制器）
+        LEFT: null, // 左键无事件
+        MIDDLE: THREE.MOUSE.DOLLY, // 中键缩放
+        RIGHT: THREE.MOUSE.ROTATE, // 右键旋转
+      };
+      this.scene.add(transformControls);
+
+      // 渲染循环
+      const animate = () => {
+        requestAnimationFrame(animate);
+        this.renderer.render(this.scene, this.camera);
+      };
+
+      animate();
+    },
+    addHelpers() {
+      // 添加网格辅助线
+      const gridHelper = new THREE.GridHelper(200, 20);
+      gridHelper.position.set(0, -10, 0);
+      this.scene.add(gridHelper);
+    },
   },
 };
 </script>
 <style lang="scss">
-.video-container {
-  display: flex;
-  justify-content: center;
-}
-
 .video-item {
-  position: fixed;
+  width: 18.4583vw;
+  height: 11.7083vw;
+  position: absolute;
+  right: 1.8333vw;
+  top: 6.1667vw;
   z-index: 3;
+  background-repeat: no-repeat;
+  background-size: cover;
   background-image: url("../../assets/images/image_cameraBk.jpg");
 }
 
@@ -805,8 +982,9 @@ export default {
 .videoBox {
   width: 100%;
   height: 100%;
-  background-color: cadetblue;
+  // background-color: cadetblue;
   position: absolute;
+  top: 0;
 }
 
 .stopControl {
@@ -999,7 +1177,7 @@ export default {
   }
 
   .arrow {
-    margin-left: .5vw;
+    margin-left: 0.5vw;
     width: 0;
     height: 0;
     background: linear-gradient(274deg, #1a1919 0%, #004c81 100%);
@@ -1044,5 +1222,17 @@ export default {
   z-index: 999;
   font-size: $size-30;
   color: $white;
+}
+.pc {
+  // position: absolute;
+  width: 100%;
+  height: 100vh;
+}
+.humanModel {
+  height: 33vw;
+  position: absolute;
+  bottom: 0;
+  left: 40%;
+  z-index: 999;
 }
 </style>

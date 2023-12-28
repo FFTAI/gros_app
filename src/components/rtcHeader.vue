@@ -36,8 +36,8 @@
           v-if="cameraOn"
         />
         <img class="inImg" src="@/assets/images/icon_cameraOff.png" v-else />
-      </div>
-      <div class="divider spacing" v-if="!isSetting"></div> -->
+      </div> -->
+      <!-- <div class="divider spacing" v-if="!isSetting"></div> -->
       <!-- 设置 -->
       <div class="spacing" v-if="!isSetting" @click="setting()">
         <img class="inImg" src="@/assets/images/icon_setting.png" />

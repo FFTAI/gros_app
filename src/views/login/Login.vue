@@ -12,7 +12,11 @@
     <div class="startContain flex-center" @click="startExplore()">
       <span class="startBtn common-font">{{ $t("beginToExplore") }}</span>
     </div>
-    <div class="closeBox flex-column" :style="closeBoxWidth" v-if="headBoxVisible">
+    <div
+      class="closeBox flex-column"
+      :style="closeBoxWidth"
+      v-if="headBoxVisible"
+    >
       <div style="margin-left: 2.2396vw" @click="off('powerOff')">
         <img
           style="width: 1.4063vw; height: 1.4583vw"
@@ -49,11 +53,11 @@ export default {
   computed: {
     ...mapState(["connected"]),
     closeBoxWidth() {
-      let style = { "width": "12.4479vw","font-size": "1.7083vw" };
-      if (this.$i18n.locale == "en"){
+      let style = { width: "12.4479vw", "font-size": "1.7083vw" };
+      if (this.$i18n.locale == "en") {
         style.width = "14.8229vw";
         style["font-size"] = "1.4583vw";
-      } 
+      }
       return style;
     },
   },
@@ -62,8 +66,25 @@ export default {
       getFlag: true,
       promptVisible: false,
       headBoxVisible: false,
-      promptValue: ""
+      promptValue: "",
     };
+  },
+  mounted() {
+    // this.$http
+    //   .request({
+    //     baseURL: process.env.VUE_APP_URL,
+    //     method: "GET",
+    //     url: "/robot/enable_basic_state",
+    //     params: {
+    //       frequence: 2,
+    //     },
+    //   })
+    //   .then((response) => {
+    //     console.log("success---enable_basic_state", response.data);
+    //   })
+    //   .catch((error) => {
+    //     console.log("error---enable_basic_state", error);
+    //   });
   },
   methods: {
     startExplore() {
@@ -109,17 +130,17 @@ export default {
     shutDown() {
       if (this.promptValue == "powerOff") {
         this.$http
-            .request({
-              baseURL: process.env.VUE_APP_URL,
-              method: "GET",
-              url: "/system/shutdown"
-            })
-            .then((response) => {
-              console.log('success---shutdown',response)
-            })
-            .catch((error) => {
-              console.log('error---shutdown',error)
-            });
+          .request({
+            baseURL: process.env.VUE_APP_URL,
+            method: "GET",
+            url: "/system/shutdown",
+          })
+          .then((response) => {
+            console.log("success---shutdown", response);
+          })
+          .catch((error) => {
+            console.log("error---shutdown", error);
+          });
       } else if (this.promptValue == "closeProgram") {
         this.robotWs.robot
           .control_svr_close()
