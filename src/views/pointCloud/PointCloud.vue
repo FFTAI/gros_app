@@ -24,9 +24,10 @@ export default {
   created() {},
   mounted() {
     this.$bus.$on("robotOnmessage", (data) => {
-      this.pcData.push(...data.data);
-      console.log("pointcloud===========", this.pcData);
-      this.updatePointCloud();
+      console.log("pcpcpc", data);
+      // this.pcData.push(...data.data);
+      // console.log("pointcloud===========", this.pcData);
+      this.updatePointCloud(data);
     });
     this.createPc();
     this.addHelpers();
@@ -57,8 +58,8 @@ export default {
 
       // 创建点云材质
       const material = new THREE.PointsMaterial({
-        color: 0x44d8fb,
-        size: 0.05,
+        size: 0.03,
+        vertexColors: true,
       });
 
       material.onBeforeCompile = (shader) => {
@@ -70,45 +71,59 @@ export default {
       };
 
       // 加载CSV格式的点云数据
-      const loader = new THREE.FileLoader();
-      loader.load("./dianyun.Csv", (data) => {
-        const geometry = new THREE.BufferGeometry();
+      // const loader = new THREE.FileLoader();
+      // loader.load("./dianyun.Csv", (data) => {
+      //   const geometry = new THREE.BufferGeometry();
 
-        // 将CSV数据解析为Float32Array
-        const lines = data.split("\n");
-        console.log("dianyun", lines);
-        const positions = new Float32Array(lines.length * 3);
-        let index = 0;
+      //   // 将CSV数据解析为Float32Array
+      //   const lines = data.split("\n");
+      //   console.log("dianyun", lines);
+      //   const positions = new Float32Array(lines.length * 3);
+      //   const colors = new Float32Array(lines.length * 3);
+      //   let index = 0;
 
-        for (let i = 2; i < lines.length; i++) {
-          const parts = lines[i].split(",");
-          positions[index++] = parseFloat(parts[0]);
-          positions[index++] = parseFloat(parts[1]);
-          positions[index++] = parseFloat(parts[2]);
-        }
+      //   for (let i = 2; i < lines.length; i++) {
+      //     const parts = lines[i].split(",");
+      //     const reflectivity = parseFloat(parts[3] / 255);
+      //     colors[index] = reflectivity;
+      //     colors[index + 1] = 0;
+      //     colors[index + 2] = 1 - reflectivity;
+      //     positions[index++] = parseFloat(parts[0]);
+      //     positions[index++] = parseFloat(parts[1]);
+      //     positions[index++] = parseFloat(parts[2]);
+      //   }
 
-        console.log(positions);
+      //   console.log(positions);
 
-        geometry.setAttribute(
-          "position",
-          new THREE.BufferAttribute(positions, 3)
-        );
+      //   geometry.setAttribute(
+      //     "position",
+      //     new THREE.BufferAttribute(positions, 3)
+      //   );
+      //   //   const colors = new Float32Array([
+      //   //       1, 0, 0, //顶点1颜色
+      //   //       0, 1, 0, //顶点2颜色
+      //   //       0, 0, 1, //顶点3颜色
+      //   //       1, 1, 0, //顶点4颜色
+      //   //       0, 1, 1, //顶点5颜色
+      //   //       1, 0, 1, //顶点6颜色
+      //   //  ]);
+      //   geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
 
-        const points = new THREE.Points(geometry, material);
-        this.scene.add(points);
-      });
-      // const geometry = new THREE.BufferGeometry();
-      // const positions = new Float32Array(0);
-      // const colors = new Float32Array(0);
+      //   const points = new THREE.Points(geometry, material);
+      //   this.scene.add(points);
+      // });
+      const geometry = new THREE.BufferGeometry();
+      const positions = new Float32Array(0);
+      const colors = new Float32Array(0);
 
-      // geometry.setAttribute(
-      //   "position",
-      //   new THREE.BufferAttribute(positions, 3)
-      // );
-      // geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+      geometry.setAttribute(
+        "position",
+        new THREE.BufferAttribute(positions, 3)
+      );
+      geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
 
-      // this.points = new THREE.Points(geometry, material);
-      // this.scene.add(this.points);
+      this.points = new THREE.Points(geometry, material);
+      this.scene.add(this.points);
 
       // 手动相机控制
       const mouse = new THREE.Vector2();
@@ -176,39 +191,43 @@ export default {
 
       animate();
     },
-    updatePointCloud() {
+    updatePointCloud(data) {
+      let receivedData = new Uint8Array(data);
+      let positions1 = [];
+      let reflectionValues = [];
+      console.log('二进制转2222',data,receivedData)
+      for (let i = 0; i < receivedData.length; i += 13) {
+        let x = new Float32Array(receivedData.buffer, i, 1)[0];
+        let y = new Float32Array(receivedData.buffer, i + 4, 1)[0];
+        let z = new Float32Array(receivedData.buffer, i + 8, 1)[0];
+        let reflection = new Uint8Array(receivedData.buffer, i + 12, 1)[0];
+
+        // 处理接收的数据，将其用于渲染或其他操作
+        positions1.push([x, y, z]);
+        reflectionValues.push(reflection);
+      }
+      console.log('二进制转。。。',reflectionValues)
+
       const geometry = this.points.geometry;
       const positions = new Float32Array(this.pcData.length * 3);
       const colors = new Float32Array(this.pcData.length * 3);
       let index = 0;
 
       this.pcData.forEach((point) => {
+        const reflectivity = parseFloat(point.f / 255);
+        colors[index] = reflectivity;
+        colors[index + 1] = 0;
+        colors[index + 2] = 1 - reflectivity;
         positions[index++] = point.x;
         positions[index++] = point.y;
         positions[index++] = point.z;
-
-        const reflectivity = point.r / 255;
-        colors[index - 3] = reflectivity;
-        colors[index - 2] = 0;
-        colors[index - 1] = 1 - reflectivity;
       });
 
       geometry.setAttribute(
         "position",
         new THREE.BufferAttribute(positions, 3)
       );
-      // geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-      const colors11 = new Float32Array([
-            1, 0, 0, //顶点1颜色
-            0, 1, 0, //顶点2颜色
-            0, 0, 1, //顶点3颜色
-            1, 1, 0, //顶点4颜色
-            0, 1, 1, //顶点5颜色
-            1, 0, 1, //顶点6颜色
-       ]);
-       console.log(colors11)
-      console.log(colors)
-      geometry.attributes.color = new THREE.BufferAttribute(colors, 3)
+      geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
 
       geometry.attributes.position.needsUpdate = true;
       geometry.attributes.color.needsUpdate = true;
@@ -218,7 +237,6 @@ export default {
       const gridHelper = new THREE.GridHelper(200, 20);
       gridHelper.position.set(0, -10, 0);
       this.scene.add(gridHelper);
-
     },
   },
 };

@@ -9,8 +9,30 @@
     <div class="humanBody">
       <img class="openHuman" src="@/assets/images/image_onOpen.png" />
     </div>
-    <div class="startContain flex-center" @click="startExplore()">
+    <!-- <div class="startContain flex-center" @click="startExplore()">
       <span class="startBtn common-font">{{ $t("beginToExplore") }}</span>
+    </div> -->
+    <div class="menuBox">
+      <div class="menuItem">
+        <img class="menuImg" src="@/assets/images/icon_single.png" />
+        <span class="menuValzh">单人模式</span>
+        <span class="menuValen">Single Mode</span>
+      </div>
+      <div class="menuItem">
+        <img class="menuImg" src="@/assets/images/icon_multi.png" />
+        <span class="menuValzh">多人模式</span>
+        <span class="menuValen">Multiplay Mode</span>
+      </div>
+      <div class="menuItem">
+        <img class="menuImg" src="@/assets/images/icon_lab.png" />
+        <span class="menuValzh">实验室</span>
+        <span class="menuValen">Laboratory</span>
+      </div>
+      <div class="menuItem">
+        <img class="menuImg" src="@/assets/images/icon_guide.png" />
+        <span class="menuValzh">指引</span>
+        <span class="menuValen">Guide</span>
+      </div>
     </div>
     <div
       class="closeBox flex-column"
@@ -181,12 +203,12 @@ export default {
 .humanBody {
   position: absolute;
   bottom: 0;
-  left: 15.2917vw;
+  left: 10vw;
 }
 
 .openHuman {
-  height: 38.0417vw;
-  width: 27.0833vw;
+  height: 40.375vw;
+  width: 30.625vw;
 }
 
 .startContain {
@@ -231,6 +253,48 @@ export default {
     background: $white;
     opacity: 0.1;
     align-self: center;
+  }
+}
+.menuBox {
+  position: absolute;
+  right: 8.625vw;
+  top: 11.125vw;
+  width: 38.75vw;
+  height: 26.5vw;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 44px;
+  .menuItem {
+    position: relative;
+    background-image: url("../../assets/images/btn_startCard.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 18.4583vw;
+    height: 12.3333vw;
+    flex: 1 0 calc(50% - 44px);
+    .menuImg {
+      width: 2.4583vw;
+      height: 2.4583vw;
+      padding: 1.8333vw 0 0 2.3333vw;
+    }
+    .menuValzh {
+      font-size: 1.9583vw;
+      font-family: AlibabaPuHuiTiM;
+      color: $white;
+      position: absolute;
+      right: 2.4583vw;
+      bottom: 3.4583vw;
+    }
+    .menuValen {
+      font-size: 1.125vw;
+      font-family: Roboto, Roboto;
+      font-weight: 500;
+      color: $white;
+      position: absolute;
+      right: 2.4583vw;
+      bottom: 1.9167vw;
+      opacity: 0.5;
+    }
   }
 }
 </style>

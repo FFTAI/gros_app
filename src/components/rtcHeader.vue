@@ -63,7 +63,7 @@
           @click="choseBar(1)"
         >
           <div class="bar" v-if="chosedBar == 1"></div>
-          <img class="sideImg" src="@/assets/images/icon_temperature.png" />
+          <img class="sideImg" src="@/assets/images/icon_control.png" />
         </div>
         <div
           class="sideItem flex-center"
@@ -71,7 +71,7 @@
           @click="choseBar(2)"
         >
           <div class="bar" v-if="chosedBar == 2"></div>
-          <img class="sideImg" src="@/assets/images/icon_temperature.png" />
+          <img class="sideImg" src="@/assets/images/icon_perception.png" />
         </div>
         <div
           class="sideItem flex-center"
@@ -79,7 +79,7 @@
           @click="choseBar(3)"
         >
           <div class="bar" v-if="chosedBar == 3"></div>
-          <img class="sideImg" src="@/assets/images/icon_temperature.png" />
+          <img class="sideImg" src="@/assets/images/icon_power.png" />
         </div>
       </div>
       <div class="operation">
@@ -89,7 +89,9 @@
             <div>
               {{ $t("perceptualInteraction") }}
             </div>
-            <div @click="closeDrawer()">X</div>
+            <div @click="closeDrawer()">
+              <img class="closeImg" src="@/assets/images/icon_close.png" />
+            </div>
           </div>
           <div class="operationDivider"></div>
           <div class="itemChild flex-between">
@@ -110,7 +112,7 @@
               {{ $t("volume") }}
             </div>
             <div class="flex-center">
-              <span style="margin-right: 1.1667vw;">{{ volume }}</span>
+              <span style="margin-right: 1.1667vw">{{ volume }}</span>
               <el-slider
                 class="splider"
                 v-model="volume"
@@ -165,7 +167,9 @@
             <div>
               {{ $t("powerManagement") }}
             </div>
-            <div @click="closeDrawer()">X</div>
+            <div @click="closeDrawer()">
+              <img class="closeImg" src="@/assets/images/icon_close.png" />
+            </div>
           </div>
           <div class="operationDivider"></div>
           <div class="itemChild flex-between">
@@ -186,7 +190,7 @@
               {{ $t("lowBatteryAlert") }}
             </div>
             <div class="flex-center">
-              <span style="margin-right: 1.1667vw;">{{ batteryLimit }}</span>
+              <span style="margin-right: 1.1667vw">{{ batteryLimit }}</span>
               <el-slider
                 class="splider"
                 v-model="batteryLimit"
@@ -245,7 +249,7 @@ export default {
       obstacleAvoidanceOpen: false,
       imageOpen: false,
       lowPowerOpen: false,
-      batteryLimit: 20
+      batteryLimit: 20,
     };
   },
   methods: {
@@ -283,17 +287,17 @@ export default {
       this.pointCloudOpen = !this.pointCloudOpen;
     },
     openObstacleAvoidance() {
-      this.obstacleAvoidanceOpen = !this.obstacleAvoidanceOpen
+      this.obstacleAvoidanceOpen = !this.obstacleAvoidanceOpen;
     },
     openImage() {
       this.imageOpen = !this.imageOpen;
     },
     openLowPower() {
-      this.lowPowerOpen = !this.lowPowerOpen
+      this.lowPowerOpen = !this.lowPowerOpen;
     },
     closeDrawer() {
-      this.drawerVisible = false
-    }
+      this.drawerVisible = false;
+    },
   },
 };
 </script>
@@ -486,6 +490,10 @@ export default {
       }
     }
   }
+  .closeImg {
+    width: 2.0833vw;
+    height: 2.0833vw;
+  }
 }
 .switch {
   display: inline-flex;
@@ -534,20 +542,20 @@ export default {
 .splider {
   width: 13.9583vw;
 }
-.el-slider__runway{
-  height: .5vw;
+.el-slider__runway {
+  height: 0.5vw;
   background-color: rgba(216, 216, 216, 0.2);
 }
-.el-slider__bar{
-  height: .5vw;
+.el-slider__bar {
+  height: 0.5vw;
 }
-.el-slider__button-wrapper{
+.el-slider__button-wrapper {
   top: -0.8333vw;
 }
 .el-slider__button {
   width: 2.0833vw;
   height: 2.0833vw;
-  box-shadow: 0px 3 7px 0px rgba(63,63,63,0.5);
+  box-shadow: 0px 3 7px 0px rgba(63, 63, 63, 0.5);
   border: 0;
 }
 </style>

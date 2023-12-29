@@ -8,8 +8,8 @@
       <div class="humanModel flex-center">
         <iframe
           ref="unityIfm"
-          style="border: none; width: 26.0417vw; height: 32.4583vw"
-          src="Build/index.html"
+          style="border: none; width: 35vw; height: 37vw;margin-top: 35vw;"
+          src="Build/index2.html"
         ></iframe>
       </div>
       <div class="videoBox">
@@ -816,14 +816,6 @@ export default {
         vertexColors: true
       });
 
-      material.onBeforeCompile = (shader) => {
-        //修改片元着色器
-        shader.fragmentShader = shader.fragmentShader.replace(
-          `gl_FragColor = vec4( outgoingLight, diffuseColor.a );`,
-          `float d=distance(gl_PointCoord, vec2(0.5, 0.5));if(d>0.5) discard;gl_FragColor = vec4(outgoingLight , diffuseColor.a );`
-        );
-      };
-
       // 加载CSV格式的点云数据
       const loader = new THREE.FileLoader();
       loader.load("./dianyun.Csv", (data) => {
@@ -840,7 +832,7 @@ export default {
           const parts = lines[i].split(",");
           const reflectivity = parseFloat(parts[3] / 255);
           colors[index] = reflectivity
-          colors[index+1] = 0.1
+          colors[index+1] = 0
           colors[index+2] = 1 - reflectivity
           positions[index++] = parseFloat(parts[0]);
           positions[index++] = parseFloat(parts[1]);
@@ -854,14 +846,6 @@ export default {
           "position",
           new THREE.BufferAttribute(positions, 3)
         );
-      //   const colors = new Float32Array([
-      //       1, 0, 0, //顶点1颜色
-      //       0, 1, 0, //顶点2颜色
-      //       0, 0, 1, //顶点3颜色
-      //       1, 1, 0, //顶点4颜色
-      //       0, 1, 1, //顶点5颜色
-      //       1, 0, 1, //顶点6颜色
-      //  ]);
         geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
         const points = new THREE.Points(geometry, material);
@@ -1229,10 +1213,12 @@ export default {
   height: 100vh;
 }
 .humanModel {
-  height: 33vw;
+  height: 37vw;
   position: absolute;
   bottom: 0;
-  left: 40%;
+  transform: translate(-50%, 0);
+  left: 50%;
   z-index: 999;
+  overflow: hidden;
 }
 </style>
