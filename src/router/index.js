@@ -40,6 +40,11 @@ const routes = [
     component: () => import("../views/robotStartup/RobotStartup.vue"),
   },
   {
+    path: "/selectRobot",
+    name: "selectRobot",
+    component: () => import("../views/selectRobot/SelectRobot.vue"),
+  },
+  {
     path: "/pointCloud",
     name: "pointCloud",
     component: () => import("../views/pointCloud/PointCloud.vue"),

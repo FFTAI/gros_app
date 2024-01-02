@@ -130,5 +130,6 @@
     "obstacleAvoidance": "Obstacle avoidance",
     "powerManagement": "Power management",
     "lowPowerMode": "Low power mode",
-    "lowBatteryAlert": "Low battery alert"
+    "lowBatteryAlert": "Low battery alert",
+    "selectRobotModel": "Select robot model"
 }

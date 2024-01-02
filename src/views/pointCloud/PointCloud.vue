@@ -6,7 +6,6 @@
 
 <script>
 import * as THREE from "three";
-
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 
@@ -24,9 +23,8 @@ export default {
   created() {},
   mounted() {
     this.$bus.$on("robotOnmessage", (data) => {
-      console.log("pcpcpc", data);
-      // this.pcData.push(...data.data);
-      // console.log("pointcloud===========", this.pcData);
+      this.pcData.push(...data.data);
+      console.log("pointcloud===========", this.pcData);
       this.updatePointCloud(data);
     });
     this.createPc();
@@ -192,21 +190,31 @@ export default {
       animate();
     },
     updatePointCloud(data) {
-      let receivedData = new Uint8Array(data);
-      let positions1 = [];
-      let reflectionValues = [];
-      console.log('二进制转2222',data,receivedData)
-      for (let i = 0; i < receivedData.length; i += 13) {
-        let x = new Float32Array(receivedData.buffer, i, 1)[0];
-        let y = new Float32Array(receivedData.buffer, i + 4, 1)[0];
-        let z = new Float32Array(receivedData.buffer, i + 8, 1)[0];
-        let reflection = new Uint8Array(receivedData.buffer, i + 12, 1)[0];
+      // const points = ndarray(data, [20000, 4]);
+      // console.log(points)
 
-        // 处理接收的数据，将其用于渲染或其他操作
-        positions1.push([x, y, z]);
-        reflectionValues.push(reflection);
-      }
-      console.log('二进制转。。。',reflectionValues)
+      //       for (let i = 0; i < num_points; i++) {
+      //     const x = points.get(i, 0);  // X coordinate
+      //     const y = points.get(i, 1);  // Y coordinate
+      //     const z = points.get(i, 2);  // Z coordinate
+      //     const intensity = points.get(i, 3);  // Intensity
+      // }
+      // let receivedData = new TextDecoder().decode(new Uint8Array(data));
+      // let positions1 = [];
+      // let reflectionValues = [];
+      // console.log('二进制转2222',data)
+      // console.log('二进制转3333',receivedData)
+      // for (let i = 0; i < receivedData.length; i += 13) {
+      //   let x = new Float32Array(receivedData.buffer, i, 1)[0];
+      //   let y = new Float32Array(receivedData.buffer, i + 4, 1)[0];
+      //   let z = new Float32Array(receivedData.buffer, i + 8, 1)[0];
+      //   let reflection = new Uint8Array(receivedData.buffer, i + 12, 1)[0];
+
+      //   // 处理接收的数据，将其用于渲染或其他操作
+      //   positions1.push([x, y, z]);
+      //   reflectionValues.push(reflection);
+      // }
+      // console.log('二进制转。。。',reflectionValues)
 
       const geometry = this.points.geometry;
       const positions = new Float32Array(this.pcData.length * 3);
@@ -214,13 +222,13 @@ export default {
       let index = 0;
 
       this.pcData.forEach((point) => {
-        const reflectivity = parseFloat(point.f / 255);
+        const reflectivity = parseFloat(point[3] / 255);
         colors[index] = reflectivity;
         colors[index + 1] = 0;
         colors[index + 2] = 1 - reflectivity;
-        positions[index++] = point.x;
-        positions[index++] = point.y;
-        positions[index++] = point.z;
+        positions[index++] = point[0];
+        positions[index++] = point[1];
+        positions[index++] = point[2];
       });
 
       geometry.setAttribute(

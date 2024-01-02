@@ -130,5 +130,6 @@
     "obstacleAvoidance": "避障",
     "powerManagement": "电源管理",
     "lowPowerMode": "低功耗模式",
-    "lowBatteryAlert": "低电量警报"
+    "lowBatteryAlert": "低电量警报",
+    "selectRobotModel": "选择机器人型号"
 }
