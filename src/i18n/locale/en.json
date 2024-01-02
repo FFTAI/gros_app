@@ -131,5 +131,6 @@
     "powerManagement": "Power management",
     "lowPowerMode": "Low power mode",
     "lowBatteryAlert": "Low battery alert",
-    "selectRobotModel": "Select robot model"
+    "selectRobotModel": "Select robot model",
+    "adjustPosture": "Adjust the robot's front, back, left, and right posture"
 }

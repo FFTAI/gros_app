@@ -8,7 +8,7 @@
       <div class="humanModel flex-center">
         <iframe
           ref="unityIfm"
-          style="border: none; width: 35vw; height: 37vw;margin-top: 35vw;"
+          style="border: none; width: 35vw; height: 37vw; margin-top: 35vw"
           src="Build/index2.html"
         ></iframe>
       </div>
@@ -255,6 +255,13 @@
         @cancel="cancel()"
         @confirm="confirm()"
       ></prompt-box>
+      <div class="wrapper adjustRobot" v-if="adjustVisible">
+        <img
+          class="directionImg"
+          src="@/assets/images/image_imuDirection.png"
+        />
+        <span class="directonTxt">{{ $t("adjustPosture") }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -304,6 +311,7 @@ export default {
       camera: null,
       renderer: null,
       points: null,
+      adjustVisible: false,
     };
   },
   created() {
@@ -813,7 +821,7 @@ export default {
       const material = new THREE.PointsMaterial({
         // color: 0x44d8fb,
         size: 0.03,
-        vertexColors: true
+        vertexColors: true,
       });
 
       // 加载CSV格式的点云数据
@@ -831,9 +839,9 @@ export default {
         for (let i = 2; i < lines.length; i++) {
           const parts = lines[i].split(",");
           const reflectivity = parseFloat(parts[3] / 255);
-          colors[index] = reflectivity
-          colors[index+1] = 0
-          colors[index+2] = 1 - reflectivity
+          colors[index] = reflectivity;
+          colors[index + 1] = 0;
+          colors[index + 2] = 1 - reflectivity;
           positions[index++] = parseFloat(parts[0]);
           positions[index++] = parseFloat(parts[1]);
           positions[index++] = parseFloat(parts[2]);
@@ -846,7 +854,7 @@ export default {
           "position",
           new THREE.BufferAttribute(positions, 3)
         );
-        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
 
         const points = new THREE.Points(geometry, material);
         this.scene.add(points);
@@ -1220,5 +1228,30 @@ export default {
   left: 50%;
   z-index: 999;
   overflow: hidden;
+}
+.adjustRobot {
+  width: 49.25vw;
+  height: 30.7917vw;
+  background-image: url("../../assets/images/image_adjustBkg.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: absolute;
+  top: 7.125vw;
+  left: 25.375vw;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  .directionImg {
+    width: 18.4583vw;
+    height: 18.4583vw;
+    margin-top: 3.375vw;
+  }
+  .directonTxt {
+    font-size: $size-41;
+    font-family: AlibabaPuHuiTiM;
+    color: $white;
+    margin-top: 3.375vw;
+  }
 }
 </style>

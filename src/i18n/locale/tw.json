@@ -131,5 +131,6 @@
     "powerManagement": "電源管理",
     "lowPowerMode": "低功耗模式",
     "lowBatteryAlert": "低電量警報",
-    "selectRobotModel": "選擇機器人型號"
+    "selectRobotModel": "選擇機器人型號",
+    "adjustPosture": "調整機器人前後左右姿勢"
 }
