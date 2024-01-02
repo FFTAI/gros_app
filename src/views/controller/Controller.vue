@@ -248,6 +248,13 @@
         @cancel="cancel()"
         @confirm="confirm()"
       ></prompt-box>
+      <div class="wrapper adjustRobot" v-if="adjustVisible">
+        <img
+          class="directionImg"
+          src="@/assets/images/image_imuDirection.png"
+        />
+        <span class="directonTxt">{{ $t("adjustPosture") }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -290,7 +297,8 @@ export default {
       promptVal: "",
       lastMessageReceivedTime: Date.now(),
       wsInterval: null,
-      reconnectWs: false
+      reconnectWs: false,
+      adjustVisible: true,
     };
   },
   created() {
@@ -355,10 +363,11 @@ export default {
           const timeSinceLastMessage =
             currentTime - this.lastMessageReceivedTime;
           console.log("websocketHeartBeat.............", timeSinceLastMessage);
-          console.log(this.robotWs)
-          if (timeSinceLastMessage > 3000) {// 如果超过了阈值3秒，认为连接断开
+          console.log(this.robotWs);
+          if (timeSinceLastMessage > 3000) {
+            // 如果超过了阈值3秒，认为连接断开
             console.log("WebSocket connection might be disconnected.");
-            console.log(this.robotWs)
+            console.log(this.robotWs);
             this.robotWs.robot.enable_debug_state(2);
             clearInterval(this.wsInterval);
           }
@@ -575,7 +584,7 @@ export default {
       this.promptBoxOpen("calibration");
     },
     doCalibration() {
-      this.isStand = false
+      this.isStand = false;
       this.robotWs.robot.start();
       this.mode = "initial";
       setTimeout(() => {
@@ -999,7 +1008,7 @@ export default {
   }
 
   .arrow {
-    margin-left: .5vw;
+    margin-left: 0.5vw;
     width: 0;
     height: 0;
     background: linear-gradient(274deg, #1a1919 0%, #004c81 100%);
@@ -1044,5 +1053,30 @@ export default {
   z-index: 999;
   font-size: $size-30;
   color: $white;
+}
+.adjustRobot {
+  width: 49.25vw;
+  height: 30.7917vw;
+  background-image: url("../../assets/images/image_adjustBkg.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: absolute;
+  top: 7.125vw;
+  left: 25.375vw;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  .directionImg {
+    width: 18.4583vw;
+    height: 18.4583vw;
+    margin-top: 3.375vw;
+  }
+  .directonTxt {
+    font-size: $size-41;
+    font-family: AlibabaPuHuiTiM;
+    color: $white;
+    margin-top: 3.375vw;
+  }
 }
 </style>

@@ -121,5 +121,6 @@
     "calibrationTips": "如未被悬吊保护，严禁恢复至初始状态！",
     "loading": "加载中",
     "closeProgram": "关闭程序",
-    "powerOffTip": "确定是否关机"
+    "powerOffTip": "确定是否关机",
+    "adjustPosture": "调整机器人前后左右姿势"
 }
