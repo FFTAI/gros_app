@@ -48,7 +48,11 @@ export default {
       });
       robot.on_message((data) => {
         var currData = JSON.parse(data.data);
-        Bus.$emit("robotOnmessage", currData);
+        if(currData.function == "basic_state"){
+          Bus.$emit("basicStateMsg", currData);
+        }else{
+          Bus.$emit("robotOnmessage", currData);
+        }
       });
       robot.on_close(() => {
         console.log('robotWs关闭！')

@@ -132,5 +132,7 @@
     "lowPowerMode": "低功耗模式",
     "lowBatteryAlert": "低电量警报",
     "selectRobotModel": "选择机器人型号",
-    "adjustPosture": "调整机器人前后左右姿势"
+    "adjustPosture": "调整机器人前后左右姿势",
+    "connectionMode": "连接模式",
+    "connectionTips": "请在网络设置中连接机器人Wi-Fi"
 }

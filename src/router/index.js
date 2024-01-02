@@ -45,6 +45,11 @@ const routes = [
     component: () => import("../views/selectRobot/SelectRobot.vue"),
   },
   {
+    path: "/connectionMode",
+    name: "connectionMode",
+    component: () => import("../views/connectionMode/ConnectionMode.vue"),
+  },
+  {
     path: "/pointCloud",
     name: "pointCloud",
     component: () => import("../views/pointCloud/PointCloud.vue"),

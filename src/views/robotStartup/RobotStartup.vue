@@ -193,7 +193,7 @@ export default {
   mixins: [Heartbeat],
   components: { rtcHeader, promptBox },
   computed: {
-    ...mapState(["connected"]),
+    ...mapState(["connected","robotInit"]),
   },
   data() {
     return {
@@ -258,6 +258,7 @@ export default {
                 reader.cancel();
                 setTimeout(() => {
                   _this.isReady = true;
+                  _this.$store.commit("setRobotInit", true);
                 }, 3000);
               }
               process();

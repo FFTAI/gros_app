@@ -19,21 +19,29 @@
     >
       <div class="divider" v-if="isController"></div>
       <!-- 机器人温度 -->
-      <div class="iconBox flex-center" style="width: 8.625vw" v-if="isController">
+      <div
+        class="flex-center"
+        style="padding: 0 1.375vw;"
+        v-if="isController"
+      >
         <img class="inImg" src="@/assets/images/icon_robotTem.png" />
-        <span class="inTxt title-font">80°C</span>
+        <span class="inTxt title-font">{{ robotTemp }}°C</span>
       </div>
       <div class="divider" v-if="isController"></div>
       <!-- 芯片温度 -->
-      <div class="iconBox flex-center" style="width: 8.625vw" v-if="isController">
+      <div
+        class="flex-center"
+        style="padding: 0 1.375vw;"
+        v-if="isController"
+      >
         <img class="inImg" src="@/assets/images/icon_chipTem.png" />
-        <span class="inTxt title-font">60°C</span>
+        <span class="inTxt title-font">{{ actuatorTemp }}°C</span>
       </div>
       <div class="divider" v-if="isController"></div>
       <!-- 电量 -->
-      <div class="iconBox flex-center" style="width: 8vw">
+      <div class="flex-center" style="padding: 0 1.375vw;">
         <img class="inImg" src="@/assets/images/icon_battery2.png" />
-        <span class="inTxt title-font">43%</span>
+        <span class="inTxt title-font">{{ batteryLevel }}%</span>
       </div>
       <div class="divider"></div>
       <!-- wifi -->
@@ -56,7 +64,11 @@
       </div> -->
       <!-- <div class="divider spacing" v-if="!isSetting"></div> -->
       <!-- 设置 -->
-      <div class="iconBox flex-center" v-if="!isSetting&&!isController" @click="setting()">
+      <div
+        class="iconBox flex-center"
+        v-if="!isSetting && !isController"
+        @click="setting()"
+      >
         <img class="inImg" src="@/assets/images/icon_setting.png" />
       </div>
       <div class="divider" v-if="isLogin"></div>
@@ -66,7 +78,11 @@
       </div>
       <div class="divider" v-if="isLogin"></div>
       <!-- 关机 -->
-      <div class="iconBox flex-center" v-if="isLogin||isSetting" @click="shutDown()">
+      <div
+        class="iconBox flex-center"
+        v-if="isLogin || isSetting"
+        @click="shutDown()"
+      >
         <img class="inImg" src="@/assets/images/btn_shutDown.png" />
       </div>
     </div>
@@ -260,7 +276,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(["connected"]),
+    ...mapState(["connected", "robotInit", "enableBasicState"]),
   },
   data() {
     return {
@@ -274,7 +290,40 @@ export default {
       imageOpen: false,
       lowPowerOpen: false,
       batteryLimit: 20,
+      actuatorTemp: 0,
+      batteryLevel: 0,
+      robotTemp: 0,
     };
+  },
+  mounted() {
+    if (this.robotInit && !this.enableBasicState) {
+      this.$http
+        .request({
+          baseURL: process.env.VUE_APP_URL,
+          method: "GET",
+          url: "/robot/enable_basic_state",
+          params: {
+            frequence: 2,
+          },
+        })
+        .then((response) => {
+          console.log("success---enable_basic_state", response.data);
+          this.$store.commit("setEnableBasicState", true);
+        })
+        .catch((error) => {
+          console.log("error---enable_basic_state", error);
+          this.$store.commit("setEnableBasicState", false);
+        });
+    }
+    this.$bus.$on("basicStateMsg", (data) => {
+      console.log("basicStateMsg===========", data);
+      this.actuatorTemp = data.data.actuator_temp;
+      this.batteryLevel = data.data.battery_level;
+      this.robotTemp = data.data.robot_temp;
+    });
+  },
+  destroyed() {
+    this.$bus.$off("basicStateMsg");
   },
   methods: {
     toConnect() {
@@ -419,8 +468,8 @@ export default {
 
   .iconBox {
     width: 6.1667vw;
-    height: 4.2917vw;
-    z-index: 99;
+    // height: 4.2917vw;
+    // z-index: 99;
   }
 
   .inImg {

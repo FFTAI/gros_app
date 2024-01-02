@@ -92,21 +92,7 @@ export default {
     };
   },
   mounted() {
-    // this.$http
-    //   .request({
-    //     baseURL: process.env.VUE_APP_URL,
-    //     method: "GET",
-    //     url: "/robot/enable_basic_state",
-    //     params: {
-    //       frequence: 2,
-    //     },
-    //   })
-    //   .then((response) => {
-    //     console.log("success---enable_basic_state", response.data);
-    //   })
-    //   .catch((error) => {
-    //     console.log("error---enable_basic_state", error);
-    //   });
+    
   },
   methods: {
     startExplore() {
