@@ -17,17 +17,34 @@
       class="headButtonIn flex-between"
       v-if="(connected || isController) && !isLoading && !isStartup"
     >
-      <!-- 电量和wifi -->
-      <div class="spacing">
-        <!-- <img class="inImg" src="@/assets/images/icon_battery2.png" />
-        <span class="inTxt title-font">43%</span> -->
+      <div class="divider" v-if="isController"></div>
+      <!-- 机器人温度 -->
+      <div class="iconBox flex-center" style="width: 8.625vw" v-if="isController">
+        <img class="inImg" src="@/assets/images/icon_robotTem.png" />
+        <span class="inTxt title-font">80°C</span>
+      </div>
+      <div class="divider" v-if="isController"></div>
+      <!-- 芯片温度 -->
+      <div class="iconBox flex-center" style="width: 8.625vw" v-if="isController">
+        <img class="inImg" src="@/assets/images/icon_chipTem.png" />
+        <span class="inTxt title-font">60°C</span>
+      </div>
+      <div class="divider" v-if="isController"></div>
+      <!-- 电量 -->
+      <div class="iconBox flex-center" style="width: 8vw">
+        <img class="inImg" src="@/assets/images/icon_battery2.png" />
+        <span class="inTxt title-font">43%</span>
+      </div>
+      <div class="divider"></div>
+      <!-- wifi -->
+      <div class="iconBox flex-center">
         <img
           class="inImg"
-          style="height: 1.6667vw; width: 2.2917vw"
+          style="height: 1.7917vw"
           src="@/assets/images/icon_Wifi.png"
         />
       </div>
-      <div class="divider spacing" v-if="camera"></div>
+      <div class="divider"></div>
       <!-- 视频显示开关 -->
       <!-- <div class="spacing" @click="openCamera()" v-if="camera">
         <img
@@ -39,11 +56,17 @@
       </div> -->
       <!-- <div class="divider spacing" v-if="!isSetting"></div> -->
       <!-- 设置 -->
-      <div class="spacing" v-if="!isSetting" @click="setting()">
+      <div class="iconBox flex-center" v-if="!isSetting&&!isController" @click="setting()">
         <img class="inImg" src="@/assets/images/icon_setting.png" />
       </div>
-      <div class="divider spacing" v-if="isLogin"></div>
-      <div class="spacing" v-if="isLogin" @click="shutDown()">
+      <div class="divider" v-if="isLogin"></div>
+      <!-- 设置 -->
+      <div class="iconBox flex-center" v-if="isController" @click="more()">
+        <img class="inImg" src="@/assets/images/icon_more.png" />
+      </div>
+      <div class="divider" v-if="isLogin"></div>
+      <!-- 关机 -->
+      <div class="iconBox flex-center" v-if="isLogin||isSetting" @click="shutDown()">
         <img class="inImg" src="@/assets/images/btn_shutDown.png" />
       </div>
     </div>
@@ -55,6 +78,7 @@
     >
       <span class="connect common-font">{{ $t("connect") }}</span>
     </div>
+    <!-- 更多设置--侧边栏菜单 -->
     <div class="drawer" v-if="drawerVisible">
       <div class="side">
         <div
@@ -257,9 +281,11 @@ export default {
       this.$emit("connect");
     },
     setting() {
-      // this.$router.push({
-      //   name: "setting",
-      // });
+      this.$router.push({
+        name: "setting",
+      });
+    },
+    more() {
       this.drawerVisible = !this.drawerVisible;
     },
     routerReturn() {
@@ -391,19 +417,20 @@ export default {
     opacity: 0.3;
   }
 
-  .inImg {
-    width: 2.2222vw;
-    height: 2.2222vw;
+  .iconBox {
+    width: 6.1667vw;
+    height: 4.2917vw;
     z-index: 99;
-    vertical-align: middle;
+  }
+
+  .inImg {
+    width: 2.4583vw;
+    height: 2.4583vw;
   }
 
   .inTxt {
     font-size: $size-41;
     color: $white;
-    margin-right: 1.9444vw;
-    margin-left: 0.6944vw;
-    vertical-align: middle;
   }
 
   .spacing {
