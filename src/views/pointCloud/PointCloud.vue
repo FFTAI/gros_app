@@ -14,16 +14,22 @@ export default {
   data() {
     return {
       pcData: [],
+      temporaryData: [],
       scene: null,
       camera: null,
       renderer: null,
       points: null,
+      numIndex: 0
     };
   },
   created() {},
   mounted() {
     this.$bus.$on("robotOnmessage", (data) => {
-      this.pcData.push(...data.data);
+      if(this.temporaryData.length >= 100000){
+        this.pcData = this.temporaryData
+        this.temporaryData = []
+      }
+      this.temporaryData.push(...data.data);
       console.log("pointcloud===========", this.pcData);
       this.updatePointCloud(data);
     });
