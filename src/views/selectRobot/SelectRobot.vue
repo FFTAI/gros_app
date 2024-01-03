@@ -1,29 +1,24 @@
 <template>
   <div class="black-bkg">
     <rtc-header>
-      <div class="headState">
-        <span class="headTxt common-font">{{ $t("selectRobotModel") }}</span>
+      <div class="headStateSr">
+        <span class="headTxtSr common-font">{{ $t("selectRobotModel") }}</span>
       </div>
     </rtc-header>
-    <!-- 左侧卡片 -->
-    <div class="robotCard leftCard">
-      <img class="sideModelImg" src="@/assets/images/image_robotModel.png" />
-      <span class="sideModelTxt">GR-1</span>
-    </div>
-    <!-- 中间卡片 -->
-    <div class="robotCard middleCard">
-      <img class="modelImg" src="@/assets/images/image_robotModel.png" />
-      <span class="modelTxt">GR-1 Lite</span>
-    </div>
-    <!-- 右侧卡片 -->
-    <div class="robotCard rightCard">
-      <img class="sideModelImg" src="@/assets/images/image_robotModel.png" />
-      <span class="sideModelTxt" style="right: 2.2083vw">GR-1 Pro</span>
-    </div>
-    <div class="cardPoint flex-between">
-      <div class="point"></div>
-      <div class="point" style="opacity: 1; width: 2.4583vw"></div>
-      <div class="point"></div>
+    <el-carousel class="carouselSr" indicator-position="none" type="card" :autoplay="false" height="29.1667vw" @change="carouselChange">
+      <el-carousel-item v-for="item in carouselItem" :key="item">
+        <!-- 中间卡片 -->
+        <div class="robotCardSr middleCardSr">
+          <img class="modelImgSr" src="@/assets/images/image_robotModel.png" />
+          <span class="modelTxtSr">{{ item }}</span>
+        </div>
+      </el-carousel-item>
+    </el-carousel>
+    <!-- 下方切换点 -->
+    <div class="cardPointSr flex-between">
+      <div class="pointSr" :class="{ pointSrActivity:  actIndex == 2}"></div>
+      <div class="pointSr" :class="{ pointSrActivity:  actIndex == 0}"></div>
+      <div class="pointSr" :class="{ pointSrActivity:  actIndex == 1}"></div>
     </div>
   </div>
 </template>
@@ -33,28 +28,41 @@ import rtcHeader from "@/components/rtcHeader.vue";
 export default {
   components: { rtcHeader },
   data() {
-    return {};
+    return {
+      carouselItem: ["GR-1","GR-1 Lite","GR-1 Pro"],
+      actIndex: 0
+    };
   },
   created() {},
   mounted() {},
-  methods: {},
+  methods: {
+    carouselChange(val,oldVal){
+      this.actIndex = val
+    }
+  },
 };
 </script>
 
-<style lang="scss" scoped>
-.headState {
+<style lang="scss">
+.headStateSr {
   position: absolute;
   top: 1vw;
   left: 10.9375vw;
   z-index: 99;
 
-  .headTxt {
+  .headTxtSr {
     font-size: $size-47;
     color: $white;
     line-height: 2.7083vw;
   }
 }
-.robotCard {
+.carouselSr{
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.robotCardSr {
   background: linear-gradient(
     180deg,
     rgba(0, 130, 187, 0.7) 0%,
@@ -63,45 +71,22 @@ export default {
   border-radius: 1vw;
   border: 0.0417vw solid #0075b8;
 }
-.middleCard {
-  width: 30.7917vw;
+.middleCardSr {
+  width: 29vw;
   height: 24.625vw;
   position: relative;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
-.leftCard {
-  width: 24.625vw;
-  height: 19.7083vw;
-  opacity: 0.8;
-  position: absolute;
-  left: 6.9167vw;
-  top: 12.0417vw;
-}
-.rightCard {
-  width: 24.625vw;
-  height: 19.7083vw;
-  opacity: 0.8;
-  position: absolute;
-  right: 6.9167vw;
-  top: 12.0417vw;
-}
-.modelImg {
+.modelImgSr {
   width: 12.3333vw;
   height: 25vw;
   position: absolute;
   left: 0.75vw;
   bottom: 1.375vw;
 }
-.sideModelImg {
-  width: 9.9167vw;
-  height: 20vw;
-  position: absolute;
-  left: 0.5417vw;
-  bottom: 1.125vw;
-}
-.modelTxt {
+.modelTxtSr {
   font-size: 2.9583vw;
   font-family: AlibabaPuHuiTiB;
   color: $white;
@@ -109,29 +94,29 @@ export default {
   top: 10.1667vw;
   right: 3.8333vw;
   font-weight: 900;
+  position: relative;
+  left: 45%;
 }
-.sideModelTxt {
-  font-size: 2.4583vw;
-  font-family: AlibabaPuHuiTiB;
-  color: $white;
-  position: absolute;
-  top: 8vw;
-  right: 5.6667vw;
-  font-weight: 900;
-}
-.cardPoint {
+.cardPointSr {
   width: 5.1667vw;
   height: 0.75vw;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  bottom: 7.625vw;
-  .point {
+  bottom: 7.0417vw;
+  .pointSr {
     width: 0.75vw;
     height: 0.75vw;
     background: #44d8fb;
     border-radius: 0.5vw;
     opacity: 0.2;
   }
+  .pointSrActivity{
+    opacity: 1;
+    width: 2.4583vw;
+  }
+}
+.el-carousel__mask{
+  background: transparent !important;
 }
 </style>

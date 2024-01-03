@@ -8,7 +8,7 @@ export default new Vuex.Store({
     controlType: 0,
     connected: false,
     gamepadConnected: false,
-    robotInit: true,
+    robotInit: false,
     enableBasicState: false
   },
   getters: {
