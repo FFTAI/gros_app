@@ -79,11 +79,11 @@ Setting up your development environment involves the following steps:
 
    - Once the build is finished, you will find the generated APK in the specified output directory.
 
-!> This guide assumes familiarity with Hbuilder and the basics of 5+App development.
+**Note**: This guide assumes familiarity with Hbuilder and the basics of 5+App development.
 
-!> Customize the `manifest.json` file to meet your specific application requirements.
+**Note**: Customize the `manifest.json` file to meet your specific application requirements.
 
-!> The provided source code serves as a reference project, and developers are encouraged to modify it according to your needs.
+**Note**: The provided source code serves as a reference project, and developers are encouraged to modify it according to your needs.
 
 #### Running Locally
 
