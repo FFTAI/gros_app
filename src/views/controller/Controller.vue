@@ -35,6 +35,13 @@
         <!--初始-->
         <div class="calibration">
           <img
+            v-if="$i18n.locale == 'en'"
+            class="calibrationImg"
+            src="@/assets/images/icon_calibrationEn.png"
+            @click="calibration()"
+          />
+          <img
+            v-else
             class="calibrationImg"
             src="@/assets/images/icon_calibration.png"
             @click="calibration()"
