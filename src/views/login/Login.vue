@@ -13,7 +13,7 @@
       <span class="startBtn common-font">{{ $t("beginToExplore") }}</span>
     </div> -->
     <div class="menuBox">
-      <div class="menuItem">
+      <div class="menuItem" @click="startExplore()">
         <img class="menuImg" src="@/assets/images/icon_single.png" />
         <span class="menuValzh">单人模式</span>
         <span class="menuValen">Single Mode</span>
