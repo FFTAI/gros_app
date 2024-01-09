@@ -19,11 +19,11 @@
             <div class="arrow"></div>
           </div>
         </rtc-header>
-        <div class="headBox flex-column" v-if="headBoxVisible">
+        <div class="headBox flex-column" :style="headBoxWidth" v-if="headBoxVisible">
           <div @click="changeMode('remoteMode')">
             {{ $t("remoteMode") }}
           </div>
-          <div class="divider"></div>
+          <div class="divider" :style="dividerWidth"></div>
           <div @click="changeMode('developerMode')">
             {{ $t("developerMode") }}
           </div>
@@ -131,22 +131,6 @@
           <div class="actionItem">
             <img
               class="actionImg"
-              src="@/assets/images/icon_nod.png"
-              @click="choseMode('nod')"
-            />
-            <div>{{ $t("nod") }}</div>
-          </div>
-          <div class="actionItem">
-            <img
-              class="actionImg"
-              src="@/assets/images/icon_shake.png"
-              @click="choseMode('shake')"
-            />
-            <div>{{ $t("shake") }}</div>
-          </div>
-          <div class="actionItem">
-            <img
-              class="actionImg"
               src="@/assets/images/icon_twist.png"
               @click="choseMode('twist')"
             />
@@ -159,6 +143,22 @@
               @click="choseMode('squat')"
             />
             <div>{{ $t("squat") }}</div>
+          </div>
+          <div class="actionItem">
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_shake.png"
+              @click="choseMode('shake')"
+            />
+            <div>{{ $t("shake") }}</div>
+          </div>
+          <div class="actionItem">
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_nod.png"
+              @click="choseMode('nod')"
+            />
+            <div>{{ $t("nod") }}</div>
           </div>
         </div>
         <div
@@ -311,6 +311,20 @@ export default {
         transformOrigin: "50% 0%",
       };
     },
+    headBoxWidth() {
+      let style = { "width": "9.2083vw" };
+      if (this.$i18n.locale == "en") {
+        style.width = "17.6vw";
+      }
+      return style;
+    },
+    dividerWidth() {
+      let style = { "width": "9.8333vw" };
+      if (this.$i18n.locale == "en") {
+        style.width = "18.4583vw";
+      }
+      return style;
+    }
   },
   data() {
     return {
@@ -1092,20 +1106,18 @@ export default {
   position: absolute;
   top: 4.453123vw;
   left: 10.9375vw;
-  width: 13.5417vw;
-  height: 11.4334vw;
-  padding: 1.4708vw 0;
+  height: 8.0417vw;
+  padding: 1.7917vw 2.1667vw;
   background: rgba(0, 75, 133, 0.3);
   border: 0.1042vw solid rgba(68, 216, 251, 0.3);
   z-index: 99;
-  align-items: center;
-  justify-content: space-around;
+  align-items: flex-start;
+  justify-content: space-between;
   font-size: $size-41;
   color: $white;
 
   .divider {
     height: 0.1042vw;
-    width: 11.9792vw;
     background: $white;
     opacity: 0.3;
   }
@@ -1116,10 +1128,10 @@ export default {
   left: 50%;
   top: 7.5vw;
   transform: translate(-50%, -50%);
-  width: 14.7917vw;
-  height: 3.4583vw;
+  height: 3vw;
+  padding: 0 2.5833vw;
   background: rgba(0, 0, 0, 0.8);
-  border-radius: 4px;
+  border-radius: .25vw;
   z-index: 999;
   font-size: $size-30;
   color: $white;
