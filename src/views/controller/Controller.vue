@@ -42,6 +42,13 @@
         <!--初始-->
         <div class="calibration">
           <img
+            v-if="$i18n.locale == 'en'"
+            class="calibrationImg"
+            src="@/assets/images/icon_calibrationEn.png"
+            @click="calibration()"
+          />
+          <img
+            v-else
             class="calibrationImg"
             src="@/assets/images/icon_calibration.png"
             @click="calibration()"
@@ -255,12 +262,16 @@
         @cancel="cancel()"
         @confirm="confirm()"
       ></prompt-box>
-      <div class="wrapper adjustRobot" v-if="adjustVisible">
-        <img
-          class="directionImg"
-          src="@/assets/images/image_imuDirection.png"
-        />
-        <span class="directonTxt">{{ $t("adjustPosture") }}</span>
+      <div class="wrapper" v-if="adjustVisible">
+        <div class="adjustRobot">
+          <div class="directionBk">
+            <div class="directionPointer" :style="rotateStyle">
+              <img class="pointToImg" src="@/assets/images/icon_pointTo.png" />
+              <img class="sRobImg" src="@/assets/images/icon_sRob.png" />
+            </div>
+          </div>
+          <span class="directonTxt">{{ $t("adjustPosture") }}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -280,6 +291,36 @@ export default {
   components: { RtcHeader, rtcLeftControl, promptBox },
   computed: {
     ...mapState(["gamepadConnected", "connected"]),
+    rotateStyle() {
+      let x = this.ImuX;
+      let y = this.ImuY;
+      // let a = this.ImuX;
+      // let b = this.ImuY;
+      // let x = -3.1416;
+      // let y = -0.087
+      if (x > 3.1416) x = 3.1416;
+      if (x < 3.054 && x > 0) x = 3.054;
+      if (x < -3.1416) x = -3.1416;
+      if (x > -3.054 && x < 0) x = -3.054;
+      if (y > 0.087) y = 0.087;
+      if (y < -0.087) y = -0.087;
+      if (x >= 3.054 && x <= 3.1416) {
+        x = 10 * ((x - 3.1416) / -0.087);
+      } else if (x >= -3.1416 && x <= -3.054) {
+        x = -10 * ((x + 3.1416) / 0.087);
+      }
+      y = -10 + 10 * ((y + 0.087) / 0.087);
+      console.log('x,y',x,y)
+      const angleRadians = Math.atan2(x, y);
+      let rotation = angleRadians * (180 / Math.PI);
+      if (rotation < 0) {
+        rotation += 360;
+      }
+      return {
+        transform: `rotate(${rotation}deg)`,
+        transformOrigin: "50% 0%",
+      };
+    },
   },
   data() {
     return {
@@ -307,6 +348,10 @@ export default {
       lastMessageReceivedTime: Date.now(),
       wsInterval: null,
       reconnectWs: false,
+      adjustVisible: false,
+      ImuX: 0,
+      ImuY: 0,
+      isZero: false,,
       scene: null,
       camera: null,
       renderer: null,
@@ -344,7 +389,31 @@ export default {
     });
     this.$bus.$on("robotOnmessage", (data) => {
       this.lastMessageReceivedTime = Date.now();
-      console.log("controller===========", data);
+      console.log(
+        "controller===========",
+        (data.data.imu.x * 180) / Math.PI,
+        (data.data.imu.y * 180) / Math.PI
+      );
+      if (this.isZero) {
+        this.ImuX = data.data.imu.x;
+        this.ImuY = data.data.imu.y;
+        // console.log(
+        //   "controller===========",
+        //   this.ImuX,
+        //   this.ImuY
+        // );
+        if (
+          (this.ImuX >= 3.054 && this.ImuX <= 3.1416) ||
+          (this.ImuX >= -3.1416 &&
+            this.ImuX <= -3.054 &&
+            this.ImuY >= -0.087 &&
+            this.ImuY <= 0.087)
+        ) {
+          this.adjustVisible = false;
+        } else {
+          this.adjustVisible = true;
+        }
+      }
       if (data.data) this.doAction = data.data.upper_action;
     });
   },
@@ -380,7 +449,11 @@ export default {
           console.log(this.robotWs);
           if (timeSinceLastMessage > 3000) {
             // 如果超过了阈值3秒，认为连接断开
+          console.log(this.robotWs);
+          if (timeSinceLastMessage > 3000) {
+            // 如果超过了阈值3秒，认为连接断开
             console.log("WebSocket connection might be disconnected.");
+            console.log(this.robotWs);
             console.log(this.robotWs);
             this.robotWs.robot.enable_debug_state(2);
             clearInterval(this.wsInterval);
@@ -601,6 +674,7 @@ export default {
       this.isStand = false;
       this.robotWs.robot.start();
       this.mode = "initial";
+      this.isZero = true;
       setTimeout(() => {
         this.mode = "";
       }, 7000);
@@ -652,6 +726,7 @@ export default {
     //切换当前控制模式
     changeControl(e) {
       if (e == "stand") {
+        this.isZero = false
         this.isStand = true;
         this.isWalking = false;
         this.robotWs.robot.stand();
@@ -1215,20 +1290,6 @@ export default {
   font-size: $size-30;
   color: $white;
 }
-.pc {
-  // position: absolute;
-  width: 100%;
-  height: 100vh;
-}
-.humanModel {
-  height: 37vw;
-  position: absolute;
-  bottom: 0;
-  transform: translate(-50%, 0);
-  left: 50%;
-  z-index: 999;
-  overflow: hidden;
-}
 .adjustRobot {
   width: 49.25vw;
   height: 30.7917vw;
@@ -1242,10 +1303,34 @@ export default {
   display: flex;
   align-items: center;
   flex-direction: column;
-  .directionImg {
+  .directionBk {
     width: 18.4583vw;
     height: 18.4583vw;
     margin-top: 3.375vw;
+    background-image: url("../../assets/images/image_imuDirection.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    .directionPointer {
+      position: relative;
+      top: 9.2vw;
+      left: 8.2vw;
+      width: 2.1vw;
+      height: 7.5vw;
+      padding-top: 1.5vw;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      transition: transform 0.5s ease;
+      .pointToImg {
+        width: 1.5333vw;
+        height: 2vw;
+      }
+      .sRobImg {
+        width: 2.0833vw;
+        height: 1.7917vw;
+      }
+    }
   }
   .directonTxt {
     font-size: $size-41;
