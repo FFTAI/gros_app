@@ -1,6 +1,6 @@
 <template>
-  <div class="pc common-bkg">
-    <div ref="sceneContainer"></div>
+  <div class="pc common-bkg" @click="wifiCreate()">
+    <!-- <div ref="sceneContainer"></div> -->
   </div>
 </template>
 
@@ -19,27 +19,110 @@ export default {
       camera: null,
       renderer: null,
       points: null,
-      numIndex: 0
+      numIndex: 0,
     };
   },
   created() {},
   mounted() {
-    this.$bus.$on("robotOnmessage", (data) => {
-      if(this.temporaryData.length >= 100000){
-        this.pcData = this.temporaryData
-        this.temporaryData = []
-      }
-      this.temporaryData.push(...data.data);
-      console.log("pointcloud===========", this.pcData);
-      this.updatePointCloud(data);
-    });
-    this.createPc();
-    this.addHelpers();
+    // this.$bus.$on("robotOnmessage", (data) => {
+    //   if (this.temporaryData.length >= 100000) {
+    //     this.pcData = this.temporaryData;
+    //     this.temporaryData = [];
+    //   }
+    //   this.temporaryData.push(...data.data);
+    //   console.log("pointcloud===========", this.pcData);
+    //   this.updatePointCloud(data);
+    // });
+    // this.createPc();
+    // this.addHelpers();
   },
   destroyed() {
     this.$bus.$off("robotOnmessage");
   },
   methods: {
+    wifiCreate() {
+      var _this = this
+      var App = plus.android.runtimeMainActivity();
+      var DatagramPacket;
+      var DatagramSocket;
+      var InetAddress;
+      var JString;
+      var socket;
+      var port = 51888;
+      var timeout = 8000;
+      var StrictMode = plus.android.importClass("android.os.StrictMode");
+      StrictMode.setThreadPolicy(
+        new StrictMode.ThreadPolicy.Builder().permitNetwork().build()
+      );
+      var Runnable = plus.android.implements("java.lang.Runnable", {
+        run: function () {
+          try {
+            DatagramPacket = plus.android.importClass(
+              "java.net.DatagramPacket"
+            );
+            DatagramSocket = plus.android.importClass(
+              "java.net.DatagramSocket"
+            );
+            InetAddress = plus.android.importClass("java.net.InetAddress");
+            JString = plus.android.importClass("java.lang.String");
+
+            if (DatagramSocket == undefined) {
+              return;
+            }
+            socket = new DatagramSocket(port);
+            socket.setSoTimeout(timeout);
+            // 广播地址
+            var broadcastAddress = new InetAddress().getByName(
+              "192.168.11.255"
+            );
+            // 发送广播数据
+            var sendData = _this.stringToByte("larry请开门!");
+            console.log("wifiCreate2", Array.from(sendData), Array.from(sendData).length);
+            var sendPacket = new DatagramPacket(
+              Array.from(sendData),
+              Array.from(sendData).length,
+              broadcastAddress,
+              port
+            );
+            console.log("sendPacket", JSON.stringify(sendPacket));
+            socket.send(sendPacket);
+
+            // 接收数据
+            var isReceive = true;
+            while (isReceive) {
+              console.log('~~~~~~接收数据～～～～')
+              try {
+                var buffer = new Array(1024).fill(0);
+                var packet = new DatagramPacket(buffer, buffer.length);
+                socket.receive(packet);
+                var data = new JString(packet.getData()).trim();
+                if (data.length == 0) {
+                  // 接收超时，结束接收
+                  isReceive = false;
+                } else {
+                  console.log("===========收到数据============", data);
+                }
+              } catch (ex) {
+                isReceive = false;
+              }
+            }
+          } catch (ex) {
+            console.log("===========出错了============", ex);
+          } finally {
+            if (socket != undefined) {
+              socket.close();
+            }
+          }
+        },
+      });
+      App.runOnUiThread(Runnable);
+    },
+    stringToByte(str) {
+      // 创建一个 TextEncoder 对象
+      const encoder = new TextEncoder();
+      const byteArray = encoder.encode(str);
+      return byteArray;
+    },
     createPc() {
       // 创建场景
       this.scene = new THREE.Scene();

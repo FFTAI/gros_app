@@ -310,7 +310,7 @@ export default {
         x = -10 * ((x + 3.1416) / 0.087);
       }
       y = -10 + 10 * ((y + 0.087) / 0.087);
-      console.log('x,y',x,y)
+      console.log("x,y", x, y);
       const angleRadians = Math.atan2(x, y);
       let rotation = angleRadians * (180 / Math.PI);
       if (rotation < 0) {
@@ -351,7 +351,7 @@ export default {
       adjustVisible: false,
       ImuX: 0,
       ImuY: 0,
-      isZero: false,,
+      isZero: false,
       scene: null,
       camera: null,
       renderer: null,
@@ -449,14 +449,15 @@ export default {
           console.log(this.robotWs);
           if (timeSinceLastMessage > 3000) {
             // 如果超过了阈值3秒，认为连接断开
-          console.log(this.robotWs);
-          if (timeSinceLastMessage > 3000) {
-            // 如果超过了阈值3秒，认为连接断开
-            console.log("WebSocket connection might be disconnected.");
             console.log(this.robotWs);
-            console.log(this.robotWs);
-            this.robotWs.robot.enable_debug_state(2);
-            clearInterval(this.wsInterval);
+            if (timeSinceLastMessage > 3000) {
+              // 如果超过了阈值3秒，认为连接断开
+              console.log("WebSocket connection might be disconnected.");
+              console.log(this.robotWs);
+              console.log(this.robotWs);
+              this.robotWs.robot.enable_debug_state(2);
+              clearInterval(this.wsInterval);
+            }
           }
         }, 1000); // 每秒检查一次
       }
@@ -726,7 +727,7 @@ export default {
     //切换当前控制模式
     changeControl(e) {
       if (e == "stand") {
-        this.isZero = false
+        this.isZero = false;
         this.isStand = true;
         this.isWalking = false;
         this.robotWs.robot.stand();
