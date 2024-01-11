@@ -58,12 +58,14 @@ export default {
       return style;
     },
     promptContentWidth() {
-      let style = { width: "13.875vw" };
-      if (this.$i18n.locale == "en") {
-        style.width = "21.8vw";
-      }
+      let style = { width: "16vw" };
+      if (this.$i18n.locale == "en") style.width = "26vw";
+      if (this.prompt == "calibration" && this.$i18n.locale == "zh") style.width = "20vw";
+      if (this.prompt == "calibration" && this.$i18n.locale == "en") style.width = "30vw";
+      if (this.prompt == "reconnect" && this.$i18n.locale == "zh") style.width = "15vw";
+      if (this.prompt == "reconnect" && this.$i18n.locale == "en") style.width = "20vw";
       return style;
-    }
+    },
   },
   data() {
     return {};
@@ -124,7 +126,7 @@ export default {
 }
 
 .btnBox {
-  // width: 27.125vw;
+  width: 27.0833vw;
   font-size: 1.7083vw;
   position: absolute;
   bottom: 2.7083vw;
