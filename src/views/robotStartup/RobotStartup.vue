@@ -214,12 +214,12 @@ export default {
       return style;
     },
     dialog2Style() {
-      let style = { "width": "12.125vw" };
+      let style = { width: "12.125vw" };
       if (this.$i18n.locale == "en") {
         style.width = "24.75vw";
       }
       return style;
-    }
+    },
   },
   data() {
     return {
@@ -255,8 +255,21 @@ export default {
       if (e == "connect" && this.step == "calibration") this.step = "connect";
       if (e == "startup" && this.step == "connect") {
         if (this.connected) {
-          this.step = "startup";
-          this.getStartup();
+          this.robotWs.robot
+            .control_svr_status()
+            .then((res) => {
+              if (res.data.data) {
+                this.isReady = true
+              } else {
+                this.getStartup();
+              }
+            })
+            .catch((err) => {
+              
+            })
+            .finally((f) => {
+              this.step = "startup";
+            });
         } else {
           let main = plus.android.runtimeMainActivity();
           let Intent = plus.android.importClass("android.content.Intent");
@@ -490,7 +503,7 @@ export default {
   width: 94.8333vw;
   height: 35.7083vw;
   background: rgba(68, 216, 251, 0.1);
-  .calibrationItem{
+  .calibrationItem {
     position: absolute;
     top: 2.0417vw;
     left: 6.7083vw;
@@ -518,7 +531,7 @@ export default {
     font-size: $size-30;
     color: $light-blue;
   }
-  .dialog2{
+  .dialog2 {
     display: flex;
     justify-content: center;
     align-items: flex-start;
