@@ -1,5 +1,5 @@
 <template>
-  <div class="pc common-bkg" @click="wifiCreate()">
+  <div class="pc common-bkg" @click="initScan()">
     <!-- <div ref="sceneContainer"></div> -->
   </div>
 </template>
@@ -20,6 +20,8 @@ export default {
       renderer: null,
       points: null,
       numIndex: 0,
+      activity: undefined,
+      network: undefined,
     };
   },
   created() {},
@@ -37,17 +39,35 @@ export default {
     // this.addHelpers();
   },
   destroyed() {
-    this.$bus.$off("robotOnmessage");
+    // this.$bus.$off("robotOnmessage");
   },
   methods: {
+    async initScan() {
+      const MainActivity = plus.android.runtimeMainActivity();
+      const Context = plus.android.importClass("android.content.Context");
+      plus.android.importClass("android.net.wifi.WifiManager");
+      plus.android.importClass("android.net.wifi.WifiInfo");
+      plus.android.importClass("android.net.wifi.ScanResult");
+      plus.android.importClass("java.util.ArrayList");
+      const wifiManager = MainActivity.getSystemService(Context.WIFI_SERVICE);
+      const wifiInfo = wifiManager.getConnectionInfo();
+      const dhcpInfo = wifiManager.getDhcpInfo();
+      const ipAddress = wifiInfo.getIpAddress();
+      const wifiIp =
+        (ipAddress & 0xff) +
+        "." +
+        ((ipAddress >> 8) & 0xff) +
+        "." +
+        ((ipAddress >> 16) & 0xff) +
+        "." +
+        ((ipAddress >> 24) & 0xff);
+      console.log("wifiIp", wifiIp);
+      console.log("wifiInfo", wifiInfo.getLinkSpeed(), wifiInfo.getRssi());
+    },
+    //发送udp
     wifiCreate() {
-      var _this = this
-      var App = plus.android.runtimeMainActivity();
-      var DatagramPacket;
-      var DatagramSocket;
-      var InetAddress;
-      var JString;
-      var socket;
+      var _this = this;
+      this.activity = plus.android.runtimeMainActivity();
       var port = 51888;
       var timeout = 8000;
       var StrictMode = plus.android.importClass("android.os.StrictMode");
@@ -57,19 +77,19 @@ export default {
       var Runnable = plus.android.implements("java.lang.Runnable", {
         run: function () {
           try {
-            DatagramPacket = plus.android.importClass(
+            var DatagramPacket = plus.android.importClass(
               "java.net.DatagramPacket"
             );
-            DatagramSocket = plus.android.importClass(
+            var DatagramSocket = plus.android.importClass(
               "java.net.DatagramSocket"
             );
-            InetAddress = plus.android.importClass("java.net.InetAddress");
-            JString = plus.android.importClass("java.lang.String");
+            var InetAddress = plus.android.importClass("java.net.InetAddress");
+            var JString = plus.android.importClass("java.lang.String");
 
             if (DatagramSocket == undefined) {
               return;
             }
-            socket = new DatagramSocket(port);
+            var socket = new DatagramSocket(port);
             socket.setSoTimeout(timeout);
             // 广播地址
             var broadcastAddress = new InetAddress().getByName(
@@ -77,7 +97,11 @@ export default {
             );
             // 发送广播数据
             var sendData = _this.stringToByte("larry请开门!");
-            console.log("wifiCreate2", Array.from(sendData), Array.from(sendData).length);
+            console.log(
+              "wifiCreate2",
+              Array.from(sendData),
+              Array.from(sendData).length
+            );
             var sendPacket = new DatagramPacket(
               Array.from(sendData),
               Array.from(sendData).length,
@@ -90,7 +114,7 @@ export default {
             // 接收数据
             var isReceive = true;
             while (isReceive) {
-              console.log('~~~~~~接收数据～～～～')
+              console.log("~~~~~~接收数据～～～～");
               try {
                 var buffer = new Array(1024).fill(0);
                 var packet = new DatagramPacket(buffer, buffer.length);
@@ -115,7 +139,7 @@ export default {
           }
         },
       });
-      App.runOnUiThread(Runnable);
+      this.activity.runOnUiThread(Runnable);
     },
     stringToByte(str) {
       // 创建一个 TextEncoder 对象
