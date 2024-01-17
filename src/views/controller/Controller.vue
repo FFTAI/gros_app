@@ -19,7 +19,11 @@
             <div class="arrow"></div>
           </div>
         </rtc-header>
-        <div class="headBox flex-column" :style="headBoxWidth" v-if="headBoxVisible">
+        <div
+          class="headBox flex-column"
+          :style="headBoxWidth"
+          v-if="headBoxVisible"
+        >
           <div @click="changeMode('remoteMode')">
             {{ $t("remoteMode") }}
           </div>
@@ -300,7 +304,7 @@ export default {
         x = -10 * ((x + 3.1416) / 0.087);
       }
       y = -10 + 10 * ((y + 0.087) / 0.087);
-      console.log('x,y',x,y)
+      console.log("x,y", x, y);
       const angleRadians = Math.atan2(x, y);
       let rotation = angleRadians * (180 / Math.PI);
       if (rotation < 0) {
@@ -312,19 +316,19 @@ export default {
       };
     },
     headBoxWidth() {
-      let style = { "width": "9.2083vw" };
+      let style = { width: "9.2083vw" };
       if (this.$i18n.locale == "en") {
         style.width = "17.6vw";
       }
       return style;
     },
     dividerWidth() {
-      let style = { "width": "9.8333vw" };
+      let style = { width: "9.8333vw" };
       if (this.$i18n.locale == "en") {
         style.width = "18.4583vw";
       }
       return style;
-    }
+    },
   },
   data() {
     return {
@@ -388,12 +392,7 @@ export default {
     });
     this.$bus.$on("robotOnmessage", (data) => {
       this.lastMessageReceivedTime = Date.now();
-      console.log(
-        "controller===========",
-        (data.data.imu.x * 180) / Math.PI,
-        (data.data.imu.y * 180) / Math.PI
-      );
-      if (this.isZero) {
+      if (this.isZero && data.data.imu) {
         this.ImuX = data.data.imu.x;
         this.ImuY = data.data.imu.y;
         // console.log(
@@ -401,6 +400,11 @@ export default {
         //   this.ImuX,
         //   this.ImuY
         // );
+        console.log(
+          "controller===========",
+          (data.data.imu.x * 180) / Math.PI,
+          (data.data.imu.y * 180) / Math.PI
+        );
         if (
           (this.ImuX >= 3.054 && this.ImuX <= 3.1416) ||
           (this.ImuX >= -3.1416 &&
@@ -721,7 +725,7 @@ export default {
     //切换当前控制模式
     changeControl(e) {
       if (e == "stand") {
-        this.isZero = false
+        this.isZero = false;
         this.isStand = true;
         this.isWalking = false;
         this.robotWs.robot.stand();
@@ -1131,7 +1135,7 @@ export default {
   height: 3vw;
   padding: 0 2.5833vw;
   background: rgba(0, 0, 0, 0.8);
-  border-radius: .25vw;
+  border-radius: 0.25vw;
   z-index: 999;
   font-size: $size-30;
   color: $white;

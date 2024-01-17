@@ -169,7 +169,7 @@
         <span>{{ $t("startup") }}</span>
       </div>
       <div v-else class="btn finishBtn noIconBtn" @click="promptBoxOpen()">
-        <span>{{ $t("programShutdown") }}</span>
+        <span>{{ $t("powerOff") }}</span>
       </div>
       <div
         v-if="isReady"
@@ -181,7 +181,7 @@
     </div>
     <prompt-box
       v-if="promptVisible"
-      :prompt="'closeProgram'"
+      :prompt="'powerOff'"
       @cancel="promptBoxOpen()"
       @confirm="shutDown()"
     ></prompt-box>
