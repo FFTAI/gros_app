@@ -16,11 +16,11 @@
           <span class="circleTxt flex-center ct2">1</span>
           <span>{{ $t("startupTip3") }}</span>
         </div>
-        <div class="flex-center tip2">
+        <div class="flex-center tip2" :style="tip2Style">
           <span class="circleTxt flex-center ct2">2</span>
           <span>{{ $t("startupTip4") }}</span>
         </div>
-        <div class="flex-center tip3" @click="openDialog()">
+        <div class="flex-center tip3" :style="tip3Style" @click="openDialog()">
           <span class="circleTxt flex-center ct1">3</span>
           <span>{{ $t("startupTip1") }}</span>
         </div>
@@ -72,40 +72,44 @@
       </div>
     </div>
     <!-- 初始提示 -->
-    <div class="calibrationDialog" v-if="calibrationDialog">
-      <img
-        class="calibrationImg"
-        src="@/assets/images/image_calibrationPose1.png"
-      />
-      <img
-        class="calibrationImg"
-        style="left: 35.0417vw"
-        src="@/assets/images/image_calibrationPose2.png"
-      />
-      <img
-        class="calibrationImg"
-        style="left: 63.375vw"
-        src="@/assets/images/image_calibrationPose3.png"
-      />
+    <div class="calibrationDialogSty" v-if="calibrationDialog">
+      <div class="calibrationItem">
+        <img
+          class="calibrationImg"
+          src="@/assets/images/image_calibrationPose1.png"
+        />
+        <div class="dialogTips flex-center">
+          <span class="circleTxt flex-center ct2">1</span>
+          <span>{{ $t("calibrationTip1") }}</span>
+        </div>
+      </div>
+      <div class="calibrationItem" style="left: 35.0417vw">
+        <img
+          class="calibrationImg"
+          src="@/assets/images/image_calibrationPose2.png"
+        />
+        <div class="dialogTips dialog2">
+          <span class="circleTxt flex-center ct2">2</span>
+          <span :style="dialog2Style">
+            {{ $t("calibrationTip2") }}
+          </span>
+        </div>
+      </div>
+      <div class="calibrationItem" style="left: 63.375vw">
+        <img
+          class="calibrationImg"
+          src="@/assets/images/image_calibrationPose3.png"
+        />
+        <div class="dialogTips flex-center">
+          <span class="circleTxt flex-center ct2">3</span>
+          <span>{{ $t("calibrationTip3") }}</span>
+        </div>
+      </div>
       <img
         class="closeImg"
         src="@/assets/images/btn_close.png"
         @click="closeDialog()"
       />
-      <div class="dialogTips flex-center">
-        <span class="circleTxt flex-center ct2">1</span>
-        <span>{{ $t("calibrationTip1") }}</span>
-      </div>
-      <div class="circleTxt flex-center ct2 circle2">2</div>
-      <div class="dialogTips flex-center dialogTip2">
-        <span>
-          {{ $t("calibrationTip2") }}
-        </span>
-      </div>
-      <div class="dialogTips flex-center dialogTip3">
-        <span class="circleTxt flex-center ct2">3</span>
-        <span>{{ $t("calibrationTip3") }}</span>
-      </div>
     </div>
     <!-- 右侧操作按钮 -->
     <div class="operateArea" v-if="!calibrationDialog">
@@ -165,7 +169,7 @@
         <span>{{ $t("startup") }}</span>
       </div>
       <div v-else class="btn finishBtn noIconBtn" @click="promptBoxOpen()">
-        <span>{{ $t("programShutdown") }}</span>
+        <span>{{ $t("powerOff") }}</span>
       </div>
       <div
         v-if="isReady"
@@ -177,7 +181,7 @@
     </div>
     <prompt-box
       v-if="promptVisible"
-      :prompt="'closeProgram'"
+      :prompt="'powerOff'"
       @cancel="promptBoxOpen()"
       @confirm="shutDown()"
     ></prompt-box>
@@ -194,6 +198,28 @@ export default {
   components: { rtcHeader, promptBox },
   computed: {
     ...mapState(["connected","robotInit"]),
+    tip3Style() {
+      let style = { left: "-0.5vw" };
+      if (this.$i18n.locale == "en") {
+        style.left = "-1.1vw";
+      }
+      return style;
+    },
+    tip2Style() {
+      let style = { top: "4.2vw", left: "-3.3vw" };
+      if (this.$i18n.locale == "en") {
+        style.top = "3.4vw";
+        style.left = "0vw";
+      }
+      return style;
+    },
+    dialog2Style() {
+      let style = { width: "12.125vw" };
+      if (this.$i18n.locale == "en") {
+        style.width = "24.75vw";
+      }
+      return style;
+    },
   },
   data() {
     return {
@@ -229,8 +255,21 @@ export default {
       if (e == "connect" && this.step == "calibration") this.step = "connect";
       if (e == "startup" && this.step == "connect") {
         if (this.connected) {
-          this.step = "startup";
-          this.getStartup();
+          this.robotWs.robot
+            .control_svr_status()
+            .then((res) => {
+              if (res.data.data) {
+                this.isReady = true
+              } else {
+                this.getStartup();
+              }
+            })
+            .catch((err) => {
+              
+            })
+            .finally((f) => {
+              this.step = "startup";
+            });
         } else {
           let main = plus.android.runtimeMainActivity();
           let Intent = plus.android.importClass("android.content.Intent");
@@ -396,7 +435,7 @@ export default {
 .tip2 {
   color: $light-blue;
   position: absolute;
-  top: 3.4vw;
+  width: 19.75vw;
 }
 
 .tip3 {
@@ -407,7 +446,6 @@ export default {
   color: $white;
   position: absolute;
   top: 15.5vw;
-  left: -0.5vw;
 }
 
 .tip4 {
@@ -459,18 +497,22 @@ export default {
   color: $light-blue;
 }
 
-.calibrationDialog {
+.calibrationDialogSty {
   position: absolute;
   top: 6.4167vw;
   left: 2.6667vw;
   width: 94.8333vw;
   height: 35.7083vw;
   background: rgba(68, 216, 251, 0.1);
-
-  .calibrationImg {
+  .calibrationItem {
     position: absolute;
     top: 2.0417vw;
     left: 6.7083vw;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+  .calibrationImg {
     width: 24.625vw;
     height: 27.7083vw;
   }
@@ -484,28 +526,16 @@ export default {
   }
 
   .dialogTips {
-    position: absolute;
-    top: 30.7083vw;
-    left: 15.0833vw;
+    margin-top: 1.125vw;
     height: 1.6667vw;
+    width: 24.625vw;
     font-size: $size-30;
     color: $light-blue;
   }
-
-  .dialogTip2 {
-    left: 42.7917vw;
-    width: 12.7917vw;
-    height: 3.3333vw;
-  }
-
-  .dialogTip3 {
-    left: 70vw;
-  }
-
-  .circle2 {
-    position: absolute;
-    left: 40.9583vw;
-    top: 30.7083vw;
+  .dialog2 {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
   }
 }
 
