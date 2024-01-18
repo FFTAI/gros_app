@@ -199,6 +199,14 @@
             />
             <div>{{ $t("tremble") }}</div>
           </div>
+          <div class="actionItem">
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_grasp.png"
+              @click="graspMode()"
+            />
+            <div>末端控制</div>
+          </div>
         </div>
         <!-- action box -->
         <div class="controlBox flex-between">
@@ -374,6 +382,7 @@ export default {
       renderer: null,
       points: null,
       adjustVisible: false,
+      isGraspMode: false
     };
   },
   created() {
@@ -563,6 +572,7 @@ export default {
       let stopR = false;
       for (let i = 0; i < arr.length; i++) {
         if (arr[i].value === 1) {
+          console.log('当前按键=========',i)
           if (!this.speedTime) {
             if (i === 4) {
               this.buttons = "左手1";
@@ -1037,6 +1047,9 @@ export default {
       gridHelper.position.set(0, -10, 0);
       this.scene.add(gridHelper);
     },
+    graspMode() {
+      this.isGraspMode = !this.isGraspMode
+    }
   },
 };
 </script>
