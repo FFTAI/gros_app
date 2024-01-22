@@ -735,7 +735,7 @@ export default {
       }
       this.controlModel = e;
     },
-    choseMode(e) {
+    async choseMode(e) {
       if (this.doAction == true) return;
       this.controlExpand = false;
       this.mode = e;
@@ -795,40 +795,38 @@ export default {
           }, 3000);
         }
         if (lower_data.lower_body_mode == "" && e != "nod" && e != "nod") {
-          this.robotWs.robot
-            .upper_body(upper_data.arm_action, upper_data.hand_action)
-            .then((response) => {
-              console.log("upper_body-response", response);
-              this.doAction = false;
-            })
-            .catch((error) => {
-              console.log("upper_body-error", error);
-              this.doAction = false;
-            });
+          try {
+            let res = await this.robotWs.robot.upper_body(
+              upper_data.arm_action,
+              upper_data.hand_action
+            );
+            if (res.data.code == 0 && res.data.msg == "ok") {
+              console.log("upper_body_OK", res);
+            } else {
+              console.log("upper_body_ERR", res);
+            }
+          } catch (error) {
+            console.log("upper_body-error", error);
+          }
+          this.doAction = false;
         } else if (
           lower_data.lower_body_mode != "" &&
           e != "nod" &&
           e != "nod"
         ) {
-          // this.robotWs.robot.lower_body(lower_data.lower_body_mode)
-          this.$http
-            .request({
-              timeout: 30000,
-              baseURL: process.env.VUE_APP_URL,
-              method: "POST",
-              url: "/robot/lower_body",
-              data: {
-                lower_body_mode: lower_data.lower_body_mode,
-              },
-            })
-            .then((response) => {
-              console.log("lower_body-response", response);
-              this.doAction = false;
-            })
-            .catch((error) => {
-              console.log("lower_body-error", error);
-              this.doAction = false;
-            });
+          try {
+            let res = await this.robotWs.robot.lower_body(
+              lower_data.lower_body_mode
+            );
+            if (res.data.code == 0 && res.data.msg == "ok") {
+              console.log("lower_body_OK", res);
+            } else {
+              console.log("lower_body_ERR", res);
+            }
+          } catch (error) {
+            console.log("lower_body-error", error);
+          }
+          this.doAction = false;
         } else {
           setTimeout(() => {
             this.doAction = false;
