@@ -50,13 +50,18 @@ const routes = [
     component: () => import("../views/connectionMode/ConnectionMode.vue"),
   },
   {
+    path: "/qrCode",
+    name: "qrCode",
+    component: () => import("../views/qrCode/QrCode.vue"),
+  },
+  {
     path: "/pointCloud",
     name: "pointCloud",
     component: () => import("../views/pointCloud/PointCloud.vue"),
   },
   {
     path: "/",
-    redirect: "/startUp",
+    redirect: "/qrCode",
   },
 ];
 

@@ -382,7 +382,7 @@ export default {
       renderer: null,
       points: null,
       adjustVisible: false,
-      isGraspMode: false
+      isGraspMode: false,
     };
   },
   created() {
@@ -568,11 +568,9 @@ export default {
     },
     // 手柄按键
     pressKey(arr) {
-      let stopL = false;
-      let stopR = false;
       for (let i = 0; i < arr.length; i++) {
         if (arr[i].value === 1) {
-          console.log('当前按键=========',i)
+          console.log("当前按键=========", i);
           if (!this.speedTime) {
             if (i === 4) {
               this.buttons = "左手1";
@@ -588,15 +586,14 @@ export default {
           }
           if (i === 6) {
             this.buttons = "左手2";
-            stopL = true;
+            this.armMove("left");
           }
           if (i === 7) {
             this.buttons = "右手2";
-            stopR = true;
+            this.armMove("right");
           }
         }
       }
-      if (stopL && stopR) this.stop();
     },
     //开启左侧虚拟触控摇杆
     startJoystickL() {
@@ -1038,7 +1035,6 @@ export default {
         requestAnimationFrame(animate);
         this.renderer.render(this.scene, this.camera);
       };
-
       animate();
     },
     addHelpers() {
@@ -1047,9 +1043,21 @@ export default {
       gridHelper.position.set(0, -10, 0);
       this.scene.add(gridHelper);
     },
+    //切换末端模式
     graspMode() {
-      this.isGraspMode = !this.isGraspMode
-    }
+      this.isGraspMode = !this.isGraspMode;
+    },
+    //手臂移动
+    armMove(e) {
+      switch (e) {
+        case "left":
+          break;
+        case "right":
+          break;
+        default:
+          break;
+      }
+    },
   },
 };
 </script>
