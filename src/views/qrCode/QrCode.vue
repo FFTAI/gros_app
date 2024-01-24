@@ -19,20 +19,27 @@ export default {
     createQr() {
       const MainActivity = plus.android.runtimeMainActivity();
       const Context = plus.android.importClass("android.content.Context");
+      plus.android.importClass('java.util.ArrayList');
       plus.android.importClass("android.net.wifi.WifiManager");
       plus.android.importClass("android.net.wifi.WifiInfo");
       const wifiManager = MainActivity.getSystemService(Context.WIFI_SERVICE);
       const wifiInfo = wifiManager.getConnectionInfo();
       const configuredNetworks = wifiManager.getConfiguredNetworks();
-      console.log("configuredNetworks", JSON.stringify(configuredNetworks));
-      console.log("configuredNetworks1",configuredNetworks.size())
-      for (let i = 0; i < configuredNetworks.size().length; i++) {
-        console.log("configuredNetworks2",configuredNetworks.get(i))
+      let pwd = null;
+      for (let i = 0; i < configuredNetworks.size(); i++) {
+        const item = configuredNetworks.get(i)
+        if(item.plusGetAttribute('SSID') == wifiInfo.getSSID()) {
+            // console.log("SSID",item.plusGetAttribute('SSID'))
+            // console.log("PWD",item.plusGetAttribute('preSharedKey'))
+            pwd = item.plusGetAttribute('preSharedKey')
+        }
       }
-      configuredNetworks.forEach(element => {
-        console.log('config',element)
-      });
-      console.log("wifiInfo", wifiInfo.getSSID());
+      let Base64 = plus.android.importClass("java.util.Base64");
+      let decoder = Base64.getDecoder();  
+      let decodedBytes = decoder.decode(pwd, Base64.DEFAULT);
+    //   let plainTextPassword = new String(decodedBytes);
+      console.log("wifiPWD", decodedBytes);
+    //   console.log("wifiInfo", wifiInfo.getSSID());
       const ssid = "fftai-12";
       const password = "fftai2015";
       //分享wifi二维码标准格式

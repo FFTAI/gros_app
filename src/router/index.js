@@ -61,7 +61,7 @@ const routes = [
   },
   {
     path: "/",
-    redirect: "/qrCode",
+    redirect: "/startUp",
   },
 ];
 

@@ -21,14 +21,53 @@
         {{ $t("developerMode") }}
       </div>
     </div>
-    <!-- 左侧栏 -->
-    <div class="leftBox">
+    <div class="tabBox">
+      <!-- 机器人姿态 -->
+      <div
+        class="txt"
+        :class="{ activeTab: activated == 'robot' }"
+        @click="changeModel('robot')"
+      >
+        <div class="tab common-font" :class="{ opt: activated != 'robot' }">
+          <img class="iconConnect" src="@/assets/images/icon_robotTem.png" />
+          <div style="margin-left: 1.25vw">
+            {{ $t("robotPose") }}
+          </div>
+        </div>
+      </div>
+      <!-- 执行器 -->
+      <div
+        class="txt"
+        :class="{ activeTab: activated == 'motor' }"
+        style="top: 47%"
+        @click="changeModel('motor')"
+      >
+        <div class="tab common-font" :class="{ opt: activated != 'motor' }">
+          <img class="iconConnect" src="@/assets/images/icon_chipTem.png" />
+          <div style="margin-left: 1.25vw">
+            {{ $t("motor") }}
+          </div>
+        </div>
+      </div>
+      <!-- Log日志 -->
+      <div
+        class="txt"
+        :class="{ activeTab: activated == 'log' }"
+        style="top: 94%"
+        @click="changeModel('log')"
+      >
+        <div class="tab common-font" :class="{ opt: activated != 'log' }">
+          <img class="iconSysState" src="@/assets/images/icon_log.png" />
+          <div style="margin-left: 1.25vw">
+            {{ $t("logFile") }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 机器人姿态 -->
+    <div v-show="activated == 'robot'">
       <!-- 人形模型 -->
-      <!-- <img class="humanModel flex-center" src="@/assets/images/icon_model.png" v-show="activated == 'dynamic'" /> -->
-      <!-- <iframe ref="unityIfm" src="WebGL/index.html"
-          style="border: none;width: 26.0417vw;height: 36.4583vw;margin-top:6.25vw;"
-          v-show="activated == 'dynamic'"></iframe> -->
-      <div class="humanModel flex-center" v-show="activated == 'dynamic'">
+      <div class="humanModel flex-center" v-show="activated == 'robot'">
         <iframe
           ref="unityIfm"
           style="
@@ -40,120 +79,40 @@
           :src="iframeUrl"
         ></iframe>
       </div>
-      <!-- log日志 -->
-      <div class="logBox" v-show="activated == 'log'">
-        <div class="logTitle common-font">{{ $t("logFile") }}</div>
-        <div class="logMain">
-          <el-timeline>
-            <el-timeline-item
-              v-for="(activity, index) in logList"
-              :key="index"
-              :type="activity.type"
-              :timestamp="activity.timestamp"
-              :placement="activity.placement"
-            >
-              <p class="logTxt common-font">{{ activity.content }}</p>
-            </el-timeline-item>
-          </el-timeline>
-        </div>
+      <div class="poseBox">
+        <span class="poseTxt common-font">{{ $t("currentPosture") }}</span>
+        <div class="poseContent flex-center">无运动</div>
       </div>
-      <!-- 底部切换 -->
-      <div class="modelChose flex-between">
+      <!-- IMU表 -->
+      <div class="poseTable">
         <div
-          class="modelBtn flex-center"
-          :class="{ activatedModel: activated == 'dynamic' }"
-          @click="changeModel('dynamic')"
+          class="tableItem"
+          style="background-color: rgba(255, 255, 255, 0)"
         >
-          <span class="btnTxt common-font">{{ $t("dynamic") }}</span>
-        </div>
-        <div
-          class="modelBtn flex-center"
-          :class="{ activatedModel: activated == 'log' }"
-          style="margin-left: 0.8854vw"
-          @click="changeModel('log')"
-        >
-          <span class="btnTxt common-font">{{ $t("logFile") }}</span>
         </div>
       </div>
     </div>
-    <div class="chartBox flex-center">
-      <div class="leftSide">
-        <div v-show="doubleChart" class="chartTitle common-font">
-          {{ $t("left") }}
-        </div>
-        <div
-          v-show="doubleChart"
-          class="chartTitle common-font"
-          style="left: 18.1667vw"
-        >
-          {{ $t("right") }}
-        </div>
-        <div v-show="doubleChart" class="doubleChartSize" id="leftChart"></div>
-        <div v-show="doubleChart" class="doubleChartSize" id="rightChart"></div>
-        <div v-show="!doubleChart" class="chartTitle common-font">
-          {{ $t("headPart") }}
-        </div>
-        <div
-          v-show="!doubleChart"
-          class="singleChartSize"
-          id="singleChart"
-        ></div>
-      </div>
-      <div class="middleDivider white01-bkg"></div>
-      <div class="rightSide">
-        <div class="axleVal">
-          <div>
-            <span class="val1">X{{ $t("axle") }}：</span>
-            <span class="val2 title-font">{{ xSpeed }}m/s</span>
-          </div>
-          <div>
-            <span class="val1">Y{{ $t("axle") }}：</span>
-            <span class="val2 title-font">{{ ySpeed }}m/s</span>
-          </div>
-        </div>
-        <div class="axleImg">
-          <img src="@/assets/images/image_Dashboard.png" class="dashboard" />
-          <img
-            src="@/assets/images/image_point.png"
-            class="pointer"
-            :style="{ transform: pointerTransformX }"
-          />
-        </div>
-        <div class="axleImg" style="right: 1.25vw">
-          <img src="@/assets/images/image_Dashboard.png" class="dashboard" />
-          <img
-            src="@/assets/images/image_point.png"
-            class="pointer"
-            :style="{ transform: pointerTransformY }"
-          />
-        </div>
+    <!-- log日志 -->
+    <div class="logBox" v-show="activated == 'log'">
+      <div class="logTitle common-font">{{ $t("logFile") }}</div>
+      <div class="logMain">
+        <el-timeline>
+          <el-timeline-item
+            v-for="(activity, index) in logList"
+            :key="index"
+            :type="activity.type"
+            :timestamp="activity.timestamp"
+            :placement="activity.placement"
+          >
+            <p class="logTxt common-font">{{ activity.content }}</p>
+          </el-timeline-item>
+        </el-timeline>
       </div>
     </div>
     <!-- 头部上肢 -->
-    <div class="rightBox upper">
+    <div class="rightBox upper" v-show="activated == 'motor'">
       <div class="rightTitle">
         <div>{{ $t("headPart") }}</div>
-        <!-- 切换: 度,度/秒，扭矩(牛.米) -->
-        <div>
-          <img
-            class="typeImg"
-            :class="{ notAct: activatedType != 'angle' }"
-            @click="changeType('angle')"
-            src="@/assets/images/icon_angle.png"
-          />
-          <img
-            class="typeImg"
-            :class="{ notAct: activatedType != 'Avelocity' }"
-            @click="changeType('Avelocity')"
-            src="@/assets/images/icon_Avelocity.png"
-          />
-          <img
-            class="typeImg"
-            :class="{ notAct: activatedType != 'torque' }"
-            @click="changeType('torque')"
-            src="@/assets/images/icon_torque.png"
-          />
-        </div>
       </div>
       <!-- 左右侧图表 -->
       <div class="sideChart">
@@ -161,8 +120,6 @@
         <div
           class="tableItem"
           style="background-color: rgba(255, 255, 255, 0)"
-          :class="{ currentItem: activatedItem == 'headYaw' }"
-          @click="changeItem('headYaw')"
         >
           <div class="itemChild">{{ $t("head") }}{{ $t("yaw") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
@@ -183,8 +140,6 @@
         <div
           class="tableItem"
           style="background-color: rgba(255, 255, 255, 0.1)"
-          :class="{ currentItem: activatedItem == 'headPitch' }"
-          @click="changeItem('headPitch')"
         >
           <div class="itemChild">{{ $t("head") }}{{ $t("pitch") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
@@ -205,8 +160,6 @@
         <div
           class="tableItem"
           style="background-color: rgba(255, 255, 255, 0)"
-          :class="{ currentItem: activatedItem == 'headRoll' }"
-          @click="changeItem('headRoll')"
         >
           <div class="itemChild">{{ $t("head") }}{{ $t("roll") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
@@ -242,8 +195,6 @@
         <!-- Shoulder Pitch -->
         <div
           class="tableItem"
-          :class="{ currentItem: activatedItem == 'shoulderPitch' }"
-          @click="changeItem('shoulderPitch')"
         >
           <div class="itemChild">{{ $t("shoulderPitch") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
@@ -276,8 +227,6 @@
         <!-- Shoulder Roll -->
         <div
           class="tableItem"
-          :class="{ currentItem: activatedItem == 'shoulderRoll' }"
-          @click="changeItem('shoulderRoll')"
         >
           <div class="itemChild">{{ $t("shoulderRoll") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
@@ -308,8 +257,6 @@
         <!-- Shoulder Yaw -->
         <div
           class="tableItem"
-          :class="{ currentItem: activatedItem == 'shoulderYaw' }"
-          @click="changeItem('shoulderYaw')"
         >
           <div class="itemChild">{{ $t("shoulderYaw") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
@@ -340,8 +287,6 @@
         <!-- Elbow -->
         <div
           class="tableItem"
-          :class="{ currentItem: activatedItem == 'elbow' }"
-          @click="changeItem('elbow')"
         >
           <div class="itemChild">{{ $t("elbow") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
@@ -372,8 +317,6 @@
         <!-- Wrist Yaw -->
         <div
           class="tableItem"
-          :class="{ currentItem: activatedItem == 'wristYaw' }"
-          @click="changeItem('wristYaw')"
         >
           <div class="itemChild">{{ $t("wristYaw") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
@@ -404,8 +347,6 @@
         <!-- Wrist Roll -->
         <div
           class="tableItem"
-          :class="{ currentItem: activatedItem == 'wristRoll' }"
-          @click="changeItem('wristRoll')"
         >
           <div class="itemChild">{{ $t("wristRoll") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
@@ -436,8 +377,6 @@
         <!-- Wrist Pitch -->
         <div
           class="tableItem"
-          :class="{ currentItem: activatedItem == 'wristPitch' }"
-          @click="changeItem('wristPitch')"
         >
           <div class="itemChild">{{ $t("wristPitch") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
@@ -468,29 +407,9 @@
       </div>
     </div>
     <!-- 下肢数据 -->
-    <div class="rightBox lower">
+    <div class="rightBox lower" v-show="activated == 'motor'">
       <div class="rightTitle">
         <div>{{ $t("waistPart") }}</div>
-        <div>
-          <img
-            class="typeImg"
-            :class="{ notAct: activatedType != 'angle' }"
-            @click="changeType('angle')"
-            src="@/assets/images/icon_angle.png"
-          />
-          <img
-            class="typeImg"
-            :class="{ notAct: activatedType != 'Avelocity' }"
-            @click="changeType('Avelocity')"
-            src="@/assets/images/icon_Avelocity.png"
-          />
-          <img
-            class="typeImg"
-            :class="{ notAct: activatedType != 'torque' }"
-            @click="changeType('torque')"
-            src="@/assets/images/icon_torque.png"
-          />
-        </div>
       </div>
       <!-- 左右侧图表 -->
       <div class="sideChart">
@@ -498,8 +417,6 @@
         <div
           class="tableItem"
           style="background-color: rgba(255, 255, 255, 0)"
-          :class="{ currentItem: activatedItem == 'waistYaw' }"
-          @click="changeItem('waistYaw')"
         >
           <div class="itemChild">{{ $t("waist") }}{{ $t("yaw") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
@@ -520,8 +437,6 @@
         <div
           class="tableItem"
           style="background-color: rgba(255, 255, 255, 0.1)"
-          :class="{ currentItem: activatedItem == 'waistPitch' }"
-          @click="changeItem('waistPitch')"
         >
           <div class="itemChild">{{ $t("waist") }}{{ $t("pitch") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
@@ -542,8 +457,6 @@
         <div
           class="tableItem"
           style="background-color: rgba(255, 255, 255, 0)"
-          :class="{ currentItem: activatedItem == 'waistRoll' }"
-          @click="changeItem('waistRoll')"
         >
           <div class="itemChild">{{ $t("waist") }}{{ $t("roll") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
@@ -579,8 +492,6 @@
         <!-- Hip Roll -->
         <div
           class="tableItem"
-          :class="{ currentItem: activatedItem == 'hipRoll' }"
-          @click="changeItem('hipRoll')"
         >
           <div class="itemChild">{{ $t("hipRoll") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
@@ -611,8 +522,6 @@
         <!-- Hip Yaw -->
         <div
           class="tableItem"
-          :class="{ currentItem: activatedItem == 'hipYaw' }"
-          @click="changeItem('hipYaw')"
         >
           <div class="itemChild">{{ $t("hipYaw") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
@@ -643,8 +552,6 @@
         <!-- Hip Pitch -->
         <div
           class="tableItem"
-          :class="{ currentItem: activatedItem == 'hipPitch' }"
-          @click="changeItem('hipPitch')"
         >
           <div class="itemChild">{{ $t("hipPitch") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
@@ -675,8 +582,6 @@
         <!-- Knee -->
         <div
           class="tableItem"
-          :class="{ currentItem: activatedItem == 'knee' }"
-          @click="changeItem('knee')"
         >
           <div class="itemChild">{{ $t("knee") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
@@ -707,8 +612,6 @@
         <!-- Ankle Pitch -->
         <div
           class="tableItem"
-          :class="{ currentItem: activatedItem == 'anklePitch' }"
-          @click="changeItem('anklePitch')"
         >
           <div class="itemChild">{{ $t("anklePitch") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
@@ -739,8 +642,6 @@
         <!-- Ankle Roll -->
         <div
           class="tableItem"
-          :class="{ currentItem: activatedItem == 'ankleRoll' }"
-          @click="changeItem('ankleRoll')"
         >
           <div class="itemChild">{{ $t("ankleRoll") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
@@ -776,7 +677,6 @@
 
 <script>
 import rtcHeader from "@/components/rtcHeader.vue";
-import * as echarts from "echarts";
 import { mapState } from "vuex";
 export default {
   components: { rtcHeader },
@@ -799,7 +699,7 @@ export default {
   },
   data() {
     return {
-      activated: "dynamic", //动态展示:dynamic Log日志:log
+      activated: "robot", //机器人姿态:robot Log日志:log 执行器:motor
       logList: [], //日志列表
       /**
        * 上肢部分关节数据
@@ -918,21 +818,9 @@ export default {
       /**
        * 速度
        */
-      xSpeed: "",
-      ySpeed: "",
-      leftChartData: [], //左侧图表数据
-      rightChartData: [], //右侧图表数据
-      singleChartData: [], //单个图表数据
-      leftSpeedChartData: [], //X轴速度图表数据
-      rightSpeedChartData: [], //Y轴速度图表数据
-      doubleChart: true,
-      activatedItem: "headPitch",
       activatedType: "angle",
       headBoxVisible: false,
-      robotCount: 1,
       iframeUrl: "Build/index.html",
-      pointerTransformX: "translate(-50%, -100%) rotate(0deg)",
-      pointerTransformY: "translate(-50%, -100%) rotate(0deg)",
       lastMessageReceivedTime: Date.now(),
       wsInterval: null,
     };
@@ -945,12 +833,9 @@ export default {
     this.$bus.$off("robotOnmessage");
   },
   mounted() {
-    // 初始化图表
-    this.initSideCharts();
-    this.initSpeedCharts();
     //开启状态发送
     this.$nextTick(() => {
-      this.robotWs.robot.enable_debug_state(50);
+      this.robotWs.robot.enable_debug_state(1);
     });
     this.createWsInterval();
     this.$bus.$on("robotOnmessage", (data) => {
@@ -958,26 +843,8 @@ export default {
       this.lastMessageReceivedTime = Date.now();
       if (data.data.log && data.data.log.logBuffer)
         this.getLog(data.data.log.logBuffer);
-      if (this.robotCount == 50) {
-        this.assignData(data.data.states);
-        this.singleOrDouble(this.activatedItem);
-        this.updateSideCharts(this.activatedItem, this.activatedType);
-        this.updateSpeedCharts();
-        this.robotCount = 1;
-      } else {
-        this.robotCount = this.robotCount + 1;
-      }
+      this.assignData(data.data.states);
     });
-  },
-  watch: {
-    //监听当前渲染图表的切换
-    activatedItem(newVal, oldVal) {
-      this.singleOrDouble(newVal);
-      this.updateSideCharts(newVal, this.activatedType);
-    },
-    activatedType(newVal, oldVal) {
-      this.updateSideCharts(this.activatedItem, newVal);
-    },
   },
   methods: {
     createWsInterval() {
@@ -1000,289 +867,6 @@ export default {
       console.log("changeModel", e);
       this.activated = e;
     },
-    initSideCharts() {
-      var leftChart = echarts.init(document.getElementById("leftChart"));
-      var rightChart = echarts.init(document.getElementById("rightChart"));
-      var singleChart = echarts.init(document.getElementById("singleChart"));
-      leftChart.setOption({
-        tooltip: {
-          trigger: "axis",
-        },
-        xAxis: {
-          type: "time",
-          axisLabel: {
-            show: false,
-          },
-          axisLine: {
-            onZero: false,
-            show: false,
-          },
-          boundaryGap: true,
-          axisTick: {
-            length: 1,
-            lineStyle: {
-              type: "dotted",
-              color: "#ffffff",
-              width: 2,
-              cap: "round",
-            },
-          },
-        },
-        yAxis: {
-          type: "value",
-          show: false,
-        },
-        series: [
-          {
-            name: "angle",
-            data: this.leftChartData,
-            type: "line",
-            showSymbol: false,
-            lineStyle: {
-              normal: {
-                width: 3,
-                color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
-                  {
-                    offset: 0,
-                    color: "rgba(255, 255, 255, 0.3)",
-                  },
-                  {
-                    offset: 0.2,
-                    color: "rgba(255, 255, 255, 0.3)",
-                  },
-                  {
-                    offset: 0.4,
-                    color: "#ffffff",
-                  },
-                  {
-                    offset: 0.6,
-                    color: "#ffffff",
-                  },
-                  {
-                    offset: 0.8,
-                    color: "rgba(255, 255, 255, 0.3)",
-                  },
-                  {
-                    offset: 1,
-                    color: "rgba(255, 255, 255, 0.3)",
-                  },
-                ]),
-              },
-            },
-            smooth: true,
-            areaStyle: {
-              opacity: 0.8,
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                {
-                  offset: 0,
-                  color: "rgb(255,255,255,0.12)",
-                },
-                {
-                  offset: 1,
-                  color: "rgb(0,76,129,0)",
-                },
-              ]),
-              origin: "start",
-            },
-          },
-        ],
-        dataZoom: [
-          {
-            type: "inside",
-            realtime: true,
-            start: 12,
-            end: 100,
-            xAxisIndex: [0],
-            filterMode: "none",
-          },
-        ],
-      });
-      rightChart.setOption({
-        tooltip: {
-          trigger: "axis",
-        },
-        xAxis: {
-          type: "time",
-          axisLabel: {
-            show: false,
-          },
-          axisLine: {
-            onZero: false,
-            show: false,
-          },
-          axisTick: {
-            length: 1,
-            lineStyle: {
-              type: "dotted",
-              color: "#ffffff",
-              width: 2,
-              cap: "round",
-            },
-          },
-        },
-        yAxis: {
-          type: "value",
-          show: false,
-        },
-        series: [
-          {
-            name: "angle",
-            data: this.rightChartData,
-            type: "line",
-            showSymbol: false,
-            lineStyle: {
-              normal: {
-                width: 3,
-                color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
-                  {
-                    offset: 0,
-                    color: "rgba(255, 255, 255, 0.3)",
-                  },
-                  {
-                    offset: 0.2,
-                    color: "rgba(255, 255, 255, 0.3)",
-                  },
-                  {
-                    offset: 0.4,
-                    color: "#ffffff",
-                  },
-                  {
-                    offset: 0.6,
-                    color: "#ffffff",
-                  },
-                  {
-                    offset: 0.8,
-                    color: "rgba(255, 255, 255, 0.3)",
-                  },
-                  {
-                    offset: 1,
-                    color: "rgba(255, 255, 255, 0.3)",
-                  },
-                ]),
-              },
-            },
-            smooth: true,
-            areaStyle: {
-              opacity: 0.8,
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                {
-                  offset: 0,
-                  color: "rgb(255,255,255,0.12)",
-                },
-                {
-                  offset: 1,
-                  color: "rgb(0,76,129,0)",
-                },
-              ]),
-              origin: "start",
-            },
-          },
-        ],
-        dataZoom: [
-          {
-            type: "inside",
-            realtime: true,
-            start: 12,
-            end: 100,
-            xAxisIndex: [0],
-            filterMode: "none",
-          },
-        ],
-      });
-      singleChart.setOption({
-        tooltip: {
-          trigger: "axis",
-        },
-        xAxis: {
-          type: "time",
-          axisLabel: {
-            show: false,
-          },
-          axisLine: {
-            onZero: false,
-            show: false,
-          },
-          axisTick: {
-            length: 1,
-            lineStyle: {
-              type: "dotted",
-              color: "#ffffff",
-              width: 2,
-              cap: "round",
-            },
-          },
-        },
-        yAxis: {
-          type: "value",
-          show: false,
-        },
-        series: [
-          {
-            name: "angle",
-            data: this.singleChartData,
-            type: "line",
-            showSymbol: false,
-            lineStyle: {
-              normal: {
-                width: 3,
-                color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
-                  {
-                    offset: 0,
-                    color: "rgba(255, 255, 255, 0.3)",
-                  },
-                  {
-                    offset: 0.2,
-                    color: "rgba(255, 255, 255, 0.3)",
-                  },
-                  {
-                    offset: 0.4,
-                    color: "#ffffff",
-                  },
-                  {
-                    offset: 0.6,
-                    color: "#ffffff",
-                  },
-                  {
-                    offset: 0.8,
-                    color: "rgba(255, 255, 255, 0.3)",
-                  },
-                  {
-                    offset: 1,
-                    color: "rgba(255, 255, 255, 0.3)",
-                  },
-                ]),
-              },
-            },
-            smooth: true,
-            areaStyle: {
-              opacity: 0.8,
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                {
-                  offset: 0,
-                  color: "rgb(255,255,255,0.12)",
-                },
-                {
-                  offset: 1,
-                  color: "rgb(0,76,129,0)",
-                },
-              ]),
-              origin: "start",
-            },
-          },
-        ],
-        dataZoom: [
-          {
-            type: "inside",
-            realtime: true,
-            start: 12,
-            end: 100,
-            xAxisIndex: [0],
-            filterMode: "none",
-          },
-        ],
-      });
-    },
-    initSpeedCharts() {},
     // 格式化当前数据
     assignData(data) {
       let states = data.jointStates;
@@ -1576,10 +1160,6 @@ export default {
       this.waistRoll_taua = states
         .find((obj) => obj.name === "waist_roll")
         .taua.toFixed(2);
-      this.xSpeed = data.basestate.vx.toFixed(2);
-      this.ySpeed = data.basestate.vy.toFixed(2);
-      this.updatePointer("x", this.xSpeed);
-      this.updatePointer("y", this.ySpeed);
     },
     //获取log列表
     getLog(data) {
@@ -1607,384 +1187,6 @@ export default {
       var degrees = e * (180 / Math.PI);
       return degrees.toFixed(2);
     },
-    //更新两侧图表
-    updateSideCharts(item, type) {
-      console.log("updateSideCharts", item, type);
-      if (
-        !document.getElementById("leftChart") ||
-        !document.getElementById("rightChart") ||
-        !document.getElementById("singleChart")
-      )
-        return;
-      if (this.doubleChart) {
-        if (this.leftChartData.length > 11)
-          //每超过10条数据，删除最旧的一条
-          this.leftChartData.shift();
-        if (this.rightChartData.length > 11) this.rightChartData.shift();
-      } else {
-        if (this.singleChartData.length > 11) this.singleChartData.shift();
-      }
-      switch (item) {
-        case "hipPitch":
-          if (type == "angle") {
-            this.leftChartData.push(this.xAxisDataFmt(this.leftHipPitch_qa));
-            this.rightChartData.push(this.xAxisDataFmt(this.rightHipPitch_qa));
-          } else if (type == "Avelocity") {
-            this.leftChartData.push(this.xAxisDataFmt(this.leftHipPitch_qdota));
-            this.rightChartData.push(
-              this.xAxisDataFmt(this.rightHipPitch_qdota)
-            );
-          } else if (type == "torque") {
-            this.leftChartData.push(this.xAxisDataFmt(this.leftHipPitch_taua));
-            this.rightChartData.push(
-              this.xAxisDataFmt(this.rightHipPitch_taua)
-            );
-          }
-          break;
-        case "hipYaw":
-          if (type == "angle") {
-            this.leftChartData.push(this.xAxisDataFmt(this.leftHipYaw_qa));
-            this.rightChartData.push(this.xAxisDataFmt(this.rightHipYaw_qa));
-          } else if (type == "Avelocity") {
-            this.leftChartData.push(this.xAxisDataFmt(this.leftHipYaw_qdota));
-            this.rightChartData.push(this.xAxisDataFmt(this.rightHipYaw_qdota));
-          } else if (type == "torque") {
-            this.leftChartData.push(this.xAxisDataFmt(this.leftHipYaw_taua));
-            this.rightChartData.push(this.xAxisDataFmt(this.rightHipYaw_taua));
-          }
-          break;
-        case "hipRoll":
-          if (type == "angle") {
-            this.leftChartData.push(this.xAxisDataFmt(this.leftHipRoll_qa));
-            this.rightChartData.push(this.xAxisDataFmt(this.rightHipRoll_qa));
-          } else if (type == "Avelocity") {
-            this.leftChartData.push(this.xAxisDataFmt(this.leftHipRoll_qdota));
-            this.rightChartData.push(
-              this.xAxisDataFmt(this.rightHipRoll_qdota)
-            );
-          } else if (type == "torque") {
-            this.leftChartData.push(this.xAxisDataFmt(this.leftHipRoll_taua));
-            this.rightChartData.push(this.xAxisDataFmt(this.rightHipRoll_taua));
-          }
-          break;
-        case "knee":
-          if (type == "angle") {
-            this.leftChartData.push(this.xAxisDataFmt(this.leftKnee_qa));
-            this.rightChartData.push(this.xAxisDataFmt(this.rightKnee_qa));
-          } else if (type == "Avelocity") {
-            this.leftChartData.push(this.xAxisDataFmt(this.leftKnee_qdota));
-            this.rightChartData.push(this.xAxisDataFmt(this.rightKnee_qdota));
-          } else if (type == "torque") {
-            this.leftChartData.push(this.xAxisDataFmt(this.leftKnee_taua));
-            this.rightChartData.push(this.xAxisDataFmt(this.rightKnee_taua));
-          }
-          break;
-        case "anklePitch":
-          if (type == "angle") {
-            this.leftChartData.push(this.xAxisDataFmt(this.leftAnklePitch_qa));
-            this.rightChartData.push(
-              this.xAxisDataFmt(this.rightAnklePitch_qa)
-            );
-          } else if (type == "Avelocity") {
-            this.leftChartData.push(
-              this.xAxisDataFmt(this.leftAnklePitch_qdota)
-            );
-            this.rightChartData.push(
-              this.xAxisDataFmt(this.rightAnklePitch_qdota)
-            );
-          } else if (type == "torque") {
-            this.leftChartData.push(
-              this.xAxisDataFmt(this.leftAnklePitch_taua)
-            );
-            this.rightChartData.push(
-              this.xAxisDataFmt(this.rightAnklePitch_taua)
-            );
-          }
-          break;
-        case "ankleRoll":
-          if (type == "angle") {
-            this.leftChartData.push(this.xAxisDataFmt(this.leftAnkleRoll_qa));
-            this.rightChartData.push(this.xAxisDataFmt(this.rightAnkleRoll_qa));
-          } else if (type == "Avelocity") {
-            this.leftChartData.push(
-              this.xAxisDataFmt(this.leftAnkleRoll_qdota)
-            );
-            this.rightChartData.push(
-              this.xAxisDataFmt(this.rightAnkleRoll_qdota)
-            );
-          } else if (type == "torque") {
-            this.leftChartData.push(this.xAxisDataFmt(this.leftAnkleRoll_taua));
-            this.rightChartData.push(
-              this.xAxisDataFmt(this.rightAnkleRoll_taua)
-            );
-          }
-          break;
-        case "shoulderPitch":
-          if (type == "angle") {
-            this.leftChartData.push(
-              this.xAxisDataFmt(this.leftPitchShoulder_qa)
-            );
-            this.rightChartData.push(
-              this.xAxisDataFmt(this.rightPitchShoulder_qa)
-            );
-          } else if (type == "Avelocity") {
-            this.leftChartData.push(
-              this.xAxisDataFmt(this.leftPitchShoulder_qdota)
-            );
-            this.rightChartData.push(
-              this.xAxisDataFmt(this.rightPitchShoulder_qdota)
-            );
-          } else if (type == "torque") {
-            this.leftChartData.push(
-              this.xAxisDataFmt(this.leftPitchShoulder_taua)
-            );
-            this.rightChartData.push(
-              this.xAxisDataFmt(this.rightPitchShoulder_taua)
-            );
-          }
-          break;
-        case "shoulderYaw":
-          if (type == "angle") {
-            this.leftChartData.push(this.xAxisDataFmt(this.leftYawShoulder_qa));
-            this.rightChartData.push(
-              this.xAxisDataFmt(this.rightYawShoulder_qa)
-            );
-          } else if (type == "Avelocity") {
-            this.leftChartData.push(
-              this.xAxisDataFmt(this.leftYawShoulder_qdota)
-            );
-            this.rightChartData.push(
-              this.xAxisDataFmt(this.rightYawShoulder_qdota)
-            );
-          } else if (type == "torque") {
-            this.leftChartData.push(
-              this.xAxisDataFmt(this.leftYawShoulder_taua)
-            );
-            this.rightChartData.push(
-              this.xAxisDataFmt(this.rightYawShoulder_taua)
-            );
-          }
-          break;
-        case "shoulderRoll":
-          if (type == "angle") {
-            this.leftChartData.push(
-              this.xAxisDataFmt(this.leftRollShoulder_qa)
-            );
-            this.rightChartData.push(
-              this.xAxisDataFmt(this.rightRollShoulder_qa)
-            );
-          } else if (type == "Avelocity") {
-            this.leftChartData.push(
-              this.xAxisDataFmt(this.leftRollShoulder_qdota)
-            );
-            this.rightChartData.push(
-              this.xAxisDataFmt(this.rightRollShoulder_qdota)
-            );
-          } else if (type == "torque") {
-            this.leftChartData.push(
-              this.xAxisDataFmt(this.leftRollShoulder_taua)
-            );
-            this.rightChartData.push(
-              this.xAxisDataFmt(this.rightRollShoulder_taua)
-            );
-          }
-          break;
-        case "elbow":
-          if (type == "angle") {
-            this.leftChartData.push(this.xAxisDataFmt(this.leftElbow_qa));
-            this.rightChartData.push(this.xAxisDataFmt(this.rightElbow_qa));
-          } else if (type == "Avelocity") {
-            this.leftChartData.push(this.xAxisDataFmt(this.leftElbow_qdota));
-            this.rightChartData.push(this.xAxisDataFmt(this.rightElbow_qdota));
-          } else if (type == "torque") {
-            this.leftChartData.push(this.xAxisDataFmt(this.leftElbow_taua));
-            this.rightChartData.push(this.xAxisDataFmt(this.rightElbow_taua));
-          }
-          break;
-        case "wristPitch":
-          if (type == "angle") {
-            this.leftChartData.push(this.xAxisDataFmt(this.leftPitchWrist_qa));
-            this.rightChartData.push(
-              this.xAxisDataFmt(this.rightPitchWrist_qa)
-            );
-          } else if (type == "Avelocity") {
-            this.leftChartData.push(
-              this.xAxisDataFmt(this.leftPitchWrist_qdota)
-            );
-            this.rightChartData.push(
-              this.xAxisDataFmt(this.rightPitchWrist_qdota)
-            );
-          } else if (type == "torque") {
-            this.leftChartData.push(
-              this.xAxisDataFmt(this.leftPitchWrist_taua)
-            );
-            this.rightChartData.push(
-              this.xAxisDataFmt(this.rightPitchWrist_taua)
-            );
-          }
-          break;
-        case "wristYaw":
-          if (type == "angle") {
-            this.leftChartData.push(this.xAxisDataFmt(this.leftYawWrist_qa));
-            this.rightChartData.push(this.xAxisDataFmt(this.rightYawWrist_qa));
-          } else if (type == "Avelocity") {
-            this.leftChartData.push(this.xAxisDataFmt(this.leftYawWrist_qdota));
-            this.rightChartData.push(
-              this.xAxisDataFmt(this.rightYawWrist_qdota)
-            );
-          } else if (type == "torque") {
-            this.leftChartData.push(this.xAxisDataFmt(this.leftYawWrist_taua));
-            this.rightChartData.push(
-              this.xAxisDataFmt(this.rightYawWrist_taua)
-            );
-          }
-          break;
-        case "wristRoll":
-          if (type == "angle") {
-            this.leftChartData.push(this.xAxisDataFmt(this.leftRollWrist_qa));
-            this.rightChartData.push(this.xAxisDataFmt(this.rightRollWrist_qa));
-          } else if (type == "Avelocity") {
-            this.leftChartData.push(
-              this.xAxisDataFmt(this.leftRollWrist_qdota)
-            );
-            this.rightChartData.push(
-              this.xAxisDataFmt(this.rightRollWrist_qdota)
-            );
-          } else if (type == "torque") {
-            this.leftChartData.push(this.xAxisDataFmt(this.leftRollWrist_taua));
-            this.rightChartData.push(
-              this.xAxisDataFmt(this.rightRollWrist_taua)
-            );
-          }
-          break;
-        case "headPitch":
-          if (type == "angle") {
-            this.singleChartData.push(this.xAxisDataFmt(this.headPitch_qa));
-          } else if (type == "Avelocity") {
-            this.singleChartData.push(this.xAxisDataFmt(this.headPitch_qdota));
-          } else if (type == "torque") {
-            this.singleChartData.push(this.xAxisDataFmt(this.headPitch_taua));
-          }
-          break;
-        case "headYaw":
-          if (type == "angle") {
-            this.singleChartData.push(this.xAxisDataFmt(this.headYaw_qa));
-          } else if (type == "Avelocity") {
-            this.singleChartData.push(this.xAxisDataFmt(this.headYaw_qdota));
-          } else if (type == "torque") {
-            this.singleChartData.push(this.xAxisDataFmt(this.headYaw_taua));
-          }
-          break;
-        case "headRoll":
-          if (type == "angle") {
-            this.singleChartData.push(this.xAxisDataFmt(this.headRoll_qa));
-          } else if (type == "Avelocity") {
-            this.singleChartData.push(this.xAxisDataFmt(this.headRoll_qdota));
-          } else if (type == "torque") {
-            this.singleChartData.push(this.xAxisDataFmt(this.headRoll_taua));
-          }
-          break;
-        case "waistPitch":
-          if (type == "angle") {
-            this.singleChartData.push(this.xAxisDataFmt(this.waistPitch_qa));
-          } else if (type == "Avelocity") {
-            this.singleChartData.push(this.xAxisDataFmt(this.waistPitch_qdota));
-          } else if (type == "torque") {
-            this.singleChartData.push(this.xAxisDataFmt(this.waistPitch_taua));
-          }
-          break;
-        case "waistYaw":
-          if (type == "angle") {
-            this.singleChartData.push(this.xAxisDataFmt(this.waistYaw_qa));
-          } else if (type == "Avelocity") {
-            this.singleChartData.push(this.xAxisDataFmt(this.waistYaw_qdota));
-          } else if (type == "torque") {
-            this.singleChartData.push(this.xAxisDataFmt(this.waistYaw_taua));
-          }
-          break;
-        case "waistRoll":
-          if (type == "angle") {
-            this.singleChartData.push(this.xAxisDataFmt(this.waistRoll_qa));
-          } else if (type == "Avelocity") {
-            this.singleChartData.push(this.xAxisDataFmt(this.waistRoll_qdota));
-          } else if (type == "torque") {
-            this.singleChartData.push(this.xAxisDataFmt(this.waistRoll_taua));
-          }
-          break;
-        default:
-          break;
-      }
-      if (this.doubleChart) {
-        let leftChart = echarts.getInstanceByDom(
-          document.getElementById("leftChart")
-        );
-        leftChart.setOption({
-          series: [
-            {
-              name: type,
-              data: this.leftChartData,
-            },
-          ],
-        });
-        let rightChart = echarts.getInstanceByDom(
-          document.getElementById("rightChart")
-        );
-        rightChart.setOption({
-          series: [
-            {
-              name: type,
-              data: this.rightChartData,
-            },
-          ],
-        });
-      } else {
-        let singleChart = echarts.getInstanceByDom(
-          document.getElementById("singleChart")
-        );
-        singleChart.setOption({
-          series: [
-            {
-              name: type,
-              data: this.singleChartData,
-            },
-          ],
-        });
-      }
-    },
-    //doubleChart
-    singleOrDouble(e) {
-      if (
-        e == "headPitch" ||
-        e == "headYaw" ||
-        e == "headRoll" ||
-        e == "waistPitch" ||
-        e == "waistYaw" ||
-        e == "waistRoll"
-      ) {
-        this.doubleChart = false;
-      } else {
-        this.doubleChart = true;
-      }
-    },
-    //更新速度图表
-    updateSpeedCharts() {},
-    // x轴格式化成时间轴数据
-    xAxisDataFmt(e) {
-      return {
-        name: +new Date(),
-        value: [+new Date(), e],
-      };
-    },
-    changeItem(e) {
-      this.activatedItem = e;
-      this.leftChartData = [];
-      this.rightChartData = [];
-    },
-    changeType(e) {
-      this.activatedType = e;
-      this.leftChartData = [];
-      this.rightChartData = [];
-    },
     headChange() {
       this.headBoxVisible = !this.headBoxVisible;
     },
@@ -1996,13 +1198,6 @@ export default {
       } else if (e == "developerMode") {
         this.headBoxVisible = false;
       }
-    },
-    updatePointer(e, value) {
-      const rotation = value * 90;
-      if (e == "x")
-        this.pointerTransformX = `translate(-50%, -100%) rotate(${rotation}deg)`;
-      if (e == "y")
-        this.pointerTransformY = `translate(-50%, -100%) rotate(${rotation}deg)`;
     },
   },
 };
@@ -2037,167 +1232,82 @@ export default {
   color: $white;
 }
 
-.leftBox {
+.humanModel {
+  height: 32.125vw;
   position: absolute;
-  left: 3.0833vw;
+  left: 37.2917vw;
   top: 5.7083vw;
-  height: 38.2083vw;
-  width: 23.0417vw;
+}
+.poseBox {
+  position: absolute;
+  top: 13.375vw;
+  right: 18.2083vw;
+  width: 18.2083vw;
+  height: 13.375vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-  .humanModel {
-    height: 32.125vw;
+  .poseTxt {
+    font-size: 1vw;
+    color: $white;
+    padding-bottom: 0.9167vw;
   }
-
-  .logBox {
-    height: 30.8333vw;
-    padding: 1.2917vw 1.25vw 0 2.4583vw;
-    box-shadow: 0 0.1042vw 0.2083vw 0 rgba(41, 72, 152, 0.01),
-      0 0.4688vw 0.4167vw 0 rgba(41, 72, 152, 0.02);
-    border-radius: 0.2604vw;
-    background-color: rgba(255, 255, 255, 0.1);
-
-    .logMain {
-      margin-top: 1.0417vw;
-      overflow-y: auto;
-      height: 26.6667vw;
-
-      .logTxt {
-        font-size: $size-30;
-        color: $white;
-      }
-
-      .txtErr {
-        color: #dc4253;
-      }
-    }
-
-    .logMain::-webkit-scrollbar {
-      width: 0.5vw;
-    }
-
-    .logMain::-webkit-scrollbar-thumb {
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 0.125vw;
-    }
-
-    .logMain::-webkit-scrollbar-corner {
-      background-color: transparent;
-    }
-  }
-
-  .modelChose {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 3.7083vw;
-    width: 23.0417vw;
-    align-items: center;
-
-    .modelBtn {
-      flex: 1;
-      width: 11.0938vw;
-      height: 3.6979vw;
-
-      .btnTxt {
-        font-size: $size-35;
-        color: $white;
-        opacity: 1;
-        line-height: 2.0313vw;
-      }
-    }
-
-    .activatedModel {
-      border-radius: 1.8229vw;
-      background-color: rgba(255, 255, 255, 0.1);
-    }
+  .poseContent {
+    width: 18.2083vw;
+    height: 11.0833vw;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0.625vw;
+    font-size: 1.9583vw;
+    font-family: AlibabaPuHuiTiM;
+    color: $white;
   }
 }
 
-.chartBox {
+.poseTable {
   position: absolute;
-  top: 5.7083vw;
-  right: 2.5833vw;
+  right: 2.4583vw;
+  bottom: 2.4583vw;
   width: 67.75vw;
-  height: 8.625vw;
+  height: 10.4583vw;
   background: rgba(255, 255, 255, 0.08);
-  border-radius: 0.25vw;
+  border-radius: .25vw;
+}
 
-  .leftSide {
-    width: 33.75vw;
-    height: 8.625vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.logBox {
+  height: 30.8333vw;
+  padding: 1.2917vw 1.25vw 0 2.4583vw;
+  box-shadow: 0 0.1042vw 0.2083vw 0 rgba(41, 72, 152, 0.01),
+    0 0.4688vw 0.4167vw 0 rgba(41, 72, 152, 0.02);
+  border-radius: 0.2604vw;
+  background-color: rgba(255, 255, 255, 0.1);
 
-    .doubleChartSize {
-      width: 16.875vw;
-      height: 11vw;
-      margin-top: 2vw;
+  .logMain {
+    margin-top: 1.0417vw;
+    overflow-y: auto;
+    height: 26.6667vw;
+
+    .logTxt {
+      font-size: $size-30;
+      color: $white;
     }
 
-    .singleChartSize {
-      width: 33.75vw;
-      height: 11vw;
-      margin-top: 2vw;
-    }
-
-    .chartTitle {
-      position: absolute;
-      left: 1.25vw;
-      top: 0.875vw;
-      font-size: 1vw;
-      color: #85888b;
+    .txtErr {
+      color: #dc4253;
     }
   }
 
-  .middleDivider {
-    width: 0.125vw;
-    height: 4.4167vw;
+  .logMain::-webkit-scrollbar {
+    width: 0.5vw;
   }
 
-  .rightSide {
-    width: 33.875vw;
+  .logMain::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 0.125vw;
+  }
 
-    .axleVal {
-      position: absolute;
-      left: 36.9583vw;
-      top: 2.4167vw;
-      height: 3.8333vw;
-
-      .val1 {
-        font-size: 1vw;
-        font-family: AlibabaPuHuiTiM;
-        color: #85888b;
-      }
-
-      .val2 {
-        font-size: $size-30;
-        color: #ffffff;
-        margin-left: 0.25vw;
-      }
-    }
-
-    .axleImg {
-      position: absolute;
-      right: 11.7083vw;
-      top: 2.4167vw;
-      width: 8.625vw;
-      height: 4.2917vw;
-
-      .dashboard {
-        width: 8.625vw;
-        height: 4.2917vw;
-      }
-      .pointer {
-        position: absolute;
-        top: 3.75vw;
-        right: 3.5vw;
-        width: 0.8125vw;
-        height: 2.5625vw;
-        transform-origin: bottom;
-        transition: transform 0.5s ease-in-out;
-      }
-    }
+  .logMain::-webkit-scrollbar-corner {
+    background-color: transparent;
   }
 }
 
@@ -2226,12 +1336,6 @@ export default {
     border-radius: 0.2604vw 0.2604vw 0 0;
     font-size: $size-30;
     color: $white;
-
-    .typeImg {
-      width: 1.4583vw;
-      height: 1.4583vw;
-      margin-left: 1.25vw;
-    }
 
     .notAct {
       opacity: 0.3;
@@ -2271,10 +1375,6 @@ export default {
   .itemTxt {
     color: $white;
   }
-
-  .currentItem {
-    background-color: $base-bkg !important;
-  }
 }
 
 .headBox {
@@ -2301,5 +1401,62 @@ export default {
 .unity-robot {
   width: 18.9063vw;
   height: 29.0625vw;
+}
+.tabBox {
+  position: absolute;
+  left: 0;
+  top: 6.9167vw;
+  width: 23.4167vw;
+  height: 17.0833vw;
+
+  .tab {
+    position: absolute;
+    left: 20%;
+    width: 23.4167vw;
+    height: 6.1667vw;
+    font-size: 1.8333vw;
+    color: $white;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .txt {
+    width: 23.3854vw;
+    height: 6.1458vw;
+    margin-bottom: 1.9167vw;
+  }
+
+  .activeTab {
+    background: linear-gradient(
+      274deg,
+      rgba(26, 25, 25, 0.4) 0%,
+      rgba(0, 76, 129, 0.4) 100%
+    );
+  }
+
+  .activeTab::after {
+    position: absolute;
+    content: " ";
+    left: 0;
+    border-width: 6.1vw 3.3021vw 2.3021vw 0;
+    border-style: solid;
+    border-color: $light-blue transparent transparent transparent;
+  }
+
+  .iconConnect {
+    width: 2.0833vw;
+    height: 2.0833vw;
+  }
+
+  .iconSysState {
+    width: 1.4063vw;
+    height: 1.5625vw;
+    padding: 0 0.35vw;
+  }
+
+  .opt {
+    opacity: 0.3;
+  }
 }
 </style>

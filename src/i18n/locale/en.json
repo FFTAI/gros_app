@@ -136,5 +136,8 @@
     "selectRobotModel": "Select robot model",
     "adjustPosture": "Adjust the robot's front, back, left, and right posture",
     "connectionMode": "Connection mode",
-    "connectionTips": "Please connect to the robot Wi-Fi in the network settings"
+    "connectionTips": "Please connect to the robot Wi-Fi in the network settings",
+    "robotPose": "Robot Pose",
+    "motor": "Motor",
+    "currentPosture": "Current Posture"
 }
