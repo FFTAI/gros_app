@@ -89,36 +89,57 @@
           style="height: 2.125vw; width: 100%; display: flex; color: #85888b"
         >
           <div class="itemChild" style="font-size: 1.25vw; color: #ffffff">
-            {{ $t("upperBody") }}
+            IMU
           </div>
           <div class="itemChild">
-            {{ $t("left") }}
+            {{ $t("angle") }}
           </div>
           <div class="itemChild">
-            {{ $t("right") }}
+            {{ $t("angularVelocity") }}
+          </div>
+          <div class="itemChild">
+            {{ $t("linearAcceleration") }}
           </div>
         </div>
         <div class="tableItem" style="background-color: rgba(255, 255, 255, 0)">
-          <div class="itemChild">{{ $t("head") }}{{ $t("yaw") }}</div>
-          <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ headYaw_qa ? headYaw_qa + "°" : "" }}
-          </div>
-          <div
-            v-else-if="activatedType == 'Avelocity'"
-            class="itemChild itemTxt"
-          >
-            {{ headYaw_qdota ? headYaw_qdota + "°/s" : "" }}
-          </div>
-          <div v-else-if="activatedType == 'torque'" class="itemChild itemTxt">
-            {{ headYaw_taua ? headYaw_taua + "N.m" : "" }}
-          </div>
-          <div class="itemChild"></div>
+          <div class="itemChild">{{ $t("deviation") }}</div>
+          <div class="itemChild itemTxt">+92.12°</div>
+          <div class="itemChild itemTxt">+92.12 °/s</div>
+          <div class="itemChild itemTxt">+92.12 °/s</div>
+        </div>
+        <div class="tableItem" style="background-color: rgba(255, 255, 255, 0)">
+          <div class="itemChild">{{ $t("bank") }}</div>
+          <div class="itemChild itemTxt">+48.13°</div>
+          <div class="itemChild itemTxt">+48.13 °/s</div>
+          <div class="itemChild itemTxt">+48.13 °/s</div>
+        </div>
+        <div class="tableItem" style="background-color: rgba(255, 255, 255, 0)">
+          <div class="itemChild">{{ $t("obeisance") }}</div>
+          <div class="itemChild itemTxt">+157.02°</div>
+          <div class="itemChild itemTxt">+157.02 °/s</div>
+          <div class="itemChild itemTxt">+157.02 °/s</div>
         </div>
       </div>
     </div>
     <!-- log日志 -->
     <div class="logBox" v-show="activated == 'log'">
       <div class="logTitle common-font">{{ $t("logFile") }}</div>
+      <div class="logMain">
+        <el-timeline>
+          <el-timeline-item
+            v-for="(activity, index) in logList"
+            :key="index"
+            :type="activity.type"
+            :timestamp="activity.timestamp"
+            :placement="activity.placement"
+          >
+            <p class="logTxt common-font">{{ activity.content }}</p>
+          </el-timeline-item>
+        </el-timeline>
+      </div>
+    </div>
+    <div class="logBox" style="left: 64.2917vw;" v-show="activated == 'log'">
+      <div class="logTitle common-font">{{ $t("errMsg") }}</div>
       <div class="logMain">
         <el-timeline>
           <el-timeline-item
@@ -685,7 +706,7 @@ export default {
   },
   data() {
     return {
-      activated: "robot", //机器人姿态:robot Log日志:log 执行器:motor
+      activated: "log", //机器人姿态:robot Log日志:log 执行器:motor
       logList: [], //日志列表
       /**
        * 上肢部分关节数据
@@ -1254,24 +1275,29 @@ export default {
   position: absolute;
   right: 2.4583vw;
   bottom: 2.4583vw;
-  width: 67.75vw;
-  height: 10.4583vw;
+  width: 65.2917vw;
+  height: 8.2917vw;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 0.25vw;
+  padding: 1.1667vw 0 1vw 2.4583vw;
 }
 
 .logBox {
-  height: 30.8333vw;
+  position: absolute;
+  left: 29.7917vw;
+  top: 6.3333vw;
+  width: 29.5417vw;
+  height: 35.5417vw;
+  border-radius: .25vw;
   padding: 1.2917vw 1.25vw 0 2.4583vw;
   box-shadow: 0 0.1042vw 0.2083vw 0 rgba(41, 72, 152, 0.01),
     0 0.4688vw 0.4167vw 0 rgba(41, 72, 152, 0.02);
-  border-radius: 0.2604vw;
   background-color: rgba(255, 255, 255, 0.1);
 
   .logMain {
     margin-top: 1.0417vw;
     overflow-y: auto;
-    height: 26.6667vw;
+    height: 31.6667vw;
 
     .logTxt {
       font-size: $size-30;

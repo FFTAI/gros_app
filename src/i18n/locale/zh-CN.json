@@ -139,5 +139,12 @@
     "connectionTips": "请在网络设置中连接机器人Wi-Fi",
     "robotPose": "机器人姿态",
     "motor": "执行器",
-    "currentPosture": "当前姿态"
+    "currentPosture": "当前姿态",
+    "angle": "角度",
+    "angularVelocity": "角速度",
+    "linearAcceleration": "线性加速度",
+    "deviation": "偏航",
+    "bank": "横滚",
+    "obeisance": "俯仰",
+    "errMsg": "报错信息"
 }

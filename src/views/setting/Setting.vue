@@ -157,7 +157,6 @@
       >
         <span>{{ $t("appLanguage") }}</span>
         <span class="itemTxt" v-if="currLanguage == 'zh'">简体中文</span>
-        <span class="itemTxt" v-if="currLanguage == 'tw'">繁體中文</span>
         <span class="itemTxt" v-if="currLanguage == 'en'">English</span>
         <img class="iconTo" src="@/assets/images/icon_to.png" />
       </div>
@@ -176,18 +175,6 @@
           <img
             class="iconChose"
             :class="{ visibility: currLanguage != 'zh' }"
-            src="@/assets/images/icon_chose.png"
-          />
-        </div>
-        <div
-          class="languageItem white01-bkg"
-          :class="{ chosedLanguage: currLanguage == 'tw' }"
-          @click="changeLanguage('tw')"
-        >
-          <span>繁體中文</span>
-          <img
-            class="iconChose"
-            :class="{ visibility: currLanguage != 'tw' }"
             src="@/assets/images/icon_chose.png"
           />
         </div>
