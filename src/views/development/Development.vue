@@ -86,9 +86,33 @@
       <!-- IMU表 -->
       <div class="poseTable">
         <div
-          class="tableItem"
-          style="background-color: rgba(255, 255, 255, 0)"
+          style="height: 2.125vw; width: 100%; display: flex; color: #85888b"
         >
+          <div class="itemChild" style="font-size: 1.25vw; color: #ffffff">
+            {{ $t("upperBody") }}
+          </div>
+          <div class="itemChild">
+            {{ $t("left") }}
+          </div>
+          <div class="itemChild">
+            {{ $t("right") }}
+          </div>
+        </div>
+        <div class="tableItem" style="background-color: rgba(255, 255, 255, 0)">
+          <div class="itemChild">{{ $t("head") }}{{ $t("yaw") }}</div>
+          <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
+            {{ headYaw_qa ? headYaw_qa + "°" : "" }}
+          </div>
+          <div
+            v-else-if="activatedType == 'Avelocity'"
+            class="itemChild itemTxt"
+          >
+            {{ headYaw_qdota ? headYaw_qdota + "°/s" : "" }}
+          </div>
+          <div v-else-if="activatedType == 'torque'" class="itemChild itemTxt">
+            {{ headYaw_taua ? headYaw_taua + "N.m" : "" }}
+          </div>
+          <div class="itemChild"></div>
         </div>
       </div>
     </div>
@@ -117,10 +141,7 @@
       <!-- 左右侧图表 -->
       <div class="sideChart">
         <!-- Head Yaw -->
-        <div
-          class="tableItem"
-          style="background-color: rgba(255, 255, 255, 0)"
-        >
+        <div class="tableItem" style="background-color: rgba(255, 255, 255, 0)">
           <div class="itemChild">{{ $t("head") }}{{ $t("yaw") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
             {{ headYaw_qa ? headYaw_qa + "°" : "" }}
@@ -157,10 +178,7 @@
           <div class="itemChild"></div>
         </div>
         <!-- Head Roll -->
-        <div
-          class="tableItem"
-          style="background-color: rgba(255, 255, 255, 0)"
-        >
+        <div class="tableItem" style="background-color: rgba(255, 255, 255, 0)">
           <div class="itemChild">{{ $t("head") }}{{ $t("roll") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
             {{ headRoll_qa ? headRoll_qa + "°" : "" }}
@@ -193,9 +211,7 @@
           </div>
         </div>
         <!-- Shoulder Pitch -->
-        <div
-          class="tableItem"
-        >
+        <div class="tableItem">
           <div class="itemChild">{{ $t("shoulderPitch") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
             {{ leftPitchShoulder_qa ? leftPitchShoulder_qa + "°" : "" }}
@@ -225,9 +241,7 @@
           </div>
         </div>
         <!-- Shoulder Roll -->
-        <div
-          class="tableItem"
-        >
+        <div class="tableItem">
           <div class="itemChild">{{ $t("shoulderRoll") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
             {{ leftRollShoulder_qa ? leftRollShoulder_qa + "°" : "" }}
@@ -255,9 +269,7 @@
           </div>
         </div>
         <!-- Shoulder Yaw -->
-        <div
-          class="tableItem"
-        >
+        <div class="tableItem">
           <div class="itemChild">{{ $t("shoulderYaw") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
             {{ leftYawShoulder_qa ? leftYawShoulder_qa + "°" : "" }}
@@ -285,9 +297,7 @@
           </div>
         </div>
         <!-- Elbow -->
-        <div
-          class="tableItem"
-        >
+        <div class="tableItem">
           <div class="itemChild">{{ $t("elbow") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
             {{ leftElbow_qa ? leftElbow_qa + "°" : "" }}
@@ -315,9 +325,7 @@
           </div>
         </div>
         <!-- Wrist Yaw -->
-        <div
-          class="tableItem"
-        >
+        <div class="tableItem">
           <div class="itemChild">{{ $t("wristYaw") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
             {{ leftYawWrist_qa ? leftYawWrist_qa + "°" : "" }}
@@ -345,9 +353,7 @@
           </div>
         </div>
         <!-- Wrist Roll -->
-        <div
-          class="tableItem"
-        >
+        <div class="tableItem">
           <div class="itemChild">{{ $t("wristRoll") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
             {{ leftRollWrist_qa ? leftRollWrist_qa + "°" : "" }}
@@ -375,9 +381,7 @@
           </div>
         </div>
         <!-- Wrist Pitch -->
-        <div
-          class="tableItem"
-        >
+        <div class="tableItem">
           <div class="itemChild">{{ $t("wristPitch") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
             {{ leftPitchWrist_qa ? leftPitchWrist_qa + "°" : "" }}
@@ -414,10 +418,7 @@
       <!-- 左右侧图表 -->
       <div class="sideChart">
         <!-- Waist Yaw -->
-        <div
-          class="tableItem"
-          style="background-color: rgba(255, 255, 255, 0)"
-        >
+        <div class="tableItem" style="background-color: rgba(255, 255, 255, 0)">
           <div class="itemChild">{{ $t("waist") }}{{ $t("yaw") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
             {{ waistYaw_qa ? waistYaw_qa + "°" : "" }}
@@ -454,10 +455,7 @@
           <div class="itemChild"></div>
         </div>
         <!-- Waist Roll -->
-        <div
-          class="tableItem"
-          style="background-color: rgba(255, 255, 255, 0)"
-        >
+        <div class="tableItem" style="background-color: rgba(255, 255, 255, 0)">
           <div class="itemChild">{{ $t("waist") }}{{ $t("roll") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
             {{ waistRoll_qa ? waistRoll_qa + "°" : "" }}
@@ -490,9 +488,7 @@
           </div>
         </div>
         <!-- Hip Roll -->
-        <div
-          class="tableItem"
-        >
+        <div class="tableItem">
           <div class="itemChild">{{ $t("hipRoll") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
             {{ leftHipRoll_qa ? leftHipRoll_qa + "°" : "" }}
@@ -520,9 +516,7 @@
           </div>
         </div>
         <!-- Hip Yaw -->
-        <div
-          class="tableItem"
-        >
+        <div class="tableItem">
           <div class="itemChild">{{ $t("hipYaw") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
             {{ leftHipYaw_qa ? leftHipYaw_qa + "°" : "" }}
@@ -550,9 +544,7 @@
           </div>
         </div>
         <!-- Hip Pitch -->
-        <div
-          class="tableItem"
-        >
+        <div class="tableItem">
           <div class="itemChild">{{ $t("hipPitch") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
             {{ leftHipPitch_qa ? leftHipPitch_qa + "°" : "" }}
@@ -580,9 +572,7 @@
           </div>
         </div>
         <!-- Knee -->
-        <div
-          class="tableItem"
-        >
+        <div class="tableItem">
           <div class="itemChild">{{ $t("knee") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
             {{ leftKnee_qa ? leftKnee_qa + "°" : "" }}
@@ -610,9 +600,7 @@
           </div>
         </div>
         <!-- Ankle Pitch -->
-        <div
-          class="tableItem"
-        >
+        <div class="tableItem">
           <div class="itemChild">{{ $t("anklePitch") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
             {{ leftAnklePitch_qa ? leftAnklePitch_qa + "°" : "" }}
@@ -640,9 +628,7 @@
           </div>
         </div>
         <!-- Ankle Roll -->
-        <div
-          class="tableItem"
-        >
+        <div class="tableItem">
           <div class="itemChild">{{ $t("ankleRoll") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
             {{ leftAnkleRoll_qa ? leftAnkleRoll_qa + "°" : "" }}
@@ -1271,7 +1257,7 @@ export default {
   width: 67.75vw;
   height: 10.4583vw;
   background: rgba(255, 255, 255, 0.08);
-  border-radius: .25vw;
+  border-radius: 0.25vw;
 }
 
 .logBox {
@@ -1354,29 +1340,27 @@ export default {
     background-color: rgba(255, 255, 255, 0.08);
     border-radius: 0 0 0.2604vw 0.2604vw;
   }
-
-  .tableItem {
-    height: 2.0833vw;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    color: #85888b;
-  }
-
-  .tableItem:nth-of-type(odd) {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-  .itemChild {
-    flex: 1;
-    font-size: 1vw;
-    margin-left: 1.25vw;
-  }
-
-  .itemTxt {
-    color: $white;
-  }
+}
+.tableItem {
+  height: 2.0833vw;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  color: #85888b;
 }
 
+.tableItem:nth-of-type(odd) {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.itemChild {
+  flex: 1;
+  font-size: 1vw;
+  margin-left: 1.25vw;
+}
+
+.itemTxt {
+  color: $white;
+}
 .headBox {
   position: absolute;
   top: 4.453123vw;
