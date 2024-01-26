@@ -146,5 +146,10 @@
     "deviation": "Deviation",
     "bank": "Bank",
     "obeisance": "Obeisance",
-    "errMsg": "Error message"
+    "errMsg": "Error message",
+    "torque": "Torque",
+    "temperature": "Temperature",
+    "communication": "Communication",
+    "packetLoss": "Packet Loss",
+    "error": "Error"
 }

@@ -146,5 +146,10 @@
     "deviation": "偏航",
     "bank": "横滚",
     "obeisance": "俯仰",
-    "errMsg": "报错信息"
+    "errMsg": "报错信息",
+    "torque": "扭矩",
+    "temperature": "温度",
+    "communication": "通信",
+    "packetLoss": "丢包数",
+    "error": "错误"
 }

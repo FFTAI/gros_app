@@ -138,7 +138,7 @@
         </el-timeline>
       </div>
     </div>
-    <div class="logBox" style="left: 64.2917vw;" v-show="activated == 'log'">
+    <div class="logBox" style="left: 64.2917vw" v-show="activated == 'log'">
       <div class="logTitle common-font">{{ $t("errMsg") }}</div>
       <div class="logMain">
         <el-timeline>
@@ -155,67 +155,221 @@
       </div>
     </div>
     <!-- 头部上肢 -->
-    <div class="rightBox upper" v-show="activated == 'motor'">
-      <div class="rightTitle">
-        <div>{{ $t("headPart") }}</div>
+    <div class="typeSelect common-font" v-show="activated == 'motor'">
+      <div
+        class="typeItem flex-center radiusL"
+        :class="{ activatedItem: activatedType == 'angle' }"
+        @click="changeType('angle')"
+      >
+        {{ $t("angle") }}
       </div>
-      <!-- 左右侧图表 -->
-      <div class="sideChart">
-        <!-- Head Yaw -->
-        <div class="tableItem" style="background-color: rgba(255, 255, 255, 0)">
-          <div class="itemChild">{{ $t("head") }}{{ $t("yaw") }}</div>
-          <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ headYaw_qa ? headYaw_qa + "°" : "" }}
-          </div>
-          <div
-            v-else-if="activatedType == 'Avelocity'"
-            class="itemChild itemTxt"
-          >
-            {{ headYaw_qdota ? headYaw_qdota + "°/s" : "" }}
-          </div>
-          <div v-else-if="activatedType == 'torque'" class="itemChild itemTxt">
-            {{ headYaw_taua ? headYaw_taua + "N.m" : "" }}
-          </div>
-          <div class="itemChild"></div>
+      <div class="typeDivider"></div>
+      <div
+        class="typeItem flex-center"
+        :class="{ activatedItem: activatedType == 'angularVelocity' }"
+        @click="changeType('angularVelocity')"
+      >
+        {{ $t("angularVelocity") }}
+      </div>
+      <div class="typeDivider"></div>
+      <div
+        class="typeItem flex-center"
+        :class="{ activatedItem: activatedType == 'torque' }"
+        @click="changeType('torque')"
+      >
+        {{ $t("torque") }}
+      </div>
+      <div class="typeDivider"></div>
+      <div
+        class="typeItem flex-center"
+        :class="{ activatedItem: activatedType == 'temperature' }"
+        @click="changeType('temperature')"
+      >
+        {{ $t("temperature") }}
+      </div>
+      <div class="typeDivider"></div>
+      <div
+        class="typeItem flex-center"
+        :class="{ activatedItem: activatedType == 'communication' }"
+        @click="changeType('communication')"
+      >
+        {{ $t("communication") }}
+      </div>
+      <div class="typeDivider"></div>
+      <div
+        class="typeItem flex-center"
+        :class="{ activatedItem: activatedType == 'packetLoss' }"
+        @click="changeType('packetLoss')"
+      >
+        {{ $t("packetLoss") }}
+      </div>
+      <div class="typeDivider"></div>
+      <div
+        class="typeItem flex-center radiusR"
+        :class="{ activatedItem: activatedType == 'error' }"
+        @click="changeType('error')"
+      >
+        {{ $t("error") }}
+      </div>
+    </div>
+    <div class="topBox" v-show="activated == 'motor'">
+      <div>
+        <div class="rightTitle">
+          <div>{{ $t("headPart") }}</div>
         </div>
-        <!-- Head Pitch -->
-        <div
-          class="tableItem"
-          style="background-color: rgba(255, 255, 255, 0.1)"
-        >
-          <div class="itemChild">{{ $t("head") }}{{ $t("pitch") }}</div>
-          <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ headPitch_qa ? headPitch_qa + "°" : "" }}
-          </div>
+        <!-- 左右侧图表 -->
+        <div class="sideChart">
+          <!-- Head Yaw -->
           <div
-            v-else-if="activatedType == 'Avelocity'"
-            class="itemChild itemTxt"
+            class="tableItem"
+            style="background-color: rgba(255, 255, 255, 0)"
           >
-            {{ headPitch_qdota ? headPitch_qdota + "°/s" : "" }}
+            <div class="itemChild">{{ $t("head") }}{{ $t("yaw") }}</div>
+            <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
+              {{ headYaw_qa ? headYaw_qa + "°" : "" }}
+            </div>
+            <div
+              v-else-if="activatedType == 'Avelocity'"
+              class="itemChild itemTxt"
+            >
+              {{ headYaw_qdota ? headYaw_qdota + "°/s" : "" }}
+            </div>
+            <div
+              v-else-if="activatedType == 'torque'"
+              class="itemChild itemTxt"
+            >
+              {{ headYaw_taua ? headYaw_taua + "N.m" : "" }}
+            </div>
+            <div class="itemChild"></div>
           </div>
-          <div v-else-if="activatedType == 'torque'" class="itemChild itemTxt">
-            {{ headPitch_taua ? headPitch_taua + "N.m" : "" }}
-          </div>
-          <div class="itemChild"></div>
-        </div>
-        <!-- Head Roll -->
-        <div class="tableItem" style="background-color: rgba(255, 255, 255, 0)">
-          <div class="itemChild">{{ $t("head") }}{{ $t("roll") }}</div>
-          <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ headRoll_qa ? headRoll_qa + "°" : "" }}
-          </div>
+          <!-- Head Pitch -->
           <div
-            v-else-if="activatedType == 'Avelocity'"
-            class="itemChild itemTxt"
+            class="tableItem"
+            style="background-color: rgba(255, 255, 255, 0.1)"
           >
-            {{ headRoll_qdota ? headRoll_qdota + "°/s" : "" }}
+            <div class="itemChild">{{ $t("head") }}{{ $t("pitch") }}</div>
+            <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
+              {{ headPitch_qa ? headPitch_qa + "°" : "" }}
+            </div>
+            <div
+              v-else-if="activatedType == 'Avelocity'"
+              class="itemChild itemTxt"
+            >
+              {{ headPitch_qdota ? headPitch_qdota + "°/s" : "" }}
+            </div>
+            <div
+              v-else-if="activatedType == 'torque'"
+              class="itemChild itemTxt"
+            >
+              {{ headPitch_taua ? headPitch_taua + "N.m" : "" }}
+            </div>
+            <div class="itemChild"></div>
           </div>
-          <div v-else-if="activatedType == 'torque'" class="itemChild itemTxt">
-            {{ headRoll_taua ? headRoll_taua + "N.m" : "" }}
+          <!-- Head Roll -->
+          <div
+            class="tableItem"
+            style="background-color: rgba(255, 255, 255, 0)"
+          >
+            <div class="itemChild">{{ $t("head") }}{{ $t("roll") }}</div>
+            <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
+              {{ headRoll_qa ? headRoll_qa + "°" : "" }}
+            </div>
+            <div
+              v-else-if="activatedType == 'Avelocity'"
+              class="itemChild itemTxt"
+            >
+              {{ headRoll_qdota ? headRoll_qdota + "°/s" : "" }}
+            </div>
+            <div
+              v-else-if="activatedType == 'torque'"
+              class="itemChild itemTxt"
+            >
+              {{ headRoll_taua ? headRoll_taua + "N.m" : "" }}
+            </div>
+            <div class="itemChild"></div>
           </div>
-          <div class="itemChild"></div>
         </div>
       </div>
+      <div>
+        <div class="rightTitle">
+          <div>{{ $t("waistPart") }}</div>
+        </div>
+        <!-- 左右侧图表 -->
+        <div class="sideChart">
+          <!-- Waist Yaw -->
+          <div
+            class="tableItem"
+            style="background-color: rgba(255, 255, 255, 0)"
+          >
+            <div class="itemChild">{{ $t("waist") }}{{ $t("yaw") }}</div>
+            <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
+              {{ waistYaw_qa ? waistYaw_qa + "°" : "" }}
+            </div>
+            <div
+              v-else-if="activatedType == 'Avelocity'"
+              class="itemChild itemTxt"
+            >
+              {{ waistYaw_qdota ? waistYaw_qdota + "°/s" : "" }}
+            </div>
+            <div
+              v-else-if="activatedType == 'torque'"
+              class="itemChild itemTxt"
+            >
+              {{ waistYaw_taua ? waistYaw_taua + "N.m" : "" }}
+            </div>
+            <div class="itemChild"></div>
+          </div>
+          <!-- Waist Pitch -->
+          <div
+            class="tableItem"
+            style="background-color: rgba(255, 255, 255, 0.1)"
+          >
+            <div class="itemChild">{{ $t("waist") }}{{ $t("pitch") }}</div>
+            <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
+              {{ waistPitch_qa ? waistPitch_qa + "°" : "" }}
+            </div>
+            <div
+              v-else-if="activatedType == 'Avelocity'"
+              class="itemChild itemTxt"
+            >
+              {{ waistPitch_qdota ? waistPitch_qdota + "°/s" : "" }}
+            </div>
+            <div
+              v-else-if="activatedType == 'torque'"
+              class="itemChild itemTxt"
+            >
+              {{ waistPitch_taua ? waistPitch_taua + "N.m" : "" }}
+            </div>
+            <div class="itemChild"></div>
+          </div>
+          <!-- Waist Roll -->
+          <div
+            class="tableItem"
+            style="background-color: rgba(255, 255, 255, 0)"
+          >
+            <div class="itemChild">{{ $t("waist") }}{{ $t("roll") }}</div>
+            <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
+              {{ waistRoll_qa ? waistRoll_qa + "°" : "" }}
+            </div>
+            <div
+              v-else-if="activatedType == 'Avelocity'"
+              class="itemChild itemTxt"
+            >
+              {{ waistRoll_qdota ? waistRoll_qdota + "°/s" : "" }}
+            </div>
+            <div
+              v-else-if="activatedType == 'torque'"
+              class="itemChild itemTxt"
+            >
+              {{ waistRoll_taua ? waistRoll_taua + "N.m" : "" }}
+            </div>
+            <div class="itemChild"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 下肢数据 -->
+    <div class="rightBox lower" v-show="activated == 'motor'">
       <!-- 数值切换显示Table -->
       <div class="rightTable">
         <div
@@ -428,69 +582,6 @@
           <div v-else-if="activatedType == 'torque'" class="itemChild itemTxt">
             {{ rightPitchWrist_taua ? rightPitchWrist_taua + "N.m" : "" }}
           </div>
-        </div>
-      </div>
-    </div>
-    <!-- 下肢数据 -->
-    <div class="rightBox lower" v-show="activated == 'motor'">
-      <div class="rightTitle">
-        <div>{{ $t("waistPart") }}</div>
-      </div>
-      <!-- 左右侧图表 -->
-      <div class="sideChart">
-        <!-- Waist Yaw -->
-        <div class="tableItem" style="background-color: rgba(255, 255, 255, 0)">
-          <div class="itemChild">{{ $t("waist") }}{{ $t("yaw") }}</div>
-          <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ waistYaw_qa ? waistYaw_qa + "°" : "" }}
-          </div>
-          <div
-            v-else-if="activatedType == 'Avelocity'"
-            class="itemChild itemTxt"
-          >
-            {{ waistYaw_qdota ? waistYaw_qdota + "°/s" : "" }}
-          </div>
-          <div v-else-if="activatedType == 'torque'" class="itemChild itemTxt">
-            {{ waistYaw_taua ? waistYaw_taua + "N.m" : "" }}
-          </div>
-          <div class="itemChild"></div>
-        </div>
-        <!-- Waist Pitch -->
-        <div
-          class="tableItem"
-          style="background-color: rgba(255, 255, 255, 0.1)"
-        >
-          <div class="itemChild">{{ $t("waist") }}{{ $t("pitch") }}</div>
-          <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ waistPitch_qa ? waistPitch_qa + "°" : "" }}
-          </div>
-          <div
-            v-else-if="activatedType == 'Avelocity'"
-            class="itemChild itemTxt"
-          >
-            {{ waistPitch_qdota ? waistPitch_qdota + "°/s" : "" }}
-          </div>
-          <div v-else-if="activatedType == 'torque'" class="itemChild itemTxt">
-            {{ waistPitch_taua ? waistPitch_taua + "N.m" : "" }}
-          </div>
-          <div class="itemChild"></div>
-        </div>
-        <!-- Waist Roll -->
-        <div class="tableItem" style="background-color: rgba(255, 255, 255, 0)">
-          <div class="itemChild">{{ $t("waist") }}{{ $t("roll") }}</div>
-          <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ waistRoll_qa ? waistRoll_qa + "°" : "" }}
-          </div>
-          <div
-            v-else-if="activatedType == 'Avelocity'"
-            class="itemChild itemTxt"
-          >
-            {{ waistRoll_qdota ? waistRoll_qdota + "°/s" : "" }}
-          </div>
-          <div v-else-if="activatedType == 'torque'" class="itemChild itemTxt">
-            {{ waistRoll_taua ? waistRoll_taua + "N.m" : "" }}
-          </div>
-          <div class="itemChild"></div>
         </div>
       </div>
       <!-- 数值切换显示Table -->
@@ -706,7 +797,7 @@ export default {
   },
   data() {
     return {
-      activated: "log", //机器人姿态:robot Log日志:log 执行器:motor
+      activated: "motor", //机器人姿态:robot Log日志:log 执行器:motor
       logList: [], //日志列表
       /**
        * 上肢部分关节数据
@@ -1206,6 +1297,9 @@ export default {
         this.headBoxVisible = false;
       }
     },
+    changeType(e) {
+      this.activatedType = e;
+    },
   },
 };
 </script>
@@ -1288,7 +1382,7 @@ export default {
   top: 6.3333vw;
   width: 29.5417vw;
   height: 35.5417vw;
-  border-radius: .25vw;
+  border-radius: 0.25vw;
   padding: 1.2917vw 1.25vw 0 2.4583vw;
   box-shadow: 0 0.1042vw 0.2083vw 0 rgba(41, 72, 152, 0.01),
     0 0.4688vw 0.4167vw 0 rgba(41, 72, 152, 0.02);
@@ -1329,6 +1423,74 @@ export default {
 
 .lower {
   right: 2.5833vw;
+}
+
+.typeSelect {
+  position: absolute;
+  top: 6.9167vw;
+  left: 29.7917vw;
+  width: 51.9167vw;
+  height: 3.7083vw;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 0.625vw;
+  font-size: 1.4583vw;
+  color: $white;
+  display: flex;
+  .typeItem {
+    width: 7.375vw;
+    opacity: 0.1;
+  }
+  .activatedItem {
+    background: linear-gradient(230deg, #198bff 0%, #0086d1 100%);
+    opacity: 1;
+  }
+  .radiusL {
+    border-radius: 0.625vw 0 0 0.625vw;
+  }
+  .radiusR {
+    border-radius: 0 0.625vw 0.625vw 0;
+  }
+  .typeDivider {
+    width: 0.0417vw;
+    height: 3.7083vw;
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.topBox {
+  position: absolute;
+  top: 15.5417vw;
+  width: 67.75vw;
+  height: 10.7917vw;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 0.25vw;
+
+  .rightTitle {
+    display: flex;
+    justify-content: space-between;
+    padding: 1.1667vw 1.25vw 0.75vw 2.4583vw;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 0.2604vw 0.2604vw 0 0;
+    font-size: $size-30;
+    color: $white;
+
+    .notAct {
+      opacity: 0.3;
+    }
+  }
+
+  .sideChart {
+    height: 6.2917vw;
+    padding: 0 1.25vw;
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .rightTable {
+    height: 16.7917vw;
+    padding: 1.9583vw 1.25vw 0 1.25vw;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 0 0 0.2604vw 0.2604vw;
+  }
 }
 
 .rightBox {
