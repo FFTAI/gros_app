@@ -60,6 +60,11 @@ const routes = [
     component: () => import("../views/pointCloud/PointCloud.vue"),
   },
   {
+    path: "/singleMotor",
+    name: "pointClosingleMotorud",
+    component: () => import("../views/singleMotor/SingleMotor.vue"),
+  },
+  {
     path: "/",
     redirect: "/startUp",
   },
