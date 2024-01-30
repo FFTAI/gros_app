@@ -135,6 +135,14 @@
           <div class="actionItem">
             <img
               class="actionImg"
+              src="@/assets/images/icon_waveTwo.png"
+              @click="choseMode('holdingMicrophone')"
+            />
+            <div>{{ $t("holdingMicrophone") }}</div>
+          </div>
+          <div class="actionItem">
+            <img
+              class="actionImg"
               src="@/assets/images/icon_twist.png"
               @click="choseMode('twist')"
             />
@@ -276,13 +284,12 @@
 <script>
 import nipplejs from "nipplejs";
 import RtcHeader from "@/components/rtcHeader.vue";
-import rtcLeftControl from "@/components/rtcLeftControl.vue";
 import promptBox from "@/components/promptBox.vue";
 import { mapState } from "vuex";
 import Heartbeat from "@/mixin/Heartbeat";
 export default {
   mixins: [Heartbeat],
-  components: { RtcHeader, rtcLeftControl, promptBox },
+  components: { RtcHeader, promptBox },
   computed: {
     ...mapState(["gamepadConnected", "connected"]),
     rotateStyle() {
@@ -765,6 +772,8 @@ export default {
           upper_data.arm_action = "ARMS_SWING";
         } else if (e == "greet") {
           upper_data.arm_action = "HELLO";
+        } else if (e == "holdingMicrophone") {
+          upper_data.arm_action = "holdingMicrophone";
         } else if (e == "openHand") {
           upper_data.hand_action = "OPEN";
         } else if (e == "grasp") {

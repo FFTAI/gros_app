@@ -124,5 +124,6 @@
     "loading": "Loading",
     "closeProgram": "Close program",
     "powerOffTip": "Are you sure to shut down?",
-    "adjustPosture": "Adjust the robot's front, back, left, and right posture"
+    "adjustPosture": "Adjust the robot's front, back, left, and right posture",
+    "holdingMicrophone": "Holding microphone"
 }
