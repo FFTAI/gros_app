@@ -111,10 +111,10 @@
           <div class="actionItem">
             <img
               class="actionImg"
-              src="@/assets/images/icon_waveLeft.png"
-              @click="choseMode('waveLeftHand')"
+              src="@/assets/images/icon_raiseHand.png"
+              @click="choseMode('raiseHand')"
             />
-            <div>{{ $t("waveLeftHand") }}</div>
+            <div>{{ $t("raiseHand") }}</div>
           </div>
           <div class="actionItem">
             <img
@@ -131,14 +131,6 @@
               @click="choseMode('greet')"
             />
             <div>{{ $t("greet") }}</div>
-          </div>
-          <div class="actionItem">
-            <img
-              class="actionImg"
-              src="@/assets/images/icon_waveTwo.png"
-              @click="choseMode('holdingMicrophone')"
-            />
-            <div>{{ $t("holdingMicrophone") }}</div>
           </div>
           <div class="actionItem">
             <img
@@ -766,14 +758,12 @@ export default {
         }, 500);
         if (e == "zero") {
           upper_data.arm_action = "RESET";
-        } else if (e == "waveLeftHand") {
+        } else if (e == "raiseHand") {
           upper_data.arm_action = "LEFT_ARM_WAVE";
         } else if (e == "swingArms") {
           upper_data.arm_action = "ARMS_SWING";
         } else if (e == "greet") {
           upper_data.arm_action = "HELLO";
-        } else if (e == "holdingMicrophone") {
-          upper_data.arm_action = "holdingMicrophone";
         } else if (e == "openHand") {
           upper_data.hand_action = "OPEN";
         } else if (e == "grasp") {
