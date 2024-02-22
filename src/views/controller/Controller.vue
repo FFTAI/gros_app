@@ -100,14 +100,14 @@
           class="actionBox"
           v-else-if="controlExpand && controlModel == 'inPlace'"
         >
-          <!-- <div class="actionItem">
+          <div class="actionItem">
             <img
               class="actionImg"
               src="@/assets/images/icon_zero.png"
               @click="choseMode('zero')"
             />
             <div>{{ $t("zero") }}</div>
-          </div> -->
+          </div>
           <div class="actionItem">
             <img
               class="actionImg"
