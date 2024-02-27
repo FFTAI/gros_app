@@ -213,7 +213,7 @@
       </div>
     </div>
     <div class="topBox" v-show="activated == 'motor'">
-      <div>
+      <div class="head">
         <div class="rightTitle">
           <div>{{ $t("headPart") }}</div>
         </div>
@@ -290,7 +290,7 @@
           </div>
         </div>
       </div>
-      <div>
+      <div class="waist">
         <div class="rightTitle">
           <div>{{ $t("waistPart") }}</div>
         </div>
@@ -1427,7 +1427,7 @@ export default {
 
 .typeSelect {
   position: absolute;
-  top: 6.9167vw;
+  top: 7.5vw;
   left: 29.7917vw;
   width: 51.9167vw;
   height: 3.7083vw;
@@ -1458,18 +1458,28 @@ export default {
 }
 
 .topBox {
+  display: flex;
   position: absolute;
-  top: 15.5417vw;
+  top: 13.0417vw;
+  left: 29.7917vw;
   width: 67.75vw;
   height: 10.7917vw;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 0.25vw;
 
+  .head{
+    width: 33.875vw;
+  }
+
+  .waist{
+    width: 33.875vw;
+  }
+
   .rightTitle {
     display: flex;
     justify-content: space-between;
     padding: 1.1667vw 1.25vw 0.75vw 2.4583vw;
-    background-color: rgba(255, 255, 255, 0.08);
+    // background-color: rgba(255, 255, 255, 0.08);
     border-radius: 0.2604vw 0.2604vw 0 0;
     font-size: $size-30;
     color: $white;
@@ -1482,11 +1492,12 @@ export default {
   .sideChart {
     height: 6.2917vw;
     padding: 0 1.25vw;
-    background-color: rgba(255, 255, 255, 0.08);
+    // background-color: rgba(255, 255, 255, 0.08);
   }
 
   .rightTable {
     height: 16.7917vw;
+    width: 33.875vw;
     padding: 1.9583vw 1.25vw 0 1.25vw;
     background-color: rgba(255, 255, 255, 0.08);
     border-radius: 0 0 0.2604vw 0.2604vw;
@@ -1494,10 +1505,11 @@ export default {
 }
 
 .rightBox {
+  display: flex;
   position: absolute;
-  top: 15.5417vw;
-  width: 33.25vw;
-  height: 28.3333vw;
+  top: 25vw;
+  width: 67.75vw;
+  height: 18.4583vw;
   box-shadow: 0 0.1042vw 0.2083vw 0 rgba(41, 72, 152, 0.01),
     0 0.4688vw 0.4167vw 0 rgba(41, 72, 152, 0.02);
   border-radius: 0.2604vw;
@@ -1523,8 +1535,9 @@ export default {
   }
 
   .rightTable {
-    height: 16.7917vw;
-    padding: 1.9583vw 1.25vw 0 1.25vw;
+    height: 16.125vw;
+    width: 33.875vw;
+    padding: 1.1667vw 1.25vw;
     background-color: rgba(255, 255, 255, 0.08);
     border-radius: 0 0 0.2604vw 0.2604vw;
   }
