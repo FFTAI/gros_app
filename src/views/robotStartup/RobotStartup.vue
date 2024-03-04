@@ -237,24 +237,10 @@ export default {
       shValue: ""
     };
   },
-  created() {
-    // this.$bus.$on('robotOnmessage',(data)=>{
-    //   console.log("enable_debug_state===all_init", data.data.all_init);
-    //     if (data.data.all_init) this.isReady = true;
-    // });
-  },
+  created() {},
   mounted() {},
-  destroyed() {
-    // this.stateOff();
-    // this.$bus.$off('robotOnmessage')
-  },
+  destroyed() {},
   methods: {
-    // stateOn() {
-    //   this.robotWs.robot.enable_debug_state(2);
-    // },
-    // stateOff() {
-    //   this.robotWs.robot.disable_debug_state();
-    // },
     closeDialog() {
       this.calibrationDialog = false;
     },
@@ -267,14 +253,12 @@ export default {
             .control_svr_status()
             .then((res) => {
               if (res.data.data) {
-                this.isReady = true
+                this.isReady = true;
               } else {
                 this.getStartup();
               }
             })
-            .catch((err) => {
-              
-            })
+            .catch((err) => {})
             .finally((f) => {
               this.step = "startup";
             });
@@ -307,8 +291,9 @@ export default {
                 setTimeout(() => {
                   _this.isReady = true;
                 }, 3000);
+              } else {
+                process();
               }
-              process();
             });
           }
           process();

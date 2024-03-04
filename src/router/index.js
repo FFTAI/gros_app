@@ -40,6 +40,11 @@ const routes = [
     component: () => import("../views/robotStartup/RobotStartup.vue"),
   },
   {
+    path: "/demonstrate",
+    name: "demonstrate",
+    component: () => import("../views/demonstrate/Demonstrate.vue"),
+  },
+  {
     path: "/",
     redirect: "/startUp",
   },
