@@ -249,7 +249,7 @@
       <!-- 当前状态提示 -->
       <div
         class="stateMessage flex-center"
-        v-if="(mode != '' && doAction) || mode == 'initial'"
+        v-if="(mode != '' && doAction) || (mode != '' && otherAction) || mode == 'initial'"
       >
         <span>{{ $t(mode) }}{{ $t("ing") }}...</span>
       </div>
@@ -345,6 +345,7 @@ export default {
       headBoxVisible: false, //模式选择框显隐
       camera: true, //是否开启视频
       doAction: false,
+      otherAction: false,
       isStand: false,
       isWalking: false,
       velocity: 0,
@@ -416,6 +417,7 @@ export default {
           this.adjustVisible = true;
         }
       }
+      console.log('upper_action~~~~~~~~~~',data.data.upper_action)
       if (data.data) this.doAction = data.data.upper_action;
     });
   },
@@ -735,7 +737,7 @@ export default {
       this.controlModel = e;
     },
     async choseMode(e) {
-      if (this.doAction == true) return;
+      if (this.doAction || this.otherAction) return;
       this.controlExpand = false;
       this.mode = e;
       //原地踏步，速度位置发0
@@ -776,6 +778,7 @@ export default {
           lower_data.lower_body_mode = "SQUAT";
         } else if (e == "nod") {
           //上下点头
+          this.otherAction = true
           this.operateHead(17, 0);
           setTimeout(() => {
             this.operateHead(-17, 0);
@@ -785,6 +788,7 @@ export default {
           }, 3000);
         } else if (e == "shake") {
           //左右摇头
+          this.otherAction = true
           this.operateHead(0, 17);
           setTimeout(() => {
             this.operateHead(0, -17);
@@ -793,7 +797,7 @@ export default {
             this.operateHead(0, 0);
           }, 3000);
         }
-        if (lower_data.lower_body_mode == "" && e != "nod" && e != "nod") {
+        if (lower_data.lower_body_mode == "" && e != "nod" && e != "shake") {
           try {
             let res = await this.robotWs.robot.upper_body(
               upper_data.arm_action,
@@ -807,28 +811,32 @@ export default {
           } catch (error) {
             console.log("upper_body-error", error);
           }
-          this.doAction = false;
         } else if (
           lower_data.lower_body_mode != "" &&
           e != "nod" &&
-          e != "nod"
+          e != "shake"
         ) {
+          this.otherAction = true
           try {
             let res = await this.robotWs.robot.lower_body(
               lower_data.lower_body_mode
             );
+            console.log("lower_body_OK........", res);
             if (res.data.code == 0 && res.data.msg == "ok") {
               console.log("lower_body_OK", res);
+              this.otherAction = false
             } else {
               console.log("lower_body_ERR", res);
+              this.otherAction = false
             }
           } catch (error) {
             console.log("lower_body-error", error);
+            this.otherAction = false
           }
-          this.doAction = false;
         } else {
+          console.log('头头',e)
           setTimeout(() => {
-            this.doAction = false;
+            this.otherAction = false
           }, 4000);
         }
       }
