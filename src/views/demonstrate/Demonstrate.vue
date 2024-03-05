@@ -23,6 +23,22 @@ export default {
       buttons: "",
       effectorWsOpen: false,
       handWsOpen: false,
+      originPoint: {
+        left_x: 0.21259541809558869,
+        left_y: 0.07841146737337113,
+        left_z: -0.6630199551582336,
+        left_qw: -0.6630199551582336,
+        left_qx: 0.4591652750968933,
+        left_qy: 0.12008531391620636,
+        left_qz: 0.6264786720275879,
+        right_x: 0.21259541809558869,
+        right_y: 0.07841146737337113,
+        right_z: -0.6630199551582336,
+        right_qw: -0.6630199551582336,
+        right_qx: 0.4591652750968933,
+        right_qy: 0.12008531391620636,
+        right_qz: 0.6264786720275879,
+      }, //零点位置数据
       //左手指6个自由度
       left9f: false,
       left10f: false,
@@ -39,12 +55,13 @@ export default {
       right14f: false,
     };
   },
-  created() {
-    
-  },
+  created() {},
   mounted() {
     const _this = this;
     // 每10ms 获取一次手柄数据，查看是否按下手柄按键
+    this.initEffectorWs();
+    this.initHandWs();
+    this.getOriginPoint()
     this.interval = setInterval(function () {
       let gamepad = null;
       gamepad = navigator.getGamepads()[0]
@@ -100,38 +117,50 @@ export default {
         console.log("hand出错！");
       });
     },
+    //获取零点位置
+    getOriginPoint() {
+      this.effector
+        .origin_point()
+        .then((res) => {
+          console.log("零点位置。。。", res);
+          // this.originPoint = res.data;
+        })
+        .catch((err) => {});
+    },
     /**
      * 手柄监听
      */
     remoteSensing(arr) {
       // console.log("左遥感左右", arr[0]);
       // console.log("左遥感上下", ); //上负下正
-      console.log(arr)
+      if (!this.effectorWsOpen || !this.originPoint) return;
+      console.log(arr);
       var leftParam = {
-        x: arr[0] * 0.1,
-        y: arr[1] * -0.1,
-        z: 0.05,
-        qx: 0,
-        qy: 0,
-        qz: 0,
-        qw: 0,
+        x: this.originPoint.left_x + arr[0] * 0.1,
+        y: this.originPoint.left_y + arr[1] * -0.1,
+        z: this.originPoint.left_z,
+        qx: this.originPoint.left_qx,
+        qy: this.originPoint.left_qy,
+        qz: this.originPoint.left_qz,
+        qw: this.originPoint.left_qw,
         vx: 0,
         vy: 0,
         vz: 0,
       };
       var rightParam = {
-        x: arr[2] * 0.1,
-        y: arr[3] * -0.1,
-        z: 0.05,
-        qx: 0,
-        qy: 0,
-        qz: 0,
-        qw: 0,
+        x: this.originPoint.right_x + arr[2] * 0.1,
+        y: this.originPoint.right_y + arr[3] * -0.1,
+        z: this.originPoint.right_z,
+        qx: this.originPoint.right_qx,
+        qy: this.originPoint.right_qy,
+        qz: this.originPoint.right_qz,
+        qw: this.originPoint.right_qw,
         vx: 0,
         vy: 0,
         vz: 0,
       };
       try {
+        //末端移动
         this.effector.control_left(leftParam);
         this.effector.control_right(rightParam);
       } catch (error) {
@@ -144,8 +173,8 @@ export default {
         var angle = 1000;
         var flag = false;
         if (arr[i].value === 1) {
-          angle = 0
-          flag = true
+          angle = 0;
+          flag = true;
         }
         if (i === 4 && this.left9f != flag) {
           this.buttons = "左9";
@@ -209,6 +238,7 @@ export default {
         }
       }
     },
+    //手移动
     moveMotor(no, orientation, angle) {
       try {
         this.hand.move_motor(no, orientation, angle);
@@ -216,52 +246,59 @@ export default {
         console.log("movehand错误", error);
       }
     },
-    /**
-     * 使能失能手
-     */
+    //使能手
     enableHand() {
       this.hand
         .enable_hand()
         .then((res) => {
           console.log("enablehand--success", res);
-          this.initHandWs();
-          this.handWsOpen = true
+          this.handWsOpen = true;
         })
         .catch((err) => {
           console.log("enablehand--err", err);
         });
     },
+    //失能手
     disableHand() {
       this.hand
         .disable_hand()
         .then((res) => {
           console.log("disableHand--success", res);
+          this.handWsOpen = false;
         })
         .catch((err) => {
           console.log("disableHand--err", err);
         });
     },
-    enableEffector(){
-      this.effector.enable().then((res) => {
+    //使能末端
+    enableEffector() {
+      this.effector
+        .enable()
+        .then((res) => {
           console.log("enableEffector--success", res);
-          this.initEffectorWs();
-          this.effectorWsOpen = true
+          this.effectorWsOpen = true;
         })
         .catch((err) => {
           console.log("enableEffector--err", err);
         });
     },
+    //失能末端
     disableEffector() {
-      this.effector.disable().then((res) => {
+      this.effector
+        .disable()
+        .then((res) => {
           console.log("disableEffector--success", res);
+          this.effectorWsOpen = false;
         })
         .catch((err) => {
           console.log("disableEffector--err", err);
         });
     },
+    //角度转弧度
     degreesToRadians(degrees) {
       return (degrees * Math.PI) / 180;
     },
+    //转欧拉角
     eulerFromAngles(xAngle, yAngle, zAngle) {
       var xRad = degreesToRadians(xAngle);
       var yRad = degreesToRadians(yAngle);
@@ -273,6 +310,7 @@ export default {
 
       return { x: eulerX, y: eulerY, z: eulerZ };
     },
+    //欧拉角转四元数
     quaternionFromEuler(euler) {
       var quaternion = new THREE.Quaternion();
       quaternion.setFromEuler(
