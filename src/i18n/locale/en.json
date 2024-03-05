@@ -151,5 +151,7 @@
     "temperature": "Temperature",
     "communication": "Communication",
     "packetLoss": "Packet Loss",
-    "error": "Error"
+    "error": "Error",
+    "simplifiedChinese": "Chinese",
+    "English": "English"
 }

@@ -22,7 +22,7 @@
     "confirm": "确定",
     "cancel": "取消",
     "systemSettings": "系统设置",
-    "systemInfo": "系统信息",
+    "systemInfo": "通用设置",
     "connectionStatus": "连接状态",
     "connected": "已连接",
     "notConnected": "未连接",
@@ -151,5 +151,7 @@
     "temperature": "温度",
     "communication": "通信",
     "packetLoss": "丢包数",
-    "error": "错误"
+    "error": "错误",
+    "simplifiedChinese": "简体中文",
+    "English": "英文"
 }

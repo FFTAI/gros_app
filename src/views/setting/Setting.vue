@@ -7,6 +7,20 @@
     </rtc-header>
     <!-- 左侧Tab标签栏 -->
     <div class="tabBox">
+      <!-- 通用设置 -->
+      <div
+        class="txt"
+        :class="{ activeTab: isActivated == 'status' }"
+        style="top: 94%"
+        @click="changeTab('status')"
+      >
+        <div class="tab common-font" :class="{ opt: isActivated != 'status' }">
+          <img class="iconSysState" src="@/assets/images/icon_sysState.png" />
+          <div style="margin-left: 1.25vw">
+            {{ $t("systemInfo") }}
+          </div>
+        </div>
+      </div>
       <!-- 连接 -->
       <div
         class="txt"
@@ -21,36 +35,25 @@
         </div>
       </div>
       <!-- 设备设置 -->
-      <!-- <div class="txt" :class="{ 'activeTab': isActivated == 'deviceSettings' }" style="top: 47%;"
-                @click="changeTab('deviceSettings')">
-                <div class="tab common-font" :class="{ 'opt': isActivated != 'deviceSettings' }">
-                    <img class="iconSysState" src="@/assets/images/icon_sysState.png" />
-                    <div style="margin-left: 1.25vw;">
-                        {{ $t('deviceSettings') }}
-                    </div>
-                </div>
-            </div> -->
-      <!-- 系统信息 -->
       <div
         class="txt"
-        :class="{ activeTab: isActivated == 'status' }"
-        style="top: 94%"
-        @click="changeTab('status')"
+        :class="{ activeTab: isActivated == 'deviceSettings' }"
+        style="top: 47%"
+        @click="changeTab('deviceSettings')"
       >
-        <div class="tab common-font" :class="{ opt: isActivated != 'status' }">
+        <div
+          class="tab common-font"
+          :class="{ opt: isActivated != 'deviceSettings' }"
+        >
           <img class="iconSysState" src="@/assets/images/icon_sysState.png" />
           <div style="margin-left: 1.25vw">
-            {{ $t("systemInfo") }}
+            {{ $t("deviceSettings") }}
           </div>
         </div>
       </div>
     </div>
     <!-- 连接标签页 -->
     <div class="listBox" v-if="isActivated == 'connect'">
-      <div class="item flex-between common-font">
-        <span>{{ $t("connectionStatus") }}</span>
-        <span>{{ $t("connected") }}</span>
-      </div>
       <!-- <div class="item" v-if="!connected" @click="toConnect()">
                 <span>{{ $t('connectionStatus') }}</span>
                 <span class="itemTxt">{{ $t('notConnected') }}</span>
@@ -70,77 +73,125 @@
       </div>
     </div>
     <!-- 设备设置标签页 -->
-    <!-- <div class="listBox" v-if="isActivated == 'deviceSettings'">
-            <div class="item flex-between common-font">
-                <span>{{ $t('defaultNickname') }}</span>
-                <span>小傅小傅</span>
-            </div>
-            <div class="item flex-between common-font">
-                <span>{{ $t('customNickname') }}</span>
-                <span class="itemTxt">小傅小傅</span>
-                <img class="iconTo" src="@/assets/images/icon_to.png" />
-            </div>
-            <div class="item flex-between common-font">
-                <span>{{ $t('volumeAdjustment') }}</span>
-                <div style="display: flex;align-items: center;justify-content: space-between;">
-                    <el-slider class="splider" v-model="volume"></el-slider>
-                    <span style="font-size: 1.4583vw;">{{ volume }}</span>
-                </div>
-            </div>
-            <div class="item flex-between common-font" :class="{ 'expandLabel': microphoneOpen }">
-                <span>{{ $t('microphone') }}</span>
-                <div class="switch" :class="{ 'isChecked': microphoneOpen }" @click="openMicrophone()">
-                    <span class="switchCore"></span>
-                </div>
-            </div>
-            <div class="item flex-between common-font" style="border-radius: 0 0 .25vw .25vw;" v-if="microphoneOpen">
-                <span>{{ $t('speechRecognition') }}</span>
-                <div class="switch" :class="{ 'isChecked': speechOpen }" @click="openSpeech()">
-                    <span class="switchCore"></span>
-                </div>
-            </div>
-            <div class="item flex-between common-font" :class="{ 'expandLabel': selfCheckActivated }" @click="selfCheckExpand()">
-                <span>{{ $t('selfCheck') }}</span>
-                <span class="itemTxt">{{ $t('normal') }}</span>
-                <img class="iconTo" src="@/assets/images/icon_to.png" />
-            </div>
-            <div class="item flex-between common-font scItem" v-if="selfCheckActivated">
-                <div class="scChild">
-                    <span>{{ $t('visionCamera') }}</span>
-                    <span>{{ $t('normal') }}</span>
-                </div>
-                <div class="scChild">
-                    <span>{{ $t('controlModule') }}</span>
-                    <span>{{ $t('normal') }}</span>
-                </div>
-                <div class="scChild">
-                    <span>{{ $t('actuator') }}</span>
-                    <span>{{ $t('normal') }}</span>
-                </div>
-                <div class="scChild">
-                    <span>{{ $t('battery') }}</span>
-                    <span style="color: #DC4253;">{{ $t('anomaly') }}</span>
-                </div>
-                <div class="scChild">
-                    <span>{{ $t('screen') }}</span>
-                    <span>{{ $t('normal') }}</span>
-                </div>
-            </div>
-            <div class="powerBtn flex-center common-font">
-                <div>
-                    {{ $t('powerOff') }}
-                </div>
-            </div>
-        </div> -->
+    <div class="listBox" v-if="isActivated == 'deviceSettings'">
+      <div class="item flex-between common-font">
+        <span>{{ $t("volumeAdjustment") }}</span>
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+          "
+        >
+          <el-slider class="splider" v-model="volume"></el-slider>
+          <span style="font-size: 1.4583vw">{{ volume }}</span>
+        </div>
+      </div>
+      <div
+        class="item flex-between common-font"
+        :class="{ expandLabel: microphoneOpen }"
+      >
+        <span>{{ $t("microphone") }}</span>
+        <div
+          class="switch"
+          :class="{ isChecked: microphoneOpen }"
+          @click="openMicrophone()"
+        >
+          <span class="switchCore"></span>
+        </div>
+      </div>
+      <div
+        class="item flex-between common-font"
+        style="border-radius: 0 0 0.25vw 0.25vw"
+        v-if="microphoneOpen"
+      >
+        <span>{{ $t("speechRecognition") }}</span>
+        <div
+          class="switch"
+          :class="{ isChecked: speechOpen }"
+          @click="openSpeech()"
+        >
+          <span class="switchCore"></span>
+        </div>
+      </div>
+      <div
+        class="item flex-between common-font"
+        :class="{ expandLabel: selfCheckActivated }"
+        @click="selfCheckExpand()"
+      >
+        <span>{{ $t("selfCheck") }}</span>
+        <span class="itemTxt">{{ $t("normal") }}</span>
+        <img class="iconTo" src="@/assets/images/icon_to.png" />
+      </div>
+      <div
+        class="item flex-between common-font scItem"
+        v-if="selfCheckActivated"
+      >
+        <div class="scChild">
+          <span>{{ $t("visionCamera") }}</span>
+          <span>{{ $t("normal") }}</span>
+        </div>
+        <div class="scChild">
+          <span>{{ $t("controlModule") }}</span>
+          <span>{{ $t("normal") }}</span>
+        </div>
+        <div class="scChild">
+          <span>{{ $t("actuator") }}</span>
+          <span>{{ $t("normal") }}</span>
+        </div>
+        <div class="scChild">
+          <span>{{ $t("battery") }}</span>
+          <span style="color: #dc4253">{{ $t("anomaly") }}</span>
+        </div>
+        <div class="scChild">
+          <span>{{ $t("screen") }}</span>
+          <span>{{ $t("normal") }}</span>
+        </div>
+      </div>
+      <div class="powerBtn flex-center common-font">
+        <div>
+          {{ $t("powerOff") }}
+        </div>
+      </div>
+    </div>
     <!-- 系统信息标签页 -->
     <div class="listBox" v-if="isActivated == 'status'">
+      <div class="item flex-between common-font">
+        <span>{{ $t("serialNumber") }}</span>
+        <span>GR123OT0001</span>
+      </div>
       <div class="item flex-between common-font">
         <span>{{ $t("productModel") }}</span>
         <span>GR-1</span>
       </div>
       <div class="item flex-between common-font">
-        <span>{{ $t("serialNumber") }}</span>
-        <span>GR123OT0001</span>
+        <span>{{ $t("customNickname") }}</span>
+        <span class="itemTxt">小傅小傅</span>
+        <img class="iconTo" src="@/assets/images/icon_to.png" />
+      </div>
+      <div class="item flex-between common-font">
+        <span>{{ $t("connectionStatus") }}</span>
+        <span>Wi-Fi</span>
+      </div>
+      <!-- 多语言选择 -->
+      <div class="item flex-between common-font">
+        <span>{{ $t("appLanguage") }}</span>
+        <div class="languageBtn">
+          <div
+            class="languageItem flex-center"
+            :class="{ chosedLanguageZh: currLanguage == 'zh' }"
+            @click="changeLanguage('zh')"
+          >
+            {{ $t('simplifiedChinese')}}
+          </div>
+          <div
+            class="languageItem flex-center"
+            :class="{ chosedLanguageEn: currLanguage == 'en' }"
+            @click="changeLanguage('en')"
+          >
+            {{ $t('English') }}
+          </div>
+        </div>
       </div>
       <div class="item flex-between common-font">
         <span>{{ $t("robotVersion") }}</span>
@@ -150,54 +201,13 @@
         <span>{{ $t("appVersion") }}</span>
         <span>V2.0.6</span>
       </div>
-      <div
-        class="item flex-between common-font"
-        :class="{ expandLabel: languageActivated }"
-        @click="languageExpand()"
-      >
-        <span>{{ $t("appLanguage") }}</span>
-        <span class="itemTxt" v-if="currLanguage == 'zh'">简体中文</span>
-        <span class="itemTxt" v-if="currLanguage == 'en'">English</span>
-        <img class="iconTo" src="@/assets/images/icon_to.png" />
-      </div>
-      <!-- 多语言选择 -->
-      <div
-        class="item flex-between common-font"
-        style="border-radius: 0 0 0.25vw 0.25vw"
-        v-if="languageActivated"
-      >
-        <div
-          class="languageItem white01-bkg"
-          :class="{ chosedLanguage: currLanguage == 'zh' }"
-          @click="changeLanguage('zh')"
-        >
-          <span>简体中文</span>
-          <img
-            class="iconChose"
-            :class="{ visibility: currLanguage != 'zh' }"
-            src="@/assets/images/icon_chose.png"
-          />
-        </div>
-        <div
-          class="languageItem white01-bkg"
-          :class="{ chosedLanguage: currLanguage == 'en' }"
-          @click="changeLanguage('en')"
-        >
-          <span>English</span>
-          <img
-            class="iconChose"
-            :class="{ visibility: currLanguage != 'en' }"
-            src="@/assets/images/icon_chose.png"
-          />
-        </div>
-      </div>
       <!-- 是否开启日志 -->
-      <div class="item flex-between common-font">
+      <!-- <div class="item flex-between common-font">
         <span>{{ $t("logRecording") }}</span>
         <div class="switch" :class="{ isChecked: logOpen }" @click="openLog">
           <span class="switchCore"></span>
         </div>
-      </div>
+      </div> -->
     </div>
     <prompt-box :prompt="'reconnect'" v-if="!connected"></prompt-box>
   </div>
@@ -216,7 +226,7 @@ export default {
   },
   data() {
     return {
-      isActivated: "connect", //当前活动Tab
+      isActivated: "status", //当前活动Tab
       logOpen: true,
       nickname: false,
       microphone: false,
@@ -237,9 +247,6 @@ export default {
   methods: {
     changeTab(e) {
       this.isActivated = e;
-    },
-    languageExpand() {
-      this.languageActivated = !this.languageActivated;
     },
     changeLanguage(e) {
       this.currLanguage = e;
@@ -391,17 +398,31 @@ export default {
   }
 
   .languageItem {
-    width: 17.2396vw;
-    height: 4.1667vw;
-    border-radius: 0.2604vw;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+    width: 9.2917vw;
+    height: 3.7083vw;
+    // display: flex;
+    // justify-content: space-around;
+    // align-items: center;
   }
 
-  .chosedLanguage {
-    background: rgba(68, 216, 251, 0.1);
-    border: 0.1042vw solid $light-blue;
+  .chosedLanguageZh {
+    background: linear-gradient(230deg, #198bff 0%, #0086d1 100%);
+    border-radius: 0.625vw 0 0 0.625vw;
+  }
+
+  .chosedLanguageEn {
+    background: linear-gradient(230deg, #198bff 0%, #0086d1 100%);
+    border-radius: 0 0.625vw 0.625vw 0;
+  }
+
+  .languageBtn {
+    width: 18.5833vw;
+    height: 3.7083vw;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0.625vw;
+    display: flex;
+    font-size: 1.4583vw;
+    font-style: normal;
   }
 
   .iconChose {
