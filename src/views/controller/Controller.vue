@@ -33,9 +33,15 @@
           </div>
         </div>
         <!-- Stop按钮 -->
-        <!-- <div class="stopControl">
-          <img class="stopImg" src="@/assets/images/icon_chStop.png" @click="stop()" />
-        </div> -->
+        <div class="stopControl">
+          <el-button
+            style="height: 4.1667vw; width: 8.3333vw; font-size: 1.5vw;display: flex;justify-content: center;align-items: center;"
+            size="large"
+            type="danger"
+            @click="openDance()"
+            >跳舞动作</el-button
+          >
+        </div>
         <!--初始-->
         <div class="calibration">
           <img
@@ -93,6 +99,22 @@
               @click="choseMode('markingTime')"
             />
             <div>{{ $t("markingTime") }}</div>
+          </div>
+          <div class="actionItem">
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_shakeHands.png"
+              @click="comboAction('start')"
+            />
+            <div>组合动作</div>
+          </div>
+          <div class="actionItem">
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_zero.png"
+              @click="comboAction('stop')"
+            />
+            <div>停止动作</div>
           </div>
         </div>
         <!-- 原地运动展开 -->
@@ -249,7 +271,11 @@
       <!-- 当前状态提示 -->
       <div
         class="stateMessage flex-center"
-        v-if="(mode != '' && doAction) || (mode != '' && otherAction) || mode == 'initial'"
+        v-if="
+          (mode != '' && doAction) ||
+          (mode != '' && otherAction) ||
+          mode == 'initial'
+        "
       >
         <span>{{ $t(mode) }}{{ $t("ing") }}...</span>
       </div>
@@ -270,6 +296,93 @@
           <span class="directonTxt">{{ $t("adjustPosture") }}</span>
         </div>
       </div>
+      <el-dialog title="跳舞动作" :visible.sync="danceDialog">
+        <div class="flex-center">
+          <el-button class="danceBtn" type="primary" @click="doDance('ACTION_79')"
+            >ACT79</el-button
+          >
+          <el-button
+            class="danceBtn"
+            type="warning"
+            @click="doDance('ACTION_80')"
+            >ACT80</el-button
+          >
+          <el-button
+            class="danceBtn"
+            style="margin-left: 1vw"
+            type="success"
+            @click="doDance('WAVING_LEFT_RIGHT')"
+            >WAVE</el-button
+          >
+          <el-button
+            class="danceBtn"
+            style="margin-left: 1vw"
+            type="danger"
+            @click="doDance('HIGH_FIVE')"
+            >HIGH5</el-button
+          >
+          <el-button
+            class="danceBtn"
+            style="margin-left: 1vw"
+            type="info"
+            @click="doDance('DABBING')"
+            >DAB</el-button
+          >
+          <el-button
+            class="danceBtn"
+            style="margin-left: 1vw"
+            type="primary"
+            @click="doDance('BOW')"
+            >BOW</el-button
+          >
+        </div>
+        <div class="flex-center" style="margin-top: 1vw">
+          <el-button class="danceBtn" type="warning" @click="doDance('MANUAL_LONG_HORN')"
+            >HORN</el-button
+          >
+          <el-button
+            class="danceBtn"
+            style="margin-left: 1vw"
+            type="primary"
+            @click="doDance('MANUAL_OK')"
+            >OK</el-button
+          >
+          <el-button
+            class="danceBtn"
+            style="margin-left: 1vw"
+            type="warning"
+            @click="doDance('MANUAL_THUMB_UP_0')"
+            >UP0</el-button
+          >
+          <el-button
+            class="danceBtn"
+            style="margin-left: 1vw"
+            type="success"
+            @click="doDance('MANUAL_THUMB_UP_1')"
+            >UP1</el-button
+          >
+          <el-button
+            class="danceBtn"
+            style="margin-left: 1vw"
+            type="danger"
+            @click="doDance('ACTION_89')"
+            >ACT89</el-button
+          >
+          <el-button
+            class="danceBtn"
+            style="margin-left: 1vw"
+            type="info"
+            @click="doDance('NVIDIA_DANCE')"
+            >NVIDIA</el-button
+          >
+        </div>
+        <!-- <span slot="footer" class="dialog-footer">
+          <el-button @click="danceDialog = false">取 消</el-button>
+          <el-button type="primary" @click="danceDialog = false"
+            >确 定</el-button
+          >
+        </span> -->
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -361,6 +474,7 @@ export default {
       ImuX: 0,
       ImuY: 0,
       isZero: false,
+      danceDialog: false,
     };
   },
   created() {
@@ -417,7 +531,7 @@ export default {
           this.adjustVisible = true;
         }
       }
-      console.log('upper_action~~~~~~~~~~',data.data.upper_action)
+      console.log("upper_action~~~~~~~~~~", data.data.upper_action);
       if (data.data) this.doAction = data.data.upper_action;
     });
   },
@@ -778,7 +892,7 @@ export default {
           lower_data.lower_body_mode = "SQUAT";
         } else if (e == "nod") {
           //上下点头
-          this.otherAction = true
+          this.otherAction = true;
           this.operateHead(17, 0);
           setTimeout(() => {
             this.operateHead(-17, 0);
@@ -788,7 +902,7 @@ export default {
           }, 3000);
         } else if (e == "shake") {
           //左右摇头
-          this.otherAction = true
+          this.otherAction = true;
           this.operateHead(0, 17);
           setTimeout(() => {
             this.operateHead(0, -17);
@@ -816,7 +930,7 @@ export default {
           e != "nod" &&
           e != "shake"
         ) {
-          this.otherAction = true
+          this.otherAction = true;
           try {
             let res = await this.robotWs.robot.lower_body(
               lower_data.lower_body_mode
@@ -824,21 +938,48 @@ export default {
             console.log("lower_body_OK........", res);
             if (res.data.code == 0 && res.data.msg == "ok") {
               console.log("lower_body_OK", res);
-              this.otherAction = false
+              this.otherAction = false;
             } else {
               console.log("lower_body_ERR", res);
-              this.otherAction = false
+              this.otherAction = false;
             }
           } catch (error) {
             console.log("lower_body-error", error);
-            this.otherAction = false
+            this.otherAction = false;
           }
         } else {
-          console.log('头头',e)
           setTimeout(() => {
-            this.otherAction = false
+            this.otherAction = false;
           }, 4000);
         }
+      }
+    },
+    comboAction(e) {
+      this.controlExpand = false;
+      if (e == "start") {
+        this.otherAction = true;
+        this.$http
+          .request({
+            baseURL: process.env.VUE_APP_URL,
+            method: "GET",
+            url: "/robot/enable_combination_action",
+          })
+          .then((response) => {
+            this.otherAction = true;
+          })
+          .catch((error) => {});
+      } else if (e == "stop") {
+        this.otherAction = false;
+        this.$http
+          .request({
+            baseURL: process.env.VUE_APP_URL,
+            method: "GET",
+            url: "/robot/disable_combination_action",
+          })
+          .then((response) => {
+            this.otherAction = false;
+          })
+          .catch((error) => {});
       }
     },
     headChange() {
@@ -877,6 +1018,27 @@ export default {
     },
     cancel() {
       this.promptVisible = !this.promptVisible;
+    },
+    openDance() {
+      this.danceDialog = !this.danceDialog;
+    },
+    doDance(e) {
+      this.$http
+        .request({
+          baseURL: process.env.VUE_APP_URL,
+          method: "POST",
+          url: "/robot/upper_body",
+          data: {
+            arm_action: e,
+            hand_action: "",
+          },
+        })
+        .then((response) => {
+          
+        })
+        .catch((error) => {
+          
+        });
     },
   },
 };
@@ -985,7 +1147,7 @@ export default {
   bottom: 3.7083vw;
   width: 17.875vw;
   height: 17.875vw;
-  border: 3px solid rgba(255, 255, 255, 0.3);
+  border: .125vw solid rgba(255, 255, 255, 0.3);
   z-index: 999;
   border-radius: 50%;
 }
@@ -1193,5 +1355,13 @@ export default {
     color: $white;
     margin-top: 3.375vw;
   }
+}
+.danceBtn {
+  height: 3.3333vw;
+  width: 6.25vw;
+  font-size: 1.3333vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
