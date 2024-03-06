@@ -21,16 +21,16 @@
           </div>
         </div>
       </div>
-      <!-- 连接 -->
+      <!-- 机器人设置 -->
       <div
         class="txt"
-        :class="{ activeTab: isActivated == 'connect' }"
-        @click="changeTab('connect')"
+        :class="{ activeTab: isActivated == 'robotSettings' }"
+        @click="changeTab('robotSettings')"
       >
-        <div class="tab common-font" :class="{ opt: isActivated != 'connect' }">
-          <img class="iconConnect" src="@/assets/images/icon_connect.png" />
+        <div class="tab common-font" :class="{ opt: isActivated != 'robotSettings' }">
+          <img class="iconConnect" src="@/assets/images/icon_robotsetting.png" />
           <div style="margin-left: 1.25vw">
-            {{ $t("connect") }}
+            {{ $t("robotSettings") }}
           </div>
         </div>
       </div>
@@ -45,31 +45,34 @@
           class="tab common-font"
           :class="{ opt: isActivated != 'deviceSettings' }"
         >
-          <img class="iconSysState" src="@/assets/images/icon_sysState.png" />
+          <img style="width: 1.7083vw;height: 1.7083vw;" src="@/assets/images/icon_robot status.png" />
           <div style="margin-left: 1.25vw">
             {{ $t("deviceSettings") }}
           </div>
         </div>
       </div>
     </div>
-    <!-- 连接标签页 -->
-    <div class="listBox" v-if="isActivated == 'connect'">
-      <!-- <div class="item" v-if="!connected" @click="toConnect()">
-                <span>{{ $t('connectionStatus') }}</span>
-                <span class="itemTxt">{{ $t('notConnected') }}</span>
-                <img class="iconTo" src="@/assets/images/icon_to.png" />
-            </div> -->
+    <!-- 机器人设置标签页 -->
+    <div class="listBox" v-if="isActivated == 'robotSettings'">
       <div class="item flex-between common-font" v-if="connected">
-        <span>{{ $t("robotIP") }}</span>
-        <span>192.168.12.1</span>
+        <span>{{ $t("controlProgram") }}</span>
+        <span></span>
       </div>
       <div class="item flex-between common-font" v-if="connected">
-        <span>{{ $t("wifiName") }}</span>
-        <span>gr1********</span>
+        <span>{{ $t("motionControl") }}</span>
+        <span></span>
       </div>
       <div class="item flex-between common-font" v-if="connected">
-        <span>{{ $t("wifiPwd") }}</span>
-        <span>66668888</span>
+        <span>{{ $t("perceptualInteraction") }}</span>
+        <span></span>
+      </div>
+      <div class="item flex-between common-font" v-if="connected">
+        <span>{{ $t("robotCalibration") }}</span>
+        <span></span>
+      </div>
+      <div class="item flex-between common-font" v-if="connected">
+        <span>{{ $t("powerManagement") }}</span>
+        <span></span>
       </div>
     </div>
     <!-- 设备设置标签页 -->
@@ -182,24 +185,32 @@
             :class="{ chosedLanguageZh: currLanguage == 'zh' }"
             @click="changeLanguage('zh')"
           >
-            {{ $t('simplifiedChinese')}}
+            {{ $t("simplifiedChinese") }}
           </div>
           <div
             class="languageItem flex-center"
             :class="{ chosedLanguageEn: currLanguage == 'en' }"
             @click="changeLanguage('en')"
           >
-            {{ $t('English') }}
+            {{ $t("English") }}
           </div>
         </div>
       </div>
       <div class="item flex-between common-font">
         <span>{{ $t("robotVersion") }}</span>
-        <span>{{ robotVersion ? robotVersion : "V2.0.6" }}</span>
+        <div>
+          <span style="margin-right: 1.8333vw;">{{ robotVersion ? robotVersion : "V2.0.6" }}</span>
+          <span class="itemTxt">{{ $t("detectUpdates") }}</span>
+        </div>
+        <img class="iconTo" src="@/assets/images/icon_to.png" />
       </div>
       <div class="item flex-between common-font">
         <span>{{ $t("appVersion") }}</span>
-        <span>V2.0.6</span>
+        <div>
+          <span style="margin-right: 1.8333vw;">V2.0.6</span>
+          <span class="itemTxt">{{ $t("detectUpdates") }}</span>
+        </div>
+        <img class="iconTo" src="@/assets/images/icon_to.png" />
       </div>
       <!-- 是否开启日志 -->
       <!-- <div class="item flex-between common-font">
@@ -352,8 +363,8 @@ export default {
   }
 
   .iconSysState {
-    width: 1.4063vw;
-    height: 1.5625vw;
+    width: 1.7083vw;
+    height: 1.8333vw;
   }
 
   .opt {
@@ -371,7 +382,7 @@ export default {
 
   .item {
     width: 55.625vw;
-    height: 7.375vw;
+    height: 6.1667vw;
     background-color: rgba(255, 255, 255, 0.08);
     margin-bottom: 1.25vw;
     padding: 0 3.5vw 0 2.4583vw;
@@ -400,6 +411,7 @@ export default {
   .languageItem {
     width: 9.2917vw;
     height: 3.7083vw;
+    opacity: 0.1;
     // display: flex;
     // justify-content: space-around;
     // align-items: center;
@@ -408,11 +420,13 @@ export default {
   .chosedLanguageZh {
     background: linear-gradient(230deg, #198bff 0%, #0086d1 100%);
     border-radius: 0.625vw 0 0 0.625vw;
+    opacity: 1;
   }
 
   .chosedLanguageEn {
     background: linear-gradient(230deg, #198bff 0%, #0086d1 100%);
     border-radius: 0 0.625vw 0.625vw 0;
+    opacity: 1;
   }
 
   .languageBtn {

@@ -153,5 +153,10 @@
     "packetLoss": "Packet Loss",
     "error": "Error",
     "simplifiedChinese": "Chinese",
-    "English": "English"
+    "English": "English",
+    "detectUpdates": "Detect updates",
+    "robotSettings": "Robot settings",
+    "controlProgram": "Control program",
+    "motionControl": "Motion control",
+    "robotCalibration": "Robot calibration"
 }
