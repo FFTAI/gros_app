@@ -27,8 +27,14 @@
         :class="{ activeTab: isActivated == 'robotSettings' }"
         @click="changeTab('robotSettings')"
       >
-        <div class="tab common-font" :class="{ opt: isActivated != 'robotSettings' }">
-          <img class="iconConnect" src="@/assets/images/icon_robotsetting.png" />
+        <div
+          class="tab common-font"
+          :class="{ opt: isActivated != 'robotSettings' }"
+        >
+          <img
+            class="iconConnect"
+            src="@/assets/images/icon_robotsetting.png"
+          />
           <div style="margin-left: 1.25vw">
             {{ $t("robotSettings") }}
           </div>
@@ -45,7 +51,10 @@
           class="tab common-font"
           :class="{ opt: isActivated != 'deviceSettings' }"
         >
-          <img style="width: 1.7083vw;height: 1.7083vw;" src="@/assets/images/icon_robot status.png" />
+          <img
+            style="width: 1.7083vw; height: 1.7083vw"
+            src="@/assets/images/icon_robot status.png"
+          />
           <div style="margin-left: 1.25vw">
             {{ $t("deviceSettings") }}
           </div>
@@ -54,9 +63,14 @@
     </div>
     <!-- 机器人设置标签页 -->
     <div class="listBox" v-if="isActivated == 'robotSettings'">
-      <div class="item flex-between common-font" v-if="connected">
-        <span>{{ $t("controlProgram") }}</span>
-        <span></span>
+      <div>
+        <div class="item flex-between common-font" v-if="connected">
+          <span>{{ $t("controlProgram") }}</span>
+          <span></span>
+        </div>
+        <div>
+          
+        </div>
       </div>
       <div class="item flex-between common-font" v-if="connected">
         <span>{{ $t("motionControl") }}</span>
@@ -199,7 +213,9 @@
       <div class="item flex-between common-font">
         <span>{{ $t("robotVersion") }}</span>
         <div>
-          <span style="margin-right: 1.8333vw;">{{ robotVersion ? robotVersion : "V2.0.6" }}</span>
+          <span style="margin-right: 1.8333vw">{{
+            robotVersion ? robotVersion : "V2.0.6"
+          }}</span>
           <span class="itemTxt">{{ $t("detectUpdates") }}</span>
         </div>
         <img class="iconTo" src="@/assets/images/icon_to.png" />
@@ -207,7 +223,7 @@
       <div class="item flex-between common-font">
         <span>{{ $t("appVersion") }}</span>
         <div>
-          <span style="margin-right: 1.8333vw;">V2.0.6</span>
+          <span style="margin-right: 1.8333vw">V2.0.6</span>
           <span class="itemTxt">{{ $t("detectUpdates") }}</span>
         </div>
         <img class="iconTo" src="@/assets/images/icon_to.png" />
