@@ -12,12 +12,14 @@ export default new Vuex.Store({
     controlType: 0,
     connected: false,
     gamepadConnected: false,
+    currentModel: "None"
   },
   getters: {
     // robot: (state) => state.robot,
     controlType: (state) => state.controlType,
     connected: (state) => state.connected,
     gamepadConnected: (state) => state.gamepadConnected,
+    currentModel: (state) => state.currentModel
   },
   mutations: {
     setControlType(state, type) {
@@ -33,6 +35,9 @@ export default new Vuex.Store({
     // },
     setGamepadConnected(state, gamepadConnected) {
       state.gamepadConnected = gamepadConnected;
+    },
+    setCurrentModel(state, currentModel) {
+      state.currentModel = currentModel;
     },
   },
   actions: {},

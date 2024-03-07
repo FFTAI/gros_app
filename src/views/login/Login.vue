@@ -9,10 +9,18 @@
     <div class="humanBody">
       <img class="openHuman" src="@/assets/images/image_onOpen.png" />
     </div>
-    <div class="startContain flex-center" @click="startExplore()">
-      <span class="startBtn common-font">{{ $t("beginToExplore") }}</span>
+    <div class="readymodel flex-center">已启动模式:{{ currentModel }}</div>
+    <div class="replaceContain flex-center" @click="startExplore('dance')">
+      <span class="startBtn common-font">开始跳舞</span>
     </div>
-    <div class="closeBox flex-column" :style="closeBoxWidth" v-if="headBoxVisible">
+    <div class="startContain flex-center" @click="startExplore('walk')">
+      <span class="startBtn common-font">开始走路</span>
+    </div>
+    <div
+      class="closeBox flex-column"
+      :style="closeBoxWidth"
+      v-if="headBoxVisible"
+    >
       <div style="margin-left: 2.2396vw" @click="off('powerOff')">
         <img
           style="width: 1.4063vw; height: 1.4583vw"
@@ -47,13 +55,13 @@ export default {
   mixins: [Heartbeat],
   components: { rtcHeader, promptBox },
   computed: {
-    ...mapState(["connected"]),
+    ...mapState(["connected", "currentModel"]),
     closeBoxWidth() {
-      let style = { "width": "12.4479vw","font-size": "1.7083vw" };
-      if (this.$i18n.locale == "en"){
+      let style = { width: "12.4479vw", "font-size": "1.7083vw" };
+      if (this.$i18n.locale == "en") {
         style.width = "14.8229vw";
         style["font-size"] = "1.4583vw";
-      } 
+      }
       return style;
     },
   },
@@ -62,39 +70,44 @@ export default {
       getFlag: true,
       promptVisible: false,
       headBoxVisible: false,
-      promptValue: ""
+      promptValue: "",
     };
   },
   methods: {
-    startExplore() {
+    exchangeBin() {},
+    startExplore(e) {
       if (this.getFlag) {
         this.getFlag = false;
         if (this.connected) {
-          console.log(this.robotWs);
           this.robotWs.robot
             .control_svr_status()
             .then((res) => {
               this.getFlag = true;
               console.log(this.connected, res.data.data);
               if (this.connected && res.data.data) {
-                this.$router.push({
-                  name: "loading",
-                });
+                if (this.currentModel == e) {
+                  this.$router.push({
+                    name: "loading",
+                  });
+                }
               } else {
-                this.toConnect();
+                this.toConnect(e);
               }
             })
             .catch((err) => {
-              this.toConnect();
+              this.toConnect(e);
             });
         } else {
-          this.toConnect();
+          this.toConnect(e);
         }
       }
     },
-    toConnect() {
+    toConnect(e) {
       this.$router.push({
         name: "robotStartup",
+        query: {
+          model: e,
+        },
       });
     },
     promptBoxOpen(e) {
@@ -109,21 +122,22 @@ export default {
     shutDown() {
       if (this.promptValue == "powerOff") {
         this.$http
-            .request({
-              baseURL: process.env.VUE_APP_URL,
-              method: "GET",
-              url: "/system/shutdown"
-            })
-            .then((response) => {
-              console.log('success---shutdown',response)
-            })
-            .catch((error) => {
-              console.log('error---shutdown',error)
-            });
+          .request({
+            baseURL: process.env.VUE_APP_URL,
+            method: "GET",
+            url: "/system/shutdown",
+          })
+          .then((response) => {
+            console.log("success---shutdown", response);
+          })
+          .catch((error) => {
+            console.log("error---shutdown", error);
+          });
       } else if (this.promptValue == "closeProgram") {
         this.robotWs.robot
           .control_svr_close()
           .then((response) => {
+            this.$store.commit("setCurrentModel", "None");
             console.log("close...", response);
           })
           .catch((error) => {
@@ -168,6 +182,16 @@ export default {
   width: 27.0833vw;
 }
 
+.replaceContain {
+  position: absolute;
+  bottom: 12vw;
+  right: 13.0208vw;
+  width: 28.3333vw;
+  height: 4.1667vw;
+  background: $base-bkg;
+  border-radius: 2.0833vw;
+}
+
 .startContain {
   position: absolute;
   bottom: 5.7292vw;
@@ -176,6 +200,16 @@ export default {
   height: 4.1667vw;
   background: $base-bkg;
   border-radius: 2.0833vw;
+}
+
+.readymodel {
+  position: absolute;
+  bottom: 18vw;
+  right: 13.0208vw;
+  width: 28.3333vw;
+  height: 4.1667vw;
+  font-size: $size-41;
+  color: $white;
 }
 
 .startBtn {

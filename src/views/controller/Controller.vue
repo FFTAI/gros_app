@@ -35,11 +35,34 @@
         <!-- Stop按钮 -->
         <div class="stopControl">
           <el-button
-            style="height: 4.1667vw; width: 8.3333vw; font-size: 1.5vw;display: flex;justify-content: center;align-items: center;"
+            style="
+              height: 4.1667vw;
+              width: 8.3333vw;
+              font-size: 1.5vw;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            "
             size="large"
             type="danger"
             @click="openDance()"
             >跳舞动作</el-button
+          >
+        </div>
+        <div class="wdmodel">
+          <el-button
+            style="
+              height: 4.1667vw;
+              width: 8.3333vw;
+              font-size: 1.5vw;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            "
+            size="large"
+            type="success"
+            disabled
+            >{{ currentModel }}模式</el-button
           >
         </div>
         <!--初始-->
@@ -298,7 +321,10 @@
       </div>
       <el-dialog title="跳舞动作" :visible.sync="danceDialog">
         <div class="flex-center">
-          <el-button class="danceBtn" type="primary" @click="doDance('ACTION_79')"
+          <el-button
+            class="danceBtn"
+            type="primary"
+            @click="doDance('ACTION_79')"
             >ACT79</el-button
           >
           <el-button
@@ -337,7 +363,10 @@
           >
         </div>
         <div class="flex-center" style="margin-top: 1vw">
-          <el-button class="danceBtn" type="warning" @click="doDance('MANUAL_LONG_HORN')"
+          <el-button
+            class="danceBtn"
+            type="warning"
+            @click="doDance('MANUAL_LONG_HORN')"
             >HORN</el-button
           >
           <el-button
@@ -396,7 +425,7 @@ export default {
   mixins: [Heartbeat],
   components: { RtcHeader, promptBox },
   computed: {
-    ...mapState(["gamepadConnected", "connected"]),
+    ...mapState(["gamepadConnected", "connected","currentModel"]),
     rotateStyle() {
       let x = this.ImuX;
       let y = this.ImuY;
@@ -1033,12 +1062,8 @@ export default {
             hand_action: "",
           },
         })
-        .then((response) => {
-          
-        })
-        .catch((error) => {
-          
-        });
+        .then((response) => {})
+        .catch((error) => {});
     },
   },
 };
@@ -1084,6 +1109,13 @@ export default {
     height: 3.9583vw;
     margin: auto;
   }
+}
+
+.wdmodel{
+  position: absolute;
+  right: 5vw;
+  top: 14vw;
+  z-index: 9999;
 }
 
 .calibration {
@@ -1147,7 +1179,7 @@ export default {
   bottom: 3.7083vw;
   width: 17.875vw;
   height: 17.875vw;
-  border: .125vw solid rgba(255, 255, 255, 0.3);
+  border: 0.125vw solid rgba(255, 255, 255, 0.3);
   z-index: 999;
   border-radius: 50%;
 }

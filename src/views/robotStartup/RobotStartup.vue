@@ -118,6 +118,7 @@
         @click="closeDialog()"
       />
     </div>
+    <div class="modelTips">当前选择模式:{{ currModel }}</div>
     <!-- 右侧操作按钮 -->
     <div class="operateArea" v-if="!calibrationDialog">
       <div
@@ -204,7 +205,7 @@ export default {
   mixins: [Heartbeat],
   components: { rtcHeader, promptBox },
   computed: {
-    ...mapState(["connected"]),
+    ...mapState(["connected","currentModel"]),
     tip3Style() {
       let style = { left: "-0.5vw" };
       if (this.$i18n.locale == "en") {
@@ -234,10 +235,14 @@ export default {
       calibrationDialog: false,
       isReady: false,
       promptVisible: false,
-      shValue: ""
+      shValue: "",
+      currModel: ""
     };
   },
-  created() {},
+  created() {
+    console.log(this.$route.query.model)
+    this.currModel = this.$route.query.model
+  },
   mounted() {},
   destroyed() {},
   methods: {
@@ -272,8 +277,10 @@ export default {
     },
     //程序启动
     async getStartup() {
+      let modelVal = this.currModel=="dance"?"/"+this.currModel:""
+      // console.log(process.env.VUE_APP_URL + "/robot/sdk_ctrl/start" + modelVal)
       let _this = this;
-      fetch(process.env.VUE_APP_URL + "/robot/sdk_ctrl/start")
+      fetch(process.env.VUE_APP_URL + "/robot/sdk_ctrl/start" + modelVal)
         .then((response) => {
           const reader = response.body.getReader();
           let result = "";
@@ -286,9 +293,10 @@ export default {
               let newTxt = new TextDecoder().decode(value)
               result += newTxt + "<br>";
               _this.shValue = result;
-              if (newTxt.includes("init!")) {
+              if (newTxt.includes("init!")&&!newTxt.includes("start json init")) {
                 reader.cancel();
                 setTimeout(() => {
+                  _this.$store.commit("setCurrentModel", _this.currModel);
                   _this.isReady = true;
                 }, 3000);
               } else {
@@ -343,6 +351,7 @@ export default {
         .control_svr_close()
         .then((response) => {
           console.log("close...", response);
+          this.$store.commit("setCurrentModel", "None");
         })
         .catch((error) => {
           console.error(error);
@@ -591,6 +600,14 @@ export default {
     font-size: $size-30;
     color: $light-blue;
   }
+}
+
+.modelTips{
+  position: absolute;
+  top: 8vw;
+  right: 12vw;
+  font-size: $size-41;
+  color: #FFFFFF;
 }
 
 .operateArea {
