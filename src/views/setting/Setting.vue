@@ -330,6 +330,7 @@
         </div>
       </div>
       <div class="powerBtn flex-center common-font">
+        <img style="width: 1.4583vw;height: 1.5208vw;margin-right: .75vw;" src="@/assets/images/icon_poweroff.png" />
         <div>
           {{ $t("powerOff") }}
         </div>
@@ -384,7 +385,7 @@
         <span>{{ $t("robotVersion") }}</span>
         <div>
           <span style="margin-right: 1.8333vw">{{
-            robotVersion ? robotVersion : "V2.0.6"
+            robotVersion ? robotVersion : "V2.0.10"
           }}</span>
           <span class="itemTxt">{{ $t("detectUpdates") }}</span>
         </div>
@@ -393,10 +394,16 @@
       <div class="item flex-between common-font">
         <span>{{ $t("appVersion") }}</span>
         <div>
-          <span style="margin-right: 1.8333vw">V2.0.6</span>
+          <span style="margin-right: 1.8333vw">V2.0.10</span>
           <span class="itemTxt">{{ $t("detectUpdates") }}</span>
         </div>
         <img class="iconTo" src="@/assets/images/icon_to.png" />
+      </div>
+      <div class="powerBtn flex-center common-font">
+        <img style="width: 1.4583vw;height: 1.5208vw;margin-right: .75vw;" src="@/assets/images/icon_poweroff.png" />
+        <div>
+          {{ $t("powerOff") }}
+        </div>
       </div>
       <!-- 是否开启日志 -->
       <!-- <div class="item flex-between common-font">

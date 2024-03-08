@@ -15,29 +15,29 @@
     <slot></slot>
     <div
       class="headButtonIn flex-between"
-      v-if="(connected || isController) && !isLoading && !isStartup"
+      v-if="(connected || isController || isDevelopment) && !isLoading && !isStartup"
     >
-      <div class="divider" v-if="isController"></div>
+      <div class="divider" v-if="isController || isDevelopment"></div>
       <!-- 机器人温度 -->
       <div
         class="flex-center"
         style="padding: 0 1.375vw;"
-        v-if="isController"
+        v-if="isController || isDevelopment"
       >
         <img class="inImg" src="@/assets/images/icon_robotTem.png" />
         <span class="inTxt title-font">{{ robotTemp }}°C</span>
       </div>
-      <div class="divider" v-if="isController"></div>
+      <div class="divider" v-if="isController || isDevelopment"></div>
       <!-- 芯片温度 -->
       <div
         class="flex-center"
         style="padding: 0 1.375vw;"
-        v-if="isController"
+        v-if="isController || isDevelopment"
       >
         <img class="inImg" src="@/assets/images/icon_chipTem.png" />
         <span class="inTxt title-font">{{ actuatorTemp }}°C</span>
       </div>
-      <div class="divider" v-if="isController"></div>
+      <div class="divider" v-if="isController || isDevelopment"></div>
       <!-- 电量 -->
       <div class="flex-center" style="padding: 0 1.375vw;">
         <img class="inImg" src="@/assets/images/icon_battery2.png" />
@@ -66,7 +66,7 @@
       <!-- 设置 -->
       <div
         class="iconBox flex-center"
-        v-if="!isSetting && !isController"
+        v-if="!isSetting && !isController && !isDevelopment"
         @click="setting()"
       >
         <img class="inImg" src="@/assets/images/icon_setting.png" />
@@ -274,6 +274,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isDevelopment: {
+      type: Boolean,
+      default: false,
+    }
   },
   computed: {
     ...mapState(["connected", "robotInit", "enableBasicState"]),
@@ -463,7 +467,7 @@ export default {
     width: 0.1042vw;
     height: 4.4271vw;
     background: $white;
-    opacity: 0.3;
+    opacity: 0.1;
   }
 
   .iconBox {

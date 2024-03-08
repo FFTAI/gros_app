@@ -171,5 +171,6 @@
     "middle": "Middle",
     "fast": "Fast",
     "low": "Low",
-    "high": "High"
+    "high": "High",
+    "noMovement": "No Movement"
 }

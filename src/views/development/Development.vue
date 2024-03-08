@@ -1,6 +1,6 @@
 <template>
   <div class="black-bkg">
-    <rtc-header>
+    <rtc-header :isDevelopment="true">
       <div class="headState" @click="headChange()">
         <span class="headTxt common-font">{{ $t("developerMode") }}</span>
         <div class="arrow"></div>
@@ -67,7 +67,7 @@
     <!-- 机器人姿态 -->
     <div v-show="activated == 'robot'">
       <!-- 人形模型 -->
-      <div class="humanModel flex-center" v-show="activated == 'robot'">
+      <!-- <div class="humanModel flex-center" v-show="activated == 'robot'">
         <iframe
           ref="unityIfm"
           style="
@@ -78,10 +78,16 @@
           "
           :src="iframeUrl"
         ></iframe>
+      </div> -->
+      <div class="humanModel">
+        <img style="height: 23.25vw;width: 15.0833vw;" src="@/assets/images/icon_model.png" />
       </div>
       <div class="poseBox">
         <span class="poseTxt common-font">{{ $t("currentPosture") }}</span>
-        <div class="poseContent flex-center">无运动</div>
+        <div class="poseContent">
+          <span style="margin-bottom: 1vw;">-</span>
+          <span>{{ $t('noMovement') }}</span>
+        </div>
       </div>
       <!-- IMU表 -->
       <div class="poseTable">
@@ -143,13 +149,13 @@
       <div class="logMain">
         <el-timeline>
           <el-timeline-item
-            v-for="(activity, index) in logList"
+            v-for="(activity, index) in errorList"
             :key="index"
             :type="activity.type"
             :timestamp="activity.timestamp"
             :placement="activity.placement"
           >
-            <p class="logTxt common-font">{{ activity.content }}</p>
+            <p class="logTxt common-font" style="color: #DC4253;">{{ activity.content }}</p>
           </el-timeline-item>
         </el-timeline>
       </div>
@@ -226,7 +232,7 @@
           >
             <div class="itemChild">{{ $t("head") }}{{ $t("yaw") }}</div>
             <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-              {{ headYaw_qa ? headYaw_qa + "°" : "" }}
+              {{ headYaw_qa ? headYaw_qa + "°" : "+92.12°" }}
             </div>
             <div
               v-else-if="activatedType == 'Avelocity'"
@@ -249,7 +255,7 @@
           >
             <div class="itemChild">{{ $t("head") }}{{ $t("pitch") }}</div>
             <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-              {{ headPitch_qa ? headPitch_qa + "°" : "" }}
+              {{ headPitch_qa ? headPitch_qa + "°" : "+48.13°" }}
             </div>
             <div
               v-else-if="activatedType == 'Avelocity'"
@@ -272,7 +278,7 @@
           >
             <div class="itemChild">{{ $t("head") }}{{ $t("roll") }}</div>
             <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-              {{ headRoll_qa ? headRoll_qa + "°" : "" }}
+              {{ headRoll_qa ? headRoll_qa + "°" : "+157.02°" }}
             </div>
             <div
               v-else-if="activatedType == 'Avelocity'"
@@ -303,7 +309,7 @@
           >
             <div class="itemChild">{{ $t("waist") }}{{ $t("yaw") }}</div>
             <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-              {{ waistYaw_qa ? waistYaw_qa + "°" : "" }}
+              {{ waistYaw_qa ? waistYaw_qa + "°" : "+92.12°/s" }}
             </div>
             <div
               v-else-if="activatedType == 'Avelocity'"
@@ -326,7 +332,7 @@
           >
             <div class="itemChild">{{ $t("waist") }}{{ $t("pitch") }}</div>
             <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-              {{ waistPitch_qa ? waistPitch_qa + "°" : "" }}
+              {{ waistPitch_qa ? waistPitch_qa + "°" : "+48.13°/s" }}
             </div>
             <div
               v-else-if="activatedType == 'Avelocity'"
@@ -349,7 +355,7 @@
           >
             <div class="itemChild">{{ $t("waist") }}{{ $t("roll") }}</div>
             <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-              {{ waistRoll_qa ? waistRoll_qa + "°" : "" }}
+              {{ waistRoll_qa ? waistRoll_qa + "°" : "+157.02°/s" }}
             </div>
             <div
               v-else-if="activatedType == 'Avelocity'"
@@ -389,7 +395,7 @@
         <div class="tableItem">
           <div class="itemChild">{{ $t("shoulderPitch") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ leftPitchShoulder_qa ? leftPitchShoulder_qa + "°" : "" }}
+            {{ leftPitchShoulder_qa ? leftPitchShoulder_qa + "°" : "+92.12°" }}
           </div>
           <div
             v-else-if="activatedType == 'Avelocity'"
@@ -401,7 +407,7 @@
             {{ leftPitchShoulder_taua ? leftPitchShoulder_taua + "N.m" : "" }}
           </div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ rightPitchShoulder_qa ? rightPitchShoulder_qa + "°" : "" }}
+            {{ rightPitchShoulder_qa ? rightPitchShoulder_qa + "°" : "+92.12°" }}
           </div>
           <div
             v-else-if="activatedType == 'Avelocity'"
@@ -419,7 +425,7 @@
         <div class="tableItem">
           <div class="itemChild">{{ $t("shoulderRoll") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ leftRollShoulder_qa ? leftRollShoulder_qa + "°" : "" }}
+            {{ leftRollShoulder_qa ? leftRollShoulder_qa + "°" : "+48.13°" }}
           </div>
           <div
             v-else-if="activatedType == 'Avelocity'"
@@ -431,7 +437,7 @@
             {{ leftRollShoulder_taua ? leftRollShoulder_taua + "N.m" : "" }}
           </div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ rightRollShoulder_qa ? rightRollShoulder_qa + "°" : "" }}
+            {{ rightRollShoulder_qa ? rightRollShoulder_qa + "°" : "+48.13°" }}
           </div>
           <div
             v-else-if="activatedType == 'Avelocity'"
@@ -447,7 +453,7 @@
         <div class="tableItem">
           <div class="itemChild">{{ $t("shoulderYaw") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ leftYawShoulder_qa ? leftYawShoulder_qa + "°" : "" }}
+            {{ leftYawShoulder_qa ? leftYawShoulder_qa + "°" : "+157.02°" }}
           </div>
           <div
             v-else-if="activatedType == 'Avelocity'"
@@ -459,7 +465,7 @@
             {{ leftYawShoulder_taua ? leftYawShoulder_taua + "N.m" : "" }}
           </div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ rightYawShoulder_qa ? rightYawShoulder_qa + "°" : "" }}
+            {{ rightYawShoulder_qa ? rightYawShoulder_qa + "°" : "+157.02°" }}
           </div>
           <div
             v-else-if="activatedType == 'Avelocity'"
@@ -475,7 +481,7 @@
         <div class="tableItem">
           <div class="itemChild">{{ $t("elbow") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ leftElbow_qa ? leftElbow_qa + "°" : "" }}
+            {{ leftElbow_qa ? leftElbow_qa + "°" : "+22.12°" }}
           </div>
           <div
             v-else-if="activatedType == 'Avelocity'"
@@ -487,7 +493,7 @@
             {{ leftElbow_taua ? leftElbow_taua + "N.m" : "" }}
           </div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ rightElbow_qa ? rightElbow_qa + "°" : "" }}
+            {{ rightElbow_qa ? rightElbow_qa + "°" : "+22.12°" }}
           </div>
           <div
             v-else-if="activatedType == 'Avelocity'"
@@ -503,7 +509,7 @@
         <div class="tableItem">
           <div class="itemChild">{{ $t("wristYaw") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ leftYawWrist_qa ? leftYawWrist_qa + "°" : "" }}
+            {{ leftYawWrist_qa ? leftYawWrist_qa + "°" : "+16.31°" }}
           </div>
           <div
             v-else-if="activatedType == 'Avelocity'"
@@ -515,7 +521,7 @@
             {{ leftYawWrist_taua ? leftYawWrist_taua + "N.m" : "" }}
           </div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ rightYawWrist_qa ? rightYawWrist_qa + "°" : "" }}
+            {{ rightYawWrist_qa ? rightYawWrist_qa + "°" : "+16.31°" }}
           </div>
           <div
             v-else-if="activatedType == 'Avelocity'"
@@ -531,7 +537,7 @@
         <div class="tableItem">
           <div class="itemChild">{{ $t("wristRoll") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ leftRollWrist_qa ? leftRollWrist_qa + "°" : "" }}
+            {{ leftRollWrist_qa ? leftRollWrist_qa + "°" : "+76.78°" }}
           </div>
           <div
             v-else-if="activatedType == 'Avelocity'"
@@ -543,7 +549,7 @@
             {{ leftRollWrist_taua ? leftRollWrist_taua + "N.m" : "" }}
           </div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ rightRollWrist_qa ? rightRollWrist_qa + "°" : "" }}
+            {{ rightRollWrist_qa ? rightRollWrist_qa + "°" : "+76.78°" }}
           </div>
           <div
             v-else-if="activatedType == 'Avelocity'"
@@ -559,7 +565,7 @@
         <div class="tableItem">
           <div class="itemChild">{{ $t("wristPitch") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ leftPitchWrist_qa ? leftPitchWrist_qa + "°" : "" }}
+            {{ leftPitchWrist_qa ? leftPitchWrist_qa + "°" : "+76.78°" }}
           </div>
           <div
             v-else-if="activatedType == 'Avelocity'"
@@ -571,7 +577,7 @@
             {{ leftPitchWrist_taua ? leftPitchWrist_taua + "N.m" : "" }}
           </div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ rightPitchWrist_qa ? rightPitchWrist_qa + "°" : "" }}
+            {{ rightPitchWrist_qa ? rightPitchWrist_qa + "°" : "+76.78°" }}
           </div>
           <div
             v-else-if="activatedType == 'Avelocity'"
@@ -603,7 +609,7 @@
         <div class="tableItem">
           <div class="itemChild">{{ $t("hipRoll") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ leftHipRoll_qa ? leftHipRoll_qa + "°" : "" }}
+            {{ leftHipRoll_qa ? leftHipRoll_qa + "°" : "+92.12°" }}
           </div>
           <div
             v-else-if="activatedType == 'Avelocity'"
@@ -615,7 +621,7 @@
             {{ leftHipRoll_taua ? leftHipRoll_taua + "N.m" : "" }}
           </div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ rightHipRoll_qa ? rightHipRoll_qa + "°" : "" }}
+            {{ rightHipRoll_qa ? rightHipRoll_qa + "°" : "+92.12°" }}
           </div>
           <div
             v-else-if="activatedType == 'Avelocity'"
@@ -631,7 +637,7 @@
         <div class="tableItem">
           <div class="itemChild">{{ $t("hipYaw") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ leftHipYaw_qa ? leftHipYaw_qa + "°" : "" }}
+            {{ leftHipYaw_qa ? leftHipYaw_qa + "°" : "+48.13°" }}
           </div>
           <div
             v-else-if="activatedType == 'Avelocity'"
@@ -643,7 +649,7 @@
             {{ leftHipYaw_taua ? leftHipYaw_taua + "N.m" : "" }}
           </div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ rightHipYaw_qa ? rightHipYaw_qa + "°" : "" }}
+            {{ rightHipYaw_qa ? rightHipYaw_qa + "°" : "+48.13°" }}
           </div>
           <div
             v-else-if="activatedType == 'Avelocity'"
@@ -659,7 +665,7 @@
         <div class="tableItem">
           <div class="itemChild">{{ $t("hipPitch") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ leftHipPitch_qa ? leftHipPitch_qa + "°" : "" }}
+            {{ leftHipPitch_qa ? leftHipPitch_qa + "°" : "+157.02°" }}
           </div>
           <div
             v-else-if="activatedType == 'Avelocity'"
@@ -671,7 +677,7 @@
             {{ leftHipPitch_taua ? leftHipPitch_taua + "N.m" : "" }}
           </div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ rightHipPitch_qa ? rightHipPitch_qa + "°" : "" }}
+            {{ rightHipPitch_qa ? rightHipPitch_qa + "°" : "+157.02°" }}
           </div>
           <div
             v-else-if="activatedType == 'Avelocity'"
@@ -687,7 +693,7 @@
         <div class="tableItem">
           <div class="itemChild">{{ $t("knee") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ leftKnee_qa ? leftKnee_qa + "°" : "" }}
+            {{ leftKnee_qa ? leftKnee_qa + "°" : "+22.12°" }}
           </div>
           <div
             v-else-if="activatedType == 'Avelocity'"
@@ -699,7 +705,7 @@
             {{ leftKnee_taua ? leftKnee_taua + "N.m" : "" }}
           </div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ rightKnee_qa ? rightKnee_qa + "°" : "" }}
+            {{ rightKnee_qa ? rightKnee_qa + "°" : "+22.12°" }}
           </div>
           <div
             v-else-if="activatedType == 'Avelocity'"
@@ -715,7 +721,7 @@
         <div class="tableItem">
           <div class="itemChild">{{ $t("anklePitch") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ leftAnklePitch_qa ? leftAnklePitch_qa + "°" : "" }}
+            {{ leftAnklePitch_qa ? leftAnklePitch_qa + "°" : "+16.31°" }}
           </div>
           <div
             v-else-if="activatedType == 'Avelocity'"
@@ -727,7 +733,7 @@
             {{ leftAnklePitch_taua ? leftAnklePitch_taua + "N.m" : "" }}
           </div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ rightAnklePitch_qa ? rightAnklePitch_qa + "°" : "" }}
+            {{ rightAnklePitch_qa ? rightAnklePitch_qa + "°" : "+16.31°" }}
           </div>
           <div
             v-else-if="activatedType == 'Avelocity'"
@@ -743,7 +749,7 @@
         <div class="tableItem">
           <div class="itemChild">{{ $t("ankleRoll") }}</div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ leftAnkleRoll_qa ? leftAnkleRoll_qa + "°" : "" }}
+            {{ leftAnkleRoll_qa ? leftAnkleRoll_qa + "°" : "+76.78°" }}
           </div>
           <div
             v-else-if="activatedType == 'Avelocity'"
@@ -755,7 +761,7 @@
             {{ leftAnkleRoll_taua ? leftAnkleRoll_taua + "N.m" : "" }}
           </div>
           <div v-if="activatedType == 'angle'" class="itemChild itemTxt">
-            {{ rightAnkleRoll_qa ? rightAnkleRoll_qa + "°" : "" }}
+            {{ rightAnkleRoll_qa ? rightAnkleRoll_qa + "°" : "+76.78°" }}
           </div>
           <div
             v-else-if="activatedType == 'Avelocity'"
@@ -797,8 +803,45 @@ export default {
   },
   data() {
     return {
-      activated: "motor", //机器人姿态:robot Log日志:log 执行器:motor
-      logList: [], //日志列表
+      activated: "log", //机器人姿态:robot Log日志:log 执行器:motor
+      logList: [
+        {
+          timestamp: '2023/08/08',
+          placement: 'top',
+          content: 'data init complete,program is starting!'
+        },{
+          timestamp: '2023/08/08',
+          placement: 'top',
+          content: 'GRPC state response initcomplete.'
+        },{
+          timestamp: '2023/08/08',
+          placement: 'top',
+          content: 'Walk::init()'
+        },{
+          timestamp: '2023/08/08',
+          placement: 'top',
+          content: 'Zero::init()'
+        },{
+          timestamp: '2023/08/08',
+          placement: 'top',
+          content: 'Stand::init()'
+        },{
+          timestamp: '2023/08/08',
+          placement: 'top',
+          content: 'Error! Actuator temperature too high!'
+        },
+      ], //日志列表
+      errorList: [
+      {
+          timestamp: '2023/08/08',
+          placement: 'top',
+          content: 'Error! Actuator temperature too high!'
+        },{
+          timestamp: '2023/08/08',
+          placement: 'top',
+          content: 'Error! Disconnected!'
+        }
+      ],
       /**
        * 上肢部分关节数据
        * qa:弧度 qdota:弧度/秒 taua:力矩(牛.米)
@@ -1336,7 +1379,7 @@ export default {
 .humanModel {
   height: 32.125vw;
   position: absolute;
-  left: 37.2917vw;
+  left: 45.625vw;
   top: 5.7083vw;
 }
 .poseBox {
@@ -1362,6 +1405,10 @@ export default {
     font-size: 1.9583vw;
     font-family: AlibabaPuHuiTiM;
     color: $white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 }
 
