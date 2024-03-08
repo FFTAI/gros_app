@@ -166,5 +166,10 @@
     "centroidMass": "质心质量",
     "centroidPosition": "质心位置",
     "forceControlRatio": "力控比例",
-    "crotchWidth": "胯宽"
+    "crotchWidth": "胯宽",
+    "slow": "慢",
+    "middle": "中",
+    "fast": "快",
+    "low": "低",
+    "high": "高"
 }

@@ -166,5 +166,10 @@
     "centroidMass": "Centroid Mass",
     "centroidPosition": "Centroid Position",
     "forceControlRatio": "Force Control Ratio",
-    "crotchWidth": "CrotchWidth"
+    "crotchWidth": "CrotchWidth",
+    "slow": "Slow",
+    "middle": "Middle",
+    "fast": "Fast",
+    "low": "Low",
+    "high": "High"
 }

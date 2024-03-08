@@ -124,14 +124,121 @@
             src="@/assets/images/btn_arrowDown.png"
           />
         </div>
-        <!-- <div class="labelmcActivated" v-if="mcActivated">
+        <div
+          class="labelActivated"
+          style="height: 39.3333vw"
+          v-if="mcActivated"
+        >
+          <!-- 运动速度 -->
           <div class="itemChild">
             <div class="flex-center">
-              {{ $t("upperBody") }}
+              {{ $t("movementSpeed") }}
+            </div>
+            <div class="tagBtn">
+              <div
+                class="tagItem flex-center"
+                :class="{
+                  chosedTag: currSpeed == 'slow',
+                  chosedLeft: currSpeed == 'slow'
+                }"
+                style="width: 6.1667vw"
+                @click="changeSpeed('slow')"
+              >
+                {{ $t("slow") }}
+              </div>
+              <div
+                class="tagItem flex-center"
+                :class="{
+                  chosedTag: currSpeed == 'middle',
+                }"
+                style="width: 6.1667vw"
+                @click="changeSpeed('middle')"
+              >
+                {{ $t("middle") }}
+              </div>
+              <div
+                class="tagItem flex-center"
+                :class="{
+                  chosedTag: currSpeed == 'fast',
+                  chosedRight: currSpeed == 'fast',
+                }"
+                style="width: 6.1667vw"
+                @click="changeSpeed('fast')"
+              >
+                {{ $t("fast") }}
+              </div>
             </div>
           </div>
           <div class="divider"></div>
-        </div> -->
+          <!-- 机器高度 -->
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("machineHeight") }}
+            </div>
+            <div class="tagBtn">
+              <div
+                class="tagItem flex-center"
+                :class="{
+                  chosedTag: currHeight == 'low',
+                  chosedLeft: currHeight == 'low'
+                }"
+                style="width: 6.1667vw"
+                @click="changeHeight('low')"
+              >
+                {{ $t("low") }}
+              </div>
+              <div
+                class="tagItem flex-center"
+                :class="{
+                  chosedTag: currHeight == 'middle',
+                }"
+                style="width: 6.1667vw"
+                @click="changeHeight('middle')"
+              >
+                {{ $t("middle") }}
+              </div>
+              <div
+                class="tagItem flex-center"
+                :class="{
+                  chosedTag: currHeight == 'high',
+                  chosedRight: currHeight == 'high',
+                }"
+                style="width: 6.1667vw"
+                @click="changeHeight('high')"
+              >
+                {{ $t("high") }}
+              </div>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <!-- 质心质量 -->
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("centroidMass") }}
+            </div>
+          </div>
+          <div class="divider"></div>
+          <!-- 质心位置 -->
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("centroidPosition") }}
+            </div>
+          </div>
+          <div class="divider"></div>
+          <!-- 力控比例 -->
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("forceControlRatio") }}
+            </div>
+          </div>
+          <div class="divider"></div>
+          <!-- 胯宽 -->
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("crotchWidth") }}
+            </div>
+          </div>
+        </div>
       </div>
       <div class="item flex-between common-font" v-if="connected">
         <span>{{ $t("perceptualInteraction") }}</span>
@@ -250,17 +357,23 @@
       <!-- 多语言选择 -->
       <div class="item flex-between common-font">
         <span>{{ $t("appLanguage") }}</span>
-        <div class="languageBtn">
+        <div class="tagBtn">
           <div
-            class="languageItem flex-center"
-            :class="{ chosedLanguageZh: currLanguage == 'zh' }"
+            class="tagItem flex-center"
+            :class="{
+              chosedTag: currLanguage == 'zh',
+              chosedLeft: currLanguage == 'zh',
+            }"
             @click="changeLanguage('zh')"
           >
             {{ $t("simplifiedChinese") }}
           </div>
           <div
-            class="languageItem flex-center"
-            :class="{ chosedLanguageEn: currLanguage == 'en' }"
+            class="tagItem flex-center"
+            :class="{
+              chosedTag: currLanguage == 'en',
+              chosedRight: currLanguage == 'en',
+            }"
             @click="changeLanguage('en')"
           >
             {{ $t("English") }}
@@ -330,6 +443,8 @@ export default {
       pmActivated: false, //电源管理展开
       upperActivated: false,
       headActivated: false,
+      currSpeed: "slow",
+      currHeight: "low"
     };
   },
   mounted() {
@@ -395,6 +510,14 @@ export default {
     openHead() {
       this.headActivated = !this.headActivated;
     },
+    //选择运动速度
+    changeSpeed(e) {
+      this.currSpeed = e
+    },
+    //选择机器高度
+    changeHeight(e) {
+      this.currHeight = e
+    }
   },
 };
 </script>
@@ -515,28 +638,26 @@ export default {
     color: $light-blue;
   }
 
-  .languageItem {
+  .tagItem {
     width: 9.2917vw;
     height: 3.7083vw;
     opacity: 0.1;
-    // display: flex;
-    // justify-content: space-around;
-    // align-items: center;
   }
 
-  .chosedLanguageZh {
+  .chosedTag {
     background: linear-gradient(230deg, #198bff 0%, #0086d1 100%);
+    opacity: 1;
+  }
+
+  .chosedLeft {
     border-radius: 0.625vw 0 0 0.625vw;
-    opacity: 1;
   }
 
-  .chosedLanguageEn {
-    background: linear-gradient(230deg, #198bff 0%, #0086d1 100%);
+  .chosedRight {
     border-radius: 0 0.625vw 0.625vw 0;
-    opacity: 1;
   }
 
-  .languageBtn {
+  .tagBtn {
     width: 18.5833vw;
     height: 3.7083vw;
     background: rgba(255, 255, 255, 0.1);
@@ -679,18 +800,6 @@ export default {
 .labelActivated {
   width: 56.6667vw;
   height: 10vw;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 0 0 0.625vw 0.625vw;
-  margin-top: -1.25vw;
-  margin-bottom: 1.25vw;
-  padding: 2.4583vw;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-.labelmcActivated{
-  width: 56.6667vw;
-  height: 39.3333vw;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 0 0 0.625vw 0.625vw;
   margin-top: -1.25vw;
