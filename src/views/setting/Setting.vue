@@ -64,29 +64,86 @@
     <!-- 机器人设置标签页 -->
     <div class="listBox" v-if="isActivated == 'robotSettings'">
       <div>
-        <div class="item flex-between common-font" v-if="connected">
+        <div
+          @click="openLabel('controlProgram')"
+          class="item flex-between common-font"
+          :class="{ labelBorder: cpActivated }"
+          v-if="connected"
+        >
           <span>{{ $t("controlProgram") }}</span>
-          <span></span>
+          <img
+            v-if="cpActivated"
+            class="arrowDown"
+            src="@/assets/images/btn_arrowUp.png"
+          />
+          <img
+            v-else
+            class="arrowDown"
+            src="@/assets/images/btn_arrowDown.png"
+          />
         </div>
-        <div>
-          
+        <div class="labelActivated" v-if="cpActivated">
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("upperBody") }}
+              <span style="font-size: 1.25vw; color: #ffffff; opacity: 0.5">
+                （{{ $t("upperArm") }}+{{ $t("extremity") }}）</span
+              >
+            </div>
+            <switchButton
+              @openVal="openUpper()"
+              :open="upperActivated"
+            ></switchButton>
+          </div>
+          <div class="divider"></div>
+          <div class="itemChild">
+            <span>{{ $t("headPart") }}</span>
+            <switchButton
+              @openVal="openHead()"
+              :open="headActivated"
+            ></switchButton>
+          </div>
         </div>
       </div>
-      <div class="item flex-between common-font" v-if="connected">
-        <span>{{ $t("motionControl") }}</span>
-        <span></span>
+      <div>
+        <div
+          @click="openLabel('motionControl')"
+          class="item flex-between common-font"
+          :class="{ labelBorder: mcActivated }"
+          v-if="connected"
+        >
+          <span>{{ $t("motionControl") }}</span>
+          <img
+            v-if="mcActivated"
+            class="arrowDown"
+            src="@/assets/images/btn_arrowUp.png"
+          />
+          <img
+            v-else
+            class="arrowDown"
+            src="@/assets/images/btn_arrowDown.png"
+          />
+        </div>
+        <!-- <div class="labelmcActivated" v-if="mcActivated">
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("upperBody") }}
+            </div>
+          </div>
+          <div class="divider"></div>
+        </div> -->
       </div>
       <div class="item flex-between common-font" v-if="connected">
         <span>{{ $t("perceptualInteraction") }}</span>
-        <span></span>
+        <img class="arrowDown" src="@/assets/images/btn_arrowDown.png" />
       </div>
       <div class="item flex-between common-font" v-if="connected">
         <span>{{ $t("robotCalibration") }}</span>
-        <span></span>
+        <img class="arrowDown" src="@/assets/images/btn_arrowDown.png" />
       </div>
       <div class="item flex-between common-font" v-if="connected">
         <span>{{ $t("powerManagement") }}</span>
-        <span></span>
+        <img class="arrowDown" src="@/assets/images/btn_arrowDown.png" />
       </div>
     </div>
     <!-- 设备设置标签页 -->
@@ -243,17 +300,18 @@
 <script>
 import rtcHeader from "@/components/rtcHeader.vue";
 import promptBox from "@/components/promptBox.vue";
+import switchButton from "@/components/switchButton.vue";
 import { mapState } from "vuex";
 import Heartbeat from "@/mixin/Heartbeat";
 export default {
   mixins: [Heartbeat],
-  components: { rtcHeader, promptBox },
+  components: { rtcHeader, promptBox, switchButton },
   computed: {
     ...mapState(["connected"]),
   },
   data() {
     return {
-      isActivated: "status", //当前活动Tab
+      isActivated: "robotSettings", //当前活动Tab
       logOpen: true,
       nickname: false,
       microphone: false,
@@ -265,6 +323,13 @@ export default {
       speechOpen: false,
       selfCheckActivated: false,
       robotVersion: "",
+      cpActivated: false, //控制程序展开
+      mcActivated: false, //运动控制展开
+      piActivated: false, //感知交互展开
+      rcActivated: false, //机器人校准展开
+      pmActivated: false, //电源管理展开
+      upperActivated: false,
+      headActivated: false,
     };
   },
   mounted() {
@@ -312,6 +377,23 @@ export default {
         .catch((error) => {
           console.log("error---version", error);
         });
+    },
+    openLabel(e) {
+      switch (e) {
+        case "controlProgram":
+          this.cpActivated = !this.cpActivated;
+          break;
+        case "motionControl":
+          this.mcActivated = !this.mcActivated;
+        default:
+          break;
+      }
+    },
+    openUpper() {
+      this.upperActivated = !this.upperActivated;
+    },
+    openHead() {
+      this.headActivated = !this.headActivated;
     },
   },
 };
@@ -404,8 +486,17 @@ export default {
     padding: 0 3.5vw 0 2.4583vw;
     font-size: $size-41;
     align-items: center;
-    border-radius: 0.25vw;
+    border-radius: 0.625vw;
     color: $white;
+  }
+
+  .itemChild {
+    font-family: AlibabaPuHuiTiM;
+    font-size: $size-35;
+    color: $white;
+    font-style: normal;
+    display: flex;
+    justify-content: space-between;
   }
 
   .expandLabel {
@@ -564,5 +655,54 @@ export default {
 .el-slider__button {
   width: 1.3333vw;
   height: 1.3333vw;
+}
+
+.arrowDown {
+  position: absolute;
+  right: 6.1667vw;
+  width: 1.375vw;
+  height: 0.75vw;
+}
+
+.labelBorder {
+  background: linear-gradient(
+      230deg,
+      rgba(25, 139, 255, 0.08) 0%,
+      rgba(0, 134, 209, 0.08) 100%
+    ),
+    rgba(255, 255, 255, 0.08);
+  border-radius: 0.625vw 0.625vw 0 0 !important;
+  border: 0.0417vw solid #0075b8;
+  width: 55.5417vw !important;
+  height: 6.0833vw !important;
+}
+.labelActivated {
+  width: 56.6667vw;
+  height: 10vw;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 0 0 0.625vw 0.625vw;
+  margin-top: -1.25vw;
+  margin-bottom: 1.25vw;
+  padding: 2.4583vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.labelmcActivated{
+  width: 56.6667vw;
+  height: 39.3333vw;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 0 0 0.625vw 0.625vw;
+  margin-top: -1.25vw;
+  margin-bottom: 1.25vw;
+  padding: 2.4583vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.divider {
+  width: 56.6667vw;
+  height: 0.0417vw;
+  background: rgba(255, 255, 255, 0.2);
 }
 </style>

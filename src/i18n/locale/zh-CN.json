@@ -158,5 +158,13 @@
     "robotSettings": "机器人设置",
     "controlProgram": "控制程序",
     "motionControl": "运动控制",
-    "robotCalibration": "机器人校准"
+    "robotCalibration": "机器人校准",
+    "upperArm": "上臂",
+    "extremity": "末端",
+    "movementSpeed": "运动速度",
+    "machineHeight": "机器高度",
+    "centroidMass": "质心质量",
+    "centroidPosition": "质心位置",
+    "forceControlRatio": "力控比例",
+    "crotchWidth": "胯宽"
 }
