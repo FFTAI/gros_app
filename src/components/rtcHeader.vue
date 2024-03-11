@@ -381,7 +381,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .main {
   position: relative;
 }
@@ -622,20 +622,20 @@ export default {
 .splider {
   width: 13.9583vw;
 }
-.el-slider__runway {
+.splider ::v-deep .el-slider__runway {
   height: 0.5vw;
   background-color: rgba(216, 216, 216, 0.2);
 }
-.el-slider__bar {
+.splider ::v-deep .el-slider__bar {
   height: 0.5vw;
 }
-.el-slider__button-wrapper {
+.splider ::v-deep .el-slider__button-wrapper {
   top: -0.8333vw;
 }
-.el-slider__button {
+.splider ::v-deep .el-slider__button {
   width: 2.0833vw;
   height: 2.0833vw;
-  box-shadow: 0px 3 7px 0px rgba(63, 63, 63, 0.5);
+  box-shadow: 0 .125vw .2917vw 0 rgba(63, 63, 63, 0.5);
   border: 0;
 }
 </style>

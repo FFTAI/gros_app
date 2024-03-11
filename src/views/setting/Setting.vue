@@ -40,29 +40,30 @@
           </div>
         </div>
       </div>
-      <!-- 设备设置 -->
+      <!-- 机器人状态 -->
       <div
         class="txt"
-        :class="{ activeTab: isActivated == 'deviceSettings' }"
+        :class="{ activeTab: isActivated == 'robotStatus' }"
         style="top: 47%"
-        @click="changeTab('deviceSettings')"
+        @click="changeTab('robotStatus')"
       >
         <div
           class="tab common-font"
-          :class="{ opt: isActivated != 'deviceSettings' }"
+          :class="{ opt: isActivated != 'robotStatus' }"
         >
           <img
             style="width: 1.7083vw; height: 1.7083vw"
             src="@/assets/images/icon_robot status.png"
           />
           <div style="margin-left: 1.25vw">
-            {{ $t("deviceSettings") }}
+            {{ $t("robotStatus") }}
           </div>
         </div>
       </div>
     </div>
     <!-- 机器人设置标签页 -->
     <div class="listBox" v-if="isActivated == 'robotSettings'">
+      <!-- 控制程序 -->
       <div>
         <div
           @click="openLabel('controlProgram')"
@@ -105,6 +106,7 @@
           </div>
         </div>
       </div>
+      <!-- 运动控制 -->
       <div>
         <div
           @click="openLabel('motionControl')"
@@ -139,7 +141,7 @@
                 class="tagItem flex-center"
                 :class="{
                   chosedTag: currSpeed == 'slow',
-                  chosedLeft: currSpeed == 'slow'
+                  chosedLeft: currSpeed == 'slow',
                 }"
                 style="width: 6.1667vw"
                 @click="changeSpeed('slow')"
@@ -180,7 +182,7 @@
                 class="tagItem flex-center"
                 :class="{
                   chosedTag: currHeight == 'low',
-                  chosedLeft: currHeight == 'low'
+                  chosedLeft: currHeight == 'low',
                 }"
                 style="width: 6.1667vw"
                 @click="changeHeight('low')"
@@ -216,12 +218,30 @@
             <div class="flex-center">
               {{ $t("centroidMass") }}
             </div>
+            <div>
+              <el-slider
+                class="splider"
+                v-model="cmVal"
+                :show-tooltip="false"
+                :marks="cmMarks"
+              ></el-slider>
+              {{ cmVal }}
+            </div>
           </div>
           <div class="divider"></div>
           <!-- 质心位置 -->
           <div class="itemChild">
             <div class="flex-center">
               {{ $t("centroidPosition") }}
+            </div>
+            <div>
+              <el-slider
+                class="splider"
+                v-model="cpVal"
+                :show-tooltip="false"
+                :marks="cpMarks"
+              ></el-slider>
+              {{ -cpVal }}
             </div>
           </div>
           <div class="divider"></div>
@@ -230,6 +250,15 @@
             <div class="flex-center">
               {{ $t("forceControlRatio") }}
             </div>
+            <div>
+              <el-slider
+                class="splider"
+                v-model="frVal"
+                :show-tooltip="false"
+                :marks="frMarks"
+              ></el-slider>
+              {{ frVal }}
+            </div>
           </div>
           <div class="divider"></div>
           <!-- 胯宽 -->
@@ -237,24 +266,223 @@
             <div class="flex-center">
               {{ $t("crotchWidth") }}
             </div>
+            <div>
+              <el-slider
+                class="splider"
+                v-model="cwVal"
+                :show-tooltip="false"
+                :marks="cwMarks"
+              ></el-slider>
+              {{ cwVal }}
+            </div>
           </div>
         </div>
       </div>
-      <div class="item flex-between common-font" v-if="connected">
-        <span>{{ $t("perceptualInteraction") }}</span>
-        <img class="arrowDown" src="@/assets/images/btn_arrowDown.png" />
+      <!-- 感知交互 -->
+      <div>
+        <div
+          @click="openLabel('perceptualInteraction')"
+          class="item flex-between common-font"
+          :class="{ labelBorder: piActivated }"
+          v-if="connected"
+        >
+          <span>{{ $t("perceptualInteraction") }}</span>
+          <img
+            v-if="piActivated"
+            class="arrowDown"
+            src="@/assets/images/btn_arrowUp.png"
+          />
+          <img
+            v-else
+            class="arrowDown"
+            src="@/assets/images/btn_arrowDown.png"
+          />
+        </div>
+        <div
+          class="labelActivated"
+          style="height: 29.6667vw;"
+          v-if="piActivated"
+        >
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("voice") }}
+            </div>
+            <switchButton
+              @openVal="openVoice()"
+              :open="voiceActivated"
+            ></switchButton>
+          </div>
+          <div class="divider"></div>
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("volume") }}
+            </div>
+            <div>
+              <el-slider
+                class="splider"
+                v-model="volumeVal"
+                :show-tooltip="false"
+              ></el-slider>
+              {{ volumeVal }}
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("perceptualPointCloud") }}
+            </div>
+            <switchButton
+              @openVal="openPerceptualPointCloud()"
+              :open="ppActivated"
+            ></switchButton>
+          </div>
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("obstacleAvoidance") }}
+            </div>
+            <switchButton
+              @openVal="openObstacleAvoidance()"
+              :open="oaActivated"
+            ></switchButton>
+          </div>
+          <div class="divider"></div>
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("imageTransmission") }}
+            </div>
+            <switchButton
+              @openVal="openImageTransmission()"
+              :open="itActivated"
+            ></switchButton>
+          </div>
+        </div>
       </div>
-      <div class="item flex-between common-font" v-if="connected">
-        <span>{{ $t("robotCalibration") }}</span>
-        <img class="arrowDown" src="@/assets/images/btn_arrowDown.png" />
+      <!-- 机器人校准 -->
+      <div>
+        <div
+          @click="openLabel('robotCalibration')"
+          class="item flex-between common-font"
+          :class="{ labelBorder: rcActivated }"
+          v-if="connected"
+        >
+          <span>{{ $t("robotCalibration") }}</span>
+          <img
+            v-if="rcActivated"
+            class="arrowDown"
+            src="@/assets/images/btn_arrowUp.png"
+          />
+          <img
+            v-else
+            class="arrowDown"
+            src="@/assets/images/btn_arrowDown.png"
+          />
+        </div>
+        <div
+          class="labelActivated"
+          style="height: 24.875vw;"
+          v-if="rcActivated"
+        >
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("headPart") }}
+            </div>
+            <div class="flex-center">
+              <span class="itemTxt" style="margin-right: 0.6667vw">{{
+                $t("calibration")
+              }}</span>
+              <img class="iconTo" src="@/assets/images/icon_to.png" />
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("waistPart") }}
+            </div>
+            <div class="flex-center">
+              <span class="itemTxt" style="margin-right: 0.6667vw">{{
+                $t("calibration")
+              }}</span>
+              <img class="iconTo" src="@/assets/images/icon_to.png" />
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("upperBody") }}
+            </div>
+            <div class="flex-center">
+              <span class="itemTxt" style="margin-right: 0.6667vw">{{
+                $t("calibration")
+              }}</span>
+              <img class="iconTo" src="@/assets/images/icon_to.png" />
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("lowerBody") }}
+            </div>
+            <div class="flex-center">
+              <span class="itemTxt" style="margin-right: 0.6667vw">{{
+                $t("calibration")
+              }}</span>
+              <img class="iconTo" src="@/assets/images/icon_to.png" />
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="item flex-between common-font" v-if="connected">
-        <span>{{ $t("powerManagement") }}</span>
-        <img class="arrowDown" src="@/assets/images/btn_arrowDown.png" />
+      <!-- 电源管理 -->
+      <div>
+        <div
+          @click="openLabel('powerManagement')"
+          class="item flex-between common-font"
+          :class="{ labelBorder: pmActivated }"
+          v-if="connected"
+        >
+          <span>{{ $t("powerManagement") }}</span>
+          <img
+            v-if="pmActivated"
+            class="arrowDown"
+            src="@/assets/images/btn_arrowUp.png"
+          />
+          <img
+            v-else
+            class="arrowDown"
+            src="@/assets/images/btn_arrowDown.png"
+          />
+        </div>
+        <div
+          class="labelActivated"
+          v-if="pmActivated"
+        >
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("lowPowerMode") }}
+            </div>
+            <switchButton
+              @openVal="openLowPowerMode()"
+              :open="lowPowerModeActivated"
+            ></switchButton>
+          </div>
+          <div class="divider"></div>
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("lowBatteryAlarm") }}
+            </div>
+            <div>
+              <el-slider
+                class="splider"
+                v-model="lowBatteryVal"
+                :show-tooltip="false"
+              ></el-slider>
+              {{ lowBatteryVal }}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <!-- 设备设置标签页 -->
-    <div class="listBox" v-if="isActivated == 'deviceSettings'">
+    <!-- 机器人状态标签页 -->
+    <div class="listBox" v-if="isActivated == 'robotStatus'">
       <div class="item flex-between common-font">
         <span>{{ $t("volumeAdjustment") }}</span>
         <div
@@ -330,7 +558,10 @@
         </div>
       </div>
       <div class="powerBtn flex-center common-font">
-        <img style="width: 1.4583vw;height: 1.5208vw;margin-right: .75vw;" src="@/assets/images/icon_poweroff.png" />
+        <img
+          style="width: 1.4583vw; height: 1.5208vw; margin-right: 0.75vw"
+          src="@/assets/images/icon_poweroff.png"
+        />
         <div>
           {{ $t("powerOff") }}
         </div>
@@ -400,7 +631,10 @@
         <img class="iconTo" src="@/assets/images/icon_to.png" />
       </div>
       <div class="powerBtn flex-center common-font">
-        <img style="width: 1.4583vw;height: 1.5208vw;margin-right: .75vw;" src="@/assets/images/icon_poweroff.png" />
+        <img
+          style="width: 1.4583vw; height: 1.5208vw; margin-right: 0.75vw"
+          src="@/assets/images/icon_poweroff.png"
+        />
         <div>
           {{ $t("powerOff") }}
         </div>
@@ -450,8 +684,31 @@ export default {
       pmActivated: false, //电源管理展开
       upperActivated: false,
       headActivated: false,
+      voiceActivated: false,
+      ppActivated: false,
+      oaActivated: false,
+      itActivated: false,
+      lowPowerModeActivated: false,
       currSpeed: "slow",
-      currHeight: "low"
+      currHeight: "low",
+      cmVal: 80,
+      cpVal: 20,
+      frVal: 40,
+      cwVal: 30,
+      volumeVal: 80,
+      lowBatteryVal: 30,
+      cmMarks: {
+        50: "50",
+      },
+      cpMarks: {
+        50: "0",
+      },
+      frMarks: {
+        50: "50%",
+      },
+      cwMarks: {
+        50: "30",
+      },
     };
   },
   mounted() {
@@ -507,6 +764,16 @@ export default {
           break;
         case "motionControl":
           this.mcActivated = !this.mcActivated;
+          break;
+        case "perceptualInteraction":
+          this.piActivated = !this.piActivated;
+          break;
+        case "robotCalibration":
+          this.rcActivated = !this.rcActivated;
+          break;
+        case "powerManagement":
+          this.pmActivated = !this.pmActivated;
+          break;
         default:
           break;
       }
@@ -517,14 +784,29 @@ export default {
     openHead() {
       this.headActivated = !this.headActivated;
     },
+    openVoice() {
+      this.voiceActivated = !this.voiceActivated;
+    },
+    openPerceptualPointCloud() {
+      this.ppActivated = !this.ppActivated;
+    },
+    openObstacleAvoidance() {
+      this.oaActivated = !this.oaActivated;
+    },
+    openImageTransmission() {
+      this.itActivated = !this.itActivated;
+    },
+    openLowPowerMode() {
+      this.lowPowerModeActivated = !this.lowPowerModeActivated
+    },
     //选择运动速度
     changeSpeed(e) {
-      this.currSpeed = e
+      this.currSpeed = e;
     },
     //选择机器高度
     changeHeight(e) {
-      this.currHeight = e
-    }
+      this.currHeight = e;
+    },
   },
 };
 </script>
@@ -787,7 +1069,7 @@ export default {
 
 .arrowDown {
   position: absolute;
-  right: 6.1667vw;
+  left: 57.75vw;
   width: 1.375vw;
   height: 0.75vw;
 }
@@ -820,5 +1102,41 @@ export default {
   width: 56.6667vw;
   height: 0.0417vw;
   background: rgba(255, 255, 255, 0.2);
+}
+.splider ::v-deep .el-slider__runway {
+  height: 0.5vw;
+  background-color: rgba(216, 216, 216, 0.2);
+}
+.splider ::v-deep .el-slider__bar {
+  height: 0.5vw;
+}
+.splider ::v-deep .el-slider__button-wrapper {
+  top: -0.8333vw;
+}
+.splider ::v-deep .el-slider__button {
+  width: 2.0833vw;
+  height: 2.0833vw;
+  box-shadow: 0 0.125vw 0.2917vw 0 rgba(63, 63, 63, 0.5);
+  border: 0;
+}
+.splider ::v-deep .el-slider__marks .el-slider__marks-text {
+  font-family: AlibabaPuHuiTiM;
+  font-size: 1.25vw;
+  color: #ffffff;
+  font-style: normal;
+}
+.splider ::v-deep .el-slider__stop {
+  width: 0.875vw;
+  height: 0.875vw;
+  background: #ffffff;
+  border: 0.25vw solid rgba(25, 139, 255, 1);
+  top: -0.4167vw;
+  // border-image: linear-gradient(
+  //     230deg,
+  //     rgba(25, 139, 255, 1),
+  //     rgba(0, 134, 209, 1)
+  //   )
+  //   6 6;
+  // border-radius: 100%;
 }
 </style>

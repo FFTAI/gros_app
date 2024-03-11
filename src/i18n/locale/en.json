@@ -172,5 +172,8 @@
     "fast": "Fast",
     "low": "Low",
     "high": "High",
-    "noMovement": "No Movement"
+    "noMovement": "No Movement",
+    "calibration": "Calibration",
+    "lowBatteryAlarm": "Low Battery Alarm",
+    "robotStatus": "Robot Status"
 }

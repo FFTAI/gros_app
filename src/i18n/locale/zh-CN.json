@@ -172,5 +172,8 @@
     "fast": "快",
     "low": "低",
     "high": "高",
-    "noMovement": "无运动"
+    "noMovement": "无运动",
+    "calibration": "校准",
+    "lowBatteryAlarm": "低电量报警",
+    "robotStatus": "机器人状态"
 }
