@@ -85,7 +85,7 @@ export default {
               this.getFlag = true;
               console.log(this.connected, res.data.data);
               if (this.connected && res.data.data) {
-                if (this.currentModel == e) {
+                if (this.currentModel == e || this.currentModel == "None") {
                   this.$router.push({
                     name: "loading",
                   });
