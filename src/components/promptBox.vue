@@ -4,7 +4,7 @@
       <div class="title" v-if="prompt == 'returnMain'">
         {{ $t("tip") }}
       </div>
-      <div class="promptContent" :style="promptContentWidth">
+      <div class="promptContent" :style="promptContentWidth" v-if="!loading">
         <img
           v-if="prompt != 'returnMain'"
           class="warningIcon"
@@ -22,14 +22,24 @@
           }}</span>
         </div>
       </div>
-      <div v-if="prompt != 'reconnect'" class="btnBox flex-between">
+      <div v-else>
+        {{ promptValue }}
+      </div>
+      <div
+        v-if="prompt == 'reconnect'"
+        class="btnBox flex-between"
+        style="left: 11.7083vw"
+      >
+        <div class="btn blue" @click="reconnect()">{{ $t("reconnect") }}</div>
+      </div>
+      <div
+        v-else-if="prompt != 'reconnect' && !loading"
+        class="btnBox flex-between"
+      >
         <div class="btn blue" @click="cancel()">{{ $t("cancel") }}</div>
         <div class="btn white01-bkg" @click="confirm()">
           {{ $t("confirm") }}
         </div>
-      </div>
-      <div v-else class="btnBox flex-between" style="left: 11.7083vw">
-        <div class="btn blue" @click="reconnect()">{{ $t("reconnect") }}</div>
       </div>
       <slot></slot>
     </div>
@@ -43,6 +53,10 @@ export default {
     prompt: {
       type: String,
       default: "",
+    },
+    loading: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {
@@ -60,11 +74,32 @@ export default {
     promptContentWidth() {
       let style = { width: "16vw" };
       if (this.$i18n.locale == "en") style.width = "26vw";
-      if (this.prompt == "calibration" && this.$i18n.locale == "zh") style.width = "20vw";
-      if (this.prompt == "calibration" && this.$i18n.locale == "en") style.width = "30vw";
-      if (this.prompt == "reconnect" && this.$i18n.locale == "zh") style.width = "15vw";
-      if (this.prompt == "reconnect" && this.$i18n.locale == "en") style.width = "20vw";
+      if (this.prompt == "calibration" && this.$i18n.locale == "zh")
+        style.width = "20vw";
+      if (this.prompt == "calibration" && this.$i18n.locale == "en")
+        style.width = "30vw";
+      if (this.prompt == "reconnect" && this.$i18n.locale == "zh")
+        style.width = "15vw";
+      if (this.prompt == "reconnect" && this.$i18n.locale == "en")
+        style.width = "20vw";
       return style;
+    },
+    promptValue() {
+      let value = "";
+      switch (this.prompt) {
+        case "update":
+          value = "更新中…";
+          break;
+        case "selfcheck":
+          value = "设备自检中…";
+          break;
+        case "shutdown":
+          value = "设备关机中…";
+          break;
+        default:
+          break;
+      }
+      return value
     },
   },
   data() {

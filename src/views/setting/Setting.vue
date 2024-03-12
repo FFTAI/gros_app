@@ -300,7 +300,7 @@
         </div>
         <div
           class="labelActivated"
-          style="height: 29.6667vw;"
+          style="height: 29.6667vw"
           v-if="piActivated"
         >
           <div class="itemChild">
@@ -377,11 +377,7 @@
             src="@/assets/images/btn_arrowDown.png"
           />
         </div>
-        <div
-          class="labelActivated"
-          style="height: 24.875vw;"
-          v-if="rcActivated"
-        >
+        <div class="labelActivated" style="height: 24.875vw" v-if="rcActivated">
           <div class="itemChild">
             <div class="flex-center">
               {{ $t("headPart") }}
@@ -451,10 +447,7 @@
             src="@/assets/images/btn_arrowDown.png"
           />
         </div>
-        <div
-          class="labelActivated"
-          v-if="pmActivated"
-        >
+        <div class="labelActivated" v-if="pmActivated">
           <div class="itemChild">
             <div class="flex-center">
               {{ $t("lowPowerMode") }}
@@ -483,78 +476,241 @@
     </div>
     <!-- 机器人状态标签页 -->
     <div class="listBox" v-if="isActivated == 'robotStatus'">
-      <div class="item flex-between common-font">
-        <span>{{ $t("volumeAdjustment") }}</span>
+      <!-- 设备自检 -->
+      <div>
         <div
-          style="
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-          "
+          @click="openLabel('deviceSelfCheck')"
+          class="item flex-between common-font"
+          :class="{ labelBorder: dscActivated }"
+          v-if="connected"
         >
-          <el-slider class="splider" v-model="volume"></el-slider>
-          <span style="font-size: 1.4583vw">{{ volume }}</span>
+          <span>{{ $t("deviceSelfCheck") }}</span>
+          <div class="flex-center">
+            <span class="itemTxt" style="margin-right: 0.75vw">{{
+              $t("selfCheck")
+            }}</span>
+            <img
+              v-if="dscActivated"
+              class="arrowDown"
+              src="@/assets/images/btn_arrowUp.png"
+            />
+            <img
+              v-else
+              class="arrowDown"
+              src="@/assets/images/btn_arrowDown.png"
+            />
+          </div>
         </div>
-      </div>
-      <div
-        class="item flex-between common-font"
-        :class="{ expandLabel: microphoneOpen }"
-      >
-        <span>{{ $t("microphone") }}</span>
         <div
-          class="switch"
-          :class="{ isChecked: microphoneOpen }"
-          @click="openMicrophone()"
+          class="labelActivated"
+          style="height: 46.9583vw"
+          v-if="dscActivated"
         >
-          <span class="switchCore"></span>
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("visualCamera") }}
+            </div>
+            <span>正常</span>
+          </div>
+          <div class="divider"></div>
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("controlModule") }}
+            </div>
+            <span>正常</span>
+          </div>
+          <div class="divider"></div>
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("actuator") }}
+            </div>
+            <span style="color: #ff6656">异常</span>
+          </div>
+          <div class="divider"></div>
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("battery") }}
+            </div>
+            <span style="color: #ff6656">异常</span>
+          </div>
+          <div class="divider"></div>
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("screen") }}
+            </div>
+            <span>正常</span>
+          </div>
+          <div class="divider"></div>
+          <div class="itemChild">
+            <div class="flex-center">IMU</div>
+            <span>正常</span>
+          </div>
+          <div class="divider"></div>
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("voiceModule") }}
+            </div>
+            <span>正常</span>
+          </div>
         </div>
       </div>
-      <div
-        class="item flex-between common-font"
-        style="border-radius: 0 0 0.25vw 0.25vw"
-        v-if="microphoneOpen"
-      >
-        <span>{{ $t("speechRecognition") }}</span>
+      <!-- 电池状态 -->
+      <div>
         <div
-          class="switch"
-          :class="{ isChecked: speechOpen }"
-          @click="openSpeech()"
+          @click="openLabel('batteryStatus')"
+          class="item flex-between common-font"
+          :class="{ labelBorder: bsActivated }"
+          v-if="connected"
         >
-          <span class="switchCore"></span>
+          <span>{{ $t("batteryStatus") }}</span>
+          <img
+            v-if="bsActivated"
+            class="arrowDown"
+            src="@/assets/images/btn_arrowUp.png"
+          />
+          <img
+            v-else
+            class="arrowDown"
+            src="@/assets/images/btn_arrowDown.png"
+          />
+        </div>
+        <div
+          class="labelActivated"
+          style="height: 39.5417vw"
+          v-if="bsActivated"
+        >
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("batteryCapacity") }}
+            </div>
+            <span>960wh</span>
+          </div>
+          <div class="divider"></div>
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("batteryLevel") }}
+            </div>
+            <span>80%</span>
+          </div>
+          <div class="divider"></div>
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("batteryVoltage") }}
+            </div>
+            <span>45v</span>
+          </div>
+          <div class="divider"></div>
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("batteryTemperature") }}
+            </div>
+            <span>31°C</span>
+          </div>
+          <div class="divider"></div>
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("chargingAndDischarging") }}
+            </div>
+            <span>放电中</span>
+          </div>
+          <div class="divider"></div>
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("cycleCount") }}
+            </div>
+            <span>20</span>
+          </div>
         </div>
       </div>
-      <div
-        class="item flex-between common-font"
-        :class="{ expandLabel: selfCheckActivated }"
-        @click="selfCheckExpand()"
-      >
-        <span>{{ $t("selfCheck") }}</span>
-        <span class="itemTxt">{{ $t("normal") }}</span>
-        <img class="iconTo" src="@/assets/images/icon_to.png" />
+      <!-- Wi-Fi状态 -->
+      <div>
+        <div
+          @click="openLabel('wifiStatus')"
+          class="item flex-between common-font"
+          :class="{ labelBorder: wifiActivated }"
+          v-if="connected"
+        >
+          <span>{{ $t("wifiStatus") }}</span>
+          <img
+            v-if="wifiActivated"
+            class="arrowDown"
+            src="@/assets/images/btn_arrowUp.png"
+          />
+          <img
+            v-else
+            class="arrowDown"
+            src="@/assets/images/btn_arrowDown.png"
+          />
+        </div>
+        <div
+          class="labelActivated"
+          style="height: 24.8333vw"
+          v-if="wifiActivated"
+        >
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("wifiName") }}
+            </div>
+            <span>小傅</span>
+          </div>
+          <div class="divider"></div>
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("wifiSignal") }}
+            </div>
+            <span>90</span>
+          </div>
+          <div class="divider"></div>
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("ip") }}
+            </div>
+            <span>192.168.233.68</span>
+          </div>
+          <div class="divider"></div>
+          <div class="itemChild">
+            <div class="flex-center">
+              {{ $t("mac") }}
+            </div>
+            <span>*********</span>
+          </div>
+        </div>
       </div>
-      <div
-        class="item flex-between common-font scItem"
-        v-if="selfCheckActivated"
-      >
-        <div class="scChild">
-          <span>{{ $t("visionCamera") }}</span>
-          <span>{{ $t("normal") }}</span>
+      <!-- 异常报警 -->
+      <div>
+        <div
+          @click="openLabel('abnormalAlarm')"
+          class="item flex-between common-font"
+          :class="{ labelBorder: aaActivated }"
+          v-if="connected"
+        >
+          <span>{{ $t("abnormalAlarm") }}</span>
+          <img
+            v-if="aaActivated"
+            class="arrowDown"
+            src="@/assets/images/btn_arrowUp.png"
+          />
+          <img
+            v-else
+            class="arrowDown"
+            src="@/assets/images/btn_arrowDown.png"
+          />
         </div>
-        <div class="scChild">
-          <span>{{ $t("controlModule") }}</span>
-          <span>{{ $t("normal") }}</span>
-        </div>
-        <div class="scChild">
-          <span>{{ $t("actuator") }}</span>
-          <span>{{ $t("normal") }}</span>
-        </div>
-        <div class="scChild">
-          <span>{{ $t("battery") }}</span>
-          <span style="color: #dc4253">{{ $t("anomaly") }}</span>
-        </div>
-        <div class="scChild">
-          <span>{{ $t("screen") }}</span>
-          <span>{{ $t("normal") }}</span>
+        <div class="labelActivated" v-if="aaActivated" style="height: auto">
+          <div class="itemChild" v-if="errorList.length == 0">暂无异常报警</div>
+          <div v-else>
+            <div
+              class="itemChild"
+              style="flex-direction: column; justify-content: start"
+              v-for="(error, index) in errorList"
+              :key="index"
+            >
+              <div style="margin-bottom: 1.6667vw">
+                <div class="grayTxt">{{ error.time }}</div>
+                <div class="redTxt">{{ error.content }}</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="powerBtn flex-center common-font">
@@ -614,7 +770,7 @@
       </div>
       <div class="item flex-between common-font">
         <span>{{ $t("robotVersion") }}</span>
-        <div>
+        <div @click="detectUpdates('robotVersion')">
           <span style="margin-right: 1.8333vw">{{
             robotVersion ? robotVersion : "V2.0.10"
           }}</span>
@@ -624,7 +780,7 @@
       </div>
       <div class="item flex-between common-font">
         <span>{{ $t("appVersion") }}</span>
-        <div>
+        <div @click="detectUpdates('appVersion')">
           <span style="margin-right: 1.8333vw">V2.0.10</span>
           <span class="itemTxt">{{ $t("detectUpdates") }}</span>
         </div>
@@ -639,15 +795,12 @@
           {{ $t("powerOff") }}
         </div>
       </div>
-      <!-- 是否开启日志 -->
-      <!-- <div class="item flex-between common-font">
-        <span>{{ $t("logRecording") }}</span>
-        <div class="switch" :class="{ isChecked: logOpen }" @click="openLog">
-          <span class="switchCore"></span>
-        </div>
-      </div> -->
     </div>
-    <prompt-box :prompt="'reconnect'" v-if="!connected"></prompt-box>
+    <prompt-box
+      :prompt="prompt"
+      :loading="isloading"
+      v-if="!connected || promptVal=='update'"
+    ></prompt-box>
   </div>
 </template>
 
@@ -662,10 +815,25 @@ export default {
   components: { rtcHeader, promptBox, switchButton },
   computed: {
     ...mapState(["connected"]),
+    prompt() {
+      if (!this.connected) {
+        return "reconnect";
+      } else {
+        return this.promptVal;
+      }
+    },
+    isloading() {
+      if(this.promptVal=='update'||'selfcheck'||'shutdown'){
+        return true
+      }else{
+        return false
+      }
+    },
   },
   data() {
     return {
-      isActivated: "robotSettings", //当前活动Tab
+      promptVal: '',
+      isActivated: "status", //当前活动Tab
       logOpen: true,
       nickname: false,
       microphone: false,
@@ -675,13 +843,16 @@ export default {
       volume: 70,
       microphoneOpen: true,
       speechOpen: false,
-      selfCheckActivated: false,
       robotVersion: "",
       cpActivated: false, //控制程序展开
       mcActivated: false, //运动控制展开
       piActivated: false, //感知交互展开
       rcActivated: false, //机器人校准展开
       pmActivated: false, //电源管理展开
+      bsActivated: false, //电池状态展开
+      wifiActivated: false, //wifi状态展开
+      aaActivated: false, //异常报警展开
+      dscActivated: false, //设备自检展开
       upperActivated: false,
       headActivated: false,
       voiceActivated: false,
@@ -709,6 +880,32 @@ export default {
       cwMarks: {
         50: "30",
       },
+      errorList: [
+        {
+          time: "2023/08/08 17:49:21",
+          content: "Error! Actuator temperature too high！",
+        },
+        {
+          time: "2023/08/08 17:49:21",
+          content: "Error! Disconnected！",
+        },
+        {
+          time: "2023/08/08 17:49:21",
+          content: "Error! Actuator temperature too high！",
+        },
+        {
+          time: "2023/08/08 17:49:21",
+          content: "Error! Disconnected！",
+        },
+        {
+          time: "2023/08/08 17:49:21",
+          content: "Error! Actuator temperature too high！",
+        },
+        {
+          time: "2023/08/08 17:49:21",
+          content: "Error! Disconnected！",
+        },
+      ],
     };
   },
   mounted() {
@@ -738,9 +935,6 @@ export default {
     },
     openSpeech() {
       this.speechOpen = !this.speechOpen;
-    },
-    selfCheckExpand() {
-      this.selfCheckActivated = !this.selfCheckActivated;
     },
     getVersion() {
       this.$http
@@ -774,6 +968,17 @@ export default {
         case "powerManagement":
           this.pmActivated = !this.pmActivated;
           break;
+        case "batteryStatus":
+          this.bsActivated = !this.bsActivated;
+          break;
+        case "wifiStatus":
+          this.wifiActivated = !this.wifiActivated;
+          break;
+        case "abnormalAlarm":
+          this.aaActivated = !this.aaActivated;
+          break;
+        case "deviceSelfCheck":
+          this.dscActivated = !this.dscActivated;
         default:
           break;
       }
@@ -797,7 +1002,7 @@ export default {
       this.itActivated = !this.itActivated;
     },
     openLowPowerMode() {
-      this.lowPowerModeActivated = !this.lowPowerModeActivated
+      this.lowPowerModeActivated = !this.lowPowerModeActivated;
     },
     //选择运动速度
     changeSpeed(e) {
@@ -807,6 +1012,10 @@ export default {
     changeHeight(e) {
       this.currHeight = e;
     },
+    //检测更新
+    detectUpdates(e) {
+      this.promptVal = 'update'
+    }
   },
 };
 </script>
@@ -1138,5 +1347,20 @@ export default {
   //   )
   //   6 6;
   // border-radius: 100%;
+}
+.grayTxt {
+  font-family: Roboto, Roboto;
+  font-weight: 500;
+  font-size: 1vw;
+  color: #ffffff;
+  font-style: normal;
+  opacity: 0.4;
+}
+.redTxt {
+  font-family: Roboto, Roboto;
+  font-weight: 500;
+  font-size: 1.25vw;
+  color: #dc4253;
+  font-style: normal;
 }
 </style>
