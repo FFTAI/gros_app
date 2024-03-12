@@ -718,7 +718,7 @@
           style="width: 1.4583vw; height: 1.5208vw; margin-right: 0.75vw"
           src="@/assets/images/icon_poweroff.png"
         />
-        <div>
+        <div @click="openPoweroff()">
           {{ $t("powerOff") }}
         </div>
       </div>
@@ -791,7 +791,7 @@
           style="width: 1.4583vw; height: 1.5208vw; margin-right: 0.75vw"
           src="@/assets/images/icon_poweroff.png"
         />
-        <div>
+        <div @click="openPoweroff()">
           {{ $t("powerOff") }}
         </div>
       </div>
@@ -799,7 +799,7 @@
     <prompt-box
       :prompt="prompt"
       :loading="isloading"
-      v-if="!connected || promptVal=='update'"
+      v-if="!connected || (['update', 'selfcheck', 'shutdown'].includes(prompt))"
     ></prompt-box>
   </div>
 </template>
@@ -823,16 +823,16 @@ export default {
       }
     },
     isloading() {
-      if(this.promptVal=='update'||'selfcheck'||'shutdown'){
-        return true
-      }else{
-        return false
+      if (["update", "selfcheck", "shutdown"].includes(this.promptVal)) {
+        return true;
+      } else {
+        return false;
       }
     },
   },
   data() {
     return {
-      promptVal: '',
+      promptVal: "",
       isActivated: "status", //当前活动Tab
       logOpen: true,
       nickname: false,
@@ -979,6 +979,7 @@ export default {
           break;
         case "deviceSelfCheck":
           this.dscActivated = !this.dscActivated;
+          this.promptVal = 'selfcheck'
         default:
           break;
       }
@@ -1014,7 +1015,10 @@ export default {
     },
     //检测更新
     detectUpdates(e) {
-      this.promptVal = 'update'
+      this.promptVal = "update";
+    },
+    openPoweroff() {
+      this.promptVal = "shutdown"
     }
   },
 };

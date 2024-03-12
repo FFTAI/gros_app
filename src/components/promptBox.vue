@@ -4,7 +4,11 @@
       <div class="title" v-if="prompt == 'returnMain'">
         {{ $t("tip") }}
       </div>
-      <div class="promptContent" :style="promptContentWidth" v-if="!loading">
+      <div
+        class="promptContent"
+        :style="promptContentWidth"
+        v-if="!loading"
+      >
         <img
           v-if="prompt != 'returnMain'"
           class="warningIcon"
@@ -22,8 +26,9 @@
           }}</span>
         </div>
       </div>
-      <div v-else>
-        {{ promptValue }}
+      <div class="loadingPart flex-center" v-else>
+        <i class="el-icon-loading"></i>
+        <span style="margin-top: 1.25vw;">{{ promptValue }}</span>
       </div>
       <div
         v-if="prompt == 'reconnect'"
@@ -88,19 +93,28 @@ export default {
       let value = "";
       switch (this.prompt) {
         case "update":
-          value = "更新中…";
+          this.$i18n.locale == "zh"
+            ? (value = "更新中…")
+            : (value = "Updating…");
           break;
         case "selfcheck":
-          value = "设备自检中…";
+          this.$i18n.locale == "zh"
+            ? (value = "设备自检中…")
+            : (value = "Device self-checking…");
           break;
         case "shutdown":
-          value = "设备关机中…";
+          this.$i18n.locale == "zh"
+            ? (value = "设备关机中…")
+            : (value = "Device is shutting down…");
           break;
         default:
           break;
       }
-      return value
+      return value;
     },
+  },
+  mounted() {
+    console.log(this.prompt,this.loading);
   },
   data() {
     return {};
@@ -177,5 +191,8 @@ export default {
 
 .blue {
   background: $base-bkg;
+}
+.loadingPart {
+  flex-direction: column;
 }
 </style>
