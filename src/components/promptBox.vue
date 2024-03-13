@@ -4,15 +4,16 @@
       <div class="title" v-if="prompt == 'returnMain'">
         {{ $t("tip") }}
       </div>
-      <div
-        class="promptContent"
-        :style="promptContentWidth"
-        v-if="!loading"
-      >
+      <div class="promptContent" :style="promptContentWidth" v-if="!loading || selfcheckFail">
         <img
-          v-if="prompt != 'returnMain'"
+          v-if="prompt != 'returnMain'&&!lowBattery"
           class="warningIcon"
           src="@/assets/images/warning1.png"
+        />
+        <img
+          v-if="lowBattery"
+          class="warningIcon"
+          src="@/assets/images/icon_warning.png"
         />
         <div class="promptTxt">
           <span v-if="prompt == 'closeProgram'">{{ $t("closeShPrompt") }}</span>
@@ -24,11 +25,16 @@
           <span v-else-if="prompt == 'calibration'">{{
             $t("calibrationTips")
           }}</span>
+          <span v-else-if="selfcheckFail">{{ $t("selfcheckFail") }}</span>
+          <span v-else-if="lowBattery">{{ $t("lowBattery") }}</span>
         </div>
       </div>
-      <div class="loadingPart flex-center" v-else>
-        <i class="el-icon-loading"></i>
-        <span style="margin-top: 1.25vw;">{{ promptValue }}</span>
+      <div class="loadingPart" v-else-if="loading&&!updateFinish">
+        <i class="el-icon-loading" v-if="!updateFinish"></i>
+        <span style="margin-top: 1.25vw">{{ promptValue }}</span>
+      </div>
+      <div class="finishPart" v-else-if="loading&&updateFinish">
+        {{ $t('latestVersion') }}
       </div>
       <div
         v-if="prompt == 'reconnect'"
@@ -41,8 +47,22 @@
         v-else-if="prompt != 'reconnect' && !loading"
         class="btnBox flex-between"
       >
-        <div class="btn blue" @click="cancel()">{{ $t("cancel") }}</div>
-        <div class="btn white01-bkg" @click="confirm()">
+        <div class="btn white01-bkg" @click="cancel()">{{ $t("cancel") }}</div>
+        <div class="btn blue" @click="confirm()">
+          {{ $t("confirm") }}
+        </div>
+      </div>
+      <div
+        v-else-if="selfcheckFail"
+        class="btnBox flex-between"
+      >
+        <div class="btn white01-bkg" @click="cancel()">{{ $t("cancel") }}</div>
+        <div class="btn blue" @click="restart()">
+          {{ $t("restart") }}
+        </div>
+      </div>
+      <div v-else-if="updateFinish" class="btnBox flex-center">
+        <div class="btn blue" @click="confirm()">
           {{ $t("confirm") }}
         </div>
       </div>
@@ -87,6 +107,8 @@ export default {
         style.width = "15vw";
       if (this.prompt == "reconnect" && this.$i18n.locale == "en")
         style.width = "20vw";
+      if (this.lowBattery)
+        style.width = "18vw";
       return style;
     },
     promptValue() {
@@ -96,11 +118,13 @@ export default {
           this.$i18n.locale == "zh"
             ? (value = "更新中…")
             : (value = "Updating…");
+            this.finishUpdate()
           break;
         case "selfcheck":
           this.$i18n.locale == "zh"
             ? (value = "设备自检中…")
             : (value = "Device self-checking…");
+            this.selfcheckWarning()
           break;
         case "shutdown":
           this.$i18n.locale == "zh"
@@ -111,13 +135,17 @@ export default {
           break;
       }
       return value;
-    },
+    }
   },
   mounted() {
-    console.log(this.prompt,this.loading);
+    console.log(this.prompt, this.loading);
   },
   data() {
-    return {};
+    return {
+      updateFinish: false,
+      selfcheckFail: false,
+      lowBattery: false
+    };
   },
   methods: {
     cancel() {
@@ -126,12 +154,25 @@ export default {
     confirm() {
       this.$emit("confirm");
     },
+    restart() {
+
+    },
     reconnect() {
       let main = plus.android.runtimeMainActivity();
       let Intent = plus.android.importClass("android.content.Intent");
       let mIntent = new Intent("android.settings.WIFI_SETTINGS");
       main.startActivity(mIntent);
     },
+    finishUpdate() {
+      setTimeout(() => {
+        this.updateFinish = true
+      }, 2000);
+    },
+    selfcheckWarning() {
+      setTimeout(() => {
+        this.selfcheckFail = true
+      }, 2000);
+    }
   },
 };
 </script>
@@ -193,6 +234,12 @@ export default {
   background: $base-bkg;
 }
 .loadingPart {
+  display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.finishPart {
+  margin-top: 6.0833vw;
 }
 </style>

@@ -190,5 +190,9 @@
     "voiceModule": "语音模块",
     "wifiSignal": "Wi-Fi强度",
     "ip": "IP地址",
-    "mac": "MAC地址"
+    "mac": "MAC地址",
+    "latestVersion": "已是最新版本",
+    "selfcheckFail": "自检失败， 请重启尝试解决",
+    "restart": "重新启动",
+    "lowBattery": "电量低于20%， 请及时充电"
 }

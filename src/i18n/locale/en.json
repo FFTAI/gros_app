@@ -190,5 +190,9 @@
     "voiceModule": "Voice Module",
     "wifiSignal": "Wi-Fi Signal",
     "ip": "IP Address",
-    "mac": "MAC Address"
+    "mac": "MAC Address",
+    "latestVersion": "It is already the latest version",
+    "selfcheckFail": "Self-check failed, please restart to try to solve",
+    "restart": "Restart",
+    "lowBattery": "Battery level is below 20%, please charge in time"
 }
