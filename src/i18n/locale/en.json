@@ -194,5 +194,6 @@
     "latestVersion": "It is already the latest version",
     "selfcheckFail": "Self-check failed, please restart to try to solve",
     "restart": "Restart",
-    "lowBattery": "Battery level is below 20%, please charge in time"
+    "lowBattery": "Battery level is below 20%, please charge in time",
+    "setNikename": "Set Nikename"
 }

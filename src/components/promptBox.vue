@@ -4,9 +4,13 @@
       <div class="title" v-if="prompt == 'returnMain'">
         {{ $t("tip") }}
       </div>
-      <div class="promptContent" :style="promptContentWidth" v-if="!loading || selfcheckFail">
+      <div
+        class="promptContent"
+        :style="promptContentWidth"
+        v-if="(!loading || selfcheckFail) && prompt != 'nickname'"
+      >
         <img
-          v-if="prompt != 'returnMain'&&!lowBattery"
+          v-if="prompt != 'returnMain' && !lowBattery"
           class="warningIcon"
           src="@/assets/images/warning1.png"
         />
@@ -29,12 +33,18 @@
           <span v-else-if="lowBattery">{{ $t("lowBattery") }}</span>
         </div>
       </div>
-      <div class="loadingPart" v-else-if="loading&&!updateFinish">
+      <div class="promptInputContent" v-else-if="prompt == 'nickname'">
+        <span class="promtTitle">{{ $t("setNikename") }}</span>
+        <div class="promptInput">
+          <el-input v-model="nickname" placeholder="输入1～6个中文文字"></el-input>
+        </div>
+      </div>
+      <div class="loadingPart" v-else-if="loading && !updateFinish">
         <i class="el-icon-loading" v-if="!updateFinish"></i>
         <span style="margin-top: 1.25vw">{{ promptValue }}</span>
       </div>
-      <div class="finishPart" v-else-if="loading&&updateFinish">
-        {{ $t('latestVersion') }}
+      <div class="finishPart" v-else-if="loading && updateFinish">
+        {{ $t("latestVersion") }}
       </div>
       <div
         v-if="prompt == 'reconnect'"
@@ -52,10 +62,7 @@
           {{ $t("confirm") }}
         </div>
       </div>
-      <div
-        v-else-if="selfcheckFail"
-        class="btnBox flex-between"
-      >
+      <div v-else-if="selfcheckFail" class="btnBox flex-between">
         <div class="btn white01-bkg" @click="cancel()">{{ $t("cancel") }}</div>
         <div class="btn blue" @click="restart()">
           {{ $t("restart") }}
@@ -107,8 +114,7 @@ export default {
         style.width = "15vw";
       if (this.prompt == "reconnect" && this.$i18n.locale == "en")
         style.width = "20vw";
-      if (this.lowBattery)
-        style.width = "18vw";
+      if (this.lowBattery) style.width = "18vw";
       return style;
     },
     promptValue() {
@@ -118,13 +124,13 @@ export default {
           this.$i18n.locale == "zh"
             ? (value = "更新中…")
             : (value = "Updating…");
-            this.finishUpdate()
+          this.finishUpdate();
           break;
         case "selfcheck":
           this.$i18n.locale == "zh"
             ? (value = "设备自检中…")
             : (value = "Device self-checking…");
-            this.selfcheckWarning()
+          this.selfcheckWarning();
           break;
         case "shutdown":
           this.$i18n.locale == "zh"
@@ -135,7 +141,7 @@ export default {
           break;
       }
       return value;
-    }
+    },
   },
   mounted() {
     console.log(this.prompt, this.loading);
@@ -144,7 +150,8 @@ export default {
     return {
       updateFinish: false,
       selfcheckFail: false,
-      lowBattery: false
+      lowBattery: false,
+      nickname: ""
     };
   },
   methods: {
@@ -154,9 +161,7 @@ export default {
     confirm() {
       this.$emit("confirm");
     },
-    restart() {
-
-    },
+    restart() {},
     reconnect() {
       let main = plus.android.runtimeMainActivity();
       let Intent = plus.android.importClass("android.content.Intent");
@@ -165,14 +170,14 @@ export default {
     },
     finishUpdate() {
       setTimeout(() => {
-        this.updateFinish = true
+        this.updateFinish = true;
       }, 2000);
     },
     selfcheckWarning() {
       setTimeout(() => {
-        this.selfcheckFail = true
+        this.selfcheckFail = true;
       }, 2000);
-    }
+    },
   },
 };
 </script>
@@ -242,4 +247,34 @@ export default {
 .finishPart {
   margin-top: 6.0833vw;
 }
+.promptInputContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .promtTitle {
+    font-family: AlibabaPuHuiTiM;
+    font-size: 1.9583vw;
+    color: #ffffff;
+    font-style: normal;
+    margin-top: 1.7917vw;
+  }
+  .promptInput {
+    width: 15.5833vw;
+    height: 2.3333vw;
+    padding: 1.2917vw 5.7083vw 1.2917vw 5.7917vw;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0.25vw;
+    margin-top: 1.9583vw;
+  }
+}
+.promptInputContent ::v-deep .el-input{
+    font-size: 1.7083vw;
+  }
+.promptInputContent ::v-deep .el-input .el-input__inner{
+    height: 2.3333vw;
+    padding: 0;
+    background-color: rgba(255, 255, 255, 0);
+    color: #fff;
+    border: none;
+  }
 </style>

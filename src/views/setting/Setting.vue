@@ -733,7 +733,7 @@
         <span>{{ $t("productModel") }}</span>
         <span>GR-1</span>
       </div>
-      <div class="item flex-between common-font">
+      <div class="item flex-between common-font" @click="changeNickname()">
         <span>{{ $t("customNickname") }}</span>
         <span class="itemTxt">小傅小傅</span>
         <img class="iconTo" src="@/assets/images/icon_to.png" />
@@ -799,7 +799,7 @@
     <prompt-box
       :prompt="prompt"
       :loading="isloading"
-      v-if="!connected || (['update', 'selfcheck', 'shutdown'].includes(prompt))"
+      v-if="!connected || (['update', 'selfcheck', 'shutdown','nickname'].includes(prompt))"
     ></prompt-box>
   </div>
 </template>
@@ -1019,6 +1019,9 @@ export default {
     },
     openPoweroff() {
       this.promptVal = "shutdown"
+    },
+    changeNickname() {
+      this.promptVal = "nickname"
     }
   },
 };
