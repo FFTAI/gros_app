@@ -510,47 +510,47 @@
             <div class="flex-center">
               {{ $t("visualCamera") }}
             </div>
-            <span>正常</span>
+            <span>{{ $t('normal') }}</span>
           </div>
           <div class="divider"></div>
           <div class="itemChild">
             <div class="flex-center">
               {{ $t("controlModule") }}
             </div>
-            <span>正常</span>
+            <span>{{ $t('normal') }}</span>
           </div>
           <div class="divider"></div>
           <div class="itemChild">
             <div class="flex-center">
               {{ $t("actuator") }}
             </div>
-            <span style="color: #ff6656">异常</span>
+            <span style="color: #ff6656">{{ $t('anomaly') }}</span>
           </div>
           <div class="divider"></div>
           <div class="itemChild">
             <div class="flex-center">
               {{ $t("battery") }}
             </div>
-            <span style="color: #ff6656">异常</span>
+            <span style="color: #ff6656">{{ $t('anomaly') }}</span>
           </div>
           <div class="divider"></div>
           <div class="itemChild">
             <div class="flex-center">
               {{ $t("screen") }}
             </div>
-            <span>正常</span>
+            <span>{{ $t('normal') }}</span>
           </div>
           <div class="divider"></div>
           <div class="itemChild">
             <div class="flex-center">IMU</div>
-            <span>正常</span>
+            <span>{{ $t('normal') }}</span>
           </div>
           <div class="divider"></div>
           <div class="itemChild">
             <div class="flex-center">
               {{ $t("voiceModule") }}
             </div>
-            <span>正常</span>
+            <span>{{ $t('normal') }}</span>
           </div>
         </div>
       </div>
@@ -611,7 +611,7 @@
             <div class="flex-center">
               {{ $t("chargingAndDischarging") }}
             </div>
-            <span>放电中</span>
+            <span>{{ $t('dischargeInProgress') }}</span>
           </div>
           <div class="divider"></div>
           <div class="itemChild">
