@@ -136,40 +136,7 @@
             <div class="flex-center">
               {{ $t("movementSpeed") }}
             </div>
-            <div class="tagBtn">
-              <div
-                class="tagItem flex-center"
-                :class="{
-                  chosedTag: currSpeed == 'slow',
-                  chosedLeft: currSpeed == 'slow',
-                }"
-                style="width: 6.1667vw"
-                @click="changeSpeed('slow')"
-              >
-                {{ $t("slow") }}
-              </div>
-              <div
-                class="tagItem flex-center"
-                :class="{
-                  chosedTag: currSpeed == 'middle',
-                }"
-                style="width: 6.1667vw"
-                @click="changeSpeed('middle')"
-              >
-                {{ $t("middle") }}
-              </div>
-              <div
-                class="tagItem flex-center"
-                :class="{
-                  chosedTag: currSpeed == 'fast',
-                  chosedRight: currSpeed == 'fast',
-                }"
-                style="width: 6.1667vw"
-                @click="changeSpeed('fast')"
-              >
-                {{ $t("fast") }}
-              </div>
-            </div>
+            <tagButton :speed="currSpeed" @changeSpeed="changeSpeed"></tagButton>
           </div>
           <div class="divider"></div>
           <!-- 机器高度 -->
@@ -808,11 +775,12 @@
 import rtcHeader from "@/components/rtcHeader.vue";
 import promptBox from "@/components/promptBox.vue";
 import switchButton from "@/components/switchButton.vue";
+import tagButton from "@/components/tagButton.vue";
 import { mapState } from "vuex";
 import Heartbeat from "@/mixin/Heartbeat";
 export default {
   mixins: [Heartbeat],
-  components: { rtcHeader, promptBox, switchButton },
+  components: { rtcHeader, promptBox, switchButton, tagButton },
   computed: {
     ...mapState(["connected"]),
     prompt() {

@@ -4,57 +4,29 @@
       :is-logo="true"
       :is-login="true"
       @connect="toConnect()"
-      @shutDown="promptBoxOpen('powerOff')"
+      @shutDown="promptBoxOpen()"
     ></rtc-header>
     <div class="humanBody">
       <img class="openHuman" src="@/assets/images/image_onOpen.png" />
     </div>
-    <!-- <div class="startContain flex-center" @click="startExplore()">
-      <span class="startBtn common-font">{{ $t("beginToExplore") }}</span>
-    </div> -->
     <div class="menuBox">
-      <div class="menuItem" @click="startExplore()">
-        <img class="menuImg" src="@/assets/images/icon_single.png" />
+      <div class="menuItem singleBkg">
         <span class="menuValzh">单人模式</span>
         <span class="menuValen">Single Mode</span>
       </div>
-      <div class="menuItem">
-        <img class="menuImg" src="@/assets/images/icon_multi.png" />
+      <div class="menuItem multiBkg">
         <span class="menuValzh">多人模式</span>
         <span class="menuValen">Multiplay Mode</span>
       </div>
-      <div class="menuItem">
-        <img class="menuImg" src="@/assets/images/icon_lab.png" />
+      <div class="menuItem devBkg">
         <span class="menuValzh">实验室</span>
         <span class="menuValen">Laboratory</span>
       </div>
-      <div class="menuItem">
-        <img class="menuImg" src="@/assets/images/icon_guide.png" />
-        <span class="menuValzh">指引</span>
-        <span class="menuValen">Guide</span>
-      </div>
     </div>
-    <!-- <div class="closeBox flex-column" :style="closeBoxWidth" v-if="headBoxVisible">
-      <div style="margin-left: 2.2396vw" @click="off('powerOff')">
-        <img
-          style="width: 1.4063vw; height: 1.4583vw"
-          src="@/assets/images/icon_poweroff.png"
-        />
-        {{ $t("powerOff") }}
-      </div>
-      <div class="divider"></div>
-      <div style="margin-left: 2.0833vw" @click="off('closeProgram')">
-        <img
-          style="width: 1.6146vw; height: 1.3542vw"
-          src="@/assets/images/icon_progoff.png"
-        />
-        {{ $t("closeProgram") }}
-      </div>
-    </div> -->
     <prompt-box
       v-if="promptVisible"
-      :prompt="promptValue"
-      @cancel="promptBoxClose()"
+      prompt="powerOff"
+      @cancel="promptBoxOpen()"
       @confirm="shutDown()"
     ></prompt-box>
   </div>
@@ -70,26 +42,14 @@ export default {
   components: { rtcHeader, promptBox },
   computed: {
     ...mapState(["connected"]),
-    // closeBoxWidth() {
-    //   let style = { "width": "12.4479vw","font-size": "1.7083vw" };
-    //   if (this.$i18n.locale == "en"){
-    //     style.width = "14.8229vw";
-    //     style["font-size"] = "1.4583vw";
-    //   } 
-    //   return style;
-    // },
   },
   data() {
     return {
       getFlag: true,
-      promptVisible: false,
-      // headBoxVisible: false,
-      promptValue: ""
+      promptVisible: false
     };
   },
-  mounted() {
-    
-  },
+  mounted() {},
   methods: {
     startExplore() {
       if (this.getFlag) {
@@ -122,56 +82,25 @@ export default {
         name: "robotStartup",
       });
     },
-    promptBoxOpen(e) {
-      this.promptValue = e;
-      this.promptVisible = true;
-      // this.headBoxVisible = false;
+    promptBoxOpen() {
+      this.promptVisible = !this.promptVisible;
     },
-    promptBoxClose() {
-      this.promptValue = "";
-      this.promptVisible = false;
-    },
+    //关机
     shutDown() {
-      if (this.promptValue == "powerOff") {
-        this.$http
-          .request({
-            baseURL: process.env.VUE_APP_URL,
-            method: "GET",
-            url: "/system/shutdown",
-          })
-          .then((response) => {
-            console.log("success---shutdown", response);
-          })
-          .catch((error) => {
-            console.log("error---shutdown", error);
-          });
-      } else if (this.promptValue == "closeProgram") {
-        this.robotWs.robot
-          .control_svr_close()
-          .then((response) => {
-            console.log("close...", response);
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      }
+      this.$http
+        .request({
+          baseURL: process.env.VUE_APP_URL,
+          method: "GET",
+          url: "/system/shutdown",
+        })
+        .then((response) => {
+          console.log("success---shutdown", response);
+        })
+        .catch((error) => {
+          console.log("error---shutdown", error);
+        });
       this.promptBoxClose();
     },
-    // headBoxOpen() {
-    //   this.headBoxVisible = !this.headBoxVisible;
-    // },
-    // off(e) {
-    //   switch (e) {
-    //     case "powerOff":
-    //       this.promptBoxOpen("powerOff");
-    //       break;
-    //     case "closeProgram":
-    //       this.promptBoxOpen("closeProgram");
-    //       break;
-    //     default:
-    //       break;
-    //   }
-    // },
   },
 };
 </script>
@@ -185,12 +114,12 @@ export default {
 .humanBody {
   position: absolute;
   bottom: 0;
-  left: 10vw;
+  left: 5vw;
 }
 
 .openHuman {
-  height: 40.375vw;
-  width: 30.625vw;
+  height: 38.15vw;
+  width: 28.9408vw;
 }
 
 .startContain {
@@ -239,32 +168,22 @@ export default {
 }
 .menuBox {
   position: absolute;
-  right: 8.625vw;
-  top: 11.125vw;
-  width: 38.75vw;
-  height: 26.5vw;
+  left: 42.1667vw;
+  top: 18.2083vw;
   display: flex;
-  flex-wrap: wrap;
-  gap: 44px;
+  gap: 1.7083vw;
   .menuItem {
     position: relative;
-    background-image: url("../../assets/images/btn_startCard.png");
     background-repeat: no-repeat;
     background-size: contain;
-    width: 18.4583vw;
+    width: 16vw;
     height: 12.3333vw;
-    flex: 1 0 calc(50% - 44px);
-    .menuImg {
-      width: 2.4583vw;
-      height: 2.4583vw;
-      padding: 1.8333vw 0 0 2.3333vw;
-    }
     .menuValzh {
       font-size: 1.9583vw;
       font-family: AlibabaPuHuiTiM;
       color: $white;
       position: absolute;
-      right: 2.4583vw;
+      right: 2.0833vw;
       bottom: 3.4583vw;
     }
     .menuValen {
@@ -273,10 +192,19 @@ export default {
       font-weight: 500;
       color: $white;
       position: absolute;
-      right: 2.4583vw;
+      right: 2.0833vw;
       bottom: 1.9167vw;
       opacity: 0.5;
     }
+  }
+  .singleBkg {
+    background-image: url("../../assets/images/bkg_single.png");
+  }
+  .multiBkg {
+    background-image: url("../../assets/images/bkg_multi.png");
+  }
+  .devBkg {
+    background-image: url("../../assets/images/bkg_dev.png");
   }
 }
 </style>

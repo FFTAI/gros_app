@@ -123,6 +123,20 @@
         </div>
       </div>
       <div class="operation">
+        <!-- 运动控制 -->
+        <div class="operationContent common-font" v-if="chosedBar == 1">
+          <div class="itemTitle flex-between">
+            <div></div>
+            <div>
+              {{ $t("motionControl") }}
+            </div>
+            <div @click="closeDrawer()">
+              <img class="closeImg" src="@/assets/images/icon_close.png" />
+            </div>
+          </div>
+          <div class="operationDivider"></div>
+        </div>
+        <!-- 感知交互 -->
         <div class="operationContent common-font" v-if="chosedBar == 2">
           <div class="itemTitle flex-between">
             <div></div>
@@ -201,6 +215,7 @@
             </div>
           </div>
         </div>
+        <!-- 电源管理 -->
         <div class="operationContent common-font" v-if="chosedBar == 3">
           <div class="itemTitle flex-between">
             <div></div>
@@ -286,7 +301,7 @@ export default {
     return {
       cameraOn: true,
       drawerVisible: false,
-      chosedBar: 2,
+      chosedBar: 1,
       voiceOpen: false,
       volume: 60,
       pointCloudOpen: false,

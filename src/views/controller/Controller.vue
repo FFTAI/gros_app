@@ -1062,6 +1062,15 @@ export default {
 };
 </script>
 <style lang="scss">
+.pc{
+  height: 100vh;
+  width: 100%;
+}
+.humanModel{
+  position: absolute;
+  bottom: 0;
+  left: 32vw;
+}
 .video-item {
   width: 18.4583vw;
   height: 11.7083vw;
