@@ -425,7 +425,7 @@ export default {
   mixins: [Heartbeat],
   components: { RtcHeader, promptBox },
   computed: {
-    ...mapState(["gamepadConnected", "connected","currentModel"]),
+    ...mapState(["gamepadConnected", "connected", "currentModel"]),
     rotateStyle() {
       let x = this.ImuX;
       let y = this.ImuY;
@@ -504,6 +504,9 @@ export default {
       ImuY: 0,
       isZero: false,
       danceDialog: false,
+      walkEnd: true, //监听walk停止
+      headEnd: true, //监听head停止
+      bodyEnd: true, //监听body停止
     };
   },
   created() {
@@ -620,7 +623,7 @@ export default {
             ? navigator.getGamepads()[2]
             : navigator.getGamepads()[3];
           // console.log(navigator.getGamepads(), gamepad)
-          if (_this.intervalCount >= 10) {
+          if (_this.intervalCount >= 20) {
             // navigator.getGamepads()[0].axes[0],navigator.getGamepads()[0].axes[1],navigator.getGamepads()[0].axes[2],navigator.getGamepads()[0].axes[3]
             _this.pressKey(gamepad.buttons);
             _this.remoteSensing(gamepad.axes);
@@ -665,10 +668,19 @@ export default {
         if (Math.abs(this.velocity) < 0.1) this.velocity = 0;
         this.direction = arr[2];
         if (Math.abs(this.direction) < 0.1) this.direction = 0;
-        this.operateWalk(
-          this.direction * -45,
-          (this.velocity * this.speed) / -6.25
-        );
+        if (this.direction == 0 && this.velocity == 0 && !this.walkEnd) {
+          this.operateWalk(
+            this.direction * -45,
+            (this.velocity * this.speed) / -6.25
+          );
+          this.walkEnd = true;
+        } else if (this.direction != 0 || this.velocity != 0) {
+          this.operateWalk(
+            this.direction * -45,
+            (this.velocity * this.speed) / -6.25
+          );
+          this.walkEnd = false;
+        }
       } else if (this.isStand && !this.isWalking) {
         let pitch = arr[1] * -17.1887;
         let rotate_waist = arr[0] * -14.32;
@@ -678,8 +690,20 @@ export default {
         let yaw = arr[2] * 60;
         if (squat > -0.015) squat = 0;
         if (Math.abs(yaw) < 6) yaw = 0;
-        this.operateHead(pitch, yaw);
-        this.operateBody(squat, rotate_waist);
+        if (pitch == 0 && yaw == 0 && !this.headEnd) {
+          this.operateHead(pitch, yaw);
+          this.headEnd = true;
+        } else if (pitch != 0 || yaw != 0) {
+          this.operateHead(pitch, yaw);
+          this.headEnd = false;
+        }
+        if (squat == 0 && rotate_waist == 0 && !this.bodyEnd) {
+          this.operateBody(squat, rotate_waist);
+          this.bodyEnd = true;
+        } else if (squat != 0 || rotate_waist != 0) {
+          this.operateBody(squat, rotate_waist);
+          this.bodyEnd = false;
+        }
       }
     },
     // 手柄按键
@@ -1111,7 +1135,7 @@ export default {
   }
 }
 
-.wdmodel{
+.wdmodel {
   position: absolute;
   right: 5vw;
   top: 14vw;
