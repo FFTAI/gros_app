@@ -249,7 +249,11 @@
       <!-- 当前状态提示 -->
       <div
         class="stateMessage flex-center"
-        v-if="(mode != '' && doAction) || (mode != '' && otherAction) || mode == 'initial'"
+        v-if="
+          (mode != '' && doAction) ||
+          (mode != '' && otherAction) ||
+          mode == 'initial'
+        "
       >
         <span>{{ $t(mode) }}{{ $t("ing") }}...</span>
       </div>
@@ -361,6 +365,9 @@ export default {
       ImuX: 0,
       ImuY: 0,
       isZero: false,
+      walkEnd: true, //监听walk停止
+      headEnd: true, //监听head停止
+      bodyEnd: true, //监听body停止
     };
   },
   created() {
@@ -417,7 +424,7 @@ export default {
           this.adjustVisible = true;
         }
       }
-      console.log('upper_action~~~~~~~~~~',data.data.upper_action)
+      console.log("upper_action~~~~~~~~~~", data.data.upper_action);
       if (data.data) this.doAction = data.data.upper_action;
     });
   },
@@ -477,7 +484,7 @@ export default {
             ? navigator.getGamepads()[2]
             : navigator.getGamepads()[3];
           // console.log(navigator.getGamepads(), gamepad)
-          if (_this.intervalCount >= 10) {
+          if (_this.intervalCount >= 50) {
             // navigator.getGamepads()[0].axes[0],navigator.getGamepads()[0].axes[1],navigator.getGamepads()[0].axes[2],navigator.getGamepads()[0].axes[3]
             _this.pressKey(gamepad.buttons);
             _this.remoteSensing(gamepad.axes);
@@ -516,16 +523,26 @@ export default {
       //   velocity = 0;
       // }
       // this.operateWalk(angle * -0.5, (velocity * this.speed) / -6.25);
+      console.log(arr);
       if (!this.isStand && this.isWalking) {
         this.velocity = arr[1];
         console.log(arr[1], arr[2]);
         if (Math.abs(this.velocity) < 0.1) this.velocity = 0;
         this.direction = arr[2];
         if (Math.abs(this.direction) < 0.1) this.direction = 0;
-        this.operateWalk(
-          this.direction * -45,
-          (this.velocity * this.speed) / -6.25
-        );
+        if (direction == 0 && velocity == 0 && !this.walkEnd) {
+          this.operateWalk(
+            this.direction * -45,
+            (this.velocity * this.speed) / -6.25
+          );
+          this.walkEnd = true;
+        } else if (direction != 0 || velocity != 0) {
+          this.operateWalk(
+            this.direction * -45,
+            (this.velocity * this.speed) / -6.25
+          );
+          this.walkEnd = false;
+        }
       } else if (this.isStand && !this.isWalking) {
         let pitch = arr[1] * -17.1887;
         let rotate_waist = arr[0] * -14.32;
@@ -535,8 +552,20 @@ export default {
         let yaw = arr[2] * 60;
         if (squat > -0.015) squat = 0;
         if (Math.abs(yaw) < 6) yaw = 0;
-        this.operateHead(pitch, yaw);
-        this.operateBody(squat, rotate_waist);
+        if (pitch == 0 && yaw == 0 && !this.headEnd) {
+          this.operateHead(pitch, yaw);
+          this.headEnd = true;
+        } else if (pitch != 0 || yaw != 0) {
+          this.operateHead(pitch, yaw);
+          this.headEnd = false;
+        }
+        if (squat == 0 && rotate_waist == 0 && !this.bodyEnd) {
+          this.operateBody(squat, rotate_waist);
+          this.bodyEnd = true;
+        } else if (squat != 0 || rotate_waist != 0) {
+          this.operateBody(squat, rotate_waist);
+          this.bodyEnd = false;
+        }
       }
     },
     // 手柄按键
@@ -778,7 +807,7 @@ export default {
           lower_data.lower_body_mode = "SQUAT";
         } else if (e == "nod") {
           //上下点头
-          this.otherAction = true
+          this.otherAction = true;
           this.operateHead(17, 0);
           setTimeout(() => {
             this.operateHead(-17, 0);
@@ -788,7 +817,7 @@ export default {
           }, 3000);
         } else if (e == "shake") {
           //左右摇头
-          this.otherAction = true
+          this.otherAction = true;
           this.operateHead(0, 17);
           setTimeout(() => {
             this.operateHead(0, -17);
@@ -816,7 +845,7 @@ export default {
           e != "nod" &&
           e != "shake"
         ) {
-          this.otherAction = true
+          this.otherAction = true;
           try {
             let res = await this.robotWs.robot.lower_body(
               lower_data.lower_body_mode
@@ -824,19 +853,19 @@ export default {
             console.log("lower_body_OK........", res);
             if (res.data.code == 0 && res.data.msg == "ok") {
               console.log("lower_body_OK", res);
-              this.otherAction = false
+              this.otherAction = false;
             } else {
               console.log("lower_body_ERR", res);
-              this.otherAction = false
+              this.otherAction = false;
             }
           } catch (error) {
             console.log("lower_body-error", error);
-            this.otherAction = false
+            this.otherAction = false;
           }
         } else {
-          console.log('头头',e)
+          console.log("头头", e);
           setTimeout(() => {
-            this.otherAction = false
+            this.otherAction = false;
           }, 4000);
         }
       }
