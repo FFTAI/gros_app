@@ -18,7 +18,7 @@
         </div>
         <div class="flex-center tip2" :style="tip2Style">
           <span class="circleTxt flex-center ct2">2</span>
-          <span>{{ $t("startupTip4") }}</span>
+          <span :style="tip2SpanStyle">{{ $t("startupTip4") }}</span>
         </div>
         <div class="flex-center tip3" :style="tip3Style" @click="openDialog()">
           <span class="circleTxt flex-center ct1">3</span>
@@ -209,7 +209,7 @@ export default {
       let style = { top: "4.2vw", left: "-3.3vw" };
       if (this.$i18n.locale == "en") {
         style.top = "3.4vw";
-        style.left = "0vw";
+        style.left = "-1vw";
       }
       return style;
     },
@@ -220,6 +220,13 @@ export default {
       }
       return style;
     },
+    tip2SpanStyle() {
+      let style = { };
+      if (this.$i18n.locale == "en") {
+        style.width = "15.75vw";
+      }
+      return style;
+    }
   },
   data() {
     return {
@@ -277,7 +284,7 @@ export default {
               }
               result = new TextDecoder().decode(value);
               console.log("reader---result", result);
-              if (result.includes("init!")) {
+              if (result.includes("init!")&&!result.includes("start json init")) {
                 reader.cancel();
                 setTimeout(() => {
                   _this.isReady = true;
@@ -442,7 +449,7 @@ export default {
   position: absolute;
   left: 27.4583vw;
   top: 37.75vw;
-  width: 38.3333vw;
+  width: 36.75vw;
   font-size: $size-30;
   color: $white;
 }
