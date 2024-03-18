@@ -530,13 +530,13 @@ export default {
         if (Math.abs(this.velocity) < 0.1) this.velocity = 0;
         this.direction = arr[2];
         if (Math.abs(this.direction) < 0.1) this.direction = 0;
-        if (direction == 0 && velocity == 0 && !this.walkEnd) {
+        if (this.direction == 0 && this.velocity == 0 && !this.walkEnd) {
           this.operateWalk(
             this.direction * -45,
             (this.velocity * this.speed) / -6.25
           );
           this.walkEnd = true;
-        } else if (direction != 0 || velocity != 0) {
+        } else if (this.direction != 0 || this.velocity != 0) {
           this.operateWalk(
             this.direction * -45,
             (this.velocity * this.speed) / -6.25
