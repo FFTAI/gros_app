@@ -90,13 +90,32 @@ export default {
     },
   },
   mounted() {
+    if (this.robotInit && !this.enableBasicState) {
+      this.$http
+        .request({
+          baseURL: process.env.VUE_APP_URL,
+          method: "GET",
+          url: "/robot/enable_basic_state",
+          params: {
+            frequence: 2,
+          },
+        })
+        .then((response) => {
+          console.log("success---enable_basic_state", response.data);
+          this.$store.commit("setEnableBasicState", true);
+        })
+        .catch((error) => {
+          console.log("error---enable_basic_state", error);
+          this.$store.commit("setEnableBasicState", false);
+        });
+    }
     this.$bus.$on("basicStateMsg", (data) => {
       console.log("basicStateMsg===========", data);
       this.batteryLevel = data.data.battery_level;
     });
   },
   computed: {
-    ...mapState(["connected"]),
+    ...mapState(["connected", "robotInit", "enableBasicState"]),
   },
   data() {
     return {
