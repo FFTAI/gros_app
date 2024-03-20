@@ -193,6 +193,8 @@ import rtcHeader from "@/components/rtcHeader.vue";
 import Heartbeat from "@/mixin/Heartbeat";
 import { mapState } from "vuex";
 import promptBox from "@/components/promptBox.vue";
+import { Human } from "rocs-client";
+import Bus from "@/utils/bus.js";
 export default {
   mixins: [Heartbeat],
   components: { rtcHeader, promptBox },
@@ -269,6 +271,26 @@ export default {
         }
       }
     },
+    initRobotWs() {
+      var robot = new Human({
+        host: process.env.VUE_APP_URL.split("//")[1].split(":")[0],
+      });
+      this.robotWs.setWs(robot);
+      robot.on_connected(() => {
+        console.log('robotWs成功！')
+        Bus.$emit("robotOnconnected");
+      });
+      robot.on_message((data) => {
+        var currData = JSON.parse(data.data);
+        Bus.$emit("robotOnmessage", currData);
+      });
+      robot.on_close(() => {
+        console.log('robotWs关闭！')
+      });
+      robot.on_error(() => {
+        console.log('robotWs出错！')
+      });
+    },
     //程序启动
     async getStartup() {
       let _this = this;
@@ -286,6 +308,9 @@ export default {
               console.log("reader---result", result);
               if (result.includes("init!")&&!result.includes("start json init")) {
                 reader.cancel();
+                setTimeout(() => {
+                  _this.initRobotWs()
+                }, 2000);
                 setTimeout(() => {
                   _this.isReady = true;
                 }, 3000);
