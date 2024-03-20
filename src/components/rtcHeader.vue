@@ -19,8 +19,8 @@
     >
       <!-- 电量和wifi -->
       <div class="spacing">
-        <!-- <img class="inImg" src="@/assets/images/icon_battery2.png" />
-        <span class="inTxt title-font">43%</span> -->
+        <img class="inImg" src="@/assets/images/icon_battery2.png" />
+        <span class="inTxt title-font">{{ batteryLevel }}%</span>
         <img
           class="inImg"
           style="height: 1.6667vw; width: 2.2917vw"
@@ -89,12 +89,19 @@ export default {
       default: false,
     },
   },
+  mounted() {
+    this.$bus.$on("basicStateMsg", (data) => {
+      console.log("basicStateMsg===========", data);
+      this.batteryLevel = data.data.battery_level;
+    });
+  },
   computed: {
     ...mapState(["connected"]),
   },
   data() {
     return {
       cameraOn: true,
+      batteryLevel: 0,
     };
   },
   methods: {
