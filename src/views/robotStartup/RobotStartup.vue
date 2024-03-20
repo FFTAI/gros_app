@@ -199,7 +199,7 @@ export default {
   mixins: [Heartbeat],
   components: { rtcHeader, promptBox },
   computed: {
-    ...mapState(["connected"]),
+    ...mapState(["connected", "robotInit"]),
     tip3Style() {
       let style = { left: "-0.5vw" };
       if (this.$i18n.locale == "en") {
@@ -223,12 +223,12 @@ export default {
       return style;
     },
     tip2SpanStyle() {
-      let style = { };
+      let style = {};
       if (this.$i18n.locale == "en") {
         style.width = "15.75vw";
       }
       return style;
-    }
+    },
   },
   data() {
     return {
@@ -277,7 +277,7 @@ export default {
       });
       this.robotWs.setWs(robot);
       robot.on_connected(() => {
-        console.log('robotWs成功！')
+        console.log("robotWs成功！");
         Bus.$emit("robotOnconnected");
       });
       robot.on_message((data) => {
@@ -285,10 +285,10 @@ export default {
         Bus.$emit("robotOnmessage", currData);
       });
       robot.on_close(() => {
-        console.log('robotWs关闭！')
+        console.log("robotWs关闭！");
       });
       robot.on_error(() => {
-        console.log('robotWs出错！')
+        console.log("robotWs出错！");
       });
     },
     //程序启动
@@ -306,13 +306,22 @@ export default {
               }
               result = new TextDecoder().decode(value);
               console.log("reader---result", result);
-              if (result.includes("init!")&&!result.includes("start json init")) {
+              if (
+                result.includes("init!") &&
+                !result.includes("start json init")
+              ) {
                 reader.cancel();
                 setTimeout(() => {
-                  _this.initRobotWs()
+                  if (
+                    _this.robotWs.robot.ws &&
+                    _this.robotWs.robot.ws.readyState != 1
+                  ) {
+                    _this.initRobotWs();
+                  }
                 }, 2000);
                 setTimeout(() => {
                   _this.isReady = true;
+                  _this.$store.commit("setRobotInit", true);
                 }, 3000);
               } else {
                 process();
