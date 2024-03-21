@@ -100,6 +100,78 @@
           class="actionBox"
           v-else-if="controlExpand && controlModel == 'inPlace'"
         >
+          <div class="actionItem">
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_waveTwo.png"
+              @click="choseModeChery('WAVE_HAND')"
+            />
+            <div>挥手</div>
+          </div>
+          <div class="actionItem">
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_waveTwo.png"
+              @click="choseModeChery('RAISE_HANDS')"
+            />
+            <div>双手举起</div>
+          </div>
+          <div class="actionItem">
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_waveTwo.png"
+              @click="choseModeChery('ARM_SWING')"
+            />
+            <div>双臂摆动</div>
+          </div>
+          <div class="actionItem">
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_shakeHands.png"
+              @click="choseModeChery('HANDSHAKE')"
+            />
+            <div>握手</div>
+          </div>
+          <div class="actionItem">
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_waveLeft.png"
+              @click="choseModeChery('HAND_GRASPING')"
+            />
+            <div>单手抓取</div>
+          </div>
+          <div class="actionItem">
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_waveTwo.png"
+              @click="choseModeChery('FINGER_HEART')"
+            />
+            <div>比心</div>
+          </div>
+          <div class="actionItem">
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_waveTwo.png"
+              @click="choseModeChery('BOW')"
+            />
+            <div>鞠躬</div>
+          </div>
+          <div class="actionItem">
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_waveTwo.png"
+              @click="choseModeChery('DRAW_CURTAIN')"
+            />
+            <div>拉开幕布</div>
+          </div>
+          <div class="actionItem">
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_waveTwo.png"
+              @click="choseModeChery('SPEAK_WAVE')"
+            />
+            <div>讲话挥手</div>
+          </div>
           <!-- <div class="actionItem">
             <img
               class="actionImg"
@@ -870,6 +942,22 @@ export default {
         }
       }
     },
+    //奇瑞定制动作库
+    choseModeChery(e) {
+      this.$http.request({
+        baseURL: process.env.VUE_APP_URL,
+        method: "POST",
+        url: "/robot/upper_body",
+        data: {
+          arm_action: e,
+          hand_action: ""
+        }
+      }).then(res=>{
+        this.controlExpand = false;
+      }).catch(error=>{
+        
+      })
+    },
     headChange() {
       this.headBoxVisible = !this.headBoxVisible;
     },
@@ -1101,6 +1189,7 @@ export default {
   padding: 3.125vw 3.1333vw 0 3.5917vw;
   display: flex;
   flex-wrap: wrap;
+  overflow: scroll;
   .actionItem {
     text-align: center;
     flex-basis: 33.33%;
@@ -1108,12 +1197,17 @@ export default {
     font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
     font-weight: normal;
     color: $white;
+    height: 7.6667vw;
+    width: 9.2571vw;
   }
 
   .actionImg {
     width: 2.7083vw;
     height: 2.7083vw;
   }
+}
+.actionBox::-webkit-scrollbar {
+  width: 0;
 }
 
 .headState {
