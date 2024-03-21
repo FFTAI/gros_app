@@ -8,14 +8,12 @@ export default new Vuex.Store({
     controlType: 0,
     connected: false,
     gamepadConnected: false,
-    robotInit: false,
     enableBasicState: false
   },
   getters: {
     controlType: (state) => state.controlType,
     connected: (state) => state.connected,
     gamepadConnected: (state) => state.gamepadConnected,
-    robotInit: (state) => state.robotInit,
     enableBasicState: (state) => state.enableBasicState,
   },
   mutations: {
@@ -27,9 +25,6 @@ export default new Vuex.Store({
     },
     setGamepadConnected(state, gamepadConnected) {
       state.gamepadConnected = gamepadConnected;
-    },
-    setRobotInit(state, robotInit) {
-      state.robotInit = robotInit;
     },
     setEnableBasicState(state, enableBasicState) {
       state.enableBasicState = enableBasicState;

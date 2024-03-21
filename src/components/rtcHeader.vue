@@ -90,7 +90,7 @@ export default {
     },
   },
   mounted() {
-    if (this.robotInit && !this.enableBasicState) {
+    if (!this.enableBasicState) {
       this.$http
         .request({
           baseURL: process.env.VUE_APP_URL,
@@ -115,7 +115,7 @@ export default {
     });
   },
   computed: {
-    ...mapState(["connected", "robotInit", "enableBasicState"]),
+    ...mapState(["connected", "enableBasicState"]),
   },
   data() {
     return {

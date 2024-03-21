@@ -199,7 +199,7 @@ export default {
   mixins: [Heartbeat],
   components: { rtcHeader, promptBox },
   computed: {
-    ...mapState(["connected", "robotInit"]),
+    ...mapState(["connected"]),
     tip3Style() {
       let style = { left: "-0.5vw" };
       if (this.$i18n.locale == "en") {
@@ -321,7 +321,6 @@ export default {
                 }, 2000);
                 setTimeout(() => {
                   _this.isReady = true;
-                  _this.$store.commit("setRobotInit", true);
                 }, 3000);
               } else {
                 process();
