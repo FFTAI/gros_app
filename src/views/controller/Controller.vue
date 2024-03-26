@@ -152,7 +152,7 @@
             <img
               class="actionImg"
               src="@/assets/images/icon_waveTwo.png"
-              @click="choseModeChery('BOW')"
+              @click="choseModeChery('BOWING')"
             />
             <div>鞠躬</div>
           </div>
