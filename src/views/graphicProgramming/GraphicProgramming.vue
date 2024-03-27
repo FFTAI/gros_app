@@ -40,9 +40,13 @@
                 type="success"
                 @click="startUp(item)"
                 style="margin-right: 1.5vw"
+                :disabled="item.isStarting"
                 >启动</el-button
               >
-              <el-button type="danger" @click="handleDelete(item)"
+              <el-button
+                type="danger"
+                @click="handleDelete(item)"
+                :disabled="!item.isStarting"
                 >终止</el-button
               >
             </div>
@@ -96,34 +100,34 @@ export default {
       interval: null,
       intervalCount: 0,
       tableData: [
-        {
-          name: "Flow-14:34:05",
-          des: "New empty flow",
-          api: "/robot/Flow-14:34:05",
-          id: "111",
-          instanceId: "001",
-        },
-        {
-          name: "Flow-14:34:05",
-          des: "New empty flow",
-          api: "/robot/Flow-14:34:05",
-          id: "111",
-          instanceId: "001",
-        },
-        {
-          name: "Flow-14:34:05",
-          des: "New empty flow",
-          api: "/robot/Flow-14:34:05",
-          id: "111",
-          instanceId: "001",
-        },
-        {
-          name: "Flow-14:34:05",
-          des: "New empty flow",
-          api: "/robot/Flow-14:34:05",
-          id: "111",
-          instanceId: "001",
-        },
+        // {
+        //   name: "Flow-14:34:05",
+        //   des: "New empty flow",
+        //   api: "/robot/Flow-14:34:05",
+        //   id: "111",
+        //   instanceId: "001",
+        // },
+        // {
+        //   name: "Flow-14:34:05",
+        //   des: "New empty flow",
+        //   api: "/robot/Flow-14:34:05",
+        //   id: "222",
+        //   instanceId: "001",
+        // },
+        // {
+        //   name: "Flow-14:34:05",
+        //   des: "New empty flow",
+        //   api: "/robot/Flow-14:34:05",
+        //   id: "333",
+        //   instanceId: "001",
+        // },
+        // {
+        //   name: "Flow-14:34:05",
+        //   des: "New empty flow",
+        //   api: "/robot/Flow-14:34:05",
+        //   id: "444",
+        //   instanceId: "001",
+        // },
       ],
       joystickData: {
         commands: [
@@ -222,7 +226,7 @@ export default {
             parameters: [
               {
                 key: "pressed",
-                value: 1,
+                value: 0,
               },
             ],
           },
@@ -252,9 +256,30 @@ export default {
     );
   },
   async mounted() {
+    this.getTableData();
     this.startGamepad();
   },
   methods: {
+    getTableData() {
+      this.$http
+        .request({
+          baseURL: process.env.VUE_APP_URL.slice(0, -4) + "3000",
+          // baseURL: "https://builder.fftai.dev/api",
+          method: "GET",
+          url: "/api/flow/published?brief=true",
+          // url: "/flow/published",
+        })
+        .then((response) => {
+          console.log("success---getTableData", response);
+          this.tableData = response.data.flowList.map((obj) => {
+            return { ...obj, isStarting: false };
+          });
+          console.log(this.tableData);
+        })
+        .catch((error) => {
+          console.log("error---getTableData", error);
+        });
+    },
     // 启动手柄
     startGamepad() {
       const _this = this;
@@ -286,58 +311,95 @@ export default {
     remoteSensing(arr) {},
     // 手柄按键
     pressKey(arr) {
-      let currBtn = ""
+      let currBtn = "";
       for (let i = 0; i < arr.length; i++) {
         if (arr[i].value === 1) {
-          console.log(i);
           switch (i) {
             case 4:
-              this.buttons = "L1";
+              currBtn = "L1";
               break;
             case 5:
-              this.buttons = "R1";
+              currBtn = "R1";
               break;
             case 6:
-              this.buttons = "L2";
+              currBtn = "L2";
               break;
             case 7:
-              this.buttons = "R2";
+              currBtn = "R2";
               break;
             case 0:
-              this.buttons = "X";
+              currBtn = "cross";
               break;
             case 1:
-              this.buttons = "○";
+              currBtn = "circle";
               break;
             case 2:
-              this.buttons = "□";
+              currBtn = "square";
               break;
             case 3:
-              this.buttons = "△";
+              currBtn = "triangle";
               break;
             case 12:
-              this.buttons = "⬆️";
+              currBtn = "up";
               break;
             case 13:
-              this.buttons = "⬇️";
+              currBtn = "down";
               break;
             case 14:
-              this.buttons = "⬅️";
+              currBtn = "left";
               break;
             case 15:
-              this.buttons = "➡️";
+              currBtn = "right";
               break;
             // case 10:
-            //   this.buttons = "左摇杆";
+            //   currBtn = "左摇杆";
             //   break;
             // case 11:
-            //   this.buttons = "右摇杆";
+            //   currBtn = "右摇杆";
             //   break;
             default:
               break;
           }
         }
       }
+      if (this.buttons == currBtn || currBtn == "") return;
+      this.buttons = currBtn;
+      let joystickData = {
+        commands: [
+          {
+            name: currBtn,
+            parameters: [
+              {
+                key: "pressed",
+                value: 1,
+              },
+            ],
+          },
+        ],
+      };
+      // this.joystickData.commands.forEach((command) => {
+      //   if (command.name === currBtn) {
+      //     command.parameters.forEach((param) => {
+      //       if (param.key === "pressed") {
+      //         param.value = param.value == 0 ? 1 : 0;
+      //       }
+      //     });
+      //   }
+      // });
+      console.log(joystickData.commands[0]);
+      this.$http
+        .request({
+          baseURL: process.env.VUE_APP_URL.slice(0, -4) + "9000",
+          method: "POST",
+          url: "/flow/joystickTrigger",
+          data: joystickData,
+        })
+        .then((response) => {
+          console.log("success---joystickTrigger", response);
+        })
+        .catch((error) => {
+          console.log("error---joystickTrigger", error);
+        });
     },
     testApi() {
       let result = this.joystickData.commands.filter((command) => {
@@ -359,15 +421,21 @@ export default {
       //   });
     },
     startUp(e) {
-      console.log(e);
       this.$http
         .request({
           baseURL: process.env.VUE_APP_URL.slice(0, -4) + "9000",
           method: "POST",
-          url: "/robot/" + e.name,
+          url: "/robot/" + e.apiName,
         })
         .then((response) => {
           console.log("success---startUp", response);
+          this.tableData = this.tableData.map((obj) => {
+            if (obj.id == e.id) {
+              obj.isStarting = true;
+              return { ...obj, instanceId: response.data.id };
+            }
+            return obj;
+          });
           this.$message({
             message: "启动成功！" + response,
             type: "success",
@@ -387,6 +455,12 @@ export default {
         })
         .then((response) => {
           console.log("success---abort", response);
+          this.tableData = this.tableData.map((obj) => {
+            if (obj.id == e.id) {
+              obj.isStarting = false;
+            }
+            return obj;
+          });
           this.$message({
             message: "终止成功！" + response,
             type: "success",
