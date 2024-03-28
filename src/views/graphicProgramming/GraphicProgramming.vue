@@ -8,7 +8,7 @@
             position: absolute;
             left: 10.4167vw;
             top: 0.9583vw;
-            font-size: 40px;
+            font-size: 1.6667vw;
             color: #ffffff;
             z-index: 999;
           "
@@ -59,11 +59,11 @@
                 :disabled="!item.isStarting"
                 >终止</el-button
               > -->
-              <div v-if="!item.isStarting" style="display: flex; align-items: center">
+              <div v-if="!item.isStarting" style="display: flex; align-items: center" @click="startUp(item)">
                 <img class="startBtn" src="@/assets/images/btn_startUp.png" />
                 <span style="color: #44d8fb; margin-left: 0.3333vw">启动</span>
               </div>
-              <div v-else style="display: flex; align-items: center">
+              <div v-else style="display: flex; align-items: center" @click="handleDelete(item)">
                 <img class="startBtn" src="@/assets/images/btn_finish.png" />
                 <span style="color: #FF6656; margin-left: 0.3333vw">终止</span>
               </div>
@@ -118,62 +118,62 @@ export default {
       interval: null,
       intervalCount: 0,
       tableData: [
-        {
-          name: "Flow-14:34:05",
-          des: "New empty flow",
-          api: "/robot/Flow-14:34:05",
-          id: "111",
-          instanceId: "001",
-        },
-        {
-          name: "Flow-14:34:05",
-          des: "New empty flow",
-          api: "/robot/Flow-14:34:05",
-          id: "222",
-          instanceId: "001",
-        },
-        {
-          name: "Flow-14:34:05",
-          des: "New empty flow",
-          api: "/robot/Flow-14:34:05",
-          id: "333",
-          instanceId: "001",
-        },
-        {
-          name: "Flow-14:34:05",
-          des: "New empty flow",
-          api: "/robot/Flow-14:34:05",
-          id: "444",
-          instanceId: "001",
-        },
-        {
-          name: "Flow-14:34:05",
-          des: "New empty flow",
-          api: "/robot/Flow-14:34:05",
-          id: "444",
-          instanceId: "001",
-        },
-        {
-          name: "Flow-14:34:05",
-          des: "New empty flow",
-          api: "/robot/Flow-14:34:05",
-          id: "444",
-          instanceId: "001",
-        },
-        {
-          name: "Flow-14:34:05",
-          des: "New empty flow",
-          api: "/robot/Flow-14:34:05",
-          id: "444",
-          instanceId: "001",
-        },
-        {
-          name: "Flow-14:34:05",
-          des: "New empty flow",
-          api: "/robot/Flow-14:34:05",
-          id: "444",
-          instanceId: "001",
-        }
+        // {
+        //   name: "Flow-14:34:05",
+        //   des: "New empty flow",
+        //   api: "/robot/Flow-14:34:05",
+        //   id: "111",
+        //   instanceId: "001",
+        // },
+        // {
+        //   name: "Flow-14:34:05",
+        //   des: "New empty flow",
+        //   api: "/robot/Flow-14:34:05",
+        //   id: "222",
+        //   instanceId: "001",
+        // },
+        // {
+        //   name: "Flow-14:34:05",
+        //   des: "New empty flow",
+        //   api: "/robot/Flow-14:34:05",
+        //   id: "333",
+        //   instanceId: "001",
+        // },
+        // {
+        //   name: "Flow-14:34:05",
+        //   des: "New empty flow",
+        //   api: "/robot/Flow-14:34:05",
+        //   id: "444",
+        //   instanceId: "001",
+        // },
+        // {
+        //   name: "Flow-14:34:05",
+        //   des: "New empty flow",
+        //   api: "/robot/Flow-14:34:05",
+        //   id: "444",
+        //   instanceId: "001",
+        // },
+        // {
+        //   name: "Flow-14:34:05",
+        //   des: "New empty flow",
+        //   api: "/robot/Flow-14:34:05",
+        //   id: "444",
+        //   instanceId: "001",
+        // },
+        // {
+        //   name: "Flow-14:34:05",
+        //   des: "New empty flow",
+        //   api: "/robot/Flow-14:34:05",
+        //   id: "444",
+        //   instanceId: "001",
+        // },
+        // {
+        //   name: "Flow-14:34:05",
+        //   des: "New empty flow",
+        //   api: "/robot/Flow-14:34:05",
+        //   id: "444",
+        //   instanceId: "001",
+        // }
       ],
       joystickData: {
         commands: [
@@ -550,10 +550,10 @@ export default {
 }
 .programTable {
   position: absolute;
-  bottom: 2.5vw;
+  top: 7.2917vw;
   left: 3.125vw;
   width: 88.9167vw;
-  height: 33.0833vw;
+  height: 39.25vw;
   padding: 2.4167vw 2.4167vw 0 2.4167vw;
   background-color: rgba(255, 255, 255, 0.08);
   border-radius: 0 0 0.2604vw 0.2604vw;
