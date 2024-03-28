@@ -3,8 +3,20 @@
     <div class="container">
       <rtc-header></rtc-header>
       <div class="black-bkg flex-center">
+        <div
+          style="
+            position: absolute;
+            left: 10.4167vw;
+            top: 0.9583vw;
+            font-size: 40px;
+            color: #ffffff;
+            z-index: 999;
+          "
+        >
+          图形化编程
+        </div>
         <div class="programTable">
-          <div
+          <!-- <div
             style="
               height: 2.125vw;
               width: 100%;
@@ -15,28 +27,26 @@
           >
             <div class="titleChild">项目名称</div>
             <div class="titleChild">描述</div>
-            <div class="titleChild">API URL</div>
             <div class="titleChild">管理</div>
+          </div> -->
+          <div class="tableItem titleBg">
+            <div class="itemChild2">工作流名称</div>
+            <div class="itemChild3">描述</div>
+            <div class="itemChild1">管理</div>
           </div>
           <div
             class="tableItem"
             v-for="(item, index) in tableData"
             :key="index"
           >
-            <div class="itemChild">
+            <div class="itemChild2">
               {{ item.name }}
             </div>
-            <div class="itemChild">
+            <div class="itemChild3">
               {{ item.des }}
             </div>
-            <div class="itemChild">
-              {{ item.api }}
-            </div>
-            <div
-              class="itemChild"
-              style="display: flex; justify-content: center"
-            >
-              <el-button
+            <div class="itemChild1">
+              <!-- <el-button
                 type="success"
                 @click="startUp(item)"
                 style="margin-right: 1.5vw"
@@ -48,12 +58,20 @@
                 @click="handleDelete(item)"
                 :disabled="!item.isStarting"
                 >终止</el-button
-              >
+              > -->
+              <div v-if="!item.isStarting" style="display: flex; align-items: center">
+                <img class="startBtn" src="@/assets/images/btn_startUp.png" />
+                <span style="color: #44d8fb; margin-left: 0.3333vw">启动</span>
+              </div>
+              <div v-else style="display: flex; align-items: center">
+                <img class="startBtn" src="@/assets/images/btn_finish.png" />
+                <span style="color: #FF6656; margin-left: 0.3333vw">终止</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="joystickGet">
+      <!-- <div class="joystickGet">
         <el-tag
           style="
             height: 4.1667vw;
@@ -65,8 +83,8 @@
           "
           >{{ buttons }}</el-tag
         >
-      </div>
-      <div class="stopControl">
+      </div> -->
+      <!-- <div class="stopControl">
         <el-button
           style="
             height: 4.1667vw;
@@ -81,7 +99,7 @@
           @click="testApi()"
           >测试接口</el-button
         >
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -100,34 +118,62 @@ export default {
       interval: null,
       intervalCount: 0,
       tableData: [
-        // {
-        //   name: "Flow-14:34:05",
-        //   des: "New empty flow",
-        //   api: "/robot/Flow-14:34:05",
-        //   id: "111",
-        //   instanceId: "001",
-        // },
-        // {
-        //   name: "Flow-14:34:05",
-        //   des: "New empty flow",
-        //   api: "/robot/Flow-14:34:05",
-        //   id: "222",
-        //   instanceId: "001",
-        // },
-        // {
-        //   name: "Flow-14:34:05",
-        //   des: "New empty flow",
-        //   api: "/robot/Flow-14:34:05",
-        //   id: "333",
-        //   instanceId: "001",
-        // },
-        // {
-        //   name: "Flow-14:34:05",
-        //   des: "New empty flow",
-        //   api: "/robot/Flow-14:34:05",
-        //   id: "444",
-        //   instanceId: "001",
-        // },
+        {
+          name: "Flow-14:34:05",
+          des: "New empty flow",
+          api: "/robot/Flow-14:34:05",
+          id: "111",
+          instanceId: "001",
+        },
+        {
+          name: "Flow-14:34:05",
+          des: "New empty flow",
+          api: "/robot/Flow-14:34:05",
+          id: "222",
+          instanceId: "001",
+        },
+        {
+          name: "Flow-14:34:05",
+          des: "New empty flow",
+          api: "/robot/Flow-14:34:05",
+          id: "333",
+          instanceId: "001",
+        },
+        {
+          name: "Flow-14:34:05",
+          des: "New empty flow",
+          api: "/robot/Flow-14:34:05",
+          id: "444",
+          instanceId: "001",
+        },
+        {
+          name: "Flow-14:34:05",
+          des: "New empty flow",
+          api: "/robot/Flow-14:34:05",
+          id: "444",
+          instanceId: "001",
+        },
+        {
+          name: "Flow-14:34:05",
+          des: "New empty flow",
+          api: "/robot/Flow-14:34:05",
+          id: "444",
+          instanceId: "001",
+        },
+        {
+          name: "Flow-14:34:05",
+          des: "New empty flow",
+          api: "/robot/Flow-14:34:05",
+          id: "444",
+          instanceId: "001",
+        },
+        {
+          name: "Flow-14:34:05",
+          des: "New empty flow",
+          api: "/robot/Flow-14:34:05",
+          id: "444",
+          instanceId: "001",
+        }
       ],
       joystickData: {
         commands: [
@@ -264,10 +310,8 @@ export default {
       this.$http
         .request({
           baseURL: process.env.VUE_APP_URL.slice(0, -4) + "3000",
-          // baseURL: "https://builder.fftai.dev/api",
           method: "GET",
           url: "/api/flow/published?brief=true",
-          // url: "/flow/published",
         })
         .then((response) => {
           console.log("success---getTableData", response);
@@ -362,16 +406,25 @@ export default {
           }
         }
       }
-      if (this.buttons == currBtn || currBtn == "") return;
+      if (this.buttons == currBtn) return;
+      let val = 0;
+      let btn = "";
+      if (currBtn == "" && this.buttons != "") {
+        val = 0;
+        btn = this.buttons;
+      } else {
+        val = 1;
+        btn = currBtn;
+      }
       this.buttons = currBtn;
       let joystickData = {
         commands: [
           {
-            name: currBtn,
+            name: btn,
             parameters: [
               {
                 key: "pressed",
-                value: 1,
+                value: val,
               },
             ],
           },
@@ -386,7 +439,10 @@ export default {
       //     });
       //   }
       // });
-      console.log(joystickData.commands[0]);
+      console.log(
+        joystickData.commands[0].name,
+        joystickData.commands[0].parameters[0].value
+      );
       this.$http
         .request({
           baseURL: process.env.VUE_APP_URL.slice(0, -4) + "9000",
@@ -494,26 +550,31 @@ export default {
 }
 .programTable {
   position: absolute;
-  top: 6vw;
-  left: 1.7vw;
-  width: 80vw;
-  height: 35.5vw;
-  padding: 1.9583vw 1.25vw 0 1.25vw;
+  bottom: 2.5vw;
+  left: 3.125vw;
+  width: 88.9167vw;
+  height: 33.0833vw;
+  padding: 2.4167vw 2.4167vw 0 2.4167vw;
   background-color: rgba(255, 255, 255, 0.08);
   border-radius: 0 0 0.2604vw 0.2604vw;
+  overflow: scroll;
 }
 .tableItem {
-  height: 3vw;
+  height: 3.125vw;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #85888b;
-  font-size: 1vw;
+  color: #ffffff;
+  font-size: 1.0417vw;
 }
 
 .tableItem:nth-of-type(odd) {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.titleBg {
+  background-color: rgba(255, 255, 255, 0.1) !important;
 }
 .titleChild {
   flex: 1;
@@ -524,9 +585,15 @@ export default {
   text-align: center;
 }
 
-.itemChild {
+.itemChild2 {
+  flex: 2;
+  margin-left: 3.125vw;
+}
+.itemChild3 {
+  flex: 3;
+}
+.itemChild1 {
   flex: 1;
-  text-align: center;
 }
 
 .itemTxt {
@@ -535,6 +602,10 @@ export default {
 
 .currentItem {
   background-color: $base-bkg !important;
+}
+.startBtn {
+  width: 1.0417vw;
+  height: 1.0417vw;
 }
 </style>
   
