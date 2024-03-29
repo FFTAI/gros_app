@@ -13,26 +13,13 @@
             z-index: 999;
           "
         >
-          图形化编程
+          {{ $t('graphicProgramming') }}
         </div>
         <div class="programTable">
-          <!-- <div
-            style="
-              height: 2.125vw;
-              width: 100%;
-              display: flex;
-              color: #85888b;
-              justify-content: center;
-            "
-          >
-            <div class="titleChild">项目名称</div>
-            <div class="titleChild">描述</div>
-            <div class="titleChild">管理</div>
-          </div> -->
           <div class="tableItem titleBg">
-            <div class="itemChild2">工作流名称</div>
-            <div class="itemChild3">描述</div>
-            <div class="itemChild1">管理</div>
+            <div class="itemChild2">{{ $t('workflowName') }}</div>
+            <div class="itemChild3">{{ $t('describe') }}</div>
+            <div class="itemChild1">{{ $t('administration') }}</div>
           </div>
           <div
             class="tableItem"
@@ -46,60 +33,18 @@
               {{ item.des }}
             </div>
             <div class="itemChild1">
-              <!-- <el-button
-                type="success"
-                @click="startUp(item)"
-                style="margin-right: 1.5vw"
-                :disabled="item.isStarting"
-                >启动</el-button
-              >
-              <el-button
-                type="danger"
-                @click="handleDelete(item)"
-                :disabled="!item.isStarting"
-                >终止</el-button
-              > -->
               <div v-if="!item.isStarting" style="display: flex; align-items: center" @click="startUp(item)">
                 <img class="startBtn" src="@/assets/images/btn_startUp.png" />
-                <span style="color: #44d8fb; margin-left: 0.3333vw">启动</span>
+                <span style="color: #44d8fb; margin-left: 0.3333vw">{{ $t('startUp') }}</span>
               </div>
               <div v-else style="display: flex; align-items: center" @click="handleDelete(item)">
                 <img class="startBtn" src="@/assets/images/btn_finish.png" />
-                <span style="color: #FF6656; margin-left: 0.3333vw">终止</span>
+                <span style="color: #FF6656; margin-left: 0.3333vw">{{ $t('terminate') }}</span>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <!-- <div class="joystickGet">
-        <el-tag
-          style="
-            height: 4.1667vw;
-            width: 8.3333vw;
-            font-size: 1.5vw;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          "
-          >{{ buttons }}</el-tag
-        >
-      </div> -->
-      <!-- <div class="stopControl">
-        <el-button
-          style="
-            height: 4.1667vw;
-            width: 8.3333vw;
-            font-size: 1.5vw;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          "
-          size="large"
-          type="warning"
-          @click="testApi()"
-          >测试接口</el-button
-        >
-      </div> -->
     </div>
   </div>
 </template>
@@ -339,9 +284,7 @@ export default {
             : navigator.getGamepads()[2]
             ? navigator.getGamepads()[2]
             : navigator.getGamepads()[3];
-          // console.log(navigator.getGamepads(), gamepad)
           if (_this.intervalCount >= 20) {
-            // navigator.getGamepads()[0].axes[0],navigator.getGamepads()[0].axes[1],navigator.getGamepads()[0].axes[2],navigator.getGamepads()[0].axes[3]
             _this.pressKey(gamepad.buttons);
             _this.remoteSensing(gamepad.axes);
             _this.intervalCount = 0;
@@ -430,15 +373,6 @@ export default {
           },
         ],
       };
-      // this.joystickData.commands.forEach((command) => {
-      //   if (command.name === currBtn) {
-      //     command.parameters.forEach((param) => {
-      //       if (param.key === "pressed") {
-      //         param.value = param.value == 0 ? 1 : 0;
-      //       }
-      //     });
-      //   }
-      // });
       console.log(
         joystickData.commands[0].name,
         joystickData.commands[0].parameters[0].value
@@ -456,25 +390,6 @@ export default {
         .catch((error) => {
           console.log("error---joystickTrigger", error);
         });
-    },
-    testApi() {
-      let result = this.joystickData.commands.filter((command) => {
-        return command.parameters.some((param) => param.value === 1);
-      });
-
-      console.log(result[0].name);
-      // this.$http
-      //   .request({
-      //     baseURL: "https://builder.fftai.dev",
-      //     method: "GET",
-      //     url: "/api/flow/published",
-      //   })
-      //   .then((response) => {
-      //     console.log("success---published", response);
-      //   })
-      //   .catch((error) => {
-      //     console.log("error---published", error);
-      //   });
     },
     startUp(e) {
       this.$http

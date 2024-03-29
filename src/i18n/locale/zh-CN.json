@@ -125,5 +125,11 @@
     "closeProgram": "关闭程序",
     "powerOffTip": "确定是否关机",
     "adjustPosture": "调整机器人前后左右姿势",
-    "raiseHand": "抬手"
+    "raiseHand": "抬手",
+    "graphicProgramming" : "图形化编程",
+    "describe": "描述",
+    "administration": "管理",
+    "workflowName": "工作流名称",
+    "startUp": "启动",
+    "terminate": "终止"
 }
