@@ -196,5 +196,6 @@
     "restart": "重新启动",
     "lowBattery": "电量低于20%， 请及时充电",
     "setNikename": "设置昵称",
-    "dischargeInProgress": "放电中"
+    "dischargeInProgress": "放电中",
+    "connectionManagement": "连接管理"
 }

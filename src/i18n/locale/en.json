@@ -196,5 +196,6 @@
     "restart": "Restart",
     "lowBattery": "Battery level is below 20%, please charge in time",
     "setNikename": "Set Nikename",
-    "dischargeInProgress": "Discharge in progress"
+    "dischargeInProgress": "Discharge in progress",
+    "connectionManagement": "Connection Management"
 }

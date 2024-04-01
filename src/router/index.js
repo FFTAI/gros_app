@@ -61,8 +61,18 @@ const routes = [
   },
   {
     path: "/singleMotor",
-    name: "pointClosingleMotorud",
+    name: "singleMotor",
     component: () => import("../views/singleMotor/SingleMotor.vue"),
+  },
+  {
+    path: "/connectionManagement",
+    name: "connectionManagement",
+    component: () => import("../views/connectionManagement/ConnectionManagement.vue"),
+  },
+  {
+    path: "/wifiMode",
+    name: "wifiMode",
+    component: () => import("../views/wifiMode/WifiMode.vue"),
   },
   {
     path: "/",

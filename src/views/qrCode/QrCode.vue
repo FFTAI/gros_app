@@ -1,15 +1,23 @@
 <template>
-  <div class="qrcodeSty">
-    <canvas class="vertically-centered" id="qrcode"></canvas>
-    <el-button class="vertically-centered" type="primary" @click="createQr()"
+  <div class="container">
+    <rtc-header :isLoading="true">
+      <div class="headState">
+        <span class="headTxt">扫描二维码</span>
+      </div>
+    </rtc-header>
+    <img class="scanImg" src="@/assets/images/image_scanQRcode.png" />
+    <canvas class="qrcode" id="qrcode"></canvas>
+    <el-button style="position: absolute;top: 22vw;left: 42vw;" type="primary" @click="createQr()"
       >点击！！</el-button
     >
   </div>
 </template>
 
 <script>
+import rtcHeader from "@/components/rtcHeader.vue";
 import QRCode from "qrcode";
 export default {
+  components: { rtcHeader },
   data() {
     return {};
   },
@@ -56,6 +64,40 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.qrcodeSty {
+.container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background-image: url("../../assets/images/image_bkg.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.headState {
+  position: absolute;
+  top: 1vw;
+  left: 10.9375vw;
+  z-index: 99;
+
+  .headTxt {
+    font-size: 1.9792vw;
+    font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
+    font-weight: normal;
+    color: #ffffff;
+    line-height: 2.7083vw;
+  }
+}
+.scanImg{
+  position: absolute;
+  left: 3.125vw;
+  top: 7.2917vw;
+  width: 37.5vw;
+  height: 33.3333vw;
+}
+.qrcode{
+  position: absolute;
+  left: 55.2083vw;
+  top: 7.2917vw;
+  width: 33.3333vw;
+  height: 33.3333vw;
 }
 </style>
