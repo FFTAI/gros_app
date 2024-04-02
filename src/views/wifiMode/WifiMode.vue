@@ -2,28 +2,32 @@
   <div class="container">
     <rtc-header :isLoading="true">
       <div class="headState">
-        <span class="headTxt">Wi-Fi 连接</span>
+        <span class="headTxt">{{ $t("wifiConnected") }}</span>
       </div>
     </rtc-header>
     <img class="wifiImg" src="@/assets/images/image_wifiMode.png" />
     <div class="bubbleBox">
-      <div class="tips">输入当前Wi-Fi密码，生成二维码</div>
-      <span class="wifiMsg">gr1-XXXXXX</span>
-      <span class="wifiMsg" style="top: 17.75vw;opacity: 0.5;">请输入Wi-Fi 密码</span>
-      <img
-        v-if="cansee"
-        @click="seePassword()"
-        class="seeImg"
-        src="@/assets/images/icon_see.png"
-      />
-      <img
-        v-else
-        @click="seePassword()"
-        class="seeImg"
-        src="@/assets/images/icon_nosee.png"
-      />
+      <div class="bubblePop">
+        <div class="tips">{{ $t('wifiTips') }}</div>
+        <span class="wifiMsg">gr1-XXXXXX</span>
+        <span class="wifiMsg" style="top: 17.75vw; opacity: 0.5"
+          >{{ $t('wifiPwdTips') }}</span
+        >
+        <img
+          v-if="cansee"
+          @click="seePassword()"
+          class="seeImg"
+          src="@/assets/images/icon_see.png"
+        />
+        <img
+          v-else
+          @click="seePassword()"
+          class="seeImg"
+          src="@/assets/images/icon_nosee.png"
+        />
+      </div>
+      <div class="toCreate common-font flex-center">{{ $t('generate') }}</div>
     </div>
-    <div class="toCreate common-font flex-center">生成</div>
   </div>
 </template>
   
@@ -38,6 +42,8 @@ export default {
   data() {
     return {
       cansee: true,
+      seeImgUrl: "@/assets/images/icon_see.png",
+      noseeImgUrl: "@/assets/images/icon_nosee.png",
     };
   },
   mounted() {},
@@ -77,30 +83,32 @@ export default {
 .wifiImg {
   position: absolute;
   left: 2.7917vw;
-  top: 5.0417vw;
+  top: 50%;
+  transform: translateY(-50%);
   height: 35.6667vw;
   width: 35.6667vw;
 }
 
 .toCreate {
+  margin-top: 2.4479vw;
   width: 24.625vw;
   height: 4.1667vw;
   background: linear-gradient(230deg, #198bff 0%, #0086d1 100%);
   border-radius: 2.0833vw;
-  position: absolute;
-  right: 17.625vw;
-  bottom: 3.6667vw;
   font-size: $size-41;
-  font-family: Alibaba-PuHuiTi, Alibaba-PuHuiTi;
-  font-weight: normal;
   color: $white;
 }
 .bubbleBox {
+  position: absolute;
+  right: 3.125vw;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+}
+.bubblePop {
   width: 54.9167vw;
   height: 28.3333vw;
-  position: absolute;
-  right: 2.4583vw;
-  top: 6.375vw;
   background-image: url("../../assets/images/image_wifiConnect.png");
   background-repeat: no-repeat;
   background-size: contain;
@@ -126,7 +134,7 @@ export default {
     height: 1.6667vw;
     position: absolute;
     right: 6.1667vw;
-    bottom: 8.6667vw;
+    bottom: 15.1vw;
   }
 }
 </style>

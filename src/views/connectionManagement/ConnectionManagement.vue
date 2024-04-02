@@ -14,14 +14,14 @@
         arrow="nerver"
         height="28.125vw"
       >
-        <el-carousel-item v-for="(list,i) in carouselList" :key="i">
+        <el-carousel-item v-for="(list, i) in carouselList" :key="i">
           <!-- 添加机器人 -->
           <div class="carouselItem">
-            <div class="addCard" v-if="i==0">
+            <div class="addCard" v-if="i == 0">
               <div class="add">
                 <img class="addImg" src="@/assets/images/icon_add.png" />
               </div>
-              <div class="addContent">添加机器人</div>
+              <div class="addContent">{{ $t("addRobot") }}</div>
             </div>
             <!-- 机器人列表 -->
             <div
@@ -36,7 +36,7 @@
               @click="choseCard(item)"
             >
               <div class="cardTitle common-font flex-between">
-                <div class="flex-center">
+                <div v-if="item.connectMode == 'wifi'" class="flex-center">
                   <img
                     style="
                       width: 1.5417vw;
@@ -45,11 +45,31 @@
                     "
                     src="@/assets/images/icon_Wi-Fi.png"
                   />
-                  <span>Wi-Fi连接</span>
+                  <span>{{ $t("wifiConnected") }}</span>
                 </div>
-                <span v-if="item.isMasterControl">主控</span>
+                <div v-else-if="item.connectMode == 'ap'" class="flex-center">
+                  <img
+                    style="
+                      width: 1.3542vw;
+                      height: 1.25vw;
+                      margin-right: 0.375vw;
+                    "
+                    src="@/assets/images/icon_ap.png"
+                  />
+                  <span>{{ $t("APconnection") }}</span>
+                </div>
+                <div v-else class="flex-center">
+                  <div class="redPoint"></div>
+                  <span style="color: #ff6656">{{ $t("notConnected") }}</span>
+                </div>
+                <span
+                  v-if="item.isMasterControl && item.connectMode != 'none'"
+                  >{{ $t("masterControl") }}</span
+                >
                 <img
-                  v-else
+                  v-else-if="
+                    !item.isMasterControl && item.connectMode != 'none'
+                  "
                   style="width: 1vw; height: 1.125vw"
                   src="@/assets/images/btn_topping.png"
                   @click.stop="toTop(item)"
@@ -58,10 +78,16 @@
               <div class="cardDivider"></div>
               <div class="cardContent">
                 <img
+                  v-if="item.connectMode != 'none'"
                   class="img"
                   src="@/assets/images/image_connectedAvatar.png"
                 />
-                <div>
+                <img
+                  v-else
+                  class="img"
+                  src="@/assets/images/image_disconnected.png"
+                />
+                <div :class="{ op02: item.connectMode == 'none' }">
                   <span class="name">{{ item.name }}</span>
                   <span class="type">GR-1 Lite</span>
                 </div>
@@ -71,7 +97,24 @@
         </el-carousel-item>
       </el-carousel>
     </div>
-    <div class="completeBtn flex-center" @click="completeChose()">完成选择</div>
+    <div class="completeBtn flex-center" @click="completeChose()">
+      {{ $t("completeSelection") }}
+    </div>
+    <div class="wrapper" v-if="dialogVisible">
+      <div class="modeChoseDialog">
+        <span class="title">{{ $t("selectConnection") }}</span>
+        <div class="content">
+          <div class="mode left">
+            <span class="modeTxt">通过路由器连接机器人</span>
+            <span class="modeName">Wi-Fi直接模式</span>
+          </div>
+          <div class="mode right">
+            <span class="modeTxt">连接机器人热点</span>
+            <span class="modeName">Wi-Fi直接模式</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
   
@@ -82,70 +125,80 @@ export default {
   data() {
     return {
       masterControl: true,
+      dialogVisible: true,
       robotList: [
         {
           name: "GR-0001",
           isMasterControl: true,
           isChosed: true,
+          connectMode: "wifi",
         },
         {
           name: "GR-0002",
           isMasterControl: false,
           isChosed: true,
+          connectMode: "ap",
         },
         {
           name: "GR-0003",
           isMasterControl: false,
           isChosed: true,
+          connectMode: "ap",
         },
         {
           name: "GR-0004",
           isMasterControl: false,
           isChosed: false,
+          connectMode: "wifi",
         },
         {
           name: "GR-0005",
           isMasterControl: false,
           isChosed: false,
+          connectMode: "wifi",
         },
         {
           name: "GR-0006",
           isMasterControl: false,
           isChosed: false,
+          connectMode: "none",
         },
         {
           name: "GR-0007",
           isMasterControl: false,
           isChosed: false,
+          connectMode: "none",
         },
         {
           name: "GR-0008",
           isMasterControl: false,
           isChosed: true,
+          connectMode: "wifi",
         },
         {
           name: "GR-0009",
           isMasterControl: false,
           isChosed: false,
+          connectMode: "ap",
         },
       ],
-      carouselList: []
+      carouselList: [],
     };
   },
   created() {},
   mounted() {
     for (let i = 0; i < this.robotList.length; i += 8) {
-      if(i == 0) {
+      if (i == 0) {
         this.carouselList.push(this.robotList.slice(0, 7));
       } else {
         this.carouselList.push(this.robotList.slice(i - 1, i + 7));
       }
     }
-    console.log(this.carouselList)
+    console.log(this.carouselList);
   },
   methods: {
     choseCard(e) {
-      e.isChosed = !e.isChosed;
+      if (e.connectMode != "none") e.isChosed = !e.isChosed;
     },
     toTop(e) {
       this.robotList.forEach((i) => {
@@ -296,5 +349,68 @@ export default {
   font-weight: normal;
   font-size: 1.7083vw;
   color: #ffffff;
+}
+.redPoint {
+  width: 0.4688vw;
+  height: 0.4688vw;
+  background: #ff6656;
+  border-radius: 50%;
+  margin-right: 0.625vw;
+}
+.op02 {
+  opacity: 0.2;
+}
+.modeChoseDialog {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 62.5vw;
+  height: 39.0625vw;
+  background-image: url("../../assets/images/image_modeBkg.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  font-family: AlibabaPuHuiTiM;
+  font-size: 1.4583vw;
+  color: #ffffff;
+  .title {
+    position: absolute;
+    top: 2.8125vw;
+    font-size: 1.6667vw;
+  }
+  .content {
+    position: absolute;
+    top: 10.625vw;
+    width: 56.25vw;
+    display: flex;
+    gap: 3.125vw;
+    .mode {
+      width: 26.5625vw;
+      height: 17.8125vw;
+      background-repeat: no-repeat;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      .modeTxt {
+        position: absolute;
+        bottom: 3.4375vw;
+        font-size: 1.25vw;
+        opacity: 0.7;
+      }
+      .modeName{
+        position: absolute;
+        bottom: -4.0625vw;
+      }
+    }
+    .left {
+      background-image: url("../../assets/images/image_Wi-Fimode.png");
+    }
+    .right {
+      background-image: url("../../assets/images/image_apmode.png");
+    }
+  }
 }
 </style>

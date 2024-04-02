@@ -197,5 +197,14 @@
     "lowBattery": "Battery level is below 20%, please charge in time",
     "setNikename": "Set Nikename",
     "dischargeInProgress": "Discharge in progress",
-    "connectionManagement": "Connection Management"
+    "connectionManagement": "Connection Management",
+    "addRobot": "Add Robot",
+    "APconnection": "AP Connection",
+    "wifiConnected": "Wi-Fi Connected",
+    "masterControl": "Master Control",
+    "completeSelection": "Complete Selection",
+    "wifiTips": "Enter the current Wi-Fi password, generate a QR code",
+    "wifiPwdTips": "Please enter the Wi-Fi password",
+    "generate": "Generate",
+    "selectConnection": "Select connection method"
 }

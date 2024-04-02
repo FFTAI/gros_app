@@ -197,5 +197,14 @@
     "lowBattery": "电量低于20%， 请及时充电",
     "setNikename": "设置昵称",
     "dischargeInProgress": "放电中",
-    "connectionManagement": "连接管理"
+    "connectionManagement": "连接管理",
+    "addRobot": "添加机器人",
+    "APconnection": "AP连接",
+    "wifiConnected": "Wi-Fi连接",
+    "masterControl": "主控",
+    "completeSelection": "完成选择",
+    "wifiTips": "输入当前Wi-Fi密码，生成二维码",
+    "wifiPwdTips": "请输入Wi-Fi 密码",
+    "generate": "生成",
+    "selectConnection": "选择连接方式"
 }
