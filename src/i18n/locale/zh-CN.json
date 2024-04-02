@@ -206,5 +206,12 @@
     "wifiTips": "输入当前Wi-Fi密码，生成二维码",
     "wifiPwdTips": "请输入Wi-Fi 密码",
     "generate": "生成",
-    "selectConnection": "选择连接方式"
+    "selectConnection": "选择连接方式",
+    "raiseHand": "抬手",
+    "graphicProgramming" : "图形化编程",
+    "describe": "描述",
+    "administration": "管理",
+    "workflowName": "工作流名称",
+    "startUp": "启动",
+    "terminate": "终止"
 }

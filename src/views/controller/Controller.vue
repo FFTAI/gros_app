@@ -117,10 +117,10 @@
           <div class="actionItem">
             <img
               class="actionImg"
-              src="@/assets/images/icon_waveLeft.png"
-              @click="choseMode('waveLeftHand')"
+              src="@/assets/images/icon_raiseHand.png"
+              @click="choseMode('raiseHand')"
             />
-            <div>{{ $t("waveLeftHand") }}</div>
+            <div>{{ $t("raiseHand") }}</div>
           </div>
           <div class="actionItem">
             <img
@@ -263,7 +263,11 @@
       <!-- 当前状态提示 -->
       <div
         class="stateMessage flex-center"
-        v-if="(mode != '' && doAction) || mode == 'initial'"
+        v-if="
+          (mode != '' && doAction) ||
+          (mode != '' && otherAction) ||
+          mode == 'initial'
+        "
       >
         <span>{{ $t(mode) }}{{ $t("ing") }}...</span>
       </div>
@@ -290,7 +294,6 @@
 <script>
 import nipplejs from "nipplejs";
 import RtcHeader from "@/components/rtcHeader.vue";
-import rtcLeftControl from "@/components/rtcLeftControl.vue";
 import promptBox from "@/components/promptBox.vue";
 import { mapState } from "vuex";
 import Heartbeat from "@/mixin/Heartbeat";
@@ -299,7 +302,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 export default {
   mixins: [Heartbeat],
-  components: { RtcHeader, rtcLeftControl, promptBox },
+  components: { RtcHeader, promptBox },
   computed: {
     ...mapState(["gamepadConnected", "connected"]),
     rotateStyle() {
@@ -362,6 +365,7 @@ export default {
       headBoxVisible: false, //模式选择框显隐
       camera: true, //是否开启视频
       doAction: false,
+      otherAction: false,
       isStand: false,
       isWalking: false,
       velocity: 0,
@@ -383,6 +387,9 @@ export default {
       points: null,
       adjustVisible: false,
       isGraspMode: false,
+      walkEnd: true, //监听walk停止
+      headEnd: true, //监听head停止
+      bodyEnd: true, //监听body停止
     };
   },
   created() {
@@ -440,6 +447,7 @@ export default {
           this.adjustVisible = true;
         }
       }
+      console.log("upper_action~~~~~~~~~~", data.data.upper_action);
       if (data.data) this.doAction = data.data.upper_action;
     });
   },
@@ -504,7 +512,7 @@ export default {
             ? navigator.getGamepads()[2]
             : navigator.getGamepads()[3];
           // console.log(navigator.getGamepads(), gamepad)
-          if (_this.intervalCount >= 10) {
+          if (_this.intervalCount >= 50) {
             // navigator.getGamepads()[0].axes[0],navigator.getGamepads()[0].axes[1],navigator.getGamepads()[0].axes[2],navigator.getGamepads()[0].axes[3]
             _this.pressKey(gamepad.buttons);
             _this.remoteSensing(gamepad.axes);
@@ -543,16 +551,26 @@ export default {
       //   velocity = 0;
       // }
       // this.operateWalk(angle * -0.5, (velocity * this.speed) / -6.25);
+      console.log(arr);
       if (!this.isStand && this.isWalking) {
         this.velocity = arr[1];
         console.log(arr[1], arr[2]);
         if (Math.abs(this.velocity) < 0.1) this.velocity = 0;
         this.direction = arr[2];
         if (Math.abs(this.direction) < 0.1) this.direction = 0;
-        this.operateWalk(
-          this.direction * -45,
-          (this.velocity * this.speed) / -6.25
-        );
+        if (this.direction == 0 && this.velocity == 0 && !this.walkEnd) {
+          this.operateWalk(
+            this.direction * -45,
+            (this.velocity * this.speed) / -6.25
+          );
+          this.walkEnd = true;
+        } else if (this.direction != 0 || this.velocity != 0) {
+          this.operateWalk(
+            this.direction * -45,
+            (this.velocity * this.speed) / -6.25
+          );
+          this.walkEnd = false;
+        }
       } else if (this.isStand && !this.isWalking) {
         let pitch = arr[1] * -17.1887;
         let rotate_waist = arr[0] * -14.32;
@@ -562,8 +580,20 @@ export default {
         let yaw = arr[2] * 60;
         if (squat > -0.015) squat = 0;
         if (Math.abs(yaw) < 6) yaw = 0;
-        this.operateHead(pitch, yaw);
-        this.operateBody(squat, rotate_waist);
+        if (pitch == 0 && yaw == 0 && !this.headEnd) {
+          this.operateHead(pitch, yaw);
+          this.headEnd = true;
+        } else if (pitch != 0 || yaw != 0) {
+          this.operateHead(pitch, yaw);
+          this.headEnd = false;
+        }
+        if (squat == 0 && rotate_waist == 0 && !this.bodyEnd) {
+          this.operateBody(squat, rotate_waist);
+          this.bodyEnd = true;
+        } else if (squat != 0 || rotate_waist != 0) {
+          this.operateBody(squat, rotate_waist);
+          this.bodyEnd = false;
+        }
       }
     },
     // 手柄按键
@@ -761,8 +791,8 @@ export default {
       }
       this.controlModel = e;
     },
-    choseMode(e) {
-      if (this.doAction == true) return;
+    async choseMode(e) {
+      if (this.doAction || this.otherAction) return;
       this.controlExpand = false;
       this.mode = e;
       //原地踏步，速度位置发0
@@ -785,7 +815,7 @@ export default {
         }, 500);
         if (e == "zero") {
           upper_data.arm_action = "RESET";
-        } else if (e == "waveLeftHand") {
+        } else if (e == "raiseHand") {
           upper_data.arm_action = "LEFT_ARM_WAVE";
         } else if (e == "swingArms") {
           upper_data.arm_action = "ARMS_SWING";
@@ -803,6 +833,7 @@ export default {
           lower_data.lower_body_mode = "SQUAT";
         } else if (e == "nod") {
           //上下点头
+          this.otherAction = true;
           this.operateHead(17, 0);
           setTimeout(() => {
             this.operateHead(-17, 0);
@@ -812,6 +843,7 @@ export default {
           }, 3000);
         } else if (e == "shake") {
           //左右摇头
+          this.otherAction = true;
           this.operateHead(0, 17);
           setTimeout(() => {
             this.operateHead(0, -17);
@@ -820,44 +852,46 @@ export default {
             this.operateHead(0, 0);
           }, 3000);
         }
-        if (lower_data.lower_body_mode == "" && e != "nod" && e != "nod") {
-          this.robotWs.robot
-            .upper_body(upper_data.arm_action, upper_data.hand_action)
-            .then((response) => {
-              console.log("upper_body-response", response);
-              this.doAction = false;
-            })
-            .catch((error) => {
-              console.log("upper_body-error", error);
-              this.doAction = false;
-            });
+        if (lower_data.lower_body_mode == "" && e != "nod" && e != "shake") {
+          try {
+            let res = await this.robotWs.robot.upper_body(
+              upper_data.arm_action,
+              upper_data.hand_action
+            );
+            if (res.data.code == 0 && res.data.msg == "ok") {
+              console.log("upper_body_OK", res);
+            } else {
+              console.log("upper_body_ERR", res);
+            }
+          } catch (error) {
+            console.log("upper_body-error", error);
+          }
         } else if (
           lower_data.lower_body_mode != "" &&
           e != "nod" &&
-          e != "nod"
+          e != "shake"
         ) {
-          // this.robotWs.robot.lower_body(lower_data.lower_body_mode)
-          this.$http
-            .request({
-              timeout: 30000,
-              baseURL: process.env.VUE_APP_URL,
-              method: "POST",
-              url: "/robot/lower_body",
-              data: {
-                lower_body_mode: lower_data.lower_body_mode,
-              },
-            })
-            .then((response) => {
-              console.log("lower_body-response", response);
-              this.doAction = false;
-            })
-            .catch((error) => {
-              console.log("lower_body-error", error);
-              this.doAction = false;
-            });
+          this.otherAction = true;
+          try {
+            let res = await this.robotWs.robot.lower_body(
+              lower_data.lower_body_mode
+            );
+            console.log("lower_body_OK........", res);
+            if (res.data.code == 0 && res.data.msg == "ok") {
+              console.log("lower_body_OK", res);
+              this.otherAction = false;
+            } else {
+              console.log("lower_body_ERR", res);
+              this.otherAction = false;
+            }
+          } catch (error) {
+            console.log("lower_body-error", error);
+            this.otherAction = false;
+          }
         } else {
+          console.log("头头", e);
           setTimeout(() => {
-            this.doAction = false;
+            this.otherAction = false;
           }, 4000);
         }
       }

@@ -18,7 +18,7 @@
         </div>
         <div class="flex-center tip2" :style="tip2Style">
           <span class="circleTxt flex-center ct2">2</span>
-          <span>{{ $t("startupTip4") }}</span>
+          <span :style="tip2SpanStyle">{{ $t("startupTip4") }}</span>
         </div>
         <div class="flex-center tip3" :style="tip3Style" @click="openDialog()">
           <span class="circleTxt flex-center ct1">3</span>
@@ -193,6 +193,8 @@ import rtcHeader from "@/components/rtcHeader.vue";
 import Heartbeat from "@/mixin/Heartbeat";
 import { mapState } from "vuex";
 import promptBox from "@/components/promptBox.vue";
+import { Human } from "rocs-client";
+import Bus from "@/utils/bus.js";
 export default {
   mixins: [Heartbeat],
   components: { rtcHeader, promptBox },
@@ -209,7 +211,7 @@ export default {
       let style = { top: "4.2vw", left: "-3.3vw" };
       if (this.$i18n.locale == "en") {
         style.top = "3.4vw";
-        style.left = "0vw";
+        style.left = "-1vw";
       }
       return style;
     },
@@ -220,6 +222,13 @@ export default {
       }
       return style;
     },
+    tip2SpanStyle() {
+      let style = { };
+      if (this.$i18n.locale == "en") {
+        style.width = "15.75vw";
+      }
+      return style;
+    }
   },
   data() {
     return {
@@ -229,24 +238,10 @@ export default {
       promptVisible: false,
     };
   },
-  created() {
-    // this.$bus.$on('robotOnmessage',(data)=>{
-    //   console.log("enable_debug_state===all_init", data.data.all_init);
-    //     if (data.data.all_init) this.isReady = true;
-    // });
-  },
+  created() {},
   mounted() {},
-  destroyed() {
-    // this.stateOff();
-    // this.$bus.$off('robotOnmessage')
-  },
+  destroyed() {},
   methods: {
-    // stateOn() {
-    //   this.robotWs.robot.enable_debug_state(2);
-    // },
-    // stateOff() {
-    //   this.robotWs.robot.disable_debug_state();
-    // },
     closeDialog() {
       this.calibrationDialog = false;
     },
@@ -259,14 +254,12 @@ export default {
             .control_svr_status()
             .then((res) => {
               if (res.data.data) {
-                this.isReady = true
+                this.isReady = true;
               } else {
                 this.getStartup();
               }
             })
-            .catch((err) => {
-              
-            })
+            .catch((err) => {})
             .finally((f) => {
               this.step = "startup";
             });
@@ -277,6 +270,26 @@ export default {
           main.startActivity(mIntent);
         }
       }
+    },
+    initRobotWs() {
+      var robot = new Human({
+        host: process.env.VUE_APP_URL.split("//")[1].split(":")[0],
+      });
+      this.robotWs.setWs(robot);
+      robot.on_connected(() => {
+        console.log('robotWs成功！')
+        Bus.$emit("robotOnconnected");
+      });
+      robot.on_message((data) => {
+        var currData = JSON.parse(data.data);
+        Bus.$emit("robotOnmessage", currData);
+      });
+      robot.on_close(() => {
+        console.log('robotWs关闭！')
+      });
+      robot.on_error(() => {
+        console.log('robotWs出错！')
+      });
     },
     //程序启动
     async getStartup() {
@@ -292,15 +305,19 @@ export default {
                 return;
               }
               result = new TextDecoder().decode(value);
-              console.log(result);
-              if (result.includes("init!")) {
+              console.log("reader---result", result);
+              if (result.includes("init!")&&!result.includes("start json init")) {
                 reader.cancel();
+                setTimeout(() => {
+                  _this.initRobotWs()
+                }, 2000);
                 setTimeout(() => {
                   _this.isReady = true;
                   _this.$store.commit("setRobotInit", true);
                 }, 3000);
+              } else {
+                process();
               }
-              process();
             });
           }
           process();
@@ -458,7 +475,7 @@ export default {
   position: absolute;
   left: 27.4583vw;
   top: 37.75vw;
-  width: 38.3333vw;
+  width: 36.75vw;
   font-size: $size-30;
   color: $white;
 }

@@ -67,12 +67,24 @@ const routes = [
   {
     path: "/connectionManagement",
     name: "connectionManagement",
-    component: () => import("../views/connectionManagement/ConnectionManagement.vue"),
+    component: () =>
+      import("../views/connectionManagement/ConnectionManagement.vue"),
   },
   {
     path: "/wifiMode",
     name: "wifiMode",
     component: () => import("../views/wifiMode/WifiMode.vue"),
+  },
+  {
+    path: "/demonstrate",
+    name: "demonstrate",
+    component: () => import("../views/demonstrate/Demonstrate.vue"),
+  },
+  {
+    path: "/graphicProgramming",
+    name: "graphicProgramming",
+    component: () =>
+      import("../views/graphicProgramming/GraphicProgramming.vue"),
   },
   {
     path: "/",

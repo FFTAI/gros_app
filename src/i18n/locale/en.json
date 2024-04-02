@@ -206,5 +206,13 @@
     "wifiTips": "Enter the current Wi-Fi password, generate a QR code",
     "wifiPwdTips": "Please enter the Wi-Fi password",
     "generate": "Generate",
-    "selectConnection": "Select connection method"
+    "selectConnection": "Select connection method",
+    "holdingMicrophone": "Holding microphone",
+    "raiseHand": "Raise hand",
+    "graphicProgramming" : "Graphic Programming",
+    "describe": "Describe",
+    "administration": "Administration",
+    "workflowName": "Workflow Name",
+    "startUp": "StartUp",
+    "terminate": "Terminate"
 }
