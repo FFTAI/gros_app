@@ -4,7 +4,7 @@
       <div class="title" v-if="prompt == 'returnMain'">
         {{ $t("tip") }}
       </div>
-      <div class="promptContent">
+      <div class="promptContent" :style="promptContentWidth">
         <img
           v-if="prompt != 'returnMain'"
           class="warningIcon"
@@ -57,6 +57,15 @@ export default {
       if (this.prompt == "calibration") style.width = "16vw";
       return style;
     },
+    promptContentWidth() {
+      let style = { width: "16vw" };
+      if (this.$i18n.locale == "en") style.width = "26vw";
+      if (this.prompt == "calibration" && this.$i18n.locale == "zh") style.width = "20vw";
+      if (this.prompt == "calibration" && this.$i18n.locale == "en") style.width = "30vw";
+      if (this.prompt == "reconnect" && this.$i18n.locale == "zh") style.width = "15vw";
+      if (this.prompt == "reconnect" && this.$i18n.locale == "en") style.width = "20vw";
+      return style;
+    },
   },
   data() {
     return {};
@@ -99,9 +108,9 @@ export default {
 
 .promptContent {
   display: flex;
+  align-items: center;
   position: absolute;
   bottom: 11.2083vw;
-  padding: 0 3.5vw;
 
   .promptTxt {
     font-size: $size-35;
@@ -117,7 +126,7 @@ export default {
 }
 
 .btnBox {
-  width: 27.125vw;
+  width: 27.0833vw;
   font-size: 1.7083vw;
   position: absolute;
   bottom: 2.7083vw;

@@ -19,11 +19,15 @@
             <div class="arrow"></div>
           </div>
         </rtc-header>
-        <div class="headBox flex-column" v-if="headBoxVisible">
+        <div
+          class="headBox flex-column"
+          :style="headBoxWidth"
+          v-if="headBoxVisible"
+        >
           <div @click="changeMode('remoteMode')">
             {{ $t("remoteMode") }}
           </div>
-          <div class="divider"></div>
+          <div class="divider" :style="dividerWidth"></div>
           <div @click="changeMode('developerMode')">
             {{ $t("developerMode") }}
           </div>
@@ -35,6 +39,13 @@
         <!--初始-->
         <div class="calibration">
           <img
+            v-if="$i18n.locale == 'en'"
+            class="calibrationImg"
+            src="@/assets/images/icon_calibrationEn.png"
+            @click="calibration()"
+          />
+          <img
+            v-else
             class="calibrationImg"
             src="@/assets/images/icon_calibration.png"
             @click="calibration()"
@@ -100,10 +111,10 @@
           <div class="actionItem">
             <img
               class="actionImg"
-              src="@/assets/images/icon_waveLeft.png"
-              @click="choseMode('waveLeftHand')"
+              src="@/assets/images/icon_raiseHand.png"
+              @click="choseMode('raiseHand')"
             />
-            <div>{{ $t("waveLeftHand") }}</div>
+            <div>{{ $t("raiseHand") }}</div>
           </div>
           <div class="actionItem">
             <img
@@ -124,22 +135,6 @@
           <div class="actionItem">
             <img
               class="actionImg"
-              src="@/assets/images/icon_nod.png"
-              @click="choseMode('nod')"
-            />
-            <div>{{ $t("nod") }}</div>
-          </div>
-          <div class="actionItem">
-            <img
-              class="actionImg"
-              src="@/assets/images/icon_shake.png"
-              @click="choseMode('shake')"
-            />
-            <div>{{ $t("shake") }}</div>
-          </div>
-          <div class="actionItem">
-            <img
-              class="actionImg"
               src="@/assets/images/icon_twist.png"
               @click="choseMode('twist')"
             />
@@ -152,6 +147,22 @@
               @click="choseMode('squat')"
             />
             <div>{{ $t("squat") }}</div>
+          </div>
+          <div class="actionItem">
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_shake.png"
+              @click="choseMode('shake')"
+            />
+            <div>{{ $t("shake") }}</div>
+          </div>
+          <div class="actionItem">
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_nod.png"
+              @click="choseMode('nod')"
+            />
+            <div>{{ $t("nod") }}</div>
           </div>
         </div>
         <div
@@ -238,7 +249,11 @@
       <!-- 当前状态提示 -->
       <div
         class="stateMessage flex-center"
-        v-if="(mode != '' && doAction) || mode == 'initial'"
+        v-if="
+          (mode != '' && doAction) ||
+          (mode != '' && otherAction) ||
+          mode == 'initial'
+        "
       >
         <span>{{ $t(mode) }}{{ $t("ing") }}...</span>
       </div>
@@ -248,21 +263,75 @@
         @cancel="cancel()"
         @confirm="confirm()"
       ></prompt-box>
+      <div class="wrapper" v-if="adjustVisible">
+        <div class="adjustRobot">
+          <div class="directionBk">
+            <div class="directionPointer" :style="rotateStyle">
+              <img class="pointToImg" src="@/assets/images/icon_pointTo.png" />
+              <img class="sRobImg" src="@/assets/images/icon_sRob.png" />
+            </div>
+          </div>
+          <span class="directonTxt">{{ $t("adjustPosture") }}</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 <script>
 import nipplejs from "nipplejs";
 import RtcHeader from "@/components/rtcHeader.vue";
-import rtcLeftControl from "@/components/rtcLeftControl.vue";
 import promptBox from "@/components/promptBox.vue";
 import { mapState } from "vuex";
 import Heartbeat from "@/mixin/Heartbeat";
 export default {
   mixins: [Heartbeat],
-  components: { RtcHeader, rtcLeftControl, promptBox },
+  components: { RtcHeader, promptBox },
   computed: {
     ...mapState(["gamepadConnected", "connected"]),
+    rotateStyle() {
+      let x = this.ImuX;
+      let y = this.ImuY;
+      // let a = this.ImuX;
+      // let b = this.ImuY;
+      // let x = -3.1416;
+      // let y = -0.087
+      if (x > 3.1416) x = 3.1416;
+      if (x < 3.054 && x > 0) x = 3.054;
+      if (x < -3.1416) x = -3.1416;
+      if (x > -3.054 && x < 0) x = -3.054;
+      if (y > 0.087) y = 0.087;
+      if (y < -0.087) y = -0.087;
+      if (x >= 3.054 && x <= 3.1416) {
+        x = 10 * ((x - 3.1416) / -0.087);
+      } else if (x >= -3.1416 && x <= -3.054) {
+        x = -10 * ((x + 3.1416) / 0.087);
+      }
+      y = -10 + 10 * ((y + 0.087) / 0.087);
+      console.log("x,y", x, y);
+      const angleRadians = Math.atan2(x, y);
+      let rotation = angleRadians * (180 / Math.PI);
+      if (rotation < 0) {
+        rotation += 360;
+      }
+      return {
+        transform: `rotate(${rotation}deg)`,
+        transformOrigin: "50% 0%",
+      };
+    },
+    headBoxWidth() {
+      let style = { width: "9.2083vw" };
+      if (this.$i18n.locale == "en") {
+        style.width = "17.6vw";
+      }
+      return style;
+    },
+    dividerWidth() {
+      let style = { width: "9.8333vw" };
+      if (this.$i18n.locale == "en") {
+        style.width = "18.4583vw";
+      }
+      return style;
+    },
   },
   data() {
     return {
@@ -280,6 +349,7 @@ export default {
       headBoxVisible: false, //模式选择框显隐
       camera: true, //是否开启视频
       doAction: false,
+      otherAction: false,
       isStand: false,
       isWalking: false,
       velocity: 0,
@@ -290,7 +360,14 @@ export default {
       promptVal: "",
       lastMessageReceivedTime: Date.now(),
       wsInterval: null,
-      reconnectWs: false
+      reconnectWs: false,
+      adjustVisible: false,
+      ImuX: 0,
+      ImuY: 0,
+      isZero: false,
+      walkEnd: true, //监听walk停止
+      headEnd: true, //监听head停止
+      bodyEnd: true, //监听body停止
     };
   },
   created() {
@@ -322,7 +399,32 @@ export default {
     });
     this.$bus.$on("robotOnmessage", (data) => {
       this.lastMessageReceivedTime = Date.now();
-      console.log("controller===========", data);
+      if (this.isZero && data.data.imu) {
+        this.ImuX = data.data.imu.x;
+        this.ImuY = data.data.imu.y;
+        // console.log(
+        //   "controller===========",
+        //   this.ImuX,
+        //   this.ImuY
+        // );
+        console.log(
+          "controller===========",
+          (data.data.imu.x * 180) / Math.PI,
+          (data.data.imu.y * 180) / Math.PI
+        );
+        if (
+          (this.ImuX >= 3.054 && this.ImuX <= 3.1416) ||
+          (this.ImuX >= -3.1416 &&
+            this.ImuX <= -3.054 &&
+            this.ImuY >= -0.087 &&
+            this.ImuY <= 0.087)
+        ) {
+          this.adjustVisible = false;
+        } else {
+          this.adjustVisible = true;
+        }
+      }
+      console.log("upper_action~~~~~~~~~~", data.data.upper_action);
       if (data.data) this.doAction = data.data.upper_action;
     });
   },
@@ -355,10 +457,11 @@ export default {
           const timeSinceLastMessage =
             currentTime - this.lastMessageReceivedTime;
           console.log("websocketHeartBeat.............", timeSinceLastMessage);
-          console.log(this.robotWs)
-          if (timeSinceLastMessage > 3000) {// 如果超过了阈值3秒，认为连接断开
+          console.log(this.robotWs);
+          if (timeSinceLastMessage > 3000) {
+            // 如果超过了阈值3秒，认为连接断开
             console.log("WebSocket connection might be disconnected.");
-            console.log(this.robotWs)
+            console.log(this.robotWs);
             this.robotWs.robot.enable_debug_state(2);
             clearInterval(this.wsInterval);
           }
@@ -381,7 +484,7 @@ export default {
             ? navigator.getGamepads()[2]
             : navigator.getGamepads()[3];
           // console.log(navigator.getGamepads(), gamepad)
-          if (_this.intervalCount >= 10) {
+          if (_this.intervalCount >= 50) {
             // navigator.getGamepads()[0].axes[0],navigator.getGamepads()[0].axes[1],navigator.getGamepads()[0].axes[2],navigator.getGamepads()[0].axes[3]
             _this.pressKey(gamepad.buttons);
             _this.remoteSensing(gamepad.axes);
@@ -420,16 +523,26 @@ export default {
       //   velocity = 0;
       // }
       // this.operateWalk(angle * -0.5, (velocity * this.speed) / -6.25);
+      console.log(arr);
       if (!this.isStand && this.isWalking) {
         this.velocity = arr[1];
         console.log(arr[1], arr[2]);
         if (Math.abs(this.velocity) < 0.1) this.velocity = 0;
         this.direction = arr[2];
         if (Math.abs(this.direction) < 0.1) this.direction = 0;
-        this.operateWalk(
-          this.direction * -45,
-          (this.velocity * this.speed) / -6.25
-        );
+        if (this.direction == 0 && this.velocity == 0 && !this.walkEnd) {
+          this.operateWalk(
+            this.direction * -45,
+            (this.velocity * this.speed) / -6.25
+          );
+          this.walkEnd = true;
+        } else if (this.direction != 0 || this.velocity != 0) {
+          this.operateWalk(
+            this.direction * -45,
+            (this.velocity * this.speed) / -6.25
+          );
+          this.walkEnd = false;
+        }
       } else if (this.isStand && !this.isWalking) {
         let pitch = arr[1] * -17.1887;
         let rotate_waist = arr[0] * -14.32;
@@ -439,8 +552,20 @@ export default {
         let yaw = arr[2] * 60;
         if (squat > -0.015) squat = 0;
         if (Math.abs(yaw) < 6) yaw = 0;
-        this.operateHead(pitch, yaw);
-        this.operateBody(squat, rotate_waist);
+        if (pitch == 0 && yaw == 0 && !this.headEnd) {
+          this.operateHead(pitch, yaw);
+          this.headEnd = true;
+        } else if (pitch != 0 || yaw != 0) {
+          this.operateHead(pitch, yaw);
+          this.headEnd = false;
+        }
+        if (squat == 0 && rotate_waist == 0 && !this.bodyEnd) {
+          this.operateBody(squat, rotate_waist);
+          this.bodyEnd = true;
+        } else if (squat != 0 || rotate_waist != 0) {
+          this.operateBody(squat, rotate_waist);
+          this.bodyEnd = false;
+        }
       }
     },
     // 手柄按键
@@ -575,9 +700,10 @@ export default {
       this.promptBoxOpen("calibration");
     },
     doCalibration() {
-      this.isStand = false
+      this.isStand = false;
       this.robotWs.robot.start();
       this.mode = "initial";
+      this.isZero = true;
       setTimeout(() => {
         this.mode = "";
       }, 7000);
@@ -629,6 +755,7 @@ export default {
     //切换当前控制模式
     changeControl(e) {
       if (e == "stand") {
+        this.isZero = false;
         this.isStand = true;
         this.isWalking = false;
         this.robotWs.robot.stand();
@@ -638,8 +765,8 @@ export default {
       }
       this.controlModel = e;
     },
-    choseMode(e) {
-      if (this.doAction == true) return;
+    async choseMode(e) {
+      if (this.doAction || this.otherAction) return;
       this.controlExpand = false;
       this.mode = e;
       //原地踏步，速度位置发0
@@ -662,7 +789,7 @@ export default {
         }, 500);
         if (e == "zero") {
           upper_data.arm_action = "RESET";
-        } else if (e == "waveLeftHand") {
+        } else if (e == "raiseHand") {
           upper_data.arm_action = "LEFT_ARM_WAVE";
         } else if (e == "swingArms") {
           upper_data.arm_action = "ARMS_SWING";
@@ -680,6 +807,7 @@ export default {
           lower_data.lower_body_mode = "SQUAT";
         } else if (e == "nod") {
           //上下点头
+          this.otherAction = true;
           this.operateHead(17, 0);
           setTimeout(() => {
             this.operateHead(-17, 0);
@@ -689,6 +817,7 @@ export default {
           }, 3000);
         } else if (e == "shake") {
           //左右摇头
+          this.otherAction = true;
           this.operateHead(0, 17);
           setTimeout(() => {
             this.operateHead(0, -17);
@@ -697,44 +826,46 @@ export default {
             this.operateHead(0, 0);
           }, 3000);
         }
-        if (lower_data.lower_body_mode == "" && e != "nod" && e != "nod") {
-          this.robotWs.robot
-            .upper_body(upper_data.arm_action, upper_data.hand_action)
-            .then((response) => {
-              console.log("upper_body-response", response);
-              this.doAction = false;
-            })
-            .catch((error) => {
-              console.log("upper_body-error", error);
-              this.doAction = false;
-            });
+        if (lower_data.lower_body_mode == "" && e != "nod" && e != "shake") {
+          try {
+            let res = await this.robotWs.robot.upper_body(
+              upper_data.arm_action,
+              upper_data.hand_action
+            );
+            if (res.data.code == 0 && res.data.msg == "ok") {
+              console.log("upper_body_OK", res);
+            } else {
+              console.log("upper_body_ERR", res);
+            }
+          } catch (error) {
+            console.log("upper_body-error", error);
+          }
         } else if (
           lower_data.lower_body_mode != "" &&
           e != "nod" &&
-          e != "nod"
+          e != "shake"
         ) {
-          // this.robotWs.robot.lower_body(lower_data.lower_body_mode)
-          this.$http
-            .request({
-              timeout: 30000,
-              baseURL: process.env.VUE_APP_URL,
-              method: "POST",
-              url: "/robot/lower_body",
-              data: {
-                lower_body_mode: lower_data.lower_body_mode,
-              },
-            })
-            .then((response) => {
-              console.log("lower_body-response", response);
-              this.doAction = false;
-            })
-            .catch((error) => {
-              console.log("lower_body-error", error);
-              this.doAction = false;
-            });
+          this.otherAction = true;
+          try {
+            let res = await this.robotWs.robot.lower_body(
+              lower_data.lower_body_mode
+            );
+            console.log("lower_body_OK........", res);
+            if (res.data.code == 0 && res.data.msg == "ok") {
+              console.log("lower_body_OK", res);
+              this.otherAction = false;
+            } else {
+              console.log("lower_body_ERR", res);
+              this.otherAction = false;
+            }
+          } catch (error) {
+            console.log("lower_body-error", error);
+            this.otherAction = false;
+          }
         } else {
+          console.log("头头", e);
           setTimeout(() => {
-            this.doAction = false;
+            this.otherAction = false;
           }, 4000);
         }
       }
@@ -999,7 +1130,7 @@ export default {
   }
 
   .arrow {
-    margin-left: .5vw;
+    margin-left: 0.5vw;
     width: 0;
     height: 0;
     background: linear-gradient(274deg, #1a1919 0%, #004c81 100%);
@@ -1013,20 +1144,18 @@ export default {
   position: absolute;
   top: 4.453123vw;
   left: 10.9375vw;
-  width: 13.5417vw;
-  height: 11.4334vw;
-  padding: 1.4708vw 0;
+  height: 8.0417vw;
+  padding: 1.7917vw 2.1667vw;
   background: rgba(0, 75, 133, 0.3);
   border: 0.1042vw solid rgba(68, 216, 251, 0.3);
   z-index: 99;
-  align-items: center;
-  justify-content: space-around;
+  align-items: flex-start;
+  justify-content: space-between;
   font-size: $size-41;
   color: $white;
 
   .divider {
     height: 0.1042vw;
-    width: 11.9792vw;
     background: $white;
     opacity: 0.3;
   }
@@ -1037,12 +1166,61 @@ export default {
   left: 50%;
   top: 7.5vw;
   transform: translate(-50%, -50%);
-  width: 14.7917vw;
-  height: 3.4583vw;
+  height: 3vw;
+  padding: 0 2.5833vw;
   background: rgba(0, 0, 0, 0.8);
-  border-radius: 4px;
+  border-radius: 0.25vw;
   z-index: 999;
   font-size: $size-30;
   color: $white;
+}
+.adjustRobot {
+  width: 49.25vw;
+  height: 30.7917vw;
+  background-image: url("../../assets/images/image_adjustBkg.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: absolute;
+  top: 7.125vw;
+  left: 25.375vw;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  .directionBk {
+    width: 18.4583vw;
+    height: 18.4583vw;
+    margin-top: 3.375vw;
+    background-image: url("../../assets/images/image_imuDirection.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    .directionPointer {
+      position: relative;
+      top: 9.2vw;
+      left: 8.2vw;
+      width: 2.1vw;
+      height: 7.5vw;
+      padding-top: 1.5vw;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      transition: transform 0.5s ease;
+      .pointToImg {
+        width: 1.5333vw;
+        height: 2vw;
+      }
+      .sRobImg {
+        width: 2.0833vw;
+        height: 1.7917vw;
+      }
+    }
+  }
+  .directonTxt {
+    font-size: $size-41;
+    font-family: AlibabaPuHuiTiM;
+    color: $white;
+    margin-top: 3.375vw;
+  }
 }
 </style>

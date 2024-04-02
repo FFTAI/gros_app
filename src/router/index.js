@@ -40,6 +40,16 @@ const routes = [
     component: () => import("../views/robotStartup/RobotStartup.vue"),
   },
   {
+    path: "/demonstrate",
+    name: "demonstrate",
+    component: () => import("../views/demonstrate/Demonstrate.vue"),
+  },
+  {
+    path: "/graphicProgramming",
+    name: "graphicProgramming",
+    component: () => import("../views/graphicProgramming/GraphicProgramming.vue"),
+  },
+  {
     path: "/",
     redirect: "/startUp",
   },
