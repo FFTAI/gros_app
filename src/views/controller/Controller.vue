@@ -295,6 +295,7 @@
 import nipplejs from "nipplejs";
 import RtcHeader from "@/components/rtcHeader.vue";
 import promptBox from "@/components/promptBox.vue";
+import tagButton from "@/components/tagButton.vue";
 import { mapState } from "vuex";
 import Heartbeat from "@/mixin/Heartbeat";
 import * as THREE from "three";
@@ -302,7 +303,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 export default {
   mixins: [Heartbeat],
-  components: { RtcHeader, promptBox },
+  components: { RtcHeader, promptBox, tagButton },
   computed: {
     ...mapState(["gamepadConnected", "connected"]),
     rotateStyle() {
