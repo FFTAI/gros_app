@@ -172,6 +172,22 @@
             />
             <div>讲话挥手</div>
           </div>
+          <div class="actionItem">
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_waveTwo.png"
+              @click="choseModeChery('WATER_DELIVERY')"
+            />
+            <div>递水</div>
+          </div>
+          <div class="actionItem">
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_waveTwo.png"
+              @click="choseModeChery('GUIDING_DIRECTION')"
+            />
+            <div>导游引导</div>
+          </div>
           <!-- <div class="actionItem">
             <img
               class="actionImg"
