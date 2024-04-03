@@ -1183,7 +1183,7 @@ export default {
   position: absolute;
   top: 7.125vw;
   left: 25.375vw;
-  z-index: 999;
+  z-index: 888;
   display: flex;
   align-items: center;
   flex-direction: column;
