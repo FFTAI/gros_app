@@ -308,10 +308,6 @@ export default {
     rotateStyle() {
       let x = this.ImuX;
       let y = this.ImuY;
-      // let a = this.ImuX;
-      // let b = this.ImuY;
-      // let x = -3.1416;
-      // let y = -0.087
       if (x > 3.1416) x = 3.1416;
       if (x < 3.054 && x > 0) x = 3.054;
       if (x < -3.1416) x = -3.1416;
@@ -425,11 +421,6 @@ export default {
       if (this.isZero && data.data.imu) {
         this.ImuX = data.data.imu.x;
         this.ImuY = data.data.imu.y;
-        // console.log(
-        //   "controller===========",
-        //   this.ImuX,
-        //   this.ImuY
-        // );
         console.log(
           "controller===========",
           (data.data.imu.x * 180) / Math.PI,
@@ -480,15 +471,11 @@ export default {
           const timeSinceLastMessage =
             currentTime - this.lastMessageReceivedTime;
           console.log("websocketHeartBeat.............", timeSinceLastMessage);
-          console.log(this.robotWs);
           if (timeSinceLastMessage > 3000) {
             // 如果超过了阈值3秒，认为连接断开
-            console.log(this.robotWs);
             if (timeSinceLastMessage > 3000) {
               // 如果超过了阈值3秒，认为连接断开
               console.log("WebSocket connection might be disconnected.");
-              console.log(this.robotWs);
-              console.log(this.robotWs);
               this.robotWs.robot.enable_debug_state(2);
               clearInterval(this.wsInterval);
             }
@@ -511,7 +498,6 @@ export default {
             : navigator.getGamepads()[2]
             ? navigator.getGamepads()[2]
             : navigator.getGamepads()[3];
-          // console.log(navigator.getGamepads(), gamepad)
           if (_this.intervalCount >= 50) {
             // navigator.getGamepads()[0].axes[0],navigator.getGamepads()[0].axes[1],navigator.getGamepads()[0].axes[2],navigator.getGamepads()[0].axes[3]
             _this.pressKey(gamepad.buttons);
@@ -551,10 +537,8 @@ export default {
       //   velocity = 0;
       // }
       // this.operateWalk(angle * -0.5, (velocity * this.speed) / -6.25);
-      console.log(arr);
       if (!this.isStand && this.isWalking) {
         this.velocity = arr[1];
-        console.log(arr[1], arr[2]);
         if (Math.abs(this.velocity) < 0.1) this.velocity = 0;
         this.direction = arr[2];
         if (Math.abs(this.direction) < 0.1) this.direction = 0;
@@ -658,7 +642,6 @@ export default {
               let rotate_waist = data.vector.x * -14.32;
               if (Math.abs(pitch) < 1.71887) pitch = 0;
               if (Math.abs(rotate_waist) < 1.432) rotate_waist = 0;
-              console.log(pitch, rotate_waist);
               _this.operateHead(pitch, 0);
               _this.operateBody(0, rotate_waist);
             }
@@ -876,7 +859,6 @@ export default {
             let res = await this.robotWs.robot.lower_body(
               lower_data.lower_body_mode
             );
-            console.log("lower_body_OK........", res);
             if (res.data.code == 0 && res.data.msg == "ok") {
               console.log("lower_body_OK", res);
               this.otherAction = false;
@@ -889,7 +871,6 @@ export default {
             this.otherAction = false;
           }
         } else {
-          console.log("头头", e);
           setTimeout(() => {
             this.otherAction = false;
           }, 4000);
@@ -981,8 +962,8 @@ export default {
           positions[index++] = parseFloat(parts[2]);
         }
 
-        console.log(positions);
-        console.log(colors);
+        console.log('positions',positions);
+        console.log('colors',colors);
 
         geometry.setAttribute(
           "position",
@@ -1044,7 +1025,6 @@ export default {
         const intersection = raycaster.intersectObjects(this.scene.children); // 获取射线发射器捕获的模型列表，传进场景中模型，返回穿透
         if (intersection.length) {
           const object = intersection[0].object; // 获取第一个模型
-          console.log(object);
           this.scene.add(transformControls); // 添加变换控制器
           transformControls.enabled = true; // 启用变换控制器
           transformControls.attach(object);

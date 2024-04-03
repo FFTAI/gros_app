@@ -87,6 +87,11 @@ const routes = [
       import("../views/graphicProgramming/GraphicProgramming.vue"),
   },
   {
+    path: "/multiStatus",
+    name: "multiStatus",
+    component: () => import("../views/controller/MultiStatus.vue"),
+  },
+  {
     path: "/",
     redirect: "/startUp",
   },
