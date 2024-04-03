@@ -4,7 +4,7 @@
       :is-logo="true"
       :is-login="true"
       @connect="toConnect()"
-      @shutDown="promptBoxOpen('powerOff')"
+      @shutDown="headBoxOpen()"
     ></rtc-header>
     <div class="humanBody">
       <img class="openHuman" src="@/assets/images/image_onOpen.png" />
@@ -12,7 +12,7 @@
     <div class="startContain flex-center" @click="startExplore()">
       <span class="startBtn common-font">{{ $t("beginToExplore") }}</span>
     </div>
-    <!-- <div class="closeBox flex-column" :style="closeBoxWidth" v-if="headBoxVisible">
+    <div class="closeBox flex-column" :style="closeBoxWidth" v-if="headBoxVisible">
       <div style="margin-left: 2.2396vw" @click="off('powerOff')">
         <img
           style="width: 1.4063vw; height: 1.4583vw"
@@ -28,7 +28,7 @@
         />
         {{ $t("closeProgram") }}
       </div>
-    </div> -->
+    </div>
     <prompt-box
       v-if="promptVisible"
       :prompt="promptValue"
@@ -48,20 +48,20 @@ export default {
   components: { rtcHeader, promptBox },
   computed: {
     ...mapState(["connected"]),
-    // closeBoxWidth() {
-    //   let style = { "width": "12.4479vw","font-size": "1.7083vw" };
-    //   if (this.$i18n.locale == "en"){
-    //     style.width = "14.8229vw";
-    //     style["font-size"] = "1.4583vw";
-    //   } 
-    //   return style;
-    // },
+    closeBoxWidth() {
+      let style = { "width": "12.4479vw","font-size": "1.7083vw" };
+      if (this.$i18n.locale == "en"){
+        style.width = "14.8229vw";
+        style["font-size"] = "1.4583vw";
+      } 
+      return style;
+    },
   },
   data() {
     return {
       getFlag: true,
       promptVisible: false,
-      // headBoxVisible: false,
+      headBoxVisible: false,
       promptValue: ""
     };
   },
@@ -100,7 +100,7 @@ export default {
     promptBoxOpen(e) {
       this.promptValue = e;
       this.promptVisible = true;
-      // this.headBoxVisible = false;
+      this.headBoxVisible = false;
     },
     promptBoxClose() {
       this.promptValue = "";
@@ -132,21 +132,21 @@ export default {
       }
       this.promptBoxClose();
     },
-    // headBoxOpen() {
-    //   this.headBoxVisible = !this.headBoxVisible;
-    // },
-    // off(e) {
-    //   switch (e) {
-    //     case "powerOff":
-    //       this.promptBoxOpen("powerOff");
-    //       break;
-    //     case "closeProgram":
-    //       this.promptBoxOpen("closeProgram");
-    //       break;
-    //     default:
-    //       break;
-    //   }
-    // },
+    headBoxOpen() {
+      this.headBoxVisible = !this.headBoxVisible;
+    },
+    off(e) {
+      switch (e) {
+        case "powerOff":
+          this.promptBoxOpen("powerOff");
+          break;
+        case "closeProgram":
+          this.promptBoxOpen("closeProgram");
+          break;
+        default:
+          break;
+      }
+    },
   },
 };
 </script>

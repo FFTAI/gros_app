@@ -179,7 +179,7 @@
               @click="choseMode('zero')"
             />
             <div>{{ $t("zero") }}</div>
-          </div> -->
+          </div>
           <div class="actionItem">
             <img
               class="actionImg"

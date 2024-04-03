@@ -55,7 +55,7 @@
       </div>
     </div>
     <!-- 程序启动 -->
-    <div class="startupBox" v-else-if="step == 'startup' && !calibrationDialog">
+    <!-- <div class="startupBox" v-else-if="step == 'startup' && !calibrationDialog">
       <div v-if="!isReady">
         <img class="startupImg1" src="@/assets/images/image_robotStart1.png" />
         <img class="startupImg2" src="@/assets/images/image_robotStart2.png" />
@@ -70,7 +70,14 @@
           {{ $t("initSuccessfully") }}
         </div>
       </div>
-    </div>
+    </div> -->
+    <!-- 程序启动 -->
+    <div class="startupBox" v-else-if="step == 'startup' && !calibrationDialog">
+        <div class="logBox">
+          <div v-html="shValue"></div>
+        </div>
+        <div class="logTips">程序启动成功后，显示init</div>
+      </div>
     <!-- 初始提示 -->
     <div class="calibrationDialogSty" v-if="calibrationDialog">
       <div class="calibrationItem">
@@ -169,7 +176,7 @@
         <span>{{ $t("startup") }}</span>
       </div>
       <div v-else class="btn finishBtn noIconBtn" @click="promptBoxOpen()">
-        <span>{{ $t("powerOff") }}</span>
+        <span>{{ $t("programShutdown") }}</span>
       </div>
       <div
         v-if="isReady"
@@ -181,7 +188,7 @@
     </div>
     <prompt-box
       v-if="promptVisible"
-      :prompt="'powerOff'"
+      :prompt="'closeProgram'"
       @cancel="promptBoxOpen()"
       @confirm="shutDown()"
     ></prompt-box>
@@ -236,6 +243,7 @@ export default {
       calibrationDialog: false,
       isReady: false,
       promptVisible: false,
+      shValue: ""
     };
   },
   created() {},
@@ -304,12 +312,10 @@ export default {
                 console.log("处理结束");
                 return;
               }
-              result = new TextDecoder().decode(value);
-              console.log("reader---result", result);
-              if (
-                result.includes("init!") &&
-                !result.includes("start json init")
-              ) {
+              let newTxt = new TextDecoder().decode(value)
+              result += newTxt + "<br>";
+              _this.shValue = result;
+              if (newTxt.includes("init!")&&newTxt.includes("start json init")) {
                 reader.cancel();
                 setTimeout(() => {
                   if (
@@ -571,18 +577,18 @@ export default {
   height: 35.7083vw;
   background: rgba(68, 216, 251, 0.1);
 
-  // .logBox {
-  //     position: absolute;
-  //     top: 1.8333vw;
-  //     left: 1.8333vw;
-  //     width: 55.375vw;
-  //     height: 27.0417vw;
-  //     padding: 1.25vw;
-  //     background: rgba(255, 255, 255, 0.1);
-  //     overflow: auto;
-  //     font-size: 1vw;
-  //     color: #FFFFFF;
-  // }
+  .logBox {
+      position: absolute;
+      top: 1.8333vw;
+      left: 1.8333vw;
+      width: 55.375vw;
+      height: 27.0417vw;
+      padding: 1.25vw;
+      background: rgba(255, 255, 255, 0.1);
+      overflow: auto;
+      font-size: 1vw;
+      color: #FFFFFF;
+  }
   .startupImg1 {
     position: absolute;
     left: 2.7917vw;
