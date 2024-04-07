@@ -215,5 +215,12 @@
     "startUp": "启动",
     "terminate": "终止",
     "walkingSpeed": "行走速度",
-    "walkingHeight": "行走高度"
+    "walkingHeight": "行走高度",
+    "electricityLevel": "电量",
+    "sufficientBattery": "电量充足",
+    "InsufficientBattery": "电量不足",
+    "normalTemperature": "温度正常",
+    "abnormalTemperature": "温度异常",
+    "onlineDevice": "在线设备",
+    "offlineDevice": "离线设备"
 }

@@ -216,5 +216,12 @@
     "startUp": "StartUp",
     "terminate": "Terminate",
     "walkingSpeed": "Walking Speed",
-    "walkingHeight": "Walking Height"
+    "walkingHeight": "Walking Height",
+    "electricityLevel": "Battery",
+    "sufficientBattery": "Sufficient battery power",
+    "InsufficientBattery": "Insufficient battery power",
+    "normalTemperature": "Normal temperature",
+    "abnormalTemperature": "Abnormal temperature",
+    "onlineDevice": "Online device",
+    "offlineDevice": "Offline device"
 }

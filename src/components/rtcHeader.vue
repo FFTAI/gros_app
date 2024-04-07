@@ -48,8 +48,7 @@
       <div class="iconBox flex-center">
         <img
           class="inImg"
-          style="height: 1.7917vw"
-          src="@/assets/images/icon_Wifi.png"
+          src="@/assets/images/icon_wifi.png"
         />
       </div>
       <div class="divider"></div>

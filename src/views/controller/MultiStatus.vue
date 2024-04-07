@@ -21,7 +21,52 @@
         <img class="tabIcon" src="@/assets/images/icon_status.png" />
       </div>
     </div>
-    <div></div>
+    <div class="statusCard">
+      <div class="statusItem">
+        <div class="statusContent">
+          <img class="statusIcon" src="@/assets/images/icon_battery4.png" />
+          <span style="font-size: 1.4583vw">{{ $t("electricityLevel") }}</span>
+        </div>
+        <div class="statusDes">
+          <div class="green point"></div>
+          <span class="txt1">{{ $t("sufficientBattery") }}</span>
+          <span style="margin-right: 3.2292vw">5台</span>
+          <div class="red point"></div>
+          <span class="txt1">{{ $t("InsufficientBattery") }}</span>
+          <span>12台</span>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="statusItem">
+        <div class="statusContent">
+          <img class="statusIcon" src="@/assets/images/icon_robotTem.png" />
+          <span style="font-size: 1.4583vw">{{ $t("temperature") }}</span>
+        </div>
+        <div class="statusDes">
+          <div class="green point"></div>
+          <span class="txt1">{{ $t("normalTemperature") }}</span>
+          <span style="margin-right: 3.2292vw">5台</span>
+          <div class="red point"></div>
+          <span class="txt1">{{ $t("abnormalTemperature") }}</span>
+          <span>12台</span>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="statusItem">
+        <div class="statusContent">
+          <img class="statusIcon" src="@/assets/images/icon_wifi.png" />
+          <span style="font-size: 1.4583vw">{{ $t("connect") }}</span>
+        </div>
+        <div class="statusDes">
+          <div class="green point"></div>
+          <span class="txt1">{{ $t("onlineDevice") }}</span>
+          <span style="margin-right: 3.2292vw">5台</span>
+          <div class="red point"></div>
+          <span class="txt1">{{ $t("offlineDevice") }}</span>
+          <span>12台</span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -91,5 +136,59 @@ export default {
     width: 2.6042vw;
     height: 2.6042vw;
   }
+}
+.statusCard {
+  position: absolute;
+  left: 8.8542vw;
+  top: 6.7708vw;
+  width: 88.5417vw;
+  height: 9.375vw;
+  background: rgba(0, 75, 133, 0.3);
+  border-radius: 0.5208vw;
+  border: 0.0521vw solid #0075b8;
+  display: flex;
+  align-items: center;
+  font-size: 1.0417vw;
+  color: #ffffff;
+  .divider {
+    width: 0.1042vw;
+    height: 4.7917vw;
+    background: #ffffff;
+    opacity: 0.1;
+  }
+  .statusItem {
+    width: 25.3125vw;
+    padding: 2.2917vw 0 2.2917vw 4.1667vw;
+    .statusContent {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.1979vw;
+    }
+    .statusDes {
+      display: flex;
+      align-items: center;
+      .txt1 {
+        opacity: 0.5;
+        margin-left: 0.7292vw;
+        margin-right: 1.1458vw;
+      }
+    }
+  }
+  .statusIcon {
+    width: 2.0833vw;
+    height: 2.0833vw;
+    margin-right: 0.625vw;
+  }
+}
+.point {
+  width: 0.625vw;
+  height: 0.625vw;
+  border-radius: 50%;
+}
+.green {
+  background: #5db673;
+}
+.red {
+  background: #ff6656;
 }
 </style>
