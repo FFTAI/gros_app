@@ -67,6 +67,92 @@
         </div>
       </div>
     </div>
+    <div class="robotContent">
+      <div
+        class="robotCard"
+        v-for="(item, index) in robotList"
+        :key="index"
+        @click="choseCard(item)"
+      >
+        <div class="cardTop">
+          <img
+            v-if="item.connected"
+            class="connectImg"
+            src="@/assets/images/image_connectedAvatar.png"
+          />
+          <img
+            v-else
+            class="connectImg"
+            src="@/assets/images/image_disconnected.png"
+          />
+          <div
+            style="margin-left: 1.1979vw"
+            :class="{ opacity02: !item.connected }"
+          >
+            <div>
+              {{ item.name }}
+            </div>
+            <div
+              v-if="item.connected"
+              style="display: flex; align-items: center; gap: 0.625vw"
+            >
+              <div class="green point"></div>
+              <img
+                style="height: 1.0938vw; width: 1.5625vw"
+                src="@/assets/images/icon_Wi-Fi.png"
+              />
+              <span style="font-size: 1.0417vw; opacity: 0.5">Wi-Fi连接</span>
+            </div>
+            <div
+              v-else
+              style="display: flex; align-items: center; gap: 0.625vw"
+            >
+              <div class="red point"></div>
+              <span style="font-size: 1.0417vw; opacity: 0.5">已断开</span>
+            </div>
+          </div>
+        </div>
+        <div class="cardMid flex-center" :class="{ opacity02: !item.connected }">
+          <div
+            v-if="item.currentStatus == 'stand'"
+            class="midContent flex-between"
+          >
+            <img class="img" src="@/assets/images/icon_handshake.png" />
+            <span>原地站立中</span>
+          </div>
+          <div
+            v-else-if="item.currentStatus == 'walk'"
+            class="midContent flex-between"
+          >
+            <img class="img" src="@/assets/images/icon_walk.png" />
+            <span>步态运动中</span>
+          </div>
+          <div
+            v-else-if="item.currentStatus == 'none'"
+            class="midContent flex-between"
+          >
+            <div class="flex-center img">
+              <div class="noneStatus"></div>
+            </div>
+            <span>无运动</span>
+          </div>
+        </div>
+        <div class="cardBottom flex-between" :class="{ opacity02: !item.connected }">
+          <div class="flex-column">
+            <img class="img" src="@/assets/images/icon_battery.png" />
+            <span>{{ item.battery }}%</span>
+          </div>
+          <div class="flex-column">
+            <img class="img" src="@/assets/images/icon_robotTem.png" />
+            <span>{{ item.robotTemp }}°C</span>
+          </div>
+          <div class="flex-column">
+            <img class="img" src="@/assets/images/icon_chipTem.png" />
+            <span>{{ item.motorTemp }}°C</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -77,6 +163,48 @@ export default {
   data() {
     return {
       activatedTab: "status",
+      robotList: [
+        {
+          name: "GR-0001",
+          connected: true,
+          currentStatus: "stand",
+          battery: 80,
+          robotTemp: 40,
+          motorTemp: 60,
+        },
+        {
+          name: "GR-0002",
+          connected: true,
+          currentStatus: "walk",
+          battery: 80,
+          robotTemp: 40,
+          motorTemp: 60,
+        },
+        {
+          name: "GR-0003",
+          connected: true,
+          currentStatus: "none",
+          battery: 80,
+          robotTemp: 40,
+          motorTemp: 60,
+        },
+        {
+          name: "GR-0004",
+          connected: false,
+          currentStatus: "none",
+          battery: 80,
+          robotTemp: 40,
+          motorTemp: 60,
+        },
+        {
+          name: "GR-0005",
+          connected: false,
+          currentStatus: "none",
+          battery: 80,
+          robotTemp: 40,
+          motorTemp: 60,
+        },
+      ],
     };
   },
   created() {},
@@ -190,5 +318,76 @@ export default {
 }
 .red {
   background: #ff6656;
+}
+.robotContent {
+  position: absolute;
+  left: 8.8542vw;
+  top: 18.2292vw;
+  width: 88.6458vw;
+  height: calc(100% - 18.2292vw);
+  overflow: scroll;
+  display: flex;
+  gap: 2.0833vw;
+  flex-wrap: wrap;
+  .robotCard {
+    width: 18.0729vw;
+    height: 23.0729vw;
+    padding: 2.0833vw 0 1.9271vw 2.0833vw;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 130, 187, 0.9) 0%,
+      rgba(0, 75, 133, 0.8) 100%
+    );
+    border-radius: 0.8333vw;
+    border: 0.0521vw solid #0075b8;
+    font-size: 1.4583vw;
+    color: #ffffff;
+    .cardTop {
+      height: 4.1667vw;
+      display: flex;
+      align-items: center;
+      .connectImg {
+        width: 3.9583vw;
+        height: 3.9583vw;
+      }
+    }
+    .cardMid {
+      width: 16.4063vw;
+      height: 11.0938vw;
+      margin-top: 2.0833vw;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 0.5208vw;
+      .midContent {
+        width: 8.2292vw;
+        height: 6.875vw;
+        flex-direction: column;
+        align-items: center;
+        .noneStatus {
+          width: 1.0417vw;
+          border: 0.2083vw solid #ffffff;
+        }
+        .img {
+          height: 4.1667vw;
+          width: 4.1667vw;
+        }
+      }
+    }
+    .cardBottom {
+      width: 15.8854vw;
+      height: 3.4375vw;
+      margin-top: 2.2917vw;
+      font-size: 1.0417vw;
+      .img {
+        width: 2.0833vw;
+        height: 2.0833vw;
+      }
+    }
+  }
+}
+.robotContent::-webkit-scrollbar {
+  width: 0;
+}
+.opacity02 {
+  opacity: 0.2;
 }
 </style>
