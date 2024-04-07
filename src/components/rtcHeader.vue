@@ -135,6 +135,49 @@
             </div>
           </div>
           <div class="operationDivider"></div>
+          <div class="itemChild flex-between">
+            <div>
+              {{ $t("walkingSpeed") }}
+            </div>
+            <tag-button :speed="currSpeed" @changeSpeed="changeSpeed"></tag-button>
+          </div>
+          <div class="operationDivider"></div>
+          <div class="itemChild flex-between">
+            <div>
+              {{ $t("walkingHeight") }}
+            </div>
+            <tag-button :speed="currSpeed" @changeSpeed="changeSpeed"></tag-button>
+          </div>
+          <div class="operationDivider"></div>
+          <div class="itemChild flex-between">
+            <div>
+              {{ $t("centroidMass") }}
+            </div>
+            <div class="flex-center">
+              <span style="margin-right: 1.1667vw">{{ cmVal }}</span>
+              <el-slider
+                class="splider"
+                v-model="cmVal"
+                :marks="cmMarks"
+                :show-tooltip="false"
+              ></el-slider>
+            </div>
+          </div>
+          <div class="operationDivider"></div>
+          <div class="itemChild flex-between">
+            <div>
+              {{ $t("centroidPosition") }}
+            </div>
+            <div class="flex-center">
+              <span style="margin-right: 1.1667vw">{{ -cpVal }}</span>
+              <el-slider
+                class="splider"
+                v-model="cpVal"
+                :marks="cpMarks"
+                :show-tooltip="false"
+              ></el-slider>
+            </div>
+          </div>
         </div>
         <!-- 感知交互 -->
         <div class="operationContent common-font" v-if="chosedBar == 2">
@@ -261,7 +304,9 @@
 
 <script>
 import { mapState } from "vuex";
+import tagButton from './tagButton.vue';
 export default {
+  components: { tagButton },
   name: "rtcHeader",
   props: {
     currentSpeed: Number,
@@ -312,6 +357,15 @@ export default {
       actuatorTemp: 0,
       batteryLevel: 0,
       robotTemp: 0,
+      currSpeed: "slow",
+      cmVal: 80,
+      cpVal: 20,
+      cmMarks: {
+        50: "0",
+      },
+      cpMarks: {
+        50: "0",
+      },
     };
   },
   mounted() {
@@ -391,6 +445,9 @@ export default {
     },
     closeDrawer() {
       this.drawerVisible = false;
+    },
+    changeSpeed(e) {
+      this.currSpeed = e;
     },
   },
 };
@@ -635,7 +692,7 @@ export default {
   margin-left: -2.1667vw;
 }
 .splider {
-  width: 13.9583vw;
+  width: 18.5938vw;
 }
 .splider ::v-deep .el-slider__runway {
   height: 0.5vw;
@@ -652,5 +709,15 @@ export default {
   height: 2.0833vw;
   box-shadow: 0 .125vw .2917vw 0 rgba(63, 63, 63, 0.5);
   border: 0;
+}
+.splider ::v-deep .el-slider__marks .el-slider__marks-text {
+  font-family: AlibabaPuHuiTiM;
+  font-size: 1.25vw;
+  color: #ffffff;
+  font-style: normal;
+}
+.splider ::v-deep .el-slider__stop {
+  width: 0;
+  height: 0;
 }
 </style>

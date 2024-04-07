@@ -214,5 +214,7 @@
     "administration": "Administration",
     "workflowName": "Workflow Name",
     "startUp": "StartUp",
-    "terminate": "Terminate"
+    "terminate": "Terminate",
+    "walkingSpeed": "Walking Speed",
+    "walkingHeight": "Walking Height"
 }
