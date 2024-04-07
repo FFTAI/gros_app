@@ -9,9 +9,9 @@
     <div class="humanBody">
       <img class="openHuman" src="@/assets/images/image_onOpen.png" />
     </div>
-    <div class="startContain flex-center" style="bottom: 12vw" @click="toGP()">
+    <!-- <div class="startContain flex-center" style="bottom: 12vw" @click="toGP()">
       <span class="startBtn common-font">图形化编程</span>
-    </div>
+    </div> -->
     <div class="startContain flex-center" @click="startExplore()">
       <span class="startBtn common-font">{{ $t("beginToExplore") }}</span>
     </div>
