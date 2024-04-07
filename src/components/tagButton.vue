@@ -87,8 +87,8 @@ export default {
           default:
             break;
         }
-        console.log(e,val)
-      this.$emit("changeSpeed", val);
+        // console.log(e,val)
+      this.$emit("changeTag", val);
     },
   },
 };

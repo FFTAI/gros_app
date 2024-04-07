@@ -7,18 +7,21 @@
     </rtc-header>
     <div class="sideTab">
       <div
-        :class="activatedTab == 'control' ? 'activated' : 'disactivated'"
+        class="tabItem"
+        :class="activatedTab == 'control' ? 'activated' : ''"
         @click="changeTab('control')"
       >
-        <!-- <img class="control" src="@/assets/images/image_direction.png" /> -->
+        <img class="tabIcon" src="@/assets/images/icon_controller.png" />
       </div>
       <div
-        :class="activatedTab == 'status' ? 'activated' : 'disactivated'"
+        class="tabItem"
+        :class="activatedTab == 'status' ? 'activated' : ''"
         @click="changeTab('status')"
       >
-      
+        <img class="tabIcon" src="@/assets/images/icon_status.png" />
       </div>
     </div>
+    <div></div>
   </div>
 </template>
 
@@ -64,15 +67,16 @@ export default {
   left: 0;
   bottom: 0;
   width: 6.25vw;
-  height: 52.0833vw;
+  height: calc(100% - 4.4444vw);
   background: rgba(32, 59, 87, 0.3);
-  .disactivated {
+  .tabItem {
     width: 6.25vw;
     height: 6.25vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .activated {
-    width: 6.25vw;
-    height: 6.25vw;
     background: linear-gradient(274deg, rgba(0, 76, 129, 0.2) 0%, #004c81 100%);
   }
   .activated::after {
@@ -82,6 +86,10 @@ export default {
     width: 0.5729vw;
     height: 6.25vw;
     background: #44d8fb;
+  }
+  .tabIcon {
+    width: 2.6042vw;
+    height: 2.6042vw;
   }
 }
 </style>

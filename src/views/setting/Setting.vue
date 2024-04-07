@@ -136,7 +136,7 @@
             <div class="flex-center">
               {{ $t("movementSpeed") }}
             </div>
-            <tagButton :speed="currSpeed" @changeSpeed="changeSpeed"></tagButton>
+            <tagButton :speed="currSpeed" @changeTag="changeSpeed"></tagButton>
           </div>
           <div class="divider"></div>
           <!-- 机器高度 -->
@@ -144,7 +144,8 @@
             <div class="flex-center">
               {{ $t("machineHeight") }}
             </div>
-            <div class="tagBtn">
+            <tagButton :height="currHeight" @changeTag="changeHeight"></tagButton>
+            <!-- <div class="tagBtn">
               <div
                 class="tagItem flex-center"
                 :class="{
@@ -177,7 +178,7 @@
               >
                 {{ $t("high") }}
               </div>
-            </div>
+            </div> -->
           </div>
           <div class="divider"></div>
           <!-- 质心质量 -->
@@ -975,10 +976,12 @@ export default {
     },
     //选择运动速度
     changeSpeed(e) {
+      console.log(e)
       this.currSpeed = e;
     },
     //选择机器高度
     changeHeight(e) {
+      console.log(e)
       this.currHeight = e;
     },
     //检测更新

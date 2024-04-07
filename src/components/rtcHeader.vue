@@ -139,14 +139,14 @@
             <div>
               {{ $t("walkingSpeed") }}
             </div>
-            <tag-button :speed="currSpeed" @changeSpeed="changeSpeed"></tag-button>
+            <tag-button :speed="currSpeed" @changeTag="changeSpeed"></tag-button>
           </div>
           <div class="operationDivider"></div>
           <div class="itemChild flex-between">
             <div>
               {{ $t("walkingHeight") }}
             </div>
-            <tag-button :speed="currSpeed" @changeSpeed="changeSpeed"></tag-button>
+            <tagButton :height="currHeight" @changeTag="changeHeight"></tagButton>
           </div>
           <div class="operationDivider"></div>
           <div class="itemChild flex-between">
@@ -358,6 +358,7 @@ export default {
       batteryLevel: 0,
       robotTemp: 0,
       currSpeed: "slow",
+      currHeight: "low",
       cmVal: 80,
       cpVal: 20,
       cmMarks: {
@@ -448,6 +449,9 @@ export default {
     },
     changeSpeed(e) {
       this.currSpeed = e;
+    },
+    changeHeight(e) {
+      this.currHeight = e;
     },
   },
 };
