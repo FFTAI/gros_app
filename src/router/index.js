@@ -89,7 +89,7 @@ const routes = [
   {
     path: "/multiStatus",
     name: "multiStatus",
-    component: () => import("../views/controller/MultiStatus.vue"),
+    component: () => import("../views/multiStatus/MultiStatus.vue"),
   },
   {
     path: "/",

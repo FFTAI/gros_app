@@ -58,7 +58,7 @@
           />
         </div>
         <!-- 速度挡位调节 -->
-        <div class="speedBox">
+        <!-- <div class="speedBox">
           <div class="speedControl">
             <div class="speedDirection flex-column">
               <img
@@ -73,6 +73,19 @@
                 src="@/assets/images/btn_reduce.png"
               />
             </div>
+          </div>
+        </div> -->
+        <div class="multiStatus">
+          <div
+            class="tabItem activated"
+          >
+            <img class="tabIcon" src="@/assets/images/icon_controller.png" />
+          </div>
+          <div
+            class="tabItem"
+            @click="changeTab()"
+          >
+            <img class="tabIcon" src="@/assets/images/icon_status.png" />
           </div>
         </div>
       </div>
@@ -963,8 +976,8 @@ export default {
           positions[index++] = parseFloat(parts[2]);
         }
 
-        console.log('positions',positions);
-        console.log('colors',colors);
+        console.log("positions", positions);
+        console.log("colors", colors);
 
         geometry.setAttribute(
           "position",
@@ -1073,15 +1086,20 @@ export default {
           break;
       }
     },
+    changeTab() {
+      this.$router.push({
+        name: "multiStatus",
+      })
+    }
   },
 };
 </script>
 <style lang="scss">
-.pc{
+.pc {
   height: 100vh;
   width: 100%;
 }
-.humanModel{
+.humanModel {
   position: absolute;
   bottom: 0;
   left: 32vw;
@@ -1398,6 +1416,36 @@ export default {
     font-family: AlibabaPuHuiTiM;
     color: $white;
     margin-top: 3.375vw;
+  }
+}
+.multiStatus {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 6.25vw;
+  height: 12.5vw;
+  background: rgba(32, 59, 87, 0.3);
+  .tabItem {
+    width: 6.25vw;
+    height: 6.25vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .activated {
+    background: linear-gradient(274deg, rgba(0, 76, 129, 0.2) 0%, #004c81 100%);
+  }
+  .activated::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 0.5729vw;
+    height: 6.25vw;
+    background: #44d8fb;
+  }
+  .tabIcon {
+    width: 2.6042vw;
+    height: 2.6042vw;
   }
 }
 </style>

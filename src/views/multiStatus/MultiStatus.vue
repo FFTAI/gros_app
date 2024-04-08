@@ -8,15 +8,12 @@
     <div class="sideTab">
       <div
         class="tabItem"
-        :class="activatedTab == 'control' ? 'activated' : ''"
-        @click="changeTab('control')"
+        @click="changeTab()"
       >
         <img class="tabIcon" src="@/assets/images/icon_controller.png" />
       </div>
       <div
-        class="tabItem"
-        :class="activatedTab == 'status' ? 'activated' : ''"
-        @click="changeTab('status')"
+        class="tabItem activated"
       >
         <img class="tabIcon" src="@/assets/images/icon_status.png" />
       </div>
@@ -211,8 +208,9 @@ export default {
   mounted() {},
   methods: {
     changeTab(e) {
-      console.log(e);
-      this.activatedTab = e;
+      this.$router.push({
+        name: "controller",
+      })
     },
   },
 };
