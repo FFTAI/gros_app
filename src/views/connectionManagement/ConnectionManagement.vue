@@ -87,7 +87,7 @@
                   class="img"
                   src="@/assets/images/image_disconnected.png"
                 />
-                <div :class="{ op02: item.connectMode == 'none' }">
+                <div :class="{ opacity02: item.connectMode == 'none' }">
                   <span class="name">{{ item.name }}</span>
                   <span class="type">GR-1 Lite</span>
                 </div>
@@ -356,9 +356,6 @@ export default {
   background: #ff6656;
   border-radius: 50%;
   margin-right: 0.625vw;
-}
-.op02 {
-  opacity: 0.2;
 }
 .modeChoseDialog {
   position: absolute;

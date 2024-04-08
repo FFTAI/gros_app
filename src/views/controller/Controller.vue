@@ -39,9 +39,13 @@
           </div>
         </div>
         <!-- Stop按钮 -->
-        <!-- <div class="stopControl">
-          <img class="stopImg" src="@/assets/images/icon_chStop.png" @click="stop()" />
-        </div> -->
+        <div class="stopControl">
+          <img
+            class="stopImg"
+            src="@/assets/images/icon_chStop.png"
+            @click="stop()"
+          />
+        </div>
         <!--初始-->
         <div class="calibration">
           <img
@@ -75,16 +79,27 @@
             </div>
           </div>
         </div> -->
+        <div class="photoBox">
+          <img
+            :class="{ opacity02: isRecording }"
+            style="width: 4.5833vw; height: 4.5833vw"
+            src="@/assets/images/btn_photo.png"
+          />
+          <img
+            v-if="!isRecording"
+            @click="recording()"
+            style="width: 4.5833vw; height: 4.5833vw"
+            src="@/assets/images/btn_video.png"
+          />
+          <div v-else @click="recording()" class="stopRecording flex-center">
+            <div class="redBlock"></div>
+          </div>
+        </div>
         <div class="multiStatus">
-          <div
-            class="tabItem activated"
-          >
+          <div class="tabItem activated">
             <img class="tabIcon" src="@/assets/images/icon_controller.png" />
           </div>
-          <div
-            class="tabItem"
-            @click="changeTab()"
-          >
+          <div class="tabItem" @click="changeTab()">
             <img class="tabIcon" src="@/assets/images/icon_status.png" />
           </div>
         </div>
@@ -400,6 +415,7 @@ export default {
       walkEnd: true, //监听walk停止
       headEnd: true, //监听head停止
       bodyEnd: true, //监听body停止
+      isRecording: false, //正在录制中
     };
   },
   created() {
@@ -1086,11 +1102,16 @@ export default {
           break;
       }
     },
+    // 切换多人模式状态
     changeTab() {
       this.$router.push({
         name: "multiStatus",
-      })
-    }
+      });
+    },
+    // 开始录制
+    recording() {
+      this.isRecording = !this.isRecording;
+    },
   },
 };
 </script>
@@ -1137,26 +1158,26 @@ export default {
 
 .stopControl {
   position: absolute;
-  right: 5vw;
-  top: 8.3333vw;
+  left: 2.0833vw;
+  top: 6.25vw;
   z-index: 9999;
 
   .stopImg {
-    width: 3.9583vw;
-    height: 3.9583vw;
+    width: 5.2083vw;
+    height: 5.2083vw;
     margin: auto;
   }
 }
 
 .calibration {
   position: absolute;
-  left: 2.4583vw;
-  top: 7.375vw;
+  left: 2.0833vw;
+  top: 13.5417vw;
   z-index: 9999;
 
   .calibrationImg {
-    width: 4.9167vw;
-    height: 4.9167vw;
+    width: 5.2083vw;
+    height: 5.2083vw;
     margin: auto;
   }
 }
@@ -1204,9 +1225,36 @@ export default {
   }
 }
 
+.photoBox {
+  position: absolute;
+  bottom: 7.7083vw;
+  right: 2.0833vw;
+  width: 6.6667vw;
+  height: 12.9167vw;
+  border-radius: 3.6979vw;
+  border: 0.1042vw solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  .stopRecording {
+    width: 4.5833vw;
+    height: 4.5833vw;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: url("../../assets/images/img_recording.png");
+    .redBlock {
+      width: 1.6667vw;
+      height: 1.6667vw;
+      background: #ff6656;
+      border-radius: .2083vw;
+    }
+  }
+}
+
 .joystickBorder {
   position: absolute;
-  bottom: 3.7083vw;
+  bottom: 5.2083vw;
   width: 17.875vw;
   height: 17.875vw;
   border: 3px solid rgba(255, 255, 255, 0.3);
@@ -1223,19 +1271,19 @@ export default {
 #zone_joystickL {
   position: absolute;
   left: 20.2625vw;
-  bottom: 12.8458vw;
+  bottom: 14.3458vw;
 }
 
 #zone_joystickR {
   position: absolute;
   right: 20.2625vw;
-  bottom: 12.8458vw;
+  bottom: 14.3458vw;
 }
 
 .controlStatus {
   position: absolute;
   left: 32.75vw;
-  bottom: 3.7083vw;
+  bottom: 5.2083vw;
   width: 31.75vw;
   height: 3.4583vw;
   border-radius: 2.7917vw;

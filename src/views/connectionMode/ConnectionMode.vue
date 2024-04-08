@@ -9,24 +9,26 @@
       <img class="connectHuman" src="@/assets/images/image_onOpen.png" />
     </div>
     <div class="bubbleBox">
-      <div class="phone">
-        <img class="dialogPhone" src="@/assets/images/image_phone.png" />
-      </div>
-      <span class="connectionTips">{{ $t("connectionTips") }}</span>
-      <div class="connectionBox">
-        <div class="connectTxt txtFlex common-font">
-          <div>{{ $t("initialAccount") }}</div>
-          <div>gr1-XXXXXX</div>
+      <div class="bubblePop">
+        <div class="phone">
+          <img class="dialogPhone" src="@/assets/images/image_phone.png" />
         </div>
-        <div class="line"></div>
-        <div class="connectTxt txtFlex common-font">
-          <span>{{ $t("initialPassword") }}</span>
-          <span>66668888</span>
+        <span class="connectionTips">{{ $t("connectionTips") }}</span>
+        <div class="connectionBox">
+          <div class="connectTxt txtFlex common-font">
+            <div>{{ $t("initialAccount") }}</div>
+            <div>gr1-XXXXXX</div>
+          </div>
+          <div class="line"></div>
+          <div class="connectTxt txtFlex common-font">
+            <span>{{ $t("initialPassword") }}</span>
+            <span>66668888</span>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="toConnect common-font flex-center">
-      {{ $t("toConnect") }}
+      <div class="toConnect common-font flex-center">
+        {{ $t("toConnect") }}
+      </div>
     </div>
   </div>
 </template>
@@ -40,9 +42,7 @@ export default {
     ...mapState(["connected"]),
   },
   data() {
-    return {
-        
-    };
+    return {};
   },
   mounted() {
     // document.addEventListener(
@@ -56,9 +56,7 @@ export default {
     //   true
     // );
   },
-  methods: {
-    
-  },
+  methods: {},
 };
 </script>
 
@@ -102,24 +100,27 @@ export default {
 }
 
 .toConnect {
+  margin-top: 2.4479vw;
   width: 24.625vw;
   height: 4.1667vw;
   background: linear-gradient(230deg, #198bff 0%, #0086d1 100%);
   border-radius: 2.0833vw;
-  position: absolute;
-  right: 17.625vw;
-  bottom: 3.6667vw;
   font-size: $size-41;
   font-family: Alibaba-PuHuiTi, Alibaba-PuHuiTi;
   font-weight: normal;
   color: $white;
 }
 .bubbleBox {
+  position: absolute;
+  right: 3.125vw;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+}
+.bubblePop {
   width: 54.9167vw;
   height: 28.3333vw;
-  position: absolute;
-  right: 2.4583vw;
-  top: 6.375vw;
   background-image: url("../../assets/images/image_connectBk.png");
   background-repeat: no-repeat;
   background-size: contain;
@@ -137,7 +138,7 @@ export default {
     font-family: AlibabaPuHuiTiR;
     color: #44d8fb;
     position: absolute;
-    top: 7.625vw;
+    top: 7.1354vw;
     right: 6.0417vw;
   }
   .connectionBox {
@@ -148,14 +149,14 @@ export default {
     border-radius: 0.25vw;
     position: absolute;
     right: 4.25vw;
-    bottom: 6.2917vw;
+    top: 10.9375vw;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
     .line {
       width: 20.2083vw;
-      height: .125vw;
+      height: 0.125vw;
       background: $white;
       opacity: 0.2;
     }

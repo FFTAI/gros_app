@@ -385,7 +385,4 @@ export default {
 .robotContent::-webkit-scrollbar {
   width: 0;
 }
-.opacity02 {
-  opacity: 0.2;
-}
 </style>
