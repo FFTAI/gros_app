@@ -263,7 +263,7 @@
         @cancel="cancel()"
         @confirm="confirm()"
       ></prompt-box>
-      <div class="wrapper" style="z-index: 8888" v-if="adjustVisible">
+      <div class="wrapper" style="z-index: 9998" v-if="adjustVisible">
         <div class="adjustRobot">
           <div class="directionBk">
             <div class="directionPointer" :style="rotateStyle">
@@ -283,8 +283,6 @@ import RtcHeader from "@/components/rtcHeader.vue";
 import promptBox from "@/components/promptBox.vue";
 import { mapState } from "vuex";
 import Heartbeat from "@/mixin/Heartbeat";
-import { Human } from "rocs-client";
-import Bus from "@/utils/bus.js";
 export default {
   mixins: [Heartbeat],
   components: { RtcHeader, promptBox },
@@ -426,7 +424,7 @@ export default {
           this.adjustVisible = true;
         }
       }
-      console.log("robotOnmessage~~~~~~~~~~", data.data);
+      console.log("robotOnmessage~~~~~~~~~~", data.data.imu.x);
       if (data.data) this.doAction = data.data.upper_action;
     });
   },
@@ -459,42 +457,24 @@ export default {
           const timeSinceLastMessage =
             currentTime - this.lastMessageReceivedTime;
           console.log("websocketHeartBeat.............", timeSinceLastMessage);
-          console.log(this.robotWs);
           if (timeSinceLastMessage > 3000) {
             // 如果超过了阈值3秒，认为连接断开
             console.log("WebSocket connection might be disconnected.");
-            console.log(this.robotWs);
             if (this.connected) {
-              this.initRobotWs();
+              clearInterval(this.wsInterval);
+              this.wsInterval = null;
+              this.robotWs.robot.ws.close()
               setTimeout(() => {
                 this.robotWs.robot.enable_debug_state(2);
-                this.createWsInterval();
               }, 1000);
-              clearInterval(this.wsInterval);
+              setTimeout(() => {
+                this.lastMessageReceivedTime = Date.now();
+                this.createWsInterval();
+              }, 3000);
             }
           }
         }, 1000); // 每秒检查一次
       }
-    },
-    initRobotWs() {
-      var robot = new Human({
-        host: process.env.VUE_APP_URL.split("//")[1].split(":")[0],
-      });
-      this.robotWs.setWs(robot);
-      robot.on_connected(() => {
-        console.log("robotWs成功！");
-        Bus.$emit("robotOnconnected");
-      });
-      robot.on_message((data) => {
-        var currData = JSON.parse(data.data);
-        Bus.$emit("robotOnmessage", currData);
-      });
-      robot.on_close(() => {
-        console.log("robotWs关闭！");
-      });
-      robot.on_error(() => {
-        console.log("robotWs出错！");
-      });
     },
     // 启动手柄
     startGamepad() {
@@ -985,7 +965,7 @@ export default {
   position: absolute;
   left: 2.4583vw;
   top: 7.375vw;
-  z-index: 9999;
+  z-index: 9997;
 
   .calibrationImg {
     width: 4.9167vw;
