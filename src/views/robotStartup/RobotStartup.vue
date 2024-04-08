@@ -289,9 +289,8 @@ export default {
               if (result.includes("init!")&&!result.includes("start json init")) {
                 reader.cancel();
                 setTimeout(() => {
-                  // _this.initRobotWs()
                   _this.robotWs.robot.ws.close()
-                }, 2000);
+                }, 1000);
                 setTimeout(() => {
                   _this.isReady = true;
                 }, 3000);
@@ -305,27 +304,6 @@ export default {
         .catch((error) => {
           console.error(error);
         });
-
-      // await this.$http.request({
-      //   // timeout: 30000,
-      //   baseURL: process.env.VUE_APP_URL,
-      //   method: "GET",
-      //   url: "/robot/sdk_ctrl/start",
-      // });
-      // setTimeout(() => {
-      //   this.robotWs.robot
-      //     .control_svr_status()
-      //     .then((res) => {
-      //       if (res.data.data) {
-      //         _this.isReady = true;
-      //       } else {
-
-      //       }
-      //     })
-      //     .catch((err) => {
-
-      //     });
-      // }, 10000);
     },
     //打开开机初始示例图
     openDialog() {
