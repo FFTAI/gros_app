@@ -7,98 +7,103 @@
         }}</span>
       </div>
     </rtc-header>
-    <div class="robotBox">
-      <el-carousel
-        indicator-position="none"
-        :autoplay="false"
-        arrow="nerver"
-        height="28.125vw"
-      >
-        <el-carousel-item v-for="(list, i) in carouselList" :key="i">
-          <!-- 添加机器人 -->
-          <div class="carouselItem">
-            <div class="addCard" v-if="i == 0">
-              <div class="add">
-                <img class="addImg" src="@/assets/images/icon_add.png" />
+    <div class="cmContent flex-center">
+      <div v-if="moreRobot">
+        
+      </div>
+      <div v-else class="robotBox">
+        <el-carousel
+          indicator-position="none"
+          :autoplay="false"
+          arrow="nerver"
+          height="28.125vw"
+        >
+          <el-carousel-item v-for="(list, i) in carouselList" :key="i">
+            <!-- 添加机器人 -->
+            <div class="carouselItem">
+              <div class="addCard" v-if="i == 0">
+                <div class="add">
+                  <img class="addImg" src="@/assets/images/icon_add.png" />
+                </div>
+                <div class="addContent">{{ $t("addRobot") }}</div>
               </div>
-              <div class="addContent">{{ $t("addRobot") }}</div>
-            </div>
-            <!-- 机器人列表 -->
-            <div
-              class="robotCard"
-              :class="{
-                checkedCard: item.isChosed,
-                uncheckedCard: !item.isChosed,
-                top: item.isMasterControl,
-              }"
-              v-for="(item, index) in list"
-              :key="index"
-              @click="choseCard(item)"
-            >
-              <div class="cardTitle common-font flex-between">
-                <div v-if="item.connectMode == 'wifi'" class="flex-center">
+              <!-- 机器人列表 -->
+              <div
+                class="robotCard"
+                :class="{
+                  checkedCard: item.isChosed,
+                  uncheckedCard: !item.isChosed,
+                  top: item.isMasterControl,
+                }"
+                v-for="(item, index) in list"
+                :key="index"
+                @click="choseCard(item)"
+              >
+                <div class="cardTitle common-font flex-between">
+                  <div v-if="item.connectMode == 'wifi'" class="flex-center">
+                    <img
+                      style="
+                        width: 1.5417vw;
+                        height: 1.125vw;
+                        margin-right: 0.375vw;
+                      "
+                      src="@/assets/images/icon_Wi-Fi.png"
+                    />
+                    <span>{{ $t("wifiConnected") }}</span>
+                  </div>
+                  <div v-else-if="item.connectMode == 'ap'" class="flex-center">
+                    <img
+                      style="
+                        width: 1.3542vw;
+                        height: 1.25vw;
+                        margin-right: 0.375vw;
+                      "
+                      src="@/assets/images/icon_ap.png"
+                    />
+                    <span>{{ $t("APconnection") }}</span>
+                  </div>
+                  <div v-else class="flex-center">
+                    <div class="redPoint"></div>
+                    <span style="color: #ff6656">{{ $t("notConnected") }}</span>
+                  </div>
+                  <span
+                    v-if="item.isMasterControl && item.connectMode != 'none'"
+                    >{{ $t("masterControl") }}</span
+                  >
                   <img
-                    style="
-                      width: 1.5417vw;
-                      height: 1.125vw;
-                      margin-right: 0.375vw;
+                    v-else-if="
+                      !item.isMasterControl && item.connectMode != 'none'
                     "
-                    src="@/assets/images/icon_Wi-Fi.png"
+                    style="width: 1vw; height: 1.125vw"
+                    src="@/assets/images/btn_topping.png"
+                    @click.stop="toTop(item)"
                   />
-                  <span>{{ $t("wifiConnected") }}</span>
                 </div>
-                <div v-else-if="item.connectMode == 'ap'" class="flex-center">
+                <div class="cardDivider"></div>
+                <div class="cardContent">
                   <img
-                    style="
-                      width: 1.3542vw;
-                      height: 1.25vw;
-                      margin-right: 0.375vw;
-                    "
-                    src="@/assets/images/icon_ap.png"
+                    v-if="item.connectMode != 'none'"
+                    class="img"
+                    src="@/assets/images/image_connectedAvatar.png"
                   />
-                  <span>{{ $t("APconnection") }}</span>
-                </div>
-                <div v-else class="flex-center">
-                  <div class="redPoint"></div>
-                  <span style="color: #ff6656">{{ $t("notConnected") }}</span>
-                </div>
-                <span
-                  v-if="item.isMasterControl && item.connectMode != 'none'"
-                  >{{ $t("masterControl") }}</span
-                >
-                <img
-                  v-else-if="
-                    !item.isMasterControl && item.connectMode != 'none'
-                  "
-                  style="width: 1vw; height: 1.125vw"
-                  src="@/assets/images/btn_topping.png"
-                  @click.stop="toTop(item)"
-                />
-              </div>
-              <div class="cardDivider"></div>
-              <div class="cardContent">
-                <img
-                  v-if="item.connectMode != 'none'"
-                  class="img"
-                  src="@/assets/images/image_connectedAvatar.png"
-                />
-                <img
-                  v-else
-                  class="img"
-                  src="@/assets/images/image_disconnected.png"
-                />
-                <div :class="{ opacity02: item.connectMode == 'none' }">
-                  <span class="name">{{ item.name }}</span>
-                  <span class="type">GR-1 Lite</span>
+                  <img
+                    v-else
+                    class="img"
+                    src="@/assets/images/image_disconnected.png"
+                  />
+                  <div :class="{ opacity02: item.connectMode == 'none' }">
+                    <span class="name">{{ item.name }}</span>
+                    <span class="type">GR-1 Lite</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </el-carousel-item>
-      </el-carousel>
-    </div>
-    <div class="completeBtn flex-center" @click="completeChose()">
-      {{ $t("completeSelection") }}
+          </el-carousel-item>
+        </el-carousel>
+      </div>
+      <div class="completeBtn flex-center" @click="completeChose()">
+        {{ $t("completeSelection") }}
+      </div>
     </div>
     <div class="wrapper" v-if="dialogVisible">
       <div class="modeChoseDialog">
@@ -125,7 +130,7 @@ export default {
   data() {
     return {
       masterControl: true,
-      dialogVisible: true,
+      dialogVisible: false,
       robotList: [
         {
           name: "GR-0001",
@@ -183,6 +188,7 @@ export default {
         },
       ],
       carouselList: [],
+      moreRobot: false
     };
   },
   created() {},
@@ -259,10 +265,15 @@ export default {
     color: #ffffff;
   }
 }
-.robotBox {
+.cmContent {
   position: absolute;
-  top: 6.7917vw;
-  left: 2.4583vw;
+  left: 0;
+  top: 4.4444vw;
+  width: 100%;
+  height: calc(100% - 4.4444vw);
+  flex-direction: column;
+}
+.robotBox {
   width: 93.875vw;
   height: 27.125vw;
   .carouselItem {
@@ -334,13 +345,14 @@ export default {
   }
 }
 .completeBtn {
-  position: absolute;
-  bottom: 3.9583vw;
-  left: 50%;
-  transform: translate(
-    -50%,
-    0
-  ); /* 将子元素在水平和垂直方向上向上和向左移动50%，实现居中对齐 */
+  // position: absolute;
+  // bottom: 3.9583vw;
+  // left: 50%;
+  // transform: translate(
+  //   -50%,
+  //   0
+  // );
+  margin-top: 8.6458vw;
   width: 18.4583vw;
   height: 4.1667vw;
   background: linear-gradient(230deg, #198bff 0%, #0086d1 100%);
@@ -349,6 +361,11 @@ export default {
   font-weight: normal;
   font-size: 1.7083vw;
   color: #ffffff;
+}
+@media screen and (min-width: 2400px) {
+  .completeBtn {
+    margin-top: 5.2083vw;
+  }
 }
 .redPoint {
   width: 0.4688vw;
@@ -397,7 +414,7 @@ export default {
         font-size: 1.25vw;
         opacity: 0.7;
       }
-      .modeName{
+      .modeName {
         position: absolute;
         bottom: -4.0625vw;
       }
