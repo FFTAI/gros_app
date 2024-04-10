@@ -8,11 +8,17 @@
     <img class="wifiImg" src="@/assets/images/image_wifiMode.png" />
     <div class="bubbleBox">
       <div class="bubblePop">
-        <div class="tips">{{ $t('wifiTips') }}</div>
-        <span class="wifiMsg">gr1-XXXXXX</span>
-        <span class="wifiMsg" style="top: 17.75vw; opacity: 0.5"
-          >{{ $t('wifiPwdTips') }}</span
-        >
+        <div class="tips">{{ $t("wifiTips") }}</div>
+        <el-input
+          class="wifiMsg"
+          v-model="wifiName"
+          :placeholder="$t('wifiNameTips')"
+        ></el-input>
+        <el-input
+          class="wifiMsg" style="top: 17.9167vw"
+          v-model="wifiPwd"
+          :placeholder="$t('wifiPwdTips')"
+        ></el-input>
         <img
           v-if="cansee"
           @click="seePassword()"
@@ -26,7 +32,7 @@
           src="@/assets/images/icon_nosee.png"
         />
       </div>
-      <div class="toCreate common-font flex-center">{{ $t('generate') }}</div>
+      <div class="toCreate common-font flex-center">{{ $t("generate") }}</div>
     </div>
   </div>
 </template>
@@ -44,6 +50,8 @@ export default {
       cansee: true,
       seeImgUrl: "@/assets/images/icon_see.png",
       noseeImgUrl: "@/assets/images/icon_nosee.png",
+      wifiName: "",
+      wifiPwd: ""
     };
   },
   mounted() {},
@@ -122,12 +130,12 @@ export default {
   }
   .wifiMsg {
     position: absolute;
-    left: 9.8333vw;
-    top: 10.25vw;
+    left: 9.9479vw;
+    top: 10.5208vw;
+    width: 41.3021vw;
     font-family: Alibaba-PuHuiTi, Alibaba-PuHuiTi;
     font-weight: normal;
-    font-size: 1.7083vw;
-    color: #ffffff;
+    opacity: 0.6;
   }
   .seeImg {
     width: 1.6667vw;
@@ -136,5 +144,15 @@ export default {
     right: 6.1667vw;
     bottom: 15.1vw;
   }
+}
+.bubblePop ::v-deep .el-input {
+  font-size: 1.4583vw;
+}
+.bubblePop ::v-deep .el-input .el-input__inner {
+  height: 2.3333vw;
+  padding: 0;
+  background-color: rgba(255, 255, 255, 0);
+  color: #fff;
+  border: none;
 }
 </style>

@@ -5,11 +5,17 @@
         <span class="headTxt">扫描二维码</span>
       </div>
     </rtc-header>
-    <img class="scanImg" src="@/assets/images/image_scanQRcode.png" />
-    <canvas class="qrcode" id="qrcode"></canvas>
-    <el-button style="position: absolute;top: 22vw;left: 42vw;" type="primary" @click="createQr()"
+    <div class="scanImg">
+
+    </div>
+    <!-- <img class="scanImg" src="@/assets/images/image_scanQRcode.png" /> -->
+    <canvas class="qrcodeL" id="qrcodeL"></canvas>
+    <!-- <el-button
+      style="position: absolute; top: 22vw; left: 42vw"
+      type="primary"
+      @click="createQr()"
       >点击！！</el-button
-    >
+    > -->
   </div>
 </template>
 
@@ -19,10 +25,16 @@ import QRCode from "qrcode";
 export default {
   components: { rtcHeader },
   data() {
-    return {};
+    return {
+      screenWidth: document.body.clientWidth,
+    };
   },
-  created() {},
-  mounted() {},
+  created() {
+    console.log(this.screenWidth)
+  },
+  mounted() {
+    this.createQr();
+  },
   methods: {
     createQr() {
       // const MainActivity = plus.android.runtimeMainActivity();
@@ -43,7 +55,7 @@ export default {
       //   }
       // }
       // let Base64 = plus.android.importClass("java.util.Base64");
-      // let decoder = Base64.getDecoder();  
+      // let decoder = Base64.getDecoder();
       // console.log('333',JSON.stringify(decoder))
       // console.log('444',pwd,'555',Base64.DEFAULT)
       // let decodedBytes = decoder.decode(pwd, Base64.DEFAULT);
@@ -54,15 +66,28 @@ export default {
       const password = "fftai2015";
       //分享wifi二维码标准格式
       const wifiData = `WIFI:T:WPA;P:${password};S:${ssid};H:true;`;
-      const qrCodeDiv = document.getElementById("qrcode");
+      const qrCodeLDiv = document.getElementById("qrcodeL");
+      let qrSize = 800;
+      if(this.screenWidth < 1920){
+        qrSize = qrSize * this.screenWidth / 1920;
+      }
       // 使用qrcode.js生成二维码
-      QRCode.toCanvas(qrCodeDiv, wifiData, {
-        width: 700,
-        height: 700
-      },(error) => {
-        if (error) console.error("出错", error);
-        console.log("QR Code generated successfully");
-      });
+      QRCode.toCanvas(
+        qrCodeLDiv,
+        wifiData,
+        {
+          width: qrSize,
+          height: qrSize,
+          color: {
+            dark: "#44D8FB",
+            light: "#FFFFFF00",
+          },
+        },
+        (error) => {
+          if (error) console.error("出错", error);
+          console.log("QR Code generated successfully");
+        }
+      );
     },
   },
 };
@@ -91,18 +116,22 @@ export default {
     line-height: 2.7083vw;
   }
 }
-.scanImg{
-  position: absolute;
+.scanImg {
   left: 3.125vw;
-  top: 7.2917vw;
-  width: 37.5vw;
-  height: 33.3333vw;
-}
-.qrcode{
   position: absolute;
-  left: 55.2083vw;
-  top: 7.2917vw;
-  width: 33.3333vw;
-  height: 33.3333vw;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 46.875vw;
+  height: 41.6667vw;
+  max-height: 75%;
+  background-image: url("../../assets/images/image_scanQRcode.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.qrcodeL {
+  position: absolute;
+  right: 3.125vw;
+  top: 50%;
+  transform: translateY(-50%);
 }
 </style>

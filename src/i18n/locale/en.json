@@ -205,6 +205,7 @@
     "completeSelection": "Complete Selection",
     "wifiTips": "Enter the current Wi-Fi password, generate a QR code",
     "wifiPwdTips": "Please enter the Wi-Fi password",
+    "wifiNameTips": "Please enter the Wi-Fi name",
     "generate": "Generate",
     "selectConnection": "Select connection method",
     "holdingMicrophone": "Holding microphone",
