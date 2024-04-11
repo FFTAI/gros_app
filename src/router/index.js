@@ -92,6 +92,11 @@ const routes = [
     component: () => import("../views/multiStatus/MultiStatus.vue"),
   },
   {
+    path: "/instruction",
+    name: "instruction",
+    component: () => import("../views/instruction/Instruction.vue"),
+  },
+  {
     path: "/",
     redirect: "/startUp",
   },
