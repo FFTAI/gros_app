@@ -288,12 +288,12 @@ export default {
               console.log("reader---result", result);
               if (result.includes("init!")&&!result.includes("start json init")) {
                 reader.cancel();
-                setTimeout(() => {
-                  _this.initRobotWs()
-                }, 1500);
+                // setTimeout(() => {
+                //   _this.initRobotWs()
+                // }, 1500);
                 setTimeout(() => {
                   _this.isReady = true;
-                }, 3000);
+                }, 2000);
               } else {
                 process();
               }

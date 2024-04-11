@@ -379,6 +379,7 @@ export default {
     };
   },
   created() {
+    this.robotWs.robot.ws.close();
     document.addEventListener(
       "click",
       (e) => {
@@ -401,7 +402,9 @@ export default {
     this.startJoystickL(); //生成虚拟摇杆
     this.startJoystickR();
     this.startGamepad();
-    this.createWsInterval();
+    setTimeout(() => {
+      this.createWsInterval();
+    }, 2000);
     this.$nextTick(() => {
       this.robotWs.robot.enable_debug_state(2);
     });
