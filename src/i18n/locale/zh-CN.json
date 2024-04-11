@@ -223,5 +223,6 @@
     "normalTemperature": "温度正常",
     "abnormalTemperature": "温度异常",
     "onlineDevice": "在线设备",
-    "offlineDevice": "离线设备"
+    "offlineDevice": "离线设备",
+    "setInstructionName": "设置示教名称"
 }

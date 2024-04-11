@@ -224,5 +224,6 @@
     "normalTemperature": "Normal temperature",
     "abnormalTemperature": "Abnormal temperature",
     "onlineDevice": "Online device",
-    "offlineDevice": "Offline device"
+    "offlineDevice": "Offline device",
+    "setInstructionName": "Set Instruction Name"
 }

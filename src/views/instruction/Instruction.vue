@@ -15,12 +15,36 @@
           @click="stop()"
         />
       </div>
-      <div class="handControl">
-        <div class="handMode flex-center">左手</div>
+      <div class="handControl flex-center" v-if="handMode == ''">
+        <div class="handMode flex-center" @click="choseHand('left')">
+          <img class="handBtn" src="@/assets/images/icon_lefthand.png" />
+          左手
+        </div>
         <div class="divider"></div>
-        <div class="handMode flex-center">右手</div>
+        <div class="handMode flex-center" @click="choseHand('right')">
+          <img class="handBtn" src="@/assets/images/icon_righthand.png" />
+          右手
+        </div>
         <div class="divider"></div>
-        <div class="handMode flex-center">双手</div>
+        <div class="handMode flex-center" @click="choseHand('double')">
+          <img class="handBtn" src="@/assets/images/icon_waveTwo.png" />
+          双手
+        </div>
+      </div>
+      <div class="handControl  flex-center" style="width: 18.8542vw;" v-else-if="handMode == 'start'">
+        <div class="handMode flex-center" @click="pauseInstruction()">
+          <img class="handBtn" src="@/assets/images/icon_pause.png" />
+          暂停
+        </div>
+        <div class="divider"></div>
+        <div class="handMode flex-center" @click="finishInstruction()">
+          <img class="handBtn" src="@/assets/images/icon_finishIns.png" />
+          完成
+        </div>
+      </div>
+      <div class="readyControl flex-center" @click="startInstruct()" v-else>
+        <div class="triangle"></div>
+        开始
       </div>
     </div>
     <!-- 虚拟摇杆 joystick-start-->
@@ -35,7 +59,7 @@
     <!-- joystick-end -->
     <prompt-box
       v-if="promptVisible"
-      prompt="nickname"
+      prompt="instruction"
       @cancel="promptBoxOpen()"
       @confirm="shutDown()"
     ></prompt-box>
@@ -68,7 +92,8 @@ export default {
       camera: null,
       renderer: null,
       points: null,
-      promptVisible: true
+      promptVisible: false,
+      handMode: "",
     };
   },
   created() {
@@ -286,6 +311,18 @@ export default {
       gridHelper.position.set(0, -10, 0);
       this.scene.add(gridHelper);
     },
+    choseHand(e) {
+      this.handMode = e;
+    },
+    startInstruct() {
+      this.handMode = 'start'
+    },
+    pauseInstruction() {
+
+    },
+    finishInstruction() {
+
+    }
   },
 };
 </script>
@@ -366,19 +403,40 @@ export default {
   background: rgba(0, 76, 129, 0.4);
   border-radius: 2.7604vw;
   border: 0.1042vw solid rgba(255, 255, 255, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   .handMode {
     width: 9.375vw;
     height: 1.9792vw;
     font-family: AlibabaPuHuiTiM;
     font-size: 1.4583vw;
     color: #ffffff;
+    .handBtn {
+      width: 1.3542vw;
+      height: 1.3542vw;
+      margin-right: 0.2083vw;
+    }
   }
   .divider {
     height: 1.6667vw;
     border: 0.0521vw solid rgba(255, 255, 255, 0.5);
+  }
+}
+.readyControl {
+  position: absolute;
+  bottom: 4.1667vw;
+  left: 50%;
+  translate: (-50%);
+  width: 18.8542vw;
+  height: 5.7292vw;
+  background: rgba(0, 76, 129, 0.4);
+  border-radius: 2.8646vw;
+  border: 0.1042vw solid rgba(255, 255, 255, 0.5);
+  font-size: 1.4583vw;
+  color: #ffffff;
+  .triangle {
+    margin-right: 0.5208vw;
+    border-top: .6771vw solid transparent;
+    border-bottom: .6771vw solid transparent;
+    border-left: 1.0417vw solid #ffffff;
   }
 }
 </style>

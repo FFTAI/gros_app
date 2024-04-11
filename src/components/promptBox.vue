@@ -7,7 +7,7 @@
       <div
         class="promptContent"
         :style="promptContentWidth"
-        v-if="(!loading || selfcheckFail) && prompt != 'nickname'"
+        v-if="(!loading || selfcheckFail) && prompt != 'nickname' && prompt != 'instruction'"
       >
         <img
           v-if="prompt != 'returnMain' && !lowBattery"
@@ -37,6 +37,12 @@
         <span class="promtTitle">{{ $t("setNikename") }}</span>
         <div class="promptInput">
           <el-input v-model="nickname" placeholder="输入1～6个中文文字"></el-input>
+        </div>
+      </div>
+      <div class="promptInputContent" v-else-if="prompt == 'instruction'">
+        <span class="promtTitle">{{ $t("setInstructionName") }}</span>
+        <div class="promptInput">
+          <el-input v-model="nickname" placeholder="输入最多20个字符"></el-input>
         </div>
       </div>
       <div class="loadingPart" v-else-if="loading && !updateFinish">
@@ -253,7 +259,7 @@ export default {
   align-items: center;
   .promtTitle {
     font-family: AlibabaPuHuiTiM;
-    font-size: 1.9583vw;
+    font-size: 1.6667vw;
     color: #ffffff;
     font-style: normal;
     margin-top: 1.7917vw;
@@ -268,7 +274,7 @@ export default {
   }
 }
 .promptInputContent ::v-deep .el-input{
-    font-size: 1.7083vw;
+    font-size: 1.4583vw;
   }
 .promptInputContent ::v-deep .el-input .el-input__inner{
     height: 2.3333vw;
