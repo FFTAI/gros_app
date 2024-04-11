@@ -379,7 +379,8 @@ export default {
     };
   },
   created() {
-    this.robotWs.robot.ws.close();
+    // this.robotWs.robot.ws.close();
+    this.createWsInterval();
     document.addEventListener(
       "click",
       (e) => {
@@ -402,12 +403,12 @@ export default {
     this.startJoystickL(); //生成虚拟摇杆
     this.startJoystickR();
     this.startGamepad();
-    setTimeout(() => {
-      this.createWsInterval();
-    }, 2000);
-    this.$nextTick(() => {
-      this.robotWs.robot.enable_debug_state(2);
-    });
+    // setTimeout(() => {
+    //   this.createWsInterval();
+    // }, 2000);
+    // this.$nextTick(() => {
+    //   this.robotWs.robot.enable_debug_state(2);
+    // });
     this.$bus.$on("robotOnmessage", (data) => {
       this.lastMessageReceivedTime = Date.now();
       if (this.currentstatus == "Zero" && data.data.imu) {
@@ -482,7 +483,7 @@ export default {
               this.robotWs.robot.ws.close();
               setTimeout(() => {
                 this.robotWs.robot.enable_debug_state(2);
-              }, 1000);
+              }, 1500);
               setTimeout(() => {
                 this.lastMessageReceivedTime = Date.now();
                 this.createWsInterval();
