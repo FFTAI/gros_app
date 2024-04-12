@@ -91,7 +91,6 @@ export default {
       screenWidth: document.body.clientWidth, //当前屏幕宽度
       interval: null,
       intervalCount: 0,
-      promptVisible: false,
       promptVal: "",
       scene: null,
       camera: null,

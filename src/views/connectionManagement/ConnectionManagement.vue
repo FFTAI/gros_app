@@ -278,7 +278,7 @@ export default {
         },
       ],
       carouselList: [],
-      moreRobot: true,
+      moreRobot: false,
     };
   },
   created() {},

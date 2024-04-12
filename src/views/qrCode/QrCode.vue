@@ -5,9 +5,8 @@
         <span class="headTxt">扫描二维码</span>
       </div>
     </rtc-header>
-    <div class="scanImg">
-
-    </div>
+    <div class="scanImg"></div>
+    <div class="scanTips">扫描二维码以添加机器人</div>
     <!-- <img class="scanImg" src="@/assets/images/image_scanQRcode.png" /> -->
     <canvas class="qrcodeL" id="qrcodeL"></canvas>
     <!-- <el-button
@@ -30,7 +29,7 @@ export default {
     };
   },
   created() {
-    console.log(this.screenWidth)
+    console.log(this.screenWidth);
   },
   mounted() {
     this.createQr();
@@ -68,8 +67,8 @@ export default {
       const wifiData = `WIFI:T:WPA;P:${password};S:${ssid};H:true;`;
       const qrCodeLDiv = document.getElementById("qrcodeL");
       let qrSize = 800;
-      if(this.screenWidth < 1920){
-        qrSize = qrSize * this.screenWidth / 1920;
+      if (this.screenWidth < 1920) {
+        qrSize = (qrSize * this.screenWidth) / 1920;
       }
       // 使用qrcode.js生成二维码
       QRCode.toCanvas(
@@ -127,6 +126,15 @@ export default {
   background-image: url("../../assets/images/image_scanQRcode.png");
   background-repeat: no-repeat;
   background-size: contain;
+}
+.scanTips {
+  position: absolute;
+  top: 24.8438vw;
+  left: 30.5208vw;
+  font-family: AlibabaPuHuiTiR;
+  font-size: 1.4583vw;
+  color: #44d8fb;
+  line-height: 1.9792vw;
 }
 .qrcodeL {
   position: absolute;
