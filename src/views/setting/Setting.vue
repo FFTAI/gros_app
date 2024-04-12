@@ -740,7 +740,7 @@
         <span>{{ $t("robotVersion") }}</span>
         <div @click="detectUpdates('robotVersion')">
           <span style="margin-right: 1.8333vw">{{
-            robotVersion ? robotVersion : "V2.1.0"
+            robotVersion ? robotVersion : "V3.0.0"
           }}</span>
           <span class="itemTxt">{{ $t("detectUpdates") }}</span>
         </div>
@@ -749,7 +749,7 @@
       <div class="item flex-between common-font">
         <span>{{ $t("appVersion") }}</span>
         <div @click="detectUpdates('appVersion')">
-          <span style="margin-right: 1.8333vw">V2.1.0</span>
+          <span style="margin-right: 1.8333vw">V3.0.0</span>
           <span class="itemTxt">{{ $t("detectUpdates") }}</span>
         </div>
         <img class="iconTo" src="@/assets/images/icon_to.png" />
