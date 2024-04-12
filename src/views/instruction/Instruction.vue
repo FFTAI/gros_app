@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-    <div class="pc" ref="sceneContainer"></div>
     <div class="videoBox">
       <rtc-header @returnMain="promptBoxOpen('returnMain')">
         <div class="headState">
@@ -31,7 +30,11 @@
           双手
         </div>
       </div>
-      <div class="handControl  flex-center" style="width: 18.8542vw;" v-else-if="handMode == 'start'">
+      <div
+        class="handControl flex-center"
+        style="width: 18.8542vw"
+        v-else-if="handMode == 'start'"
+      >
         <div class="handMode flex-center" @click="pauseInstruction()">
           <img class="handBtn" src="@/assets/images/icon_pause.png" />
           暂停
@@ -47,6 +50,8 @@
         开始
       </div>
     </div>
+    <img class="handImgL" src="@/assets/images/image_lefthand.png" />
+    <img class="handImgR" src="@/assets/images/image_righthand.png" />
     <!-- 虚拟摇杆 joystick-start-->
     <div class="joystickBorder flex-center" style="left: 11.0833vw">
       <img class="joystickImg" src="@/assets/images/image_direction.png" />
@@ -109,8 +114,6 @@ export default {
     );
   },
   async mounted() {
-    this.createPc();
-    this.addHelpers();
     this.startJoystickL(); //生成虚拟摇杆
     this.startJoystickR();
     this.startGamepad();
@@ -223,113 +226,25 @@ export default {
       this.promptVal = e;
       this.promptVisible = !this.promptVisible;
     },
-    createPc() {
-      // 创建场景
-      this.scene = new THREE.Scene();
-
-      // 创建相机
-      this.camera = new THREE.PerspectiveCamera(
-        120,
-        this.$el.clientWidth / this.$el.clientHeight,
-        0.1,
-        1000
-      );
-      this.camera.position.set(0, 0, 15);
-
-      // 创建渲染器
-      this.renderer = new THREE.WebGLRenderer();
-      this.renderer.setSize(this.$el.clientWidth, this.$el.clientHeight);
-      this.$refs.sceneContainer.appendChild(this.renderer.domElement);
-
-      // 手动相机控制
-      const mouse = new THREE.Vector2();
-      const raycaster = new THREE.Raycaster();
-
-      let x = 0;
-      let y = 0;
-      let width = 0;
-      let height = 0;
-
-      const transformControls = new TransformControls(
-        this.camera,
-        this.renderer.domElement
-      );
-      this.renderer.domElement.addEventListener("mousemove", (event) => {
-        x = event.offsetX;
-        y = event.offsetY;
-        width = this.renderer.domElement.offsetWidth;
-        height = this.renderer.domElement.offsetHeight;
-        mouse.x = (x / width) * 2 - 1;
-        mouse.y = (-y * 2) / height + 1;
-      });
-      let transing = false;
-      transformControls.addEventListener("mouseDown", (event) => {
-        transing = true;
-        return event;
-      });
-      // 鼠标点击事件
-      this.renderer.domElement.addEventListener("click", (event) => {
-        if (transing) {
-          transing = false;
-          return;
-        }
-        this.scene.remove(transformControls); // 移除变换控制器
-        transformControls.enabled = false; // 停用变换控制器
-        raycaster.setFromCamera(mouse, this.camera); // 配置射线发射器，传递鼠标和相机对象
-        const intersection = raycaster.intersectObjects(this.scene.children); // 获取射线发射器捕获的模型列表，传进场景中模型，返回穿透
-        if (intersection.length) {
-          const object = intersection[0].object; // 获取第一个模型
-          this.scene.add(transformControls); // 添加变换控制器
-          transformControls.enabled = true; // 启用变换控制器
-          transformControls.attach(object);
-        }
-        return event;
-      });
-
-      const orbitControls = new OrbitControls(
-        this.camera,
-        this.renderer.domElement
-      );
-      orbitControls.mouseButtons = {
-        // 设置鼠标功能键（轨道控制器）
-        LEFT: null, // 左键无事件
-        MIDDLE: THREE.MOUSE.DOLLY, // 中键缩放
-        RIGHT: THREE.MOUSE.ROTATE, // 右键旋转
-      };
-      this.scene.add(transformControls);
-
-      // 渲染循环
-      const animate = () => {
-        requestAnimationFrame(animate);
-        this.renderer.render(this.scene, this.camera);
-      };
-      animate();
-    },
-    addHelpers() {
-      // 添加网格辅助线
-      const gridHelper = new THREE.GridHelper(200, 20);
-      gridHelper.position.set(0, -10, 0);
-      this.scene.add(gridHelper);
-    },
     choseHand(e) {
       this.handMode = e;
     },
     startInstruct() {
-      this.handMode = 'start'
+      this.handMode = "start";
     },
-    pauseInstruction() {
-
-    },
-    finishInstruction() {
-
-    }
+    pauseInstruction() {},
+    finishInstruction() {},
   },
 };
 </script>
   <style lang="scss">
-.pc {
-  height: 100vh;
+.container {
+  position: relative;
   width: 100%;
+  height: 100vh;
+  background-image: url("../../assets/images/bg_instruction.png");
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .videoBox {
@@ -434,10 +349,24 @@ export default {
   color: #ffffff;
   .triangle {
     margin-right: 0.5208vw;
-    border-top: .6771vw solid transparent;
-    border-bottom: .6771vw solid transparent;
+    border-top: 0.6771vw solid transparent;
+    border-bottom: 0.6771vw solid transparent;
     border-left: 1.0417vw solid #ffffff;
   }
+}
+.handImgL{
+  position: absolute;
+  left: 16.5104vw;
+  top: 18.1771vw;
+  width: 8.4375vw;
+  height: 10.625vw;
+}
+.handImgR{
+  right: 15.6771vw;
+  top: 18.1771vw;
+  position: absolute;
+  width: 8.4375vw;
+  height: 10.625vw;
 }
 </style>
   
