@@ -9,6 +9,9 @@
     <div class="humanBody">
       <img class="openHuman" src="@/assets/images/image_onOpen.png" />
     </div>
+    <!-- <div class="startContain flex-center" style="bottom: 12vw" @click="toGP()">
+      <span class="startBtn common-font">图形化编程</span>
+    </div> -->
     <div class="startContain flex-center" @click="startExplore()">
       <span class="startBtn common-font">{{ $t("beginToExplore") }}</span>
     </div>
@@ -92,6 +95,11 @@ export default {
         }
       }
     },
+    toGP() {
+      this.$router.push({
+        name: "graphicProgramming",
+      });
+    },
     toConnect() {
       this.$router.push({
         name: "robotStartup",
@@ -109,17 +117,17 @@ export default {
     shutDown() {
       if (this.promptValue == "powerOff") {
         this.$http
-            .request({
-              baseURL: process.env.VUE_APP_URL,
-              method: "GET",
-              url: "/system/shutdown"
-            })
-            .then((response) => {
-              console.log('success---shutdown',response)
-            })
-            .catch((error) => {
-              console.log('error---shutdown',error)
-            });
+          .request({
+            baseURL: process.env.VUE_APP_URL,
+            method: "GET",
+            url: "/system/shutdown",
+          })
+          .then((response) => {
+            console.log("success---shutdown", response);
+          })
+          .catch((error) => {
+            console.log("error---shutdown", error);
+          });
       } else if (this.promptValue == "closeProgram") {
         this.robotWs.robot
           .control_svr_close()

@@ -144,11 +144,11 @@
       </div>
       <div class="item flex-between common-font">
         <span>{{ $t("robotVersion") }}</span>
-        <span>{{ robotVersion ? robotVersion : "V1.4.2.2" }}</span>
+        <span>{{ robotVersion ? robotVersion : "V2.0.10" }}</span>
       </div>
       <div class="item flex-between common-font">
         <span>{{ $t("appVersion") }}</span>
-        <span>V1.4.2.2(se)</span>
+        <span>V1.4.3(se)</span>
       </div>
       <div
         class="item flex-between common-font"

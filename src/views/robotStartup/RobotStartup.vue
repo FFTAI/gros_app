@@ -200,6 +200,8 @@ import rtcHeader from "@/components/rtcHeader.vue";
 import Heartbeat from "@/mixin/Heartbeat";
 import { mapState } from "vuex";
 import promptBox from "@/components/promptBox.vue";
+import { Human } from "rocs-client";
+import Bus from "@/utils/bus.js";
 export default {
   mixins: [Heartbeat],
   components: { rtcHeader, promptBox },
@@ -295,9 +297,12 @@ export default {
               _this.shValue = result;
               if (newTxt.includes("init!")&&newTxt.includes("start json init")) {
                 reader.cancel();
+                // setTimeout(() => {
+                //   _this.initRobotWs()
+                // }, 1500);
                 setTimeout(() => {
                   _this.isReady = true;
-                }, 3000);
+                }, 2000);
               } else {
                 process();
               }
@@ -308,27 +313,26 @@ export default {
         .catch((error) => {
           console.error(error);
         });
-
-      // await this.$http.request({
-      //   // timeout: 30000,
-      //   baseURL: process.env.VUE_APP_URL,
-      //   method: "GET",
-      //   url: "/robot/sdk_ctrl/start",
-      // });
-      // setTimeout(() => {
-      //   this.robotWs.robot
-      //     .control_svr_status()
-      //     .then((res) => {
-      //       if (res.data.data) {
-      //         _this.isReady = true;
-      //       } else {
-
-      //       }
-      //     })
-      //     .catch((err) => {
-
-      //     });
-      // }, 10000);
+    },
+    initRobotWs() {
+      var robot = new Human({
+        host: process.env.VUE_APP_URL.split("//")[1].split(":")[0],
+      });
+      this.robotWs.setWs(robot);
+      robot.on_connected(() => {
+        console.log('robotWs成功！')
+        Bus.$emit("robotOnconnected");
+      });
+      robot.on_message((data) => {
+        var currData = JSON.parse(data.data);
+        Bus.$emit("robotOnmessage", currData);
+      });
+      robot.on_close(() => {
+        console.log('robotWs关闭！')
+      });
+      robot.on_error(() => {
+        console.log('robotWs出错！')
+      });
     },
     //打开开机初始示例图
     openDialog() {

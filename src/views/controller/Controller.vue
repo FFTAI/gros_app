@@ -257,13 +257,20 @@
       >
         <span>{{ $t(mode) }}{{ $t("ing") }}...</span>
       </div>
+      <!-- 异常提示 -->
+      <div
+        v-if="currentstatus == '' || currentstatus == 'Unknown'"
+        class="stateMessageError flex-center"
+      >
+        <span>异常：无法获取当前状态！</span>
+      </div>
       <prompt-box
         v-if="promptVisible || !connected"
         :prompt="connected ? promptVal : 'reconnect'"
         @cancel="cancel()"
         @confirm="confirm()"
       ></prompt-box>
-      <div class="wrapper" v-if="adjustVisible">
+      <div class="wrapper" style="z-index: 9998" v-if="adjustVisible">
         <div class="adjustRobot">
           <div class="directionBk">
             <div class="directionPointer" :style="rotateStyle">
@@ -350,8 +357,8 @@ export default {
       camera: true, //是否开启视频
       doAction: false,
       otherAction: false,
-      isStand: false,
-      isWalking: false,
+      // isStand: false,
+      // isWalking: false,
       velocity: 0,
       direction: 0,
       interval: null,
@@ -364,13 +371,16 @@ export default {
       adjustVisible: false,
       ImuX: 0,
       ImuY: 0,
-      isZero: false,
+      // isZero: false,
       walkEnd: true, //监听walk停止
       headEnd: true, //监听head停止
       bodyEnd: true, //监听body停止
+      currentstatus: "Start", //当前状态: Unknown,Start,Zero,Zero2Stand,Stand,Stand2Walk,Walk,Stop
     };
   },
   created() {
+    // this.robotWs.robot.ws.close();
+    this.createWsInterval();
     document.addEventListener(
       "click",
       (e) => {
@@ -393,13 +403,15 @@ export default {
     this.startJoystickL(); //生成虚拟摇杆
     this.startJoystickR();
     this.startGamepad();
-    this.createWsInterval();
-    this.$nextTick(() => {
-      this.robotWs.robot.enable_debug_state(2);
-    });
+    // setTimeout(() => {
+    //   this.createWsInterval();
+    // }, 2000);
+    // this.$nextTick(() => {
+    //   this.robotWs.robot.enable_debug_state(2);
+    // });
     this.$bus.$on("robotOnmessage", (data) => {
       this.lastMessageReceivedTime = Date.now();
-      if (this.isZero && data.data.imu) {
+      if (this.currentstatus == "Zero" && data.data.imu) {
         this.ImuX = data.data.imu.x;
         this.ImuY = data.data.imu.y;
         // console.log(
@@ -424,8 +436,13 @@ export default {
           this.adjustVisible = true;
         }
       }
-      console.log("upper_action~~~~~~~~~~", data.data.upper_action);
-      if (data.data) this.doAction = data.data.upper_action;
+      console.log("robotOnmessage~~~~~~~~~~", data.data);
+      if (data.data) {
+        this.doAction = data.data.upper_action;
+        this.currentstatus = data.data.states.fsmstatename.currentstatus;
+      } else {
+        this.currentstatus = "";
+      }
     });
   },
   destroyed() {
@@ -457,13 +474,21 @@ export default {
           const timeSinceLastMessage =
             currentTime - this.lastMessageReceivedTime;
           console.log("websocketHeartBeat.............", timeSinceLastMessage);
-          console.log(this.robotWs);
           if (timeSinceLastMessage > 3000) {
             // 如果超过了阈值3秒，认为连接断开
             console.log("WebSocket connection might be disconnected.");
-            console.log(this.robotWs);
-            this.robotWs.robot.enable_debug_state(2);
-            clearInterval(this.wsInterval);
+            if (this.connected) {
+              clearInterval(this.wsInterval);
+              this.wsInterval = null;
+              this.robotWs.robot.ws.close();
+              setTimeout(() => {
+                this.robotWs.robot.enable_debug_state(2);
+              }, 1500);
+              setTimeout(() => {
+                this.lastMessageReceivedTime = Date.now();
+                this.createWsInterval();
+              }, 3000);
+            }
           }
         }, 1000); // 每秒检查一次
       }
@@ -524,26 +549,29 @@ export default {
       // }
       // this.operateWalk(angle * -0.5, (velocity * this.speed) / -6.25);
       console.log(arr);
-      if (!this.isStand && this.isWalking) {
+      if (this.currentstatus != "Stand" && this.currentstatus == "Walk") {
         this.velocity = arr[1];
         console.log(arr[1], arr[2]);
         if (Math.abs(this.velocity) < 0.1) this.velocity = 0;
         this.direction = arr[2];
         if (Math.abs(this.direction) < 0.1) this.direction = 0;
-        if (direction == 0 && velocity == 0 && !this.walkEnd) {
+        if (this.direction == 0 && this.velocity == 0 && !this.walkEnd) {
           this.operateWalk(
             this.direction * -45,
             (this.velocity * this.speed) / -6.25
           );
           this.walkEnd = true;
-        } else if (direction != 0 || velocity != 0) {
+        } else if (this.direction != 0 || this.velocity != 0) {
           this.operateWalk(
             this.direction * -45,
             (this.velocity * this.speed) / -6.25
           );
           this.walkEnd = false;
         }
-      } else if (this.isStand && !this.isWalking) {
+      } else if (
+        this.currentstatus == "Stand" &&
+        this.currentstatus != "Walk"
+      ) {
         let pitch = arr[1] * -17.1887;
         let rotate_waist = arr[0] * -14.32;
         if (Math.abs(pitch) < 1.71887) pitch = 0;
@@ -620,14 +648,20 @@ export default {
         })
         .on("move", function (evt, data) {
           if (!_this.gamepadConnected) {
-            if (!_this.isStand && _this.isWalking) {
+            if (
+              _this.currentstatus != "Stand" &&
+              _this.currentstatus == "Walk"
+            ) {
               _this.velocity = data.vector.y;
               if (Math.abs(_this.velocity) < 0.1) _this.velocity = 0;
               _this.operateWalk(
                 _this.direction * -45,
                 (_this.velocity * _this.speed) / 6.25
               );
-            } else if (_this.isStand && !_this.isWalking) {
+            } else if (
+              _this.currentstatus == "Stand" &&
+              _this.currentstatus != "Walk"
+            ) {
               let pitch = data.vector.y * 17.1887;
               let rotate_waist = data.vector.x * -14.32;
               if (Math.abs(pitch) < 1.71887) pitch = 0;
@@ -641,9 +675,15 @@ export default {
         .on("end", function (evt, data) {
           if (!_this.gamepadConnected) {
             //摇杆回原点后速度方向归零
-            if (!_this.isStand && _this.isWalking) {
+            if (
+              _this.currentstatus != "Stand" &&
+              _this.currentstatus == "Walk"
+            ) {
               _this.operateWalk(0, 0);
-            } else if (_this.isStand && !_this.isWalking) {
+            } else if (
+              _this.currentstatus == "Stand" &&
+              _this.currentstatus != "Walk"
+            ) {
               _this.operateHead(0, 0);
               _this.operateBody(0, 0);
             }
@@ -667,14 +707,20 @@ export default {
         .on("start", function (evt, data) {})
         .on("move", function (evt, data) {
           if (!_this.gamepadConnected) {
-            if (_this.isStand && !_this.isWalking) {
+            if (
+              _this.currentstatus == "Stand" &&
+              _this.currentstatus != "Walk"
+            ) {
               let squat = data.vector.y * 0.15;
               let yaw = data.vector.x * 60;
               if (squat > -0.015) squat = 0;
               if (Math.abs(yaw) < 6) yaw = 0;
               _this.operateHead(0, yaw);
               _this.operateBody(squat, 0);
-            } else if (!_this.isStand && _this.isWalking) {
+            } else if (
+              _this.currentstatus != "Stand" &&
+              _this.currentstatus == "Walk"
+            ) {
               _this.direction = data.vector.x;
               if (Math.abs(_this.direction) < 0.1) _this.direction = 0;
               _this.operateWalk(
@@ -686,10 +732,16 @@ export default {
         })
         .on("end", function (evt, data) {
           if (!_this.gamepadConnected) {
-            if (_this.isStand && !_this.isWalking) {
+            if (
+              _this.currentstatus == "Stand" &&
+              _this.currentstatus != "Walk"
+            ) {
               _this.operateHead(0, 0);
               _this.operateBody(0, 0);
-            } else if (!_this.isStand && _this.isWalking) {
+            } else if (
+              _this.currentstatus != "Stand" &&
+              _this.currentstatus == "Walk"
+            ) {
               _this.direction = 0;
               _this.operateWalk(0, 0);
             }
@@ -700,10 +752,10 @@ export default {
       this.promptBoxOpen("calibration");
     },
     doCalibration() {
-      this.isStand = false;
+      // this.isStand = false;
       this.robotWs.robot.start();
       this.mode = "initial";
-      this.isZero = true;
+      // this.isZero = true;
       setTimeout(() => {
         this.mode = "";
       }, 7000);
@@ -755,9 +807,9 @@ export default {
     //切换当前控制模式
     changeControl(e) {
       if (e == "stand") {
-        this.isZero = false;
-        this.isStand = true;
-        this.isWalking = false;
+        // this.isZero = false;
+        // this.isStand = true;
+        // this.isWalking = false;
         this.robotWs.robot.stand();
         this.controlExpand = false;
       } else {
@@ -771,8 +823,8 @@ export default {
       this.mode = e;
       //原地踏步，速度位置发0
       if (e == "markingTime") {
-        this.isStand = false;
-        this.isWalking = true;
+        // this.isStand = false;
+        // this.isWalking = true;
         this.robotWs.robot.walk(0, 0);
       } else {
         //上肢data
@@ -957,7 +1009,7 @@ export default {
   position: absolute;
   left: 2.4583vw;
   top: 7.375vw;
-  z-index: 9999;
+  z-index: 9997;
 
   .calibrationImg {
     width: 4.9167vw;
@@ -1174,6 +1226,18 @@ export default {
   font-size: $size-30;
   color: $white;
 }
+.stateMessageError {
+  position: absolute;
+  left: 50%;
+  top: 7.6042vw;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 102, 86, 0.8);
+  padding: 0 2.2396vw;
+  height: 2.5521vw;
+  z-index: 999;
+  font-size: $size-30;
+  color: $white;
+}
 .adjustRobot {
   width: 49.25vw;
   height: 30.7917vw;
@@ -1183,7 +1247,7 @@ export default {
   position: absolute;
   top: 7.125vw;
   left: 25.375vw;
-  z-index: 999;
+  z-index: 888;
   display: flex;
   align-items: center;
   flex-direction: column;
