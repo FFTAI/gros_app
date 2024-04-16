@@ -4,7 +4,7 @@
       :is-logo="true"
       :is-login="true"
       @connect="toConnect()"
-      @shutDown="promptBoxOpen('powerOff')"
+      @shutDown="promptBoxOpen()"
     ></rtc-header>
     <div class="humanBody">
       <img class="openHuman" src="@/assets/images/image_onOpen.png" />
@@ -35,7 +35,7 @@
     <prompt-box
       v-if="promptVisible"
       :prompt="promptValue"
-      @cancel="promptBoxClose()"
+      @cancel="promptBoxOpen()"
       @confirm="shutDown()"
     ></prompt-box>
   </div>
@@ -46,6 +46,7 @@ import rtcHeader from "@/components/rtcHeader.vue";
 import { mapState } from "vuex";
 import Heartbeat from "@/mixin/Heartbeat";
 import promptBox from "@/components/promptBox.vue";
+import http from "@/http/axios.js";
 export default {
   mixins: [Heartbeat],
   components: { rtcHeader, promptBox },
@@ -65,7 +66,7 @@ export default {
       getFlag: true,
       promptVisible: false,
       // headBoxVisible: false,
-      promptValue: "",
+      promptValue: "powerOff",
     };
   },
   methods: {
@@ -105,40 +106,19 @@ export default {
         name: "robotStartup",
       });
     },
-    promptBoxOpen(e) {
-      this.promptValue = e;
-      this.promptVisible = true;
-      // this.headBoxVisible = false;
-    },
-    promptBoxClose() {
-      this.promptValue = "";
-      this.promptVisible = false;
+    promptBoxOpen() {
+      this.promptVisible = !this.promptVisible;
     },
     shutDown() {
-      if (this.promptValue == "powerOff") {
-        this.$http
-          .request({
-            baseURL: process.env.VUE_APP_URL,
-            method: "GET",
-            url: "/system/shutdown",
-          })
-          .then((response) => {
-            console.log("success---shutdown", response);
-          })
-          .catch((error) => {
-            console.log("error---shutdown", error);
-          });
-      } else if (this.promptValue == "closeProgram") {
-        this.robotWs.robot
-          .control_svr_close()
-          .then((response) => {
-            console.log("close...", response);
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      }
-      this.promptBoxClose();
+      http
+        .get("/system/shutdown")
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.error("Error shutdown:", error);
+        });
+      this.promptBoxOpen();
     },
     // headBoxOpen() {
     //   this.headBoxVisible = !this.headBoxVisible;
