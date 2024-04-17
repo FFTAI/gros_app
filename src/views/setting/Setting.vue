@@ -148,7 +148,7 @@
       </div>
       <div class="item flex-between common-font">
         <span>{{ $t("appVersion") }}</span>
-        <span>V1.4.3</span>
+        <span>V1.4.3.2</span>
       </div>
       <div
         class="item flex-between common-font"
