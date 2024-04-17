@@ -6,7 +6,6 @@
 
 <script>
 import { Human } from "rocs-client";
-import Bus from "@/utils/bus.js";
 export default {
   name: "app",
   data() {
@@ -29,10 +28,15 @@ export default {
     }
     window.addEventListener("gamepadconnected", this.gamepadcted);
     window.addEventListener("gamepaddisconnected", this.gamepaddiscted);
+    this.$bus.$on("initWs", () => {
+      console.log('bus-on-initws~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+      this.initRobotWs()
+    })
   },
   beforeDestroy() {
     window.removeEventListener("gamepadconnected", this.gamepadcted);
     window.removeEventListener("gamepaddisconnected", this.gamepaddiscted);
+    this.$bus.$off("initWs");
   },
   methods: {
     //初始化Robot实例
@@ -43,12 +47,12 @@ export default {
       this.robotWs.setWs(robot);
       robot.on_connected(() => {
         console.log('robotWs成功！')
-        Bus.$emit("robotOnconnected");
+        this.$bus.$emit("robotOnconnected");
         this.reWs = false;
       });
       robot.on_message((data) => {
         var currData = JSON.parse(data.data);
-        Bus.$emit("robotOnmessage", currData);
+        this.$bus.$emit("robotOnmessage", currData);
       });
       robot.on_close(() => {
         console.log('robotWs关闭！')
