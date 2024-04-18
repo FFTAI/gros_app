@@ -144,7 +144,10 @@
             <div class="flex-center">
               {{ $t("machineHeight") }}
             </div>
-            <tagButton :height="currHeight" @changeTag="changeHeight"></tagButton>
+            <tagButton
+              :height="currHeight"
+              @changeTag="changeHeight"
+            ></tagButton>
             <!-- <div class="tagBtn">
               <div
                 class="tagItem flex-center"
@@ -478,47 +481,47 @@
             <div class="flex-center">
               {{ $t("visualCamera") }}
             </div>
-            <span>{{ $t('normal') }}</span>
+            <span>{{ $t("normal") }}</span>
           </div>
           <div class="divider"></div>
           <div class="itemChild">
             <div class="flex-center">
               {{ $t("controlModule") }}
             </div>
-            <span>{{ $t('normal') }}</span>
+            <span>{{ $t("normal") }}</span>
           </div>
           <div class="divider"></div>
           <div class="itemChild">
             <div class="flex-center">
               {{ $t("actuator") }}
             </div>
-            <span style="color: #ff6656">{{ $t('anomaly') }}</span>
+            <span style="color: #ff6656">{{ $t("anomaly") }}</span>
           </div>
           <div class="divider"></div>
           <div class="itemChild">
             <div class="flex-center">
               {{ $t("battery") }}
             </div>
-            <span style="color: #ff6656">{{ $t('anomaly') }}</span>
+            <span style="color: #ff6656">{{ $t("anomaly") }}</span>
           </div>
           <div class="divider"></div>
           <div class="itemChild">
             <div class="flex-center">
               {{ $t("screen") }}
             </div>
-            <span>{{ $t('normal') }}</span>
+            <span>{{ $t("normal") }}</span>
           </div>
           <div class="divider"></div>
           <div class="itemChild">
             <div class="flex-center">IMU</div>
-            <span>{{ $t('normal') }}</span>
+            <span>{{ $t("normal") }}</span>
           </div>
           <div class="divider"></div>
           <div class="itemChild">
             <div class="flex-center">
               {{ $t("voiceModule") }}
             </div>
-            <span>{{ $t('normal') }}</span>
+            <span>{{ $t("normal") }}</span>
           </div>
         </div>
       </div>
@@ -579,7 +582,7 @@
             <div class="flex-center">
               {{ $t("chargingAndDischarging") }}
             </div>
-            <span>{{ $t('dischargeInProgress') }}</span>
+            <span>{{ $t("dischargeInProgress") }}</span>
           </div>
           <div class="divider"></div>
           <div class="itemChild">
@@ -691,7 +694,7 @@
         </div>
       </div>
     </div>
-    <!-- 系统信息标签页 -->
+    <!-- 通用设置标签页 -->
     <div class="listBox" v-if="isActivated == 'status'">
       <div class="item flex-between common-font">
         <span>{{ $t("serialNumber") }}</span>
@@ -767,7 +770,10 @@
     <prompt-box
       :prompt="prompt"
       :loading="isloading"
-      v-if="!connected || (['update', 'selfcheck', 'shutdown','nickname'].includes(prompt))"
+      v-if="
+        !connected ||
+        ['update', 'selfcheck', 'shutdown', 'nickname'].includes(prompt)
+      "
     ></prompt-box>
   </div>
 </template>
@@ -948,7 +954,7 @@ export default {
           break;
         case "deviceSelfCheck":
           this.dscActivated = !this.dscActivated;
-          this.promptVal = 'selfcheck'
+          this.promptVal = "selfcheck";
         default:
           break;
       }
@@ -976,12 +982,12 @@ export default {
     },
     //选择运动速度
     changeSpeed(e) {
-      console.log(e)
+      console.log(e);
       this.currSpeed = e;
     },
     //选择机器高度
     changeHeight(e) {
-      console.log(e)
+      console.log(e);
       this.currHeight = e;
     },
     //检测更新
@@ -989,11 +995,11 @@ export default {
       this.promptVal = "update";
     },
     openPoweroff() {
-      this.promptVal = "shutdown"
+      this.promptVal = "shutdown";
     },
     changeNickname() {
-      this.promptVal = "nickname"
-    }
+      this.promptVal = "nickname";
+    },
   },
 };
 </script>
@@ -1074,7 +1080,7 @@ export default {
   right: 3.625vw;
   top: 6.2917vw;
   width: 65.2083vw;
-  height: 38vw;
+  height: 49.4792vw;
   overflow-y: auto;
 
   .item {
@@ -1183,6 +1189,12 @@ export default {
       justify-content: space-between;
       align-items: flex-start;
     }
+  }
+}
+
+@media screen and (min-width: 2400px) and (max-height: 1080px) {
+  .listBox {
+    height: 38vw;
   }
 }
 

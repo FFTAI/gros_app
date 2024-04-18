@@ -136,8 +136,15 @@ export default {
 }
 
 .openHuman {
-  height: 38.15vw;
-  width: 28.9408vw;
+  height: 45.78vw;
+  width: 34.728vw;
+}
+
+@media screen and (min-width: 2400px) and (max-height: 1080px) {
+  .openHuman {
+    height: 38.15vw;
+    width: 28.9408vw;
+  }
 }
 
 .startContain {
@@ -187,7 +194,8 @@ export default {
 .menuBox {
   position: absolute;
   left: 42.1667vw;
-  top: 18.2083vw;
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
   gap: 1.7083vw;
   .menuItem {

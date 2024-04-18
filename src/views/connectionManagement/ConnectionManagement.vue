@@ -499,7 +499,7 @@ export default {
   font-size: 1.7083vw;
   color: #ffffff;
 }
-@media screen and (min-width: 2400px) {
+@media screen and (min-width: 2400px) and (max-height: 1080px) {
   .completeBtn {
     margin-top: 3.125vw;
   }
@@ -580,7 +580,7 @@ export default {
     width: 2.4583vw;
   }
 }
-@media screen and (min-width: 2400px) {
+@media screen and (min-width: 2400px) and (max-height: 1080px) {
   .cardPointSr {
     margin-top: 2.0833vw;
   }
