@@ -376,10 +376,10 @@ export default {
       headEnd: true, //监听head停止
       bodyEnd: true, //监听body停止
       currentstatus: "Start", //当前状态: Unknown,Start,Zero,Zero2Stand,Stand,Stand2Walk,Walk,Stop
+      walkingTimer: null,
     };
   },
   created() {
-    // this.robotWs.robot.ws.close();
     this.createWsInterval();
     document.addEventListener(
       "click",
@@ -411,6 +411,12 @@ export default {
     // });
     this.$bus.$on("robotOnmessage", (data) => {
       this.lastMessageReceivedTime = Date.now();
+      console.log(
+        "监测底层数据～～～",
+        this.currentstatus,
+        data.data.imu.x,
+        data.data.imu.y
+      );
       if (this.currentstatus == "Zero" && data.data.imu) {
         this.ImuX = data.data.imu.x;
         this.ImuY = data.data.imu.y;
@@ -419,11 +425,11 @@ export default {
         //   this.ImuX,
         //   this.ImuY
         // );
-        console.log(
-          "controller===========",
-          (data.data.imu.x * 180) / Math.PI,
-          (data.data.imu.y * 180) / Math.PI
-        );
+        // console.log(
+        //   "controller===========",
+        //   (data.data.imu.x * 180) / Math.PI,
+        //   (data.data.imu.y * 180) / Math.PI
+        // );
         if (
           (this.ImuX >= 3.054 && this.ImuX <= 3.1416) ||
           (this.ImuX >= -3.1416 &&
@@ -444,6 +450,11 @@ export default {
         this.currentstatus = "";
       }
     });
+  },
+  beforeDestroy() {
+    if (this.walkingTimer) {
+      clearTimeout(this.walkingTimer);
+    }
   },
   destroyed() {
     clearInterval(this.interval);
@@ -480,7 +491,15 @@ export default {
             if (this.connected) {
               clearInterval(this.wsInterval);
               this.wsInterval = null;
-              this.robotWs.robot.ws.close();
+              console.log("readyState", this.robotWs.robot.ws.readyState);
+              if (
+                !this.robotWs.robot.ws ||
+                this.robotWs.robot.ws.readyState != 1
+              ) {
+                this.$bus.$emit("initWs");
+              } else {
+                this.robotWs.robot.ws.close();
+              }
               setTimeout(() => {
                 this.robotWs.robot.enable_debug_state(2);
               }, 1500);
@@ -778,6 +797,11 @@ export default {
     operateWalk(direction, velocity) {
       try {
         this.robotWs.robot.walk(direction, velocity);
+        if (!this.walkingTimer) {
+          this.walkingTimer = setTimeout(() => {
+            this.changeControl("stand");
+          }, 20 * 60 * 1000); //行走20分钟后强制站立
+        }
       } catch (error) {
         console.log("Walk错误。。。。。。", error);
       }
@@ -807,9 +831,9 @@ export default {
     //切换当前控制模式
     changeControl(e) {
       if (e == "stand") {
-        // this.isZero = false;
-        // this.isStand = true;
-        // this.isWalking = false;
+        if (this.walkingTimer) {
+          clearTimeout(this.walkingTimer);
+        }
         this.robotWs.robot.stand();
         this.controlExpand = false;
       } else {
