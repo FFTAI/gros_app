@@ -376,6 +376,7 @@ export default {
       headEnd: true, //监听head停止
       bodyEnd: true, //监听body停止
       currentstatus: "Start", //当前状态: Unknown,Start,Zero,Zero2Stand,Stand,Stand2Walk,Walk,Stop
+      walkingTimer: null,
     };
   },
   created() {
@@ -450,6 +451,11 @@ export default {
       }
     });
   },
+  beforeDestroy() {
+    if (this.walkingTimer) {
+      clearTimeout(this.walkingTimer);
+    }
+  },
   destroyed() {
     clearInterval(this.interval);
     clearInterval(this.wsInterval);
@@ -481,13 +487,11 @@ export default {
           console.log("websocketHeartBeat.............", timeSinceLastMessage);
           if (timeSinceLastMessage > 3000) {
             // 如果超过了阈值3秒，认为连接断开
-            console.log(
-              "WebSocket connection might be disconnected."
-            );
+            console.log("WebSocket connection might be disconnected.");
             if (this.connected) {
               clearInterval(this.wsInterval);
               this.wsInterval = null;
-              console.log('readyState',this.robotWs.robot.ws.readyState)
+              console.log("readyState", this.robotWs.robot.ws.readyState);
               if (
                 !this.robotWs.robot.ws ||
                 this.robotWs.robot.ws.readyState != 1
@@ -793,6 +797,11 @@ export default {
     operateWalk(direction, velocity) {
       try {
         this.robotWs.robot.walk(direction, velocity);
+        if (!this.walkingTimer) {
+          this.walkingTimer = setTimeout(() => {
+            this.changeControl("stand");
+          }, 20 * 60 * 1000); //行走20分钟后强制站立
+        }
       } catch (error) {
         console.log("Walk错误。。。。。。", error);
       }
@@ -822,9 +831,9 @@ export default {
     //切换当前控制模式
     changeControl(e) {
       if (e == "stand") {
-        // this.isZero = false;
-        // this.isStand = true;
-        // this.isWalking = false;
+        if (this.walkingTimer) {
+          clearTimeout(this.walkingTimer);
+        }
         this.robotWs.robot.stand();
         this.controlExpand = false;
       } else {
