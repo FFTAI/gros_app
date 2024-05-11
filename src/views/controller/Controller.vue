@@ -1,29 +1,20 @@
 <template>
   <div>
-    <div class="container">
+    <div class="container" @mousemove="onMouseMove">
       <div ref="videoContainer" align="center" class="video-container">
         <div class="video-item common-bkg">
           <img class="video-play" :src="videoSrc" v-show="camera" />
         </div>
       </div>
       <div class="videoBox">
-        <rtc-header
-          :currentSpeed="current_speed"
-          :isController="true"
-          :camera="true"
-          @cameraOn="openCamera()"
-          @returnMain="promptBoxOpen('returnMain')"
-        >
+        <rtc-header :currentSpeed="current_speed" :isController="true" :camera="true" @cameraOn="openCamera()"
+          @returnMain="promptBoxOpen('returnMain')">
           <div class="headState" @click="headChange()">
             <span class="headTxt common-font">{{ $t("remoteMode") }}</span>
             <div class="arrow"></div>
           </div>
         </rtc-header>
-        <div
-          class="headBox flex-column"
-          :style="headBoxWidth"
-          v-if="headBoxVisible"
-        >
+        <div class="headBox flex-column" :style="headBoxWidth" v-if="headBoxVisible">
           <div @click="changeMode('remoteMode')">
             {{ $t("remoteMode") }}
           </div>
@@ -38,34 +29,17 @@
         </div> -->
         <!--初始-->
         <div class="calibration">
-          <img
-            v-if="$i18n.locale == 'en'"
-            class="calibrationImg"
-            src="@/assets/images/icon_calibrationEn.png"
-            @click="calibration()"
-          />
-          <img
-            v-else
-            class="calibrationImg"
-            src="@/assets/images/icon_calibration.png"
-            @click="calibration()"
-          />
+          <img v-if="$i18n.locale == 'en'" class="calibrationImg" src="@/assets/images/icon_calibrationEn.png"
+            @click="calibration()" />
+          <img v-else class="calibrationImg" src="@/assets/images/icon_calibration.png" @click="calibration()" />
         </div>
         <!-- 速度挡位调节 -->
         <div class="speedBox">
           <div class="speedControl">
             <div class="speedDirection flex-column">
-              <img
-                class="speedAdd"
-                @click="speedChange('add')"
-                src="@/assets/images/btn_add.png"
-              />
+              <img class="speedAdd" @click="speedChange('add')" src="@/assets/images/btn_add.png" />
               <span class="speedNum title-font">{{ speed }}</span>
-              <img
-                class="speedReduce"
-                @click="speedChange('reduce')"
-                src="@/assets/images/btn_reduce.png"
-              />
+              <img class="speedReduce" @click="speedChange('reduce')" src="@/assets/images/btn_reduce.png" />
             </div>
           </div>
         </div>
@@ -80,26 +54,16 @@
       <div id="zone_joystickL"></div>
       <div id="zone_joystickR"></div>
       <!-- joystick-end -->
-      <div
-        :class="controlExpand ? 'controlActivated' : 'controlStatus'"
-        ref="controlRef"
-      >
+      <div :class="controlExpand ? 'controlActivated' : 'controlStatus'" ref="controlRef">
         <!-- 步态运动展开 -->
         <div class="actionBox" v-if="controlExpand && controlModel == 'gait'">
           <div class="actionItem">
-            <img
-              class="actionImg"
-              src="@/assets/images/icon_markingTime.png"
-              @click="choseMode('markingTime')"
-            />
+            <img class="actionImg" src="@/assets/images/icon_markingTime.png" @click="choseMode('markingTime')" />
             <div>{{ $t("markingTime") }}</div>
           </div>
         </div>
         <!-- 原地运动展开 -->
-        <div
-          class="actionBox"
-          v-else-if="controlExpand && controlModel == 'inPlace'"
-        >
+        <div class="actionBox" v-else-if="controlExpand && controlModel == 'inPlace'">
           <!-- <div class="actionItem">
             <img
               class="actionImg"
@@ -109,167 +73,101 @@
             <div>{{ $t("zero") }}</div>
           </div> -->
           <div class="actionItem">
-            <img
-              class="actionImg"
-              src="@/assets/images/icon_raiseHand.png"
-              @click="choseMode('raiseHand')"
-            />
+            <img class="actionImg" src="@/assets/images/icon_raiseHand.png" @click="choseMode('raiseHand')" />
             <div>{{ $t("raiseHand") }}</div>
           </div>
           <div class="actionItem">
-            <img
-              class="actionImg"
-              src="@/assets/images/icon_swingArms.png"
-              @click="choseMode('swingArms')"
-            />
+            <img class="actionImg" src="@/assets/images/icon_swingArms.png" @click="choseMode('swingArms')" />
             <div>{{ $t("swingArms") }}</div>
           </div>
           <div class="actionItem">
-            <img
-              class="actionImg"
-              src="@/assets/images/icon_greet.png"
-              @click="choseMode('greet')"
-            />
+            <img class="actionImg" src="@/assets/images/icon_greet.png" @click="choseMode('greet')" />
             <div>{{ $t("greet") }}</div>
           </div>
           <div class="actionItem">
-            <img
-              class="actionImg"
-              src="@/assets/images/icon_twist.png"
-              @click="choseMode('twist')"
-            />
+            <img class="actionImg" src="@/assets/images/icon_twist.png" @click="choseMode('twist')" />
             <div>{{ $t("twist") }}</div>
           </div>
           <div class="actionItem">
-            <img
-              class="actionImg"
-              src="@/assets/images/icon_squat.png"
-              @click="choseMode('squat')"
-            />
+            <img class="actionImg" src="@/assets/images/icon_squat.png" @click="choseMode('squat')" />
             <div>{{ $t("squat") }}</div>
           </div>
           <div class="actionItem">
-            <img
-              class="actionImg"
-              src="@/assets/images/icon_shake.png"
-              @click="choseMode('shake')"
-            />
+            <img class="actionImg" src="@/assets/images/icon_shake.png" @click="choseMode('shake')" />
             <div>{{ $t("shake") }}</div>
           </div>
           <div class="actionItem">
-            <img
-              class="actionImg"
-              src="@/assets/images/icon_nod.png"
-              @click="choseMode('nod')"
-            />
+            <img class="actionImg" src="@/assets/images/icon_nod.png" @click="choseMode('nod')" />
             <div>{{ $t("nod") }}</div>
           </div>
         </div>
-        <div
-          class="actionBox"
-          v-else-if="controlExpand && controlModel == 'grasping'"
-        >
+        <div class="actionBox" v-else-if="controlExpand && controlModel == 'grasping'">
           <div class="actionItem">
-            <img
-              class="actionImg"
-              src="@/assets/images/icon_open.png"
-              @click="choseMode('openHand')"
-            />
+            <img class="actionImg" src="@/assets/images/icon_open.png" @click="choseMode('openHand')" />
             <div>{{ $t("openHand") }}</div>
           </div>
           <div class="actionItem">
-            <img
-              class="actionImg"
-              src="@/assets/images/icon_grasp.png"
-              @click="choseMode('grasp')"
-            />
+            <img class="actionImg" src="@/assets/images/icon_grasp.png" @click="choseMode('grasp')" />
             <div>{{ $t("grasp") }}</div>
           </div>
           <div class="actionItem">
-            <img
-              class="actionImg"
-              src="@/assets/images/icon_tremble.png"
-              @click="choseMode('tremble')"
-            />
+            <img class="actionImg" src="@/assets/images/icon_tremble.png" @click="choseMode('tremble')" />
             <div>{{ $t("tremble") }}</div>
           </div>
         </div>
         <!-- action box -->
         <div class="controlBox flex-between">
           <!-- 站立 -->
-          <div
-            :class="['choseBox', 'txt', controlModel == 'stand' ? 'chose' : '']"
-            @click="changeControl('stand')"
-          >
+          <div :class="['choseBox', 'txt', controlModel == 'stand' ? 'chose' : '']" @click="changeControl('stand')">
             {{ $t("stand") }}
           </div>
           <!-- 步态运动 -->
-          <div
-            :class="[
-              'choseBox',
-              'txt',
-              controlModel != 'gait' ? '' : controlExpand ? 'choseBk' : 'chose',
-            ]"
-            @click="changeControl('gait')"
-          >
+          <div :class="[
+      'choseBox',
+      'txt',
+      controlModel != 'gait' ? '' : controlExpand ? 'choseBk' : 'chose',
+    ]" @click="changeControl('gait')">
             {{ $t("gaitMotion") }}
           </div>
           <!-- 原地运动 -->
-          <div
-            :class="[
-              'choseBox',
-              'txt',
-              controlModel != 'inPlace'
-                ? ''
-                : controlExpand
-                ? 'choseBk'
-                : 'chose',
-            ]"
-            @click="changeControl('inPlace')"
-          >
+          <div :class="[
+      'choseBox',
+      'txt',
+      controlModel != 'inPlace'
+        ? ''
+        : controlExpand
+          ? 'choseBk'
+          : 'chose',
+    ]" @click="changeControl('inPlace')">
             {{ $t("inPlaceMotion") }}
           </div>
           <!-- 末端抓取 -->
-          <div
-            :class="[
-              'choseBox',
-              'txt',
-              controlModel != 'grasping'
-                ? ''
-                : controlExpand
-                ? 'choseBk'
-                : 'chose',
-            ]"
-            @click="changeControl('grasping')"
-          >
+          <div :class="[
+      'choseBox',
+      'txt',
+      controlModel != 'grasping'
+        ? ''
+        : controlExpand
+          ? 'choseBk'
+          : 'chose',
+    ]" @click="changeControl('grasping')">
             {{ $t("grasping") }}
           </div>
         </div>
       </div>
       <!-- 当前状态提示 -->
-      <div
-        class="stateMessage flex-center"
-        v-if="
-          (mode != '' && doAction) ||
-          (mode != '' && otherAction) ||
-          mode == 'initial'
-        "
-      >
+      <div class="stateMessage flex-center" v-if="(mode != '' && doAction) ||
+      (mode != '' && otherAction) ||
+      mode == 'initial'
+      ">
         <span>{{ $t(mode) }}{{ $t("ing") }}...</span>
       </div>
       <!-- 异常提示 -->
-      <div
-        v-if="currentstatus == '' || currentstatus == 'Unknown'"
-        class="stateMessageError flex-center"
-      >
+      <div v-if="currentstatus == '' || currentstatus == 'Unknown'" class="stateMessageError flex-center">
         <span>异常：无法获取当前状态！</span>
       </div>
-      <prompt-box
-        v-if="promptVisible || !connected"
-        :prompt="connected ? promptVal : 'reconnect'"
-        @cancel="cancel()"
-        @confirm="confirm()"
-      ></prompt-box>
+      <prompt-box v-if="promptVisible || !connected" :prompt="connected ? promptVal : 'reconnect'" @cancel="cancel()"
+        @confirm="confirm()"></prompt-box>
       <div class="wrapper" style="z-index: 9998" v-if="adjustVisible">
         <div class="adjustRobot">
           <div class="directionBk">
@@ -371,12 +269,10 @@ export default {
       adjustVisible: false,
       ImuX: 0,
       ImuY: 0,
-      // isZero: false,
-      walkEnd: true, //监听walk停止
-      headEnd: true, //监听head停止
-      bodyEnd: true, //监听body停止
       currentstatus: "Start", //当前状态: Unknown,Start,Zero,Zero2Stand,Stand,Stand2Walk,Walk,Stop
       walkingTimer: null,
+      lastX: 0,
+      lastY: 0
     };
   },
   created() {
@@ -403,32 +299,11 @@ export default {
     this.startJoystickL(); //生成虚拟摇杆
     this.startJoystickR();
     this.startGamepad();
-    // setTimeout(() => {
-    //   this.createWsInterval();
-    // }, 2000);
-    // this.$nextTick(() => {
-    //   this.robotWs.robot.enable_debug_state(2);
-    // });
     this.$bus.$on("robotOnmessage", (data) => {
       this.lastMessageReceivedTime = Date.now();
-      console.log(
-        "监测底层数据～～～",
-        this.currentstatus,
-        data.data.imu.x,
-        data.data.imu.y
-      );
       if (this.currentstatus == "Zero" && data.data.imu) {
         this.ImuX = data.data.imu.x;
         this.ImuY = data.data.imu.y;
-        // console.log(
-        //   "controller===========",
-        //   this.ImuX,
-        //   this.ImuY
-        // );
-        // console.log(
-        //   "controller===========",
-        //   (data.data.imu.x * 180) / Math.PI,
-        //   (data.data.imu.y * 180) / Math.PI
         // );
         if (
           (this.ImuX >= 3.054 && this.ImuX <= 3.1416) ||
@@ -442,7 +317,7 @@ export default {
           this.adjustVisible = true;
         }
       }
-      console.log("robotOnmessage~~~~~~~~~~", data.data);
+      // console.log("robotOnmessage~~~~~~~~~~", data.data);
       if (data.data) {
         this.doAction = data.data.upper_action;
         this.currentstatus = data.data.states.fsmstatename.currentstatus;
@@ -450,11 +325,15 @@ export default {
         this.currentstatus = "";
       }
     });
+    document.addEventListener('keydown', this.handleKeyDown);
+    document.addEventListener('keyup', this.handleKeyUp);
   },
   beforeDestroy() {
     if (this.walkingTimer) {
       clearTimeout(this.walkingTimer);
     }
+    document.removeEventListener('keydown', this.handleKeyDown);
+    document.removeEventListener('keyup', this.handleKeyUp);
   },
   destroyed() {
     clearInterval(this.interval);
@@ -484,7 +363,7 @@ export default {
           const currentTime = Date.now();
           const timeSinceLastMessage =
             currentTime - this.lastMessageReceivedTime;
-          console.log("websocketHeartBeat.............", timeSinceLastMessage);
+          // console.log("websocketHeartBeat.............", timeSinceLastMessage);
           if (timeSinceLastMessage > 3000) {
             // 如果超过了阈值3秒，认为连接断开
             console.log("WebSocket connection might be disconnected.");
@@ -523,10 +402,10 @@ export default {
           gamepad = navigator.getGamepads()[0]
             ? navigator.getGamepads()[0]
             : navigator.getGamepads()[1]
-            ? navigator.getGamepads()[1]
-            : navigator.getGamepads()[2]
-            ? navigator.getGamepads()[2]
-            : navigator.getGamepads()[3];
+              ? navigator.getGamepads()[1]
+              : navigator.getGamepads()[2]
+                ? navigator.getGamepads()[2]
+                : navigator.getGamepads()[3];
           // console.log(navigator.getGamepads(), gamepad)
           if (_this.intervalCount >= 50) {
             // navigator.getGamepads()[0].axes[0],navigator.getGamepads()[0].axes[1],navigator.getGamepads()[0].axes[2],navigator.getGamepads()[0].axes[3]
@@ -551,22 +430,6 @@ export default {
      * 手柄遥感 --- 圆心方案整改（新）
      */
     remoteSensing(arr) {
-      // let velocity = arr[1];
-      // let direction = arr[0];
-      // //圆的半径设为前后速度
-      // let v = Math.hypot(Math.abs(velocity), Math.abs(direction));
-      // if (v > 1) v = 1;
-      // if (velocity < 0) v = v * -1;
-      // //计算正弦值，根据反正弦算出角度
-      // let sin = direction / Math.abs(v);
-      // let angle = (Math.asin(sin) * 180) / Math.PI;
-      // //设定低值死区
-      // if (Math.abs(velocity) < 0.1) v = 0;
-      // if (Math.abs(direction) < 0.1) angle = 0;
-      // if (Math.abs(velocity) < 0.1) {
-      //   velocity = 0;
-      // }
-      // this.operateWalk(angle * -0.5, (velocity * this.speed) / -6.25);
       console.log(arr);
       if (this.currentstatus != "Stand" && this.currentstatus == "Walk") {
         this.velocity = arr[1];
@@ -574,19 +437,10 @@ export default {
         if (Math.abs(this.velocity) < 0.1) this.velocity = 0;
         this.direction = arr[2];
         if (Math.abs(this.direction) < 0.1) this.direction = 0;
-        if (this.direction == 0 && this.velocity == 0 && !this.walkEnd) {
-          this.operateWalk(
-            this.direction * -45,
-            (this.velocity * this.speed) / -6.25
-          );
-          this.walkEnd = true;
-        } else if (this.direction != 0 || this.velocity != 0) {
-          this.operateWalk(
-            this.direction * -45,
-            (this.velocity * this.speed) / -6.25
-          );
-          this.walkEnd = false;
-        }
+        this.operateWalk(
+          this.direction * -45,
+          (this.velocity * this.speed) / -6.25
+        );
       } else if (
         this.currentstatus == "Stand" &&
         this.currentstatus != "Walk"
@@ -599,20 +453,72 @@ export default {
         let yaw = arr[2] * 60;
         if (squat > -0.015) squat = 0;
         if (Math.abs(yaw) < 6) yaw = 0;
-        if (pitch == 0 && yaw == 0 && !this.headEnd) {
-          this.operateHead(pitch, yaw);
-          this.headEnd = true;
-        } else if (pitch != 0 || yaw != 0) {
-          this.operateHead(pitch, yaw);
-          this.headEnd = false;
+        this.operateHead(pitch, yaw);
+        this.operateBody(squat, rotate_waist);
+      }
+    },
+    //鼠标移动
+    onMouseMove(event) {
+      // console.log('onMouseMove', event, event.movementX, event.movementY)
+      if (this.currentstatus != "Stand") return
+      if (this.lastX == 0 && this.lastY == 0) {
+        this.lastX = event.clientX
+        this.lastY = event.clientY
+      } else {
+        const currPointX = (this.lastX / window.innerWidth - 0.5) * 2
+        const currPointY = (this.lastY / window.innerHeight - 0.5) * 2
+        // console.log('横向', currPointX.toFixed(2), '竖向', currPointY.toFixed(2))
+        this.lastX = event.clientX;
+        this.lastY = event.clientY;
+        let pitch = currPointX * 17.1887;
+        let yaw = currPointY * -17.1887;
+        this.operateHead(yaw, pitch);
+      }
+    },
+    //键盘操控
+    handleKeyDown(event) {
+      event.preventDefault();
+      if (!this.isKeyHold) {
+        console.log('keydown', event)
+
+        const walkKeys = {
+          87: { velocity: 1, direction: this.direction }, // W
+          83: { velocity: -1, direction: this.direction },  // S
+          65: { velocity: this.velocity, direction: -1 },  // A
+          68: { velocity: this.velocity, direction: 1 }, // D
+        };
+        const  walkInfo = walkKeys[event.keyCode];
+        if (walkInfo) {
+          if (event.keyCode == 87 || event.keyCode == 83) this.velocity = keyInfo.velocity * this.speed / 6.25;
+          if (event.keyCode == 65 || event.keyCode == 68) this.direction = keyInfo.direction;
+          console.log('方向', this.direction, '速度', this.velocity)
+          this.operateWalk(
+            this.direction * -45,
+            (this.velocity * this.speed) / 6.25
+          );
         }
-        if (squat == 0 && rotate_waist == 0 && !this.bodyEnd) {
-          this.operateBody(squat, rotate_waist);
-          this.bodyEnd = true;
-        } else if (squat != 0 || rotate_waist != 0) {
-          this.operateBody(squat, rotate_waist);
-          this.bodyEnd = false;
-        }
+        if(event.keyCode == 38) this.speedChange('add')
+        if(event.keyCode == 40) this.speedChange('reduce')
+      }
+    },
+    handleKeyUp(event) {
+      event.preventDefault();
+      const keyBindings = {
+        87: { velocity: 0, direction: this.direction }, // W
+        83: { velocity: 0, direction: this.direction },  // S
+        65: { velocity: this.velocity, direction: 0 },  // A
+        68: { velocity: this.velocity, direction: 0 }, // D
+      };
+
+      const keyInfo = keyBindings[event.keyCode];
+      if (keyInfo) {
+        if (event.keyCode == 87 || event.keyCode == 83) this.velocity = keyInfo.velocity * this.speed / 6.25;
+        if (event.keyCode == 65 || event.keyCode == 68) this.direction = keyInfo.direction;
+        console.log('放开方向', this.direction, '放开速度', this.velocity)
+        this.operateWalk(
+          this.direction * -45,
+          (this.velocity * this.speed) / 6.25
+        );
       }
     },
     // 手柄按键
@@ -723,7 +629,7 @@ export default {
         size: sWidth,
       });
       _this.joystickR
-        .on("start", function (evt, data) {})
+        .on("start", function (evt, data) { })
         .on("move", function (evt, data) {
           if (!_this.gamepadConnected) {
             if (
@@ -987,6 +893,11 @@ export default {
 };
 </script>
 <style lang="scss">
+//鼠标
+body {
+  // cursor: none;
+}
+
 .video-container {
   display: flex;
   justify-content: center;
@@ -1177,6 +1088,7 @@ export default {
   padding: 3.125vw 3.1333vw 0 3.5917vw;
   display: flex;
   flex-wrap: wrap;
+
   .actionItem {
     text-align: center;
     flex-basis: 33.33%;
@@ -1250,6 +1162,7 @@ export default {
   font-size: $size-30;
   color: $white;
 }
+
 .stateMessageError {
   position: absolute;
   left: 50%;
@@ -1262,6 +1175,7 @@ export default {
   font-size: $size-30;
   color: $white;
 }
+
 .adjustRobot {
   width: 49.25vw;
   height: 30.7917vw;
@@ -1275,6 +1189,7 @@ export default {
   display: flex;
   align-items: center;
   flex-direction: column;
+
   .directionBk {
     width: 18.4583vw;
     height: 18.4583vw;
@@ -1282,6 +1197,7 @@ export default {
     background-image: url("../../assets/images/image_imuDirection.png");
     background-repeat: no-repeat;
     background-size: cover;
+
     .directionPointer {
       position: relative;
       top: 9.2vw;
@@ -1294,16 +1210,19 @@ export default {
       justify-content: space-between;
       align-items: center;
       transition: transform 0.5s ease;
+
       .pointToImg {
         width: 1.5333vw;
         height: 2vw;
       }
+
       .sRobImg {
         width: 2.0833vw;
         height: 1.7917vw;
       }
     }
   }
+
   .directonTxt {
     font-size: $size-41;
     font-family: AlibabaPuHuiTiM;

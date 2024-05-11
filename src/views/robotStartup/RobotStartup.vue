@@ -315,7 +315,7 @@ export default {
       });
       this.robotWs.setWs(robot);
       robot.on_connected(() => {
-        console.log("robotWs成功！");
+        // console.log("robotWs成功！");
         Bus.$emit("robotOnconnected");
       });
       robot.on_message((data) => {
@@ -323,10 +323,10 @@ export default {
         Bus.$emit("robotOnmessage", currData);
       });
       robot.on_close(() => {
-        console.log("robotWs关闭！");
+        // console.log("robotWs关闭！");
       });
       robot.on_error(() => {
-        console.log("robotWs出错！");
+        // console.log("robotWs出错！");
       });
     },
     //打开开机初始示例图

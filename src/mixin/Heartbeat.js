@@ -30,13 +30,13 @@ export default {
       let ip = process.env.VUE_APP_URL.split("//")[1].split(":");
       get_robot_type({ host: ip[0], port: ip[1] })
         .then((res) => {
-          console.log("gettype成功", res,this.robotWs.robot.ws.readyState);
+          // console.log("gettype成功", res,this.robotWs.robot.ws.readyState);
           if (res.status == 200 && res.data.msg == "ok")
             this.$store.commit("setConnected", true);
         })
         .catch((err) => {
           this.$store.commit("setConnected", false);
-          console.log("gettype失败", err);
+          // console.log("gettype失败", err);
         });
     },
   },
