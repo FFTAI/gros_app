@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container" @mousemove="onMouseMove">
+    <div class="container">
       <div ref="videoContainer" align="center" class="video-container">
         <div class="video-item common-bkg">
           <img class="video-play" :src="videoSrc" v-show="camera" />
@@ -327,6 +327,7 @@ export default {
     });
     document.addEventListener('keydown', this.handleKeyDown);
     document.addEventListener('keyup', this.handleKeyUp);
+    document.addEventListener('mousemove', this.onMouseMove);
   },
   beforeDestroy() {
     if (this.walkingTimer) {
@@ -334,6 +335,7 @@ export default {
     }
     document.removeEventListener('keydown', this.handleKeyDown);
     document.removeEventListener('keyup', this.handleKeyUp);
+    document.removeEventListener('mousemove', this.onMouseMove);
   },
   destroyed() {
     clearInterval(this.interval);
@@ -460,6 +462,7 @@ export default {
     //鼠标移动
     onMouseMove(event) {
       // console.log('onMouseMove', event, event.movementX, event.movementY)
+      event.preventDefault();
       if (this.currentstatus != "Stand") return
       if (this.lastX == 0 && this.lastY == 0) {
         this.lastX = event.clientX
@@ -477,7 +480,7 @@ export default {
     },
     //键盘操控
     handleKeyDown(event) {
-      event.preventDefault();
+      // event.preventDefault();
       if (!this.isKeyHold) {
         console.log('keydown', event)
 
@@ -489,8 +492,8 @@ export default {
         };
         const  walkInfo = walkKeys[event.keyCode];
         if (walkInfo) {
-          if (event.keyCode == 87 || event.keyCode == 83) this.velocity = keyInfo.velocity * this.speed / 6.25;
-          if (event.keyCode == 65 || event.keyCode == 68) this.direction = keyInfo.direction;
+          if (event.keyCode == 87 || event.keyCode == 83) this.velocity = walkInfo.velocity * this.speed / 6.25;
+          if (event.keyCode == 65 || event.keyCode == 68) this.direction = walkInfo.direction;
           console.log('方向', this.direction, '速度', this.velocity)
           this.operateWalk(
             this.direction * -45,
@@ -499,6 +502,8 @@ export default {
         }
         if(event.keyCode == 38) this.speedChange('add')
         if(event.keyCode == 40) this.speedChange('reduce')
+        if(event.keyCode == 17) this.doCalibration();
+        if(event.keyCode == 32) this.changeControl("stand");
       }
     },
     handleKeyUp(event) {
@@ -895,7 +900,7 @@ export default {
 <style lang="scss">
 //鼠标
 body {
-  // cursor: none;
+  cursor: none;
 }
 
 .video-container {
