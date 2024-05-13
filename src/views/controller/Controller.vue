@@ -6,54 +6,45 @@
           <img class="video-play" :src="videoSrc" v-show="camera" />
         </div>
       </div>
-      <div class="videoBox">
-        <rtc-header :currentSpeed="current_speed" :isController="true" :camera="true" @cameraOn="openCamera()"
-          @returnMain="promptBoxOpen('returnMain')">
-          <div class="headState" @click="headChange()">
-            <span class="headTxt common-font">{{ $t("remoteMode") }}</span>
-            <div class="arrow"></div>
-          </div>
-        </rtc-header>
-        <div class="headBox flex-column" :style="headBoxWidth" v-if="headBoxVisible">
-          <div @click="changeMode('remoteMode')">
-            {{ $t("remoteMode") }}
-          </div>
-          <div class="divider" :style="dividerWidth"></div>
-          <div @click="changeMode('developerMode')">
-            {{ $t("developerMode") }}
-          </div>
+      <div class="headBkIn" :class="sideVisible ? 'shortWidth' : 'fullWidth'">
+        <div class="headReturn" @click="routerReturn()">
+          <img class="return" src="@/assets/images/icon_return.png" />
         </div>
-        <!-- Stop按钮 -->
-        <!-- <div class="stopControl">
-          <img class="stopImg" src="@/assets/images/icon_chStop.png" @click="stop()" />
-        </div> -->
-        <!--初始-->
-        <div class="calibration">
-          <img v-if="$i18n.locale == 'en'" class="calibrationImg" src="@/assets/images/icon_calibrationEn.png"
-            @click="calibration()" />
-          <img v-else class="calibrationImg" src="@/assets/images/icon_calibration.png" @click="calibration()" />
+        <div class="headState">
+          <span class="headTxt common-font">{{ $t("remoteMode") }}</span>
+          <div class="cDivider"></div>
+          <span class="actionTxt">{{ mode ? $t(mode) : '闲置' }}{{ $t("ing") }}…</span>
         </div>
-        <!-- 速度挡位调节 -->
-        <div class="speedBox">
-          <div class="speedControl">
-            <div class="speedDirection flex-column">
-              <img class="speedAdd" @click="speedChange('add')" src="@/assets/images/btn_add.png" />
-              <span class="speedNum title-font">{{ speed }}</span>
-              <img class="speedReduce" @click="speedChange('reduce')" src="@/assets/images/btn_reduce.png" />
-            </div>
+        <div class="spacing flex-center">
+          <div class="divider spacing"></div>
+          <div>
+            <img class="inImg" src="@/assets/images/icon_battery2.png" />
+            <span class="inTxt title-font">80°C</span>
+          </div>
+          <div class="divider spacing"></div>
+          <div>
+            <img class="inImg" src="@/assets/images/icon_battery2.png" />
+            <span class="inTxt title-font">60°C</span>
+          </div>
+          <div class="divider spacing"></div>
+          <div>
+            <img class="inImg" src="@/assets/images/icon_battery2.png" />
+            <span class="inTxt title-font">43%</span>
+          </div>
+          <div class="divider spacing"></div>
+          <div>
+            <img class="inImg" style="height: 1.6667vw; width: 2.2917vw" src="@/assets/images/icon_Wifi.png" />
           </div>
         </div>
       </div>
-      <!-- 虚拟摇杆 joystick-start-->
-      <div class="joystickBorder flex-center" style="left: 11.0833vw">
-        <img class="joystickImg" src="@/assets/images/image_direction.png" />
+
+      <div class="bottomBox" :class="sideVisible ? 'shortWidth' : 'fullWidth'"></div>
+      <div class="sideBox" v-if="sideVisible">
+        <div class="title">
+          <span>步态运动</span>
+          <img style="width: 24px;height: 24px;" src="@/assets/images/icon_sClose.png" />
+        </div>
       </div>
-      <div class="joystickBorder flex-center" style="right: 11.0833vw">
-        <img class="joystickImg" src="@/assets/images/image_direction.png" />
-      </div>
-      <div id="zone_joystickL"></div>
-      <div id="zone_joystickR"></div>
-      <!-- joystick-end -->
       <div :class="controlExpand ? 'controlActivated' : 'controlStatus'" ref="controlRef">
         <!-- 步态运动展开 -->
         <div class="actionBox" v-if="controlExpand && controlModel == 'gait'">
@@ -123,44 +114,44 @@
           </div>
           <!-- 步态运动 -->
           <div :class="[
-      'choseBox',
-      'txt',
-      controlModel != 'gait' ? '' : controlExpand ? 'choseBk' : 'chose',
-    ]" @click="changeControl('gait')">
+            'choseBox',
+            'txt',
+            controlModel != 'gait' ? '' : controlExpand ? 'choseBk' : 'chose',
+          ]" @click="changeControl('gait')">
             {{ $t("gaitMotion") }}
           </div>
           <!-- 原地运动 -->
           <div :class="[
-      'choseBox',
-      'txt',
-      controlModel != 'inPlace'
-        ? ''
-        : controlExpand
-          ? 'choseBk'
-          : 'chose',
-    ]" @click="changeControl('inPlace')">
+            'choseBox',
+            'txt',
+            controlModel != 'inPlace'
+              ? ''
+              : controlExpand
+                ? 'choseBk'
+                : 'chose',
+          ]" @click="changeControl('inPlace')">
             {{ $t("inPlaceMotion") }}
           </div>
           <!-- 末端抓取 -->
           <div :class="[
-      'choseBox',
-      'txt',
-      controlModel != 'grasping'
-        ? ''
-        : controlExpand
-          ? 'choseBk'
-          : 'chose',
-    ]" @click="changeControl('grasping')">
+            'choseBox',
+            'txt',
+            controlModel != 'grasping'
+              ? ''
+              : controlExpand
+                ? 'choseBk'
+                : 'chose',
+          ]" @click="changeControl('grasping')">
             {{ $t("grasping") }}
           </div>
         </div>
       </div>
       <!-- 当前状态提示 -->
       <div class="stateMessage flex-center" v-if="(mode != '' && doAction) ||
-      (mode != '' && otherAction) ||
-      mode == 'initial'
-      ">
-        <span>{{ $t(mode) }}{{ $t("ing") }}...</span>
+            (mode != '' && otherAction) ||
+            mode == 'initial'
+            ">
+        <!-- <span>{{ $t(mode) }}{{ $t("ing") }}...</span> -->
       </div>
       <!-- 异常提示 -->
       <div v-if="currentstatus == '' || currentstatus == 'Unknown'" class="stateMessageError flex-center">
@@ -168,22 +159,10 @@
       </div>
       <prompt-box v-if="promptVisible || !connected" :prompt="connected ? promptVal : 'reconnect'" @cancel="cancel()"
         @confirm="confirm()"></prompt-box>
-      <div class="wrapper" style="z-index: 9998" v-if="adjustVisible">
-        <div class="adjustRobot">
-          <div class="directionBk">
-            <div class="directionPointer" :style="rotateStyle">
-              <img class="pointToImg" src="@/assets/images/icon_pointTo.png" />
-              <img class="sRobImg" src="@/assets/images/icon_sRob.png" />
-            </div>
-          </div>
-          <span class="directonTxt">{{ $t("adjustPosture") }}</span>
-        </div>
-      </div>
     </div>
   </div>
 </template>
 <script>
-import nipplejs from "nipplejs";
 import RtcHeader from "@/components/rtcHeader.vue";
 import promptBox from "@/components/promptBox.vue";
 import { mapState } from "vuex";
@@ -193,36 +172,6 @@ export default {
   components: { RtcHeader, promptBox },
   computed: {
     ...mapState(["gamepadConnected", "connected"]),
-    rotateStyle() {
-      let x = this.ImuX;
-      let y = this.ImuY;
-      // let a = this.ImuX;
-      // let b = this.ImuY;
-      // let x = -3.1416;
-      // let y = -0.087
-      if (x > 3.1416) x = 3.1416;
-      if (x < 3.054 && x > 0) x = 3.054;
-      if (x < -3.1416) x = -3.1416;
-      if (x > -3.054 && x < 0) x = -3.054;
-      if (y > 0.087) y = 0.087;
-      if (y < -0.087) y = -0.087;
-      if (x >= 3.054 && x <= 3.1416) {
-        x = 10 * ((x - 3.1416) / -0.087);
-      } else if (x >= -3.1416 && x <= -3.054) {
-        x = -10 * ((x + 3.1416) / 0.087);
-      }
-      y = -10 + 10 * ((y + 0.087) / 0.087);
-      console.log("x,y", x, y);
-      const angleRadians = Math.atan2(x, y);
-      let rotation = angleRadians * (180 / Math.PI);
-      if (rotation < 0) {
-        rotation += 360;
-      }
-      return {
-        transform: `rotate(${rotation}deg)`,
-        transformOrigin: "50% 0%",
-      };
-    },
     headBoxWidth() {
       let style = { width: "9.2083vw" };
       if (this.$i18n.locale == "en") {
@@ -242,8 +191,6 @@ export default {
     return {
       videoContainer: "", //视频
       buttons: "", //当前按键
-      joystickL: undefined, //左侧虚拟摇杆
-      joystickR: undefined, //右侧虚拟摇杆
       screenWidth: document.body.clientWidth, //当前屏幕宽度
       speed: 1, //当前速度档位 1-3
       current_speed: 0, //当前速度，默认0
@@ -255,8 +202,6 @@ export default {
       camera: true, //是否开启视频
       doAction: false,
       otherAction: false,
-      // isStand: false,
-      // isWalking: false,
       velocity: 0,
       direction: 0,
       interval: null,
@@ -266,13 +211,11 @@ export default {
       lastMessageReceivedTime: Date.now(),
       wsInterval: null,
       reconnectWs: false,
-      adjustVisible: false,
-      ImuX: 0,
-      ImuY: 0,
       currentstatus: "Start", //当前状态: Unknown,Start,Zero,Zero2Stand,Stand,Stand2Walk,Walk,Stop
       walkingTimer: null,
       lastX: 0,
-      lastY: 0
+      lastY: 0,
+      sideVisible: true
     };
   },
   created() {
@@ -296,27 +239,9 @@ export default {
       })();
     };
     this.cameraOpen();
-    this.startJoystickL(); //生成虚拟摇杆
-    this.startJoystickR();
     this.startGamepad();
     this.$bus.$on("robotOnmessage", (data) => {
       this.lastMessageReceivedTime = Date.now();
-      if (this.currentstatus == "Zero" && data.data.imu) {
-        this.ImuX = data.data.imu.x;
-        this.ImuY = data.data.imu.y;
-        // );
-        if (
-          (this.ImuX >= 3.054 && this.ImuX <= 3.1416) ||
-          (this.ImuX >= -3.1416 &&
-            this.ImuX <= -3.054 &&
-            this.ImuY >= -0.087 &&
-            this.ImuY <= 0.087)
-        ) {
-          this.adjustVisible = false;
-        } else {
-          this.adjustVisible = true;
-        }
-      }
       // console.log("robotOnmessage~~~~~~~~~~", data.data);
       if (data.data) {
         this.doAction = data.data.upper_action;
@@ -343,19 +268,6 @@ export default {
     //关闭监听
     this.robotWs.robot.disable_debug_state();
     this.$bus.$off("robotOnmessage");
-  },
-  watch: {
-    //屏幕尺寸变化后，重新生成joystick适配当前尺寸
-    screenWidth: function (n, o) {
-      if (this.joystickL) {
-        this.joystickL.destroy();
-        this.startJoystickL();
-      }
-      if (this.joystickR) {
-        this.joystickR.destroy();
-        this.startJoystickR();
-      }
-    },
   },
   methods: {
     //创建定时器监听websocket是否断连
@@ -415,16 +327,6 @@ export default {
             _this.remoteSensing(gamepad.axes);
             _this.intervalCount = 0;
           }
-
-          let size = (_this.screenWidth * 100) / 1440;
-          _this.joystickL[0].setPosition(1, {
-            x: gamepad.axes.slice(0, 2)[0] * size,
-            y: gamepad.axes.slice(0, 2)[1] * size,
-          });
-          _this.joystickR[0].setPosition(1, {
-            x: gamepad.axes.slice(2, 4)[0] * size,
-            y: gamepad.axes.slice(2, 4)[1] * size,
-          });
         }
       }, 1);
     },
@@ -490,7 +392,7 @@ export default {
           65: { velocity: this.velocity, direction: -1 },  // A
           68: { velocity: this.velocity, direction: 1 }, // D
         };
-        const  walkInfo = walkKeys[event.keyCode];
+        const walkInfo = walkKeys[event.keyCode];
         if (walkInfo) {
           if (event.keyCode == 87 || event.keyCode == 83) this.velocity = walkInfo.velocity * this.speed / 6.25;
           if (event.keyCode == 65 || event.keyCode == 68) this.direction = walkInfo.direction;
@@ -500,10 +402,10 @@ export default {
             (this.velocity * this.speed) / 6.25
           );
         }
-        if(event.keyCode == 38) this.speedChange('add')
-        if(event.keyCode == 40) this.speedChange('reduce')
-        if(event.keyCode == 17) this.doCalibration();
-        if(event.keyCode == 32) this.changeControl("stand");
+        if (event.keyCode == 38) this.speedChange('add')
+        if (event.keyCode == 40) this.speedChange('reduce')
+        if (event.keyCode == 17) this.doCalibration();
+        if (event.keyCode == 32) this.changeControl("stand");
       }
     },
     handleKeyUp(event) {
@@ -556,127 +458,6 @@ export default {
         }
       }
       if (stopL && stopR) this.stop();
-    },
-    //开启左侧虚拟触控摇杆
-    startJoystickL() {
-      const _this = this;
-      let sWidth = parseInt(this.screenWidth * 14.8 * 0.01);
-      _this.joystickL = nipplejs.create({
-        zone: document.getElementById("zone_joystickL"),
-        mode: "static",
-        position: { left: "20%", top: "70%" },
-        color: "white",
-        size: sWidth,
-      });
-      _this.joystickL
-        .on("start", function (evt, data) {
-          if (!_this.gamepadConnected) {
-            _this.time = setInterval(() => {
-              _this.onStart && _this.onStart(_this.distance, _this.angle);
-            }, 5);
-          }
-        })
-        .on("move", function (evt, data) {
-          if (!_this.gamepadConnected) {
-            if (
-              _this.currentstatus != "Stand" &&
-              _this.currentstatus == "Walk"
-            ) {
-              _this.velocity = data.vector.y;
-              if (Math.abs(_this.velocity) < 0.1) _this.velocity = 0;
-              _this.operateWalk(
-                _this.direction * -45,
-                (_this.velocity * _this.speed) / 6.25
-              );
-            } else if (
-              _this.currentstatus == "Stand" &&
-              _this.currentstatus != "Walk"
-            ) {
-              let pitch = data.vector.y * 17.1887;
-              let rotate_waist = data.vector.x * -14.32;
-              if (Math.abs(pitch) < 1.71887) pitch = 0;
-              if (Math.abs(rotate_waist) < 1.432) rotate_waist = 0;
-              console.log(pitch, rotate_waist);
-              _this.operateHead(pitch, 0);
-              _this.operateBody(0, rotate_waist);
-            }
-          }
-        })
-        .on("end", function (evt, data) {
-          if (!_this.gamepadConnected) {
-            //摇杆回原点后速度方向归零
-            if (
-              _this.currentstatus != "Stand" &&
-              _this.currentstatus == "Walk"
-            ) {
-              _this.operateWalk(0, 0);
-            } else if (
-              _this.currentstatus == "Stand" &&
-              _this.currentstatus != "Walk"
-            ) {
-              _this.operateHead(0, 0);
-              _this.operateBody(0, 0);
-            }
-            clearInterval(_this.time);
-            _this.onEnd && _this.onEnd();
-          }
-        });
-    },
-    //开启右侧虚拟触控摇杆
-    startJoystickR() {
-      const _this = this;
-      let sWidth = parseInt(this.screenWidth * 14.8 * 0.01);
-      _this.joystickR = nipplejs.create({
-        zone: document.getElementById("zone_joystickR"),
-        mode: "static",
-        position: { right: "20%", top: "70%" },
-        color: "white",
-        size: sWidth,
-      });
-      _this.joystickR
-        .on("start", function (evt, data) { })
-        .on("move", function (evt, data) {
-          if (!_this.gamepadConnected) {
-            if (
-              _this.currentstatus == "Stand" &&
-              _this.currentstatus != "Walk"
-            ) {
-              let squat = data.vector.y * 0.15;
-              let yaw = data.vector.x * 60;
-              if (squat > -0.015) squat = 0;
-              if (Math.abs(yaw) < 6) yaw = 0;
-              _this.operateHead(0, yaw);
-              _this.operateBody(squat, 0);
-            } else if (
-              _this.currentstatus != "Stand" &&
-              _this.currentstatus == "Walk"
-            ) {
-              _this.direction = data.vector.x;
-              if (Math.abs(_this.direction) < 0.1) _this.direction = 0;
-              _this.operateWalk(
-                _this.direction * -45,
-                (_this.velocity * _this.speed) / 6.25
-              );
-            }
-          }
-        })
-        .on("end", function (evt, data) {
-          if (!_this.gamepadConnected) {
-            if (
-              _this.currentstatus == "Stand" &&
-              _this.currentstatus != "Walk"
-            ) {
-              _this.operateHead(0, 0);
-              _this.operateBody(0, 0);
-            } else if (
-              _this.currentstatus != "Stand" &&
-              _this.currentstatus == "Walk"
-            ) {
-              _this.direction = 0;
-              _this.operateWalk(0, 0);
-            }
-          }
-        });
     },
     calibration() {
       this.promptBoxOpen("calibration");
@@ -857,18 +638,6 @@ export default {
         }
       }
     },
-    headChange() {
-      this.headBoxVisible = !this.headBoxVisible;
-    },
-    changeMode(e) {
-      if (e == "remoteMode") {
-        this.headBoxVisible = false;
-      } else if (e == "developerMode") {
-        this.$router.push({
-          name: "development",
-        });
-      }
-    },
     openCamera() {
       this.camera = !this.camera;
     },
@@ -900,7 +669,7 @@ export default {
 <style lang="scss">
 //鼠标
 body {
-  cursor: none;
+  // cursor: none;
 }
 
 .video-container {
@@ -923,110 +692,6 @@ body {
 .buttons {
   display: flex;
   margin-top: 1.3889vw;
-}
-
-.videoBox {
-  width: 100%;
-  height: 100%;
-  background-color: cadetblue;
-  position: absolute;
-}
-
-.stopControl {
-  position: absolute;
-  right: 5vw;
-  top: 8.3333vw;
-  z-index: 9999;
-
-  .stopImg {
-    width: 3.9583vw;
-    height: 3.9583vw;
-    margin: auto;
-  }
-}
-
-.calibration {
-  position: absolute;
-  left: 2.4583vw;
-  top: 7.375vw;
-  z-index: 9997;
-
-  .calibrationImg {
-    width: 4.9167vw;
-    height: 4.9167vw;
-    margin: auto;
-  }
-}
-
-.speedBox {
-  position: absolute;
-  left: 1.8333vw;
-  bottom: 5.25vw;
-  z-index: 999;
-
-  .speedControl {
-    width: 6.1667vw;
-    height: 14.7917vw;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 2.9583vw;
-
-    .speedDirection {
-      width: 3.7083vw;
-      height: 12.3333vw;
-      background: rgba(0, 76, 129, 0.12);
-      border-radius: 2.4583vw;
-      position: absolute;
-      left: 1.28vw;
-      bottom: 1.2556vw;
-      justify-content: space-around;
-      align-items: center;
-
-      .speedAdd {
-        width: 1.375vw;
-        height: 1.375vw;
-        z-index: 1000;
-      }
-
-      .speedReduce {
-        width: 1.375vw;
-        height: 1.375vw;
-        z-index: 1000;
-      }
-
-      .speedNum {
-        font-size: 1.7188vw;
-        color: $white;
-      }
-    }
-  }
-}
-
-.joystickBorder {
-  position: absolute;
-  bottom: 3.7083vw;
-  width: 17.875vw;
-  height: 17.875vw;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  z-index: 999;
-  border-radius: 50%;
-}
-
-.joystickImg {
-  width: 11.0833vw;
-  height: 11.0833vw;
-  z-index: 999;
-}
-
-#zone_joystickL {
-  position: absolute;
-  left: 20.2625vw;
-  bottom: 12.8458vw;
-}
-
-#zone_joystickR {
-  position: absolute;
-  right: 20.2625vw;
-  bottom: 12.8458vw;
 }
 
 .controlStatus {
@@ -1087,6 +752,46 @@ body {
   }
 }
 
+.bottomBox {
+  height: 120px;
+  background: rgba(13, 44, 68, 0.7);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 9999;
+}
+
+.shortWidth {
+  width: 1540px;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.sideBox {
+  width: 380px;
+  height: 1080px;
+  background: rgba(23, 39, 55, 0.7);
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 9999;
+
+  .title {
+    width: 326px;
+    height: 80px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 100%);
+    font-size: 28px;
+    color: #FFFFFF;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 25px;
+    padding-left: 29px;
+  }
+}
+
 .actionBox {
   height: 23vw;
   width: 27.775vw;
@@ -1111,25 +816,30 @@ body {
 
 .headState {
   position: absolute;
-  top: 1vw;
+  top: 1.25vw;
   left: 10.9375vw;
   z-index: 99;
   display: flex;
   align-items: center;
 
   .headTxt {
-    font-size: 1.9792vw;
+    font-size: 1.5vw;
     color: $white;
+    font-style: normal;
+    font-weight: 550;
   }
 
-  .arrow {
-    margin-left: 0.5vw;
-    width: 0;
-    height: 0;
-    background: linear-gradient(274deg, #1a1919 0%, #004c81 100%);
-    border-left: 0.4167vw solid transparent;
-    border-right: 0.4167vw solid transparent;
-    border-top: 0.5208vw solid $white;
+  .cDivider {
+    width: .0833vw;
+    height: 1.5vw;
+    background: #FFFFFF;
+    margin-left: 2.0833vw;
+  }
+
+  .actionTxt {
+    font-size: 1.3333vw;
+    color: #FFFFFF;
+    margin-left: 2.0833vw;
   }
 }
 
@@ -1154,20 +864,6 @@ body {
   }
 }
 
-.stateMessage {
-  position: absolute;
-  left: 50%;
-  top: 7.5vw;
-  transform: translate(-50%, -50%);
-  height: 3vw;
-  padding: 0 2.5833vw;
-  background: rgba(0, 0, 0, 0.8);
-  border-radius: 0.25vw;
-  z-index: 999;
-  font-size: $size-30;
-  color: $white;
-}
-
 .stateMessageError {
   position: absolute;
   left: 50%;
@@ -1181,58 +877,69 @@ body {
   color: $white;
 }
 
-.adjustRobot {
-  width: 49.25vw;
-  height: 30.7917vw;
-  background-image: url("../../assets/images/image_adjustBkg.png");
-  background-repeat: no-repeat;
-  background-size: cover;
+
+.headBkIn {
   position: absolute;
-  top: 7.125vw;
-  left: 25.375vw;
-  z-index: 888;
+  top: 0;
+  left: 0;
+  height: 4.4444vw;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  flex-direction: column;
+  z-index: 99;
+  background: linear-gradient(274deg,
+      rgba(26, 25, 25, 0.4) 0%,
+      rgba(0, 76, 129, 0.4) 100%);
 
-  .directionBk {
-    width: 18.4583vw;
-    height: 18.4583vw;
-    margin-top: 3.375vw;
-    background-image: url("../../assets/images/image_imuDirection.png");
-    background-repeat: no-repeat;
-    background-size: cover;
-
-    .directionPointer {
-      position: relative;
-      top: 9.2vw;
-      left: 8.2vw;
-      width: 2.1vw;
-      height: 7.5vw;
-      padding-top: 1.5vw;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      transition: transform 0.5s ease;
-
-      .pointToImg {
-        width: 1.5333vw;
-        height: 2vw;
-      }
-
-      .sRobImg {
-        width: 2.0833vw;
-        height: 1.7917vw;
-      }
-    }
+  .return {
+    width: 2.0833vw;
+    height: 1.7708vw;
   }
 
-  .directonTxt {
+  .headReturn {
+    height: 4.4444vw;
+    width: 5.6667vw;
+    background: #004B85;
+    padding-left: 1.24vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .headReturn::after {
+    position: absolute;
+    content: " ";
+    left: 4.6667vw;
+    top: 0.0vw;
+    border-width: 4.4444vw 2.3021vw;
+    border-style: solid;
+    border-color: #004c81 transparent transparent transparent;
+  }
+
+  .spacing {
+    margin-right: 30px;
+  }
+
+  .divider {
+    width: 0.1042vw;
+    height: 4.4271vw;
+    background: $white;
+    opacity: 0.3;
+  }
+
+  .inImg {
+    width: 2.2222vw;
+    height: 2.2222vw;
+    z-index: 99;
+    vertical-align: middle;
+  }
+
+  .inTxt {
     font-size: $size-41;
-    font-family: AlibabaPuHuiTiM;
     color: $white;
-    margin-top: 3.375vw;
+    margin-right: 1.9444vw;
+    margin-left: 0.6944vw;
+    vertical-align: middle;
   }
 }
 </style>
