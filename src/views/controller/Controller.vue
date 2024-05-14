@@ -105,36 +105,60 @@
       </div>
       <div class="sideBox" v-if="sideVisible">
         <div class="title">
-          <span>{{titleName}}</span>
-          <img style="width: 24px;height: 24px;" src="@/assets/images/icon_sClose.png" @click="closeSide()"/>
+          <span>{{ titleName }}</span>
+          <img style="width: 24px;height: 24px;" src="@/assets/images/icon_sClose.png" @click="closeSide()" />
         </div>
         <div class="sideContent">
-          <div v-if="controlModel=='inPlace'" class="actionItem" :class="{ chosedAction: item.name == 'squat' }" v-for="(item, index) in inPlaceList"
-            :key="index" @click="choseMode(item.name)">
+          <div v-if="controlModel == 'inPlace'" class="actionItem" :class="{ chosedAction: item.name == mode }"
+            v-for="(item, index) in inPlaceList" :key="index" @click="choseMode(item.name)">
             <img class="actionImg" :src="item.src" />
             <div>{{ $t(item.name) }}</div>
           </div>
-          <div v-if="controlModel=='grasping'" class="actionItem" :class="{ chosedAction: item.name == 'squat' }" v-for="(item, index) in graspingList"
-            :key="index" @click="choseMode(item.name)">
+          <div v-if="controlModel == 'grasping'" class="actionItem" :class="{ chosedAction: item.name == mode }"
+            v-for="(item, index) in graspingList" :key="index" @click="choseMode(item.name)">
             <img class="actionImg" :src="item.src" />
             <div>{{ $t(item.name) }}</div>
+          </div>
+          <div v-if="controlModel == 'setup'" style="width: 100%;" <div class="setTab">
+            <div class="tabItem">
+              <span class="chosed">运动控制</span>
+              <div class="cDivider" v-if="currentSetup == 'motion'"></div>
+            </div>
+            <div class="tabItem">
+              <span>感知交互</span>
+              <div class="cDivider" v-if="currentSetup == 'perceptual'"></div>
+            </div>
+            <div class="tabItem">
+              <span>感知交互</span>
+              <div class="cDivider" v-if="currentSetup == 'power'"></div>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="speedControl">
+            <span>行走速度</span>
+            <div class="controlTag">
+              <div class="tag" :class="{ chosedTag: speed == 1 }" @click="speedChange(1)">慢</div>
+              <div class="tag" :class="{ chosedTag: speed == 2 }" @click="speedChange(2)">中</div>
+              <div class="tag" :class="{ chosedTag: speed == 3 }" @click="speedChange(3)">快</div>
+            </div>
           </div>
         </div>
       </div>
-      <!-- 当前状态提示 -->
-      <div class="stateMessage flex-center" v-if="(mode != '' && doAction) ||
+    </div>
+    <!-- 当前状态提示 -->
+    <div class="stateMessage flex-center" v-if="(mode != '' && doAction) ||
             (mode != '' && otherAction) ||
             mode == 'initial'
             ">
-        <!-- <span>{{ $t(mode) }}{{ $t("ing") }}...</span> -->
-      </div>
-      <!-- 异常提示 -->
-      <div v-if="currentstatus == '' || currentstatus == 'Unknown'" class="stateMessageError flex-center">
-        <span>异常：无法获取当前状态！</span>
-      </div>
-      <prompt-box v-if="promptVisible || !connected" :prompt="connected ? promptVal : 'reconnect'" @cancel="cancel()"
-        @confirm="confirm()"></prompt-box>
+      <!-- <span>{{ $t(mode) }}{{ $t("ing") }}...</span> -->
     </div>
+    <!-- 异常提示 -->
+    <div v-if="currentstatus == '' || currentstatus == 'Unknown'" class="stateMessageError flex-center">
+      <span>异常：无法获取当前状态！</span>
+    </div>
+    <prompt-box v-if="promptVisible || !connected" :prompt="connected ? promptVal : 'reconnect'" @cancel="cancel()"
+      @confirm="confirm()"></prompt-box>
+  </div>
   </div>
 </template>
 <script>
@@ -163,9 +187,9 @@ export default {
       return style;
     },
     titleName() {
-      if(this.controlModel == 'inPlace') return '原地运动'
-      if(this.controlModel == 'grasping') return '末端抓取'
-      if(this.controlModel == 'setup') return '设置'
+      if (this.controlModel == 'inPlace') return '原地运动'
+      if (this.controlModel == 'grasping') return '末端抓取'
+      if (this.controlModel == 'setup') return '设置'
     }
   },
   data() {
@@ -177,7 +201,6 @@ export default {
       current_speed: 0, //当前速度，默认0
       videoSrc: "", //摄像头视频路径
       controlModel: "", //当前运动 gait:步态 inPlace:原地 grasping:末端抓取
-      controlExpand: false, //运动选择栏展开
       mode: "", //当前运动模式
       headBoxVisible: false, //模式选择框显隐
       camera: true, //是否开启视频
@@ -200,6 +223,7 @@ export default {
       mute: false,
       cameraOff: false,
       recording: false,
+      currentSetup: "motion",
       inPlaceList: [
         {
           name: 'raiseHand',
@@ -225,7 +249,7 @@ export default {
         }
       ],
       graspingList: [
-      {
+        {
           name: 'openHand',
           src: require('@/assets/images/icon_grasping.png'),
         }, {
@@ -454,18 +478,13 @@ export default {
       let stopR = false;
       for (let i = 0; i < arr.length; i++) {
         if (arr[i].value === 1) {
-          if (!this.speedTime) {
-            if (i === 4) {
-              this.buttons = "左手1";
-              if (this.speed > 1) this.speed -= 1;
-            }
-            if (i === 5) {
-              this.buttons = "右手1";
-              if (this.speed < 3) this.speed += 1;
-            }
-            this.speedTime = setTimeout(() => {
-              this.speedTime = null;
-            }, 500);
+          if (i === 4) {
+            this.buttons = "左手1";
+            if (this.speed > 1) this.speed -= 1;
+          }
+          if (i === 5) {
+            this.buttons = "右手1";
+            if (this.speed < 3) this.speed += 1;
           }
           if (i === 6) {
             this.buttons = "左手2";
@@ -497,12 +516,12 @@ export default {
     },
     // 速度挡位调节
     speedChange(e) {
-      if (!this.speedTime) {
-        if (e == "add" && this.speed < 3) this.speed += 1;
-        if (e == "reduce" && this.speed > 1) this.speed -= 1;
-        this.speedTime = setTimeout(() => {
-          this.speedTime = null;
-        }, 500);
+      if (e == "add" && this.speed < 3) {
+        this.speed += 1;
+      } else if (e == "reduce" && this.speed > 1) {
+        this.speed -= 1;
+      } else {
+        this.speed = e
       }
     },
     //操控行走
@@ -548,7 +567,7 @@ export default {
         }
         this.robotWs.robot.stand();
         this.sideVisible = false;
-      } else if(["inPlace", "grasping", "setup"].includes(e)){
+      } else if (["inPlace", "grasping", "setup"].includes(e)) {
         this.sideVisible = true;
       } else {
         this.sideVisible = false;
@@ -557,7 +576,6 @@ export default {
     },
     async choseMode(e) {
       if (this.doAction || this.otherAction) return;
-      this.controlExpand = false;
       this.mode = e;
       //原地踏步，速度位置发0
       if (e == "markingTime") {
@@ -883,6 +901,74 @@ body {
     .chosedAction {
       background: linear-gradient(230deg, #198BFF 0%, #0086D1 100%);
       border-radius: 8px;
+    }
+
+    .setTab {
+      width: 100%;
+      height: 103px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 27px 0 29px;
+
+      .tabItem {
+        font-size: 20px;
+        color: rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        height: 37px;
+        justify-content: space-between;
+
+        .chosed {
+          color: #FFFFFF;
+        }
+      }
+
+      .cDivider {
+        width: 16px;
+        height: 4px;
+        background: #FFFFFF;
+      }
+
+    }
+
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .speedControl {
+      width: 100%;
+      height: 122px;
+      padding: 0 27px 0 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 20px;
+      color: #FFFFFF;
+
+      .controlTag {
+        width: 206px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        display: flex;
+
+        .tag {
+          width: 68px;
+          height: 40px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .chosedTag {
+          background: linear-gradient(230deg, #198BFF 0%, #0086D1 100%);
+          border-radius: 4px;
+        }
+      }
     }
   }
 }
