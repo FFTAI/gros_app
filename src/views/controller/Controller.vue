@@ -16,14 +16,13 @@
           <span class="actionTxt">{{ mode ? $t(mode) : '闲置' }}{{ $t("ing") }}…</span>
         </div>
         <div class="spacing flex-center">
-          <div class="divider spacing"></div>
           <div>
-            <img class="inImg" src="@/assets/images/icon_battery2.png" />
+            <img class="inImg" style="width: 53px;height: 45px;" src="@/assets/images/icon_sRob.png" />
             <span class="inTxt title-font">80°C</span>
           </div>
           <div class="divider spacing"></div>
           <div>
-            <img class="inImg" src="@/assets/images/icon_battery2.png" />
+            <img class="inImg" src="@/assets/images/icon_chipTem.png" />
             <span class="inTxt title-font">60°C</span>
           </div>
           <div class="divider spacing"></div>
@@ -38,111 +37,87 @@
         </div>
       </div>
 
-      <div class="bottomBox" :class="sideVisible ? 'shortWidth' : 'fullWidth'"></div>
-      <div class="sideBox" v-if="sideVisible">
-        <div class="title">
-          <span>步态运动</span>
-          <img style="width: 24px;height: 24px;" src="@/assets/images/icon_sClose.png" />
+      <div class="bottomBox flex-between" :class="sideVisible ? 'shortWidth' : 'fullWidth'">
+        <div class="leftBox flex-between">
+          <div class="boxItem" v-if="!mute" @click="micControl('on')">
+            <img class="inImg" src="@/assets/images/icon_mic.png" />
+            <span>静音</span>
+          </div>
+          <div class="boxItem" v-else @click="micControl('off')">
+            <img class="inImg" src="@/assets/images/icon_mute.png" />
+            <span>解除静音</span>
+          </div>
+          <div class="boxItem" v-if="!cameraOff" @click="cameraControl('on')">
+            <img class="inImg" src="@/assets/images/icon_video.png" />
+            <span>开始视频</span>
+          </div>
+          <div class="boxItem" v-else @click="cameraControl('off')">
+            <img class="inImg" src="@/assets/images/icon_videoOff.png" />
+            <span>停止视频</span>
+          </div>
+          <div class="boxItem">
+            <img class="inImg" src="@/assets/images/icon_photo.png" />
+            <span>拍照</span>
+          </div>
+          <div class="boxItem" v-if="!recording" @click="recordingControl('on')">
+            <img class="inImg" src="@/assets/images/icon_record.png" />
+            <span>录像</span>
+          </div>
+          <div class="boxItem" v-else @click="recordingControl('off')">
+            <img class="inImg" src="@/assets/images/icon_recording.png" />
+            <span>录像中</span>
+          </div>
+        </div>
+        <div class="midBox flex-between">
+          <div class="boxItem" :class="{ chosedItem: controlModel == 'stand' }" @click="changeControl('stand')">
+            <img class="inImg" src="@/assets/images/icon_stand.png" />
+            <span>站立</span>
+          </div>
+          <div class="boxItem" :class="{ chosedItem: controlModel == 'gait' }" @click="changeControl('gait')">
+            <img class="inImg" src="@/assets/images/icon_Stepping.png" />
+            <span>踏步</span>
+          </div>
+          <div class="boxItem" :class="{ chosedItem: controlModel == 'inPlace' }" @click="changeControl('inPlace')">
+            <img class="inImg" src="@/assets/images/icon_inPlace.png" />
+            <span>原地</span>
+          </div>
+          <div class="boxItem" :class="{ chosedItem: controlModel == 'grasping' }" @click="changeControl('grasping')">
+            <img class="inImg" src="@/assets/images/icon_grasping.png" />
+            <span>抓取</span>
+          </div>
+          <div class="boxItem" :class="{ chosedItem: controlModel == 'face' }" @click="changeControl('face')">
+            <img class="inImg" src="@/assets/images/icon_face.png" />
+            <span>表情</span>
+          </div>
+          <div class="boxItem" :class="{ chosedItem: controlModel == 'ai' }" @click="changeControl('ai')">
+            <img class="inImg" src="@/assets/images/icon_AI.png" />
+            <span>AI托管</span>
+          </div>
+          <div class="boxItem" :class="{ chosedItem: controlModel == 'setup' }" @click="changeControl('setup')">
+            <img class="inImg" src="@/assets/images/icon_setup.png" />
+            <span>设置</span>
+          </div>
+        </div>
+        <div class="rightBox flex-between">
+          <el-button type="warning" @click="doCalibration()">初始</el-button>
+          <el-button type="danger" @click="stop()">急停</el-button>
         </div>
       </div>
-      <div :class="controlExpand ? 'controlActivated' : 'controlStatus'" ref="controlRef">
-        <!-- 步态运动展开 -->
-        <div class="actionBox" v-if="controlExpand && controlModel == 'gait'">
-          <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_markingTime.png" @click="choseMode('markingTime')" />
-            <div>{{ $t("markingTime") }}</div>
-          </div>
+      <div class="sideBox" v-if="sideVisible">
+        <div class="title">
+          <span>{{titleName}}</span>
+          <img style="width: 24px;height: 24px;" src="@/assets/images/icon_sClose.png" @click="closeSide()"/>
         </div>
-        <!-- 原地运动展开 -->
-        <div class="actionBox" v-else-if="controlExpand && controlModel == 'inPlace'">
-          <!-- <div class="actionItem">
-            <img
-              class="actionImg"
-              src="@/assets/images/icon_zero.png"
-              @click="choseMode('zero')"
-            />
-            <div>{{ $t("zero") }}</div>
-          </div> -->
-          <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_raiseHand.png" @click="choseMode('raiseHand')" />
-            <div>{{ $t("raiseHand") }}</div>
+        <div class="sideContent">
+          <div v-if="controlModel=='inPlace'" class="actionItem" :class="{ chosedAction: item.name == 'squat' }" v-for="(item, index) in inPlaceList"
+            :key="index" @click="choseMode(item.name)">
+            <img class="actionImg" :src="item.src" />
+            <div>{{ $t(item.name) }}</div>
           </div>
-          <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_swingArms.png" @click="choseMode('swingArms')" />
-            <div>{{ $t("swingArms") }}</div>
-          </div>
-          <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_greet.png" @click="choseMode('greet')" />
-            <div>{{ $t("greet") }}</div>
-          </div>
-          <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_twist.png" @click="choseMode('twist')" />
-            <div>{{ $t("twist") }}</div>
-          </div>
-          <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_squat.png" @click="choseMode('squat')" />
-            <div>{{ $t("squat") }}</div>
-          </div>
-          <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_shake.png" @click="choseMode('shake')" />
-            <div>{{ $t("shake") }}</div>
-          </div>
-          <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_nod.png" @click="choseMode('nod')" />
-            <div>{{ $t("nod") }}</div>
-          </div>
-        </div>
-        <div class="actionBox" v-else-if="controlExpand && controlModel == 'grasping'">
-          <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_open.png" @click="choseMode('openHand')" />
-            <div>{{ $t("openHand") }}</div>
-          </div>
-          <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_grasp.png" @click="choseMode('grasp')" />
-            <div>{{ $t("grasp") }}</div>
-          </div>
-          <div class="actionItem">
-            <img class="actionImg" src="@/assets/images/icon_tremble.png" @click="choseMode('tremble')" />
-            <div>{{ $t("tremble") }}</div>
-          </div>
-        </div>
-        <!-- action box -->
-        <div class="controlBox flex-between">
-          <!-- 站立 -->
-          <div :class="['choseBox', 'txt', controlModel == 'stand' ? 'chose' : '']" @click="changeControl('stand')">
-            {{ $t("stand") }}
-          </div>
-          <!-- 步态运动 -->
-          <div :class="[
-            'choseBox',
-            'txt',
-            controlModel != 'gait' ? '' : controlExpand ? 'choseBk' : 'chose',
-          ]" @click="changeControl('gait')">
-            {{ $t("gaitMotion") }}
-          </div>
-          <!-- 原地运动 -->
-          <div :class="[
-            'choseBox',
-            'txt',
-            controlModel != 'inPlace'
-              ? ''
-              : controlExpand
-                ? 'choseBk'
-                : 'chose',
-          ]" @click="changeControl('inPlace')">
-            {{ $t("inPlaceMotion") }}
-          </div>
-          <!-- 末端抓取 -->
-          <div :class="[
-            'choseBox',
-            'txt',
-            controlModel != 'grasping'
-              ? ''
-              : controlExpand
-                ? 'choseBk'
-                : 'chose',
-          ]" @click="changeControl('grasping')">
-            {{ $t("grasping") }}
+          <div v-if="controlModel=='grasping'" class="actionItem" :class="{ chosedAction: item.name == 'squat' }" v-for="(item, index) in graspingList"
+            :key="index" @click="choseMode(item.name)">
+            <img class="actionImg" :src="item.src" />
+            <div>{{ $t(item.name) }}</div>
           </div>
         </div>
       </div>
@@ -167,6 +142,7 @@ import RtcHeader from "@/components/rtcHeader.vue";
 import promptBox from "@/components/promptBox.vue";
 import { mapState } from "vuex";
 import Heartbeat from "@/mixin/Heartbeat";
+import { computed } from "vue";
 export default {
   mixins: [Heartbeat],
   components: { RtcHeader, promptBox },
@@ -186,6 +162,11 @@ export default {
       }
       return style;
     },
+    titleName() {
+      if(this.controlModel == 'inPlace') return '原地运动'
+      if(this.controlModel == 'grasping') return '末端抓取'
+      if(this.controlModel == 'setup') return '设置'
+    }
   },
   data() {
     return {
@@ -215,7 +196,46 @@ export default {
       walkingTimer: null,
       lastX: 0,
       lastY: 0,
-      sideVisible: true
+      sideVisible: false,
+      mute: false,
+      cameraOff: false,
+      recording: false,
+      inPlaceList: [
+        {
+          name: 'raiseHand',
+          src: require('@/assets/images/icon_raiseHand.png'),
+        }, {
+          name: 'swingArms',
+          src: require('@/assets/images/icon_swingArms.png')
+        }, {
+          name: 'greet',
+          src: require('@/assets/images/icon_greet.png')
+        }, {
+          name: 'twist',
+          src: require('@/assets/images/icon_twist.png')
+        }, {
+          name: 'squat',
+          src: require('@/assets/images/icon_squat.png'),
+        }, {
+          name: 'shake',
+          src: require('@/assets/images/icon_shake.png'),
+        }, {
+          name: 'nod',
+          src: require('@/assets/images/icon_nod.png'),
+        }
+      ],
+      graspingList: [
+      {
+          name: 'openHand',
+          src: require('@/assets/images/icon_grasping.png'),
+        }, {
+          name: 'grasp',
+          src: require('@/assets/images/icon_graspPC.png'),
+        }, {
+          name: 'tremble',
+          src: require('@/assets/images/icon_tremble.png'),
+        }
+      ]
     };
   },
   created() {
@@ -225,7 +245,7 @@ export default {
       (e) => {
         let controlRef = this.$refs.controlRef;
         if (controlRef && !controlRef.contains(e.target)) {
-          this.controlExpand = false;
+          this.sideVisible = false;
         }
       },
       true
@@ -527,9 +547,11 @@ export default {
           clearTimeout(this.walkingTimer);
         }
         this.robotWs.robot.stand();
-        this.controlExpand = false;
+        this.sideVisible = false;
+      } else if(["inPlace", "grasping", "setup"].includes(e)){
+        this.sideVisible = true;
       } else {
-        this.controlExpand = true;
+        this.sideVisible = false;
       }
       this.controlModel = e;
     },
@@ -663,10 +685,22 @@ export default {
     cancel() {
       this.promptVisible = !this.promptVisible;
     },
+    closeSide() {
+      this.sideVisible = false
+    },
+    micControl(e) {
+      this.mute = !this.mute
+    },
+    cameraControl(e) {
+      this.cameraOff = !this.cameraOff
+    },
+    recordingControl(e) {
+      this.recording = !this.recording
+    }
   },
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 //鼠标
 body {
   // cursor: none;
@@ -724,7 +758,6 @@ body {
   bottom: 0.9167vw;
   width: 31.75vw;
   height: 3.4583vw;
-  align-items: center;
 
   .choseBox {
     width: 8vw;
@@ -759,6 +792,43 @@ body {
   bottom: 0;
   left: 0;
   z-index: 9999;
+
+  .leftBox {
+    width: 330px;
+    margin-left: 28px;
+  }
+
+  .midBox {
+    width: 539px;
+  }
+
+  .rightBox {
+    width: 260px;
+    margin-right: 27px;
+
+    ::v-deep .el-button {
+      width: 120px;
+      height: 52px;
+      font-size: 24px;
+    }
+  }
+
+  .boxItem {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 20px;
+    width: 80px;
+    height: 80px;
+    padding: 10px 0;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .chosedItem {
+    background: linear-gradient(230deg, #198BFF 0%, #0086D1 100%);
+    border-radius: 4px;
+  }
 }
 
 .shortWidth {
@@ -790,6 +860,31 @@ body {
     padding-right: 25px;
     padding-left: 29px;
   }
+
+  .sideContent {
+    font-size: 16px;
+    font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
+    font-weight: normal;
+    color: $white;
+    display: flex;
+    flex-wrap: wrap;
+
+    .actionItem {
+      text-align: center;
+      flex-basis: 33.33%;
+      padding: 20px 0;
+    }
+
+    .actionImg {
+      width: 2.7083vw;
+      height: 2.7083vw;
+    }
+
+    .chosedAction {
+      background: linear-gradient(230deg, #198BFF 0%, #0086D1 100%);
+      border-radius: 8px;
+    }
+  }
 }
 
 .actionBox {
@@ -798,20 +893,6 @@ body {
   padding: 3.125vw 3.1333vw 0 3.5917vw;
   display: flex;
   flex-wrap: wrap;
-
-  .actionItem {
-    text-align: center;
-    flex-basis: 33.33%;
-    font-size: 1.25vw;
-    font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
-    font-weight: normal;
-    color: $white;
-  }
-
-  .actionImg {
-    width: 2.7083vw;
-    height: 2.7083vw;
-  }
 }
 
 .headState {
@@ -927,19 +1008,19 @@ body {
     opacity: 0.3;
   }
 
-  .inImg {
-    width: 2.2222vw;
-    height: 2.2222vw;
-    z-index: 99;
-    vertical-align: middle;
-  }
-
   .inTxt {
-    font-size: $size-41;
+    font-size: 28px;
     color: $white;
     margin-right: 1.9444vw;
     margin-left: 0.6944vw;
     vertical-align: middle;
   }
+}
+
+.inImg {
+  width: 48px;
+  height: 48px;
+  z-index: 99;
+  vertical-align: middle;
 }
 </style>

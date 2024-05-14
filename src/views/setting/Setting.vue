@@ -382,7 +382,6 @@ export default {
     margin-bottom: 1.25vw;
     padding: 0 3.5vw 0 2.4583vw;
     font-size: $size-41;
-    align-items: center;
     border-radius: 0.25vw;
     color: $white;
   }

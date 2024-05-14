@@ -2091,7 +2091,6 @@ export default {
     left: 0;
     height: 3.7083vw;
     width: 23.0417vw;
-    align-items: center;
 
     .modelBtn {
       flex: 1;
