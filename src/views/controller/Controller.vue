@@ -39,7 +39,7 @@
 
       <div class="bottomBox flex-between" :class="sideVisible ? 'shortWidth' : 'fullWidth'">
         <div class="leftBox flex-between">
-          <div class="boxItem" v-if="!mute" @click="micControl('on')">
+          <div class="boxItem" v-if="mute" @click="micControl('on')">
             <img class="inImg" src="@/assets/images/icon_mic.png" />
             <span>静音</span>
           </div>
@@ -119,27 +119,29 @@
             <img class="actionImg" :src="item.src" />
             <div>{{ $t(item.name) }}</div>
           </div>
-          <div v-if="controlModel == 'setup'" style="width: 100%;" <div class="setTab">
-            <div class="tabItem">
-              <span class="chosed">运动控制</span>
-              <div class="cDivider" v-if="currentSetup == 'motion'"></div>
+          <div v-if="controlModel == 'setup'" style="width: 100%;">
+            <div class="setTab">
+              <div class="tabItem">
+                <span class="chosed">运动控制</span>
+                <div class="cDivider" v-if="currentSetup == 'motion'"></div>
+              </div>
+              <div class="tabItem">
+                <span>感知交互</span>
+                <div class="cDivider" v-if="currentSetup == 'perceptual'"></div>
+              </div>
+              <div class="tabItem">
+                <span>感知交互</span>
+                <div class="cDivider" v-if="currentSetup == 'power'"></div>
+              </div>
             </div>
-            <div class="tabItem">
-              <span>感知交互</span>
-              <div class="cDivider" v-if="currentSetup == 'perceptual'"></div>
-            </div>
-            <div class="tabItem">
-              <span>感知交互</span>
-              <div class="cDivider" v-if="currentSetup == 'power'"></div>
-            </div>
-          </div>
-          <div class="divider"></div>
-          <div class="speedControl">
-            <span>行走速度</span>
-            <div class="controlTag">
-              <div class="tag" :class="{ chosedTag: speed == 1 }" @click="speedChange(1)">慢</div>
-              <div class="tag" :class="{ chosedTag: speed == 2 }" @click="speedChange(2)">中</div>
-              <div class="tag" :class="{ chosedTag: speed == 3 }" @click="speedChange(3)">快</div>
+            <div class="divider"></div>
+            <div class="speedControl">
+              <span>行走速度</span>
+              <div class="controlTag">
+                <div class="tag" :class="{ chosedTag: speed == 1 }" @click="speedChange(1)">慢</div>
+                <div class="tag" :class="{ chosedTag: speed == 2 }" @click="speedChange(2)">中</div>
+                <div class="tag" :class="{ chosedTag: speed == 3 }" @click="speedChange(3)">快</div>
+              </div>
             </div>
           </div>
         </div>
@@ -156,9 +158,18 @@
     <div v-if="currentstatus == '' || currentstatus == 'Unknown'" class="stateMessageError flex-center">
       <span>异常：无法获取当前状态！</span>
     </div>
-    <prompt-box v-if="promptVisible || !connected" :prompt="connected ? promptVal : 'reconnect'" @cancel="cancel()"
-      @confirm="confirm()"></prompt-box>
-  </div>
+    <!-- <prompt-box v-if="promptVisible || !connected" :prompt="connected ? promptVal : 'reconnect'" @cancel="cancel()"
+      @confirm="confirm()"></prompt-box> -->
+
+
+    <!-- <div style="z-index: 99999;position: absolute;left: 1000px;top: 500px;">
+      <button @click="joinRoom">Join Room</button>
+      <div v-if="joined">
+        <h2>Room: {{ room }}</h2>
+        <webrtc :stream="stream" @ready="onWebRTCReady" />
+      </div>
+    </div> -->
+
   </div>
 </template>
 <script>
@@ -166,7 +177,9 @@ import RtcHeader from "@/components/rtcHeader.vue";
 import promptBox from "@/components/promptBox.vue";
 import { mapState } from "vuex";
 import Heartbeat from "@/mixin/Heartbeat";
-import { computed } from "vue";
+import io from 'socket.io-client';
+// import WebRTC from 'vue-webrtc';
+
 export default {
   mixins: [Heartbeat],
   components: { RtcHeader, promptBox },
@@ -224,6 +237,9 @@ export default {
       cameraOff: false,
       recording: false,
       currentSetup: "motion",
+      socket: null,
+      chunks: [],
+      mediaRecorder: null,
       inPlaceList: [
         {
           name: 'raiseHand',
@@ -274,6 +290,7 @@ export default {
       },
       true
     );
+    this.initMediaWs();
   },
   async mounted() {
     this.videoContainer = this.$refs.videoContainer;
@@ -282,7 +299,7 @@ export default {
         this.screenWidth = document.body.clientWidth;
       })();
     };
-    this.cameraOpen();
+    // this.cameraOpen();
     this.startGamepad();
     this.$bus.$on("robotOnmessage", (data) => {
       this.lastMessageReceivedTime = Date.now();
@@ -305,6 +322,12 @@ export default {
     document.removeEventListener('keydown', this.handleKeyDown);
     document.removeEventListener('keyup', this.handleKeyUp);
     document.removeEventListener('mousemove', this.onMouseMove);
+    if (this.mediaRecorder) {
+      this.mediaRecorder.stop();
+    }
+    if (this.socket) {
+      this.socket.close();
+    }
   },
   destroyed() {
     clearInterval(this.interval);
@@ -708,13 +731,80 @@ export default {
     },
     micControl(e) {
       this.mute = !this.mute
+      if (this.mute) {
+        this.startRecording()
+      } else {
+        this.stopRecording()
+      }
     },
     cameraControl(e) {
       this.cameraOff = !this.cameraOff
     },
     recordingControl(e) {
       this.recording = !this.recording
-    }
+    },
+    initMediaWs() {
+      this.socket = new WebSocket('ws://localhost:8999');
+
+      // 连接成功建立时触发
+      this.socket.onopen = () => {
+        this.isConnected = true;
+        console.log('WebSocket connection is open now.');
+        // 可以开始发送消息了
+      };
+
+      // 接收到消息时触发
+      this.socket.onmessage = (event) => {
+        const message = event.data;
+        console.log('Message from server:', message);
+        // 处理收到的消息，可能需要根据不同的消息类型进行解析
+      };
+
+      // 发生错误时触发
+      this.socket.onerror = (error) => {
+        this.isConnected = false;
+        console.error('WebSocket error observed:', error);
+        // 处理 WebSocket 错误
+      };
+
+      // 连接关闭时触发
+      this.socket.onclose = (event) => {
+        this.isConnected = false;
+        if (event.wasClean) {
+          console.log(`WebSocket closed cleanly with code ${event.code}`);
+        } else {
+          console.log('WebSocket connection was closed abruptly');
+        }
+        console.log('WebSocket was closed');
+        // 连接关闭后可能需要重连的逻辑
+      };
+    },
+    startRecording() {
+      // 请求访问麦克风
+      navigator.mediaDevices.getUserMedia({
+        audio: {
+          sampleRate: 48000, // 采样率，单位 Hz
+          numberOfChannels: 1 // 声道数，1 为单声道，2 为立体声
+        }
+      })
+        .then(stream => {
+          this.mediaRecorder = new MediaRecorder(stream);
+          this.mediaRecorder.start();
+
+          this.mediaRecorder.addEventListener('dataavailable', (e) => {
+            if (e.data.size > 0) {
+              this.chunks.push(e.data);
+              // 通过 WebSocket 发送音频块到 Node.js 客户端
+              this.socket.send(e.data);
+            }
+          });
+        });
+    },
+    stopRecording() {
+      if (this.mediaRecorder) {
+        this.mediaRecorder.stop();
+      }
+    },
   },
 };
 </script>
@@ -904,7 +994,6 @@ body {
     }
 
     .setTab {
-      width: 100%;
       height: 103px;
       display: flex;
       justify-content: space-between;
@@ -934,13 +1023,11 @@ body {
     }
 
     .divider {
-      width: 100%;
       height: 1px;
       background: rgba(255, 255, 255, 0.2);
     }
 
     .speedControl {
-      width: 100%;
       height: 122px;
       padding: 0 27px 0 28px;
       display: flex;
