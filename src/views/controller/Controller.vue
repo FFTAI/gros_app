@@ -3,7 +3,7 @@
     <div class="container">
       <div ref="videoContainer" align="center" class="video-container">
         <div class="video-item common-bkg">
-          <img class="video-play" :src="videoSrc" v-show="camera" />
+          <video class="video-play" ref="rtc_media_player" autoplay v-show="mediaVisible"></video>
         </div>
       </div>
       <div class="headBkIn" :class="sideVisible ? 'shortWidth' : 'fullWidth'">
@@ -177,8 +177,6 @@ import RtcHeader from "@/components/rtcHeader.vue";
 import promptBox from "@/components/promptBox.vue";
 import { mapState } from "vuex";
 import Heartbeat from "@/mixin/Heartbeat";
-import io from 'socket.io-client';
-// import WebRTC from 'vue-webrtc';
 
 export default {
   mixins: [Heartbeat],
@@ -212,7 +210,6 @@ export default {
       screenWidth: document.body.clientWidth, //当前屏幕宽度
       speed: 1, //当前速度档位 1-3
       current_speed: 0, //当前速度，默认0
-      videoSrc: "", //摄像头视频路径
       controlModel: "", //当前运动 gait:步态 inPlace:原地 grasping:末端抓取
       mode: "", //当前运动模式
       headBoxVisible: false, //模式选择框显隐
@@ -240,6 +237,10 @@ export default {
       socket: null,
       chunks: [],
       mediaRecorder: null,
+      audioContext: null,
+      rc: null,
+      sdk: null,
+      mediaVisible: false,
       inPlaceList: [
         {
           name: 'raiseHand',
@@ -314,6 +315,9 @@ export default {
     document.addEventListener('keydown', this.handleKeyDown);
     document.addEventListener('keyup', this.handleKeyUp);
     document.addEventListener('mousemove', this.onMouseMove);
+    this.$nextTick(() => {
+      this.startPlay();
+    });
   },
   beforeDestroy() {
     if (this.walkingTimer) {
@@ -337,6 +341,22 @@ export default {
     this.$bus.$off("robotOnmessage");
   },
   methods: {
+    startPlay() {
+      let _this = this
+      if (this.sdk) {
+        sdk.close();
+      }
+      this.sdk = new SrsRtcWhipWhepAsync();
+      this.mediaVisible = true 
+      this.$refs.rtc_media_player.srcObject = this.sdk.stream
+      var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=livestream'
+      this.sdk.play(url).then(function (session) {
+        console.log('成功拉')
+      }).catch(function (reason) {
+        console.log('错误拉')
+        _this.sdk.close();
+      });
+    },
     //创建定时器监听websocket是否断连
     createWsInterval() {
       if (!this.wsInterval) {
@@ -580,11 +600,12 @@ export default {
     },
     //开启视频
     cameraOpen() {
-      this.videoSrc = this.robotWs.robot.camera.videoStreamUrl;
+
     },
     //切换当前控制模式
     changeControl(e) {
       if (e == "stand") {
+        console.log(e)
         if (this.walkingTimer) {
           clearTimeout(this.walkingTimer);
         }
@@ -780,31 +801,59 @@ export default {
       };
     },
     startRecording() {
-      // 请求访问麦克风
+      let that = this;
+      //可以用下面的代码来边讲话边听
+      const audio = new Audio()
+      audio.autoplay = true
+
       navigator.mediaDevices.getUserMedia({
         audio: {
           sampleRate: 48000, // 采样率，单位 Hz
           numberOfChannels: 1 // 声道数，1 为单声道，2 为立体声
         }
-      })
-        .then(stream => {
-          this.mediaRecorder = new MediaRecorder(stream);
-          this.mediaRecorder.start();
+      }).then((stream) => {
+        that.rc = stream
+        audio.srcObject = stream
 
-          this.mediaRecorder.addEventListener('dataavailable', (e) => {
-            if (e.data.size > 0) {
-              this.chunks.push(e.data);
-              // 通过 WebSocket 发送音频块到 Node.js 客户端
-              this.socket.send(e.data);
-            }
-          });
-        });
+        that.audioContext = new AudioContext();
+        const mediaStreamSource = that.audioContext.createMediaStreamSource(stream);
+
+        const bufferSize = 4096; // 根据需要选择缓冲区大小
+        const scriptNode = that.audioContext.createScriptProcessor(bufferSize, 1, 1);
+        // 当音频处理事件发生时
+        scriptNode.onaudioprocess = (event) => {
+          const inputBuffer = event.inputBuffer;
+          const inputData = inputBuffer.getChannelData(0);
+          // 将音频数据编码为 RTP 协议头的 16 位二进制数据
+          const rtpData = new Int16Array(inputData.length);
+          for (let i = 0; i < inputData.length; i++) {
+            rtpData[i] = inputData[i] * 32767; // 缩放到 16 位范围
+          }
+          //原数据的二进制数据
+          const rtpBinary = rtpData.buffer;
+          that.socket.send(rtpBinary);
+        };
+        mediaStreamSource.connect(scriptNode);
+        scriptNode.connect(that.audioContext.destination);
+      })
+        .catch(error => alert(error));
     },
     stopRecording() {
-      if (this.mediaRecorder) {
-        this.mediaRecorder.stop();
+      // if (this.mediaRecorder) {
+      //   this.mediaRecorder.stop();
+      // }
+      const audioTrack = this.rc?.getAudioTracks()[0];
+      if (audioTrack) {
+        audioTrack.stop();
       }
-    },
+      if (this.rc) {
+        this.rc = null
+        this.audioContext.close()
+        this.audioContext = null
+        //停止websocket连接
+        this.socket.close()
+      }
+    }
   },
 };
 </script>
@@ -828,7 +877,6 @@ body {
 .video-play {
   width: 100%;
   height: 100%;
-  object-fit: cover;
 }
 
 .buttons {
