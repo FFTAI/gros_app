@@ -3,7 +3,8 @@
     <div class="container">
       <div ref="videoContainer" align="center" class="video-container">
         <div class="video-item common-bkg">
-          <video class="video-play" ref="rtc_media_player" autoplay v-show="mediaVisible"></video>
+          <video class="video-play" ref="rtc_media_player" width="1920" height="1080" autoplay muted
+            v-show="mediaVisible"></video>
         </div>
       </div>
       <div class="headBkIn" :class="sideVisible ? 'shortWidth' : 'fullWidth'">
@@ -17,7 +18,7 @@
         </div>
         <div class="spacing flex-center">
           <div>
-            <img class="inImg" style="width: 53px;height: 45px;" src="@/assets/images/icon_sRob.png" />
+            <img class="inImg" style="width: 2.7604vw;height: 2.3438vw;" src="@/assets/images/icon_sRob.png" />
             <span class="inTxt title-font">80°C</span>
           </div>
           <div class="divider spacing"></div>
@@ -55,7 +56,7 @@
             <img class="inImg" src="@/assets/images/icon_videoOff.png" />
             <span>停止视频</span>
           </div>
-          <div class="boxItem">
+          <div class="boxItem" @click="takeScreenshot()">
             <img class="inImg" src="@/assets/images/icon_photo.png" />
             <span>拍照</span>
           </div>
@@ -106,7 +107,7 @@
       <div class="sideBox" v-if="sideVisible">
         <div class="title">
           <span>{{ titleName }}</span>
-          <img style="width: 24px;height: 24px;" src="@/assets/images/icon_sClose.png" @click="closeSide()" />
+          <img style="width: 1.25vw;height: 1.25vw;" src="@/assets/images/icon_sClose.png" @click="closeSide()" />
         </div>
         <div class="sideContent">
           <div v-if="controlModel == 'inPlace'" class="actionItem" :class="{ chosedAction: item.name == mode }"
@@ -149,9 +150,9 @@
     </div>
     <!-- 当前状态提示 -->
     <div class="stateMessage flex-center" v-if="(mode != '' && doAction) ||
-            (mode != '' && otherAction) ||
-            mode == 'initial'
-            ">
+              (mode != '' && otherAction) ||
+              mode == 'initial'
+              ">
       <!-- <span>{{ $t(mode) }}{{ $t("ing") }}...</span> -->
     </div>
     <!-- 异常提示 -->
@@ -160,7 +161,7 @@
     </div>
     <!-- <prompt-box v-if="promptVisible || !connected" :prompt="connected ? promptVal : 'reconnect'" @cancel="cancel()"
       @confirm="confirm()"></prompt-box> -->
-
+    <canvas ref="canvas" width="1920" height="1080" style="display:none;"></canvas>
 
     <!-- <div style="z-index: 99999;position: absolute;left: 1000px;top: 500px;">
       <button @click="joinRoom">Join Room</button>
@@ -344,18 +345,22 @@ export default {
     startPlay() {
       let _this = this
       if (this.sdk) {
-        sdk.close();
+        this.sdk.close();
       }
       this.sdk = new SrsRtcWhipWhepAsync();
-      this.mediaVisible = true 
+      this.mediaVisible = true
       this.$refs.rtc_media_player.srcObject = this.sdk.stream
-      var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=livestream'
-      this.sdk.play(url).then(function (session) {
-        console.log('成功拉')
-      }).catch(function (reason) {
-        console.log('错误拉')
-        _this.sdk.close();
-      });
+      // var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=livestream'
+      var url = 'http://192.168.9.84:1985/rtc/v1/whep/?app=live&stream=livestream'
+      this.sdk.play(url)
+        .then((session) => {
+          console.log('成功拉流:', session);
+          this.$refs.rtc_media_player.srcObject = this.sdk.stream;
+        })
+        .catch((reason) => {
+          console.error('错误拉流:', reason);
+          this.sdk.close();
+        });
     },
     //创建定时器监听websocket是否断连
     createWsInterval() {
@@ -761,6 +766,24 @@ export default {
     cameraControl(e) {
       this.cameraOff = !this.cameraOff
     },
+    //拍照(截屏)
+    takeScreenshot() {
+      
+      const video = this.$refs.rtc_media_player;
+      const canvas = this.$refs.canvas;
+      const ctx = canvas.getContext('2d');
+
+      // 将视频帧绘制到Canvas上
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      console.log("takeScreenshot",ctx);
+      // 将Canvas保存为图片
+      const dataURL = canvas.toDataURL('image/png');
+      const img = document.createElement('img');
+      img.src = dataURL;
+      console.log("takeScreenshot",dataURL);
+      // 可以选择将img元素添加到文档中显示截图
+      document.body.appendChild(img);
+    },
     recordingControl(e) {
       this.recording = !this.recording
     },
@@ -942,7 +965,7 @@ body {
 }
 
 .bottomBox {
-  height: 120px;
+  height: 6.25vw;
   background: rgba(13, 44, 68, 0.7);
   position: absolute;
   bottom: 0;
@@ -950,22 +973,25 @@ body {
   z-index: 9999;
 
   .leftBox {
-    width: 330px;
-    margin-left: 28px;
+    width: 17.1875vw;
+    margin-left: 1.4583vw;
   }
 
   .midBox {
-    width: 539px;
+    width: 28.0729vw;
   }
 
   .rightBox {
-    width: 260px;
-    margin-right: 27px;
+    width: 13.5417vw;
+    margin-right: 1.4063vw;
 
     ::v-deep .el-button {
-      width: 120px;
-      height: 52px;
-      font-size: 24px;
+      width: 6.25vw;
+      height: 2.7083vw;
+      font-size: 1.25vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 
@@ -974,21 +1000,21 @@ body {
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    font-size: 20px;
-    width: 80px;
-    height: 80px;
-    padding: 10px 0;
+    font-size: 1.0417vw;
+    width: 4.1667vw;
+    height: 4.1667vw;
+    padding: .5208vw 0;
     color: rgba(255, 255, 255, 0.6);
   }
 
   .chosedItem {
     background: linear-gradient(230deg, #198BFF 0%, #0086D1 100%);
-    border-radius: 4px;
+    border-radius: .2083vw;
   }
 }
 
 .shortWidth {
-  width: 1540px;
+  width: 80.2083vw;
 }
 
 .fullWidth {
@@ -996,8 +1022,8 @@ body {
 }
 
 .sideBox {
-  width: 380px;
-  height: 1080px;
+  width: 19.7917vw;
+  height: 56.25vw;
   background: rgba(23, 39, 55, 0.7);
   position: absolute;
   bottom: 0;
@@ -1005,20 +1031,20 @@ body {
   z-index: 9999;
 
   .title {
-    width: 326px;
-    height: 80px;
+    width: 16.9792vw;
+    height: 4.1667vw;
     background: linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 100%);
-    font-size: 28px;
+    font-size: 1.4583vw;
     color: #FFFFFF;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-right: 25px;
-    padding-left: 29px;
+    padding-right: 1.3021vw;
+    padding-left: 1.5104vw;
   }
 
   .sideContent {
-    font-size: 16px;
+    font-size: .8333vw;
     font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
     font-weight: normal;
     color: $white;
@@ -1028,7 +1054,7 @@ body {
     .actionItem {
       text-align: center;
       flex-basis: 33.33%;
-      padding: 20px 0;
+      padding: 1.0417vw 0;
     }
 
     .actionImg {
@@ -1038,23 +1064,23 @@ body {
 
     .chosedAction {
       background: linear-gradient(230deg, #198BFF 0%, #0086D1 100%);
-      border-radius: 8px;
+      border-radius: .4167vw;
     }
 
     .setTab {
-      height: 103px;
+      height: 5.3646vw;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0 27px 0 29px;
+      padding: 0 1.4063vw 0 1.5104vw;
 
       .tabItem {
-        font-size: 20px;
+        font-size: 1.0417vw;
         color: rgba(255, 255, 255, 0.2);
         display: flex;
         align-items: center;
         flex-direction: column;
-        height: 37px;
+        height: 1.9271vw;
         justify-content: space-between;
 
         .chosed {
@@ -1063,37 +1089,37 @@ body {
       }
 
       .cDivider {
-        width: 16px;
-        height: 4px;
+        width: .8333vw;
+        height: .2083vw;
         background: #FFFFFF;
       }
 
     }
 
     .divider {
-      height: 1px;
+      height: .0521vw;
       background: rgba(255, 255, 255, 0.2);
     }
 
     .speedControl {
-      height: 122px;
-      padding: 0 27px 0 28px;
+      height: 6.3542vw;
+      padding: 0 1.4063vw 0 1.4583vw;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 20px;
+      font-size: 1.0417vw;
       color: #FFFFFF;
 
       .controlTag {
-        width: 206px;
-        height: 40px;
+        width: 10.7292vw;
+        height: 2.0833vw;
         background: rgba(255, 255, 255, 0.1);
-        border-radius: 4px;
+        border-radius: .2083vw;
         display: flex;
 
         .tag {
-          width: 68px;
-          height: 40px;
+          width: 3.5417vw;
+          height: 2.0833vw;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -1101,7 +1127,7 @@ body {
 
         .chosedTag {
           background: linear-gradient(230deg, #198BFF 0%, #0086D1 100%);
-          border-radius: 4px;
+          border-radius: .2083vw;
         }
       }
     }
@@ -1219,7 +1245,7 @@ body {
   }
 
   .spacing {
-    margin-right: 30px;
+    margin-right: 1.5625vw;
   }
 
   .divider {
@@ -1230,7 +1256,7 @@ body {
   }
 
   .inTxt {
-    font-size: 28px;
+    font-size: 1.4583vw;
     color: $white;
     margin-right: 1.9444vw;
     margin-left: 0.6944vw;
@@ -1239,8 +1265,8 @@ body {
 }
 
 .inImg {
-  width: 48px;
-  height: 48px;
+  width: 2.5vw;
+  height: 2.5vw;
   z-index: 99;
   vertical-align: middle;
 }
