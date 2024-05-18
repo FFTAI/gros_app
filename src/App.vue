@@ -41,26 +41,45 @@ export default {
   methods: {
     //初始化Robot实例
     initRobotWs() {
-      var robot = new Human({
-        host: process.env.VUE_APP_URL.split("//")[1].split(":")[0],
-      });
+      // var robot = new Human({
+      //   host: process.env.VUE_APP_URL.split("//")[1].split(":")[0],
+      // });
+      // this.robotWs.setWs(robot);
+      // robot.on_connected(() => {
+      //   // console.log('robotWs成功！')
+      //   this.$bus.$emit("robotOnconnected");
+      //   this.reWs = false;
+      // });
+      // robot.on_message((data) => {
+      //   var currData = JSON.parse(data.data);
+      //   this.$bus.$emit("robotOnmessage", currData);
+      // });
+      // robot.on_close(() => {
+      //   // console.log('robotWs关闭！')
+      //   this.reconnectWs();
+      // });
+      // robot.on_error(() => {
+      //   // console.log('robotWs出错！')
+      //   this.reconnectWs();
+      // });
+      let robot = new WebSocket('ws://192.168.9.101:8000/remote/fftai-test');
       this.robotWs.setWs(robot);
-      robot.on_connected(() => {
-        // console.log('robotWs成功！')
+      robot.onopen(() => {
+        console.log('robotWs成功！')
         this.$bus.$emit("robotOnconnected");
         this.reWs = false;
       });
-      robot.on_message((data) => {
+      robot.onmessage((data) => {
         var currData = JSON.parse(data.data);
         this.$bus.$emit("robotOnmessage", currData);
       });
-      robot.on_close(() => {
-        // console.log('robotWs关闭！')
-        this.reconnectWs();
+      robot.onclose(() => {
+        console.log('robotWs关闭！')
+        // this.reconnectWs();
       });
-      robot.on_error(() => {
-        // console.log('robotWs出错！')
-        this.reconnectWs();
+      robot.onerror(() => {
+        console.log('robotWs出错！')
+        // this.reconnectWs();
       });
     },
     reconnectWs() {
