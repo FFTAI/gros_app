@@ -50,6 +50,11 @@ const routes = [
     component: () => import("../views/graphicProgramming/GraphicProgramming.vue"),
   },
   {
+    path: "/connectionMode",
+    name: "connectionMode",
+    component: () => import("../views/connectionMode/ConnectionMode.vue"),
+  },
+  {
     path: "/",
     redirect: "/startUp",
   },
