@@ -63,24 +63,25 @@ export default {
       //   this.reconnectWs();
       // });
       let robot = new WebSocket('ws://192.168.9.101:8000/remote/fftai-test');
+      console.log(robot.onopen)
       this.robotWs.setWs(robot);
-      robot.onopen(() => {
+      robot.onopen = () => {
         console.log('robotWs成功！')
         this.$bus.$emit("robotOnconnected");
         this.reWs = false;
-      });
-      robot.onmessage((data) => {
+      };
+      robot.onmessage = (data) => {
         var currData = JSON.parse(data.data);
         this.$bus.$emit("robotOnmessage", currData);
-      });
-      robot.onclose(() => {
+      };
+      robot.onclose = () => {
         console.log('robotWs关闭！')
         // this.reconnectWs();
-      });
-      robot.onerror(() => {
+      };
+      robot.onerror = () => {
         console.log('robotWs出错！')
         // this.reconnectWs();
-      });
+      };
     },
     reconnectWs() {
       if (!this.reWs) {

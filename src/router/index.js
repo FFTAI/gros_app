@@ -25,16 +25,6 @@ const routes = [
     component: () => import("../views/controller/Controller.vue"),
   },
   {
-    path: "/development",
-    name: "development",
-    component: () => import("../views/development/Development.vue"),
-  },
-  {
-    path: "/setting",
-    name: "setting",
-    component: () => import("../views/setting/Setting.vue"),
-  },
-  {
     path: "/robotStartup",
     name: "robotStartup",
     component: () => import("../views/robotStartup/RobotStartup.vue"),
@@ -43,16 +33,6 @@ const routes = [
     path: "/demonstrate",
     name: "demonstrate",
     component: () => import("../views/demonstrate/Demonstrate.vue"),
-  },
-  {
-    path: "/graphicProgramming",
-    name: "graphicProgramming",
-    component: () => import("../views/graphicProgramming/GraphicProgramming.vue"),
-  },
-  {
-    path: "/connectionMode",
-    name: "connectionMode",
-    component: () => import("../views/connectionMode/ConnectionMode.vue"),
   },
   {
     path: "/",
