@@ -7,10 +7,7 @@
     </rtc-header>
     <!-- 开机初始 -->
     <div v-if="step == 'calibration' && !calibrationDialog">
-      <img
-        class="openCalibration"
-        src="@/assets/images/image_openCalibration.png"
-      />
+      <img class="openCalibration" src="@/assets/images/image_openCalibration.png" />
       <div class="tips">
         <div class="flex-center tip1">
           <span class="circleTxt flex-center ct2">1</span>
@@ -33,27 +30,6 @@
         {{ $t("startupWarning") }}
       </div>
     </div>
-    <!-- 设备连接 -->
-    <div v-else-if="step == 'connect' && !calibrationDialog">
-      <img
-        class="openCalibration"
-        src="@/assets/images/image_deviceConnect.png"
-      />
-      <div class="connectBox flex-column white01-bkg">
-        <div class="txtFlex flex-between common-font">
-          <div>{{ $t("initialAccount") }}</div>
-          <div>gr1********</div>
-        </div>
-        <div class="line"></div>
-        <div class="txtFlex flex-between common-font">
-          <span>{{ $t("initialPassword") }}</span>
-          <span>66668888</span>
-        </div>
-      </div>
-      <div class="connectTip">
-        {{ $t("connectTip") }}
-      </div>
-    </div>
     <!-- 程序启动 -->
     <div class="startupBox" v-else-if="step == 'startup' && !calibrationDialog">
       <div v-if="!isReady">
@@ -74,20 +50,14 @@
     <!-- 初始提示 -->
     <div class="calibrationDialogSty" v-if="calibrationDialog">
       <div class="calibrationItem">
-        <img
-          class="calibrationImg"
-          src="@/assets/images/image_calibrationPose1.png"
-        />
+        <img class="calibrationImg" src="@/assets/images/image_calibrationPose1.png" />
         <div class="dialogTips flex-center">
           <span class="circleTxt flex-center ct2">1</span>
           <span>{{ $t("calibrationTip1") }}</span>
         </div>
       </div>
       <div class="calibrationItem" style="left: 35.0417vw">
-        <img
-          class="calibrationImg"
-          src="@/assets/images/image_calibrationPose2.png"
-        />
+        <img class="calibrationImg" src="@/assets/images/image_calibrationPose2.png" />
         <div class="dialogTips dialog2">
           <span class="circleTxt flex-center ct2">2</span>
           <span :style="dialog2Style">
@@ -96,95 +66,36 @@
         </div>
       </div>
       <div class="calibrationItem" style="left: 63.375vw">
-        <img
-          class="calibrationImg"
-          src="@/assets/images/image_calibrationPose3.png"
-        />
+        <img class="calibrationImg" src="@/assets/images/image_calibrationPose3.png" />
         <div class="dialogTips flex-center">
           <span class="circleTxt flex-center ct2">3</span>
           <span>{{ $t("calibrationTip3") }}</span>
         </div>
       </div>
-      <img
-        class="closeImg"
-        src="@/assets/images/btn_close.png"
-        @click="closeDialog()"
-      />
+      <img class="closeImg" src="@/assets/images/btn_close.png" @click="closeDialog()" />
     </div>
     <!-- 右侧操作按钮 -->
     <div class="operateArea" v-if="!calibrationDialog">
-      <div
-        :class="{ startBtn: step == 'calibration' }"
-        class="btn"
-        @click="changeStep('connect')"
-      >
-        <span v-if="step == 'calibration'" class="circleTxt flex-center ct1"
-          >1</span
-        >
+      <div :class="{ startBtn: step == 'calibration' }" class="btn" @click="changeStep('startup')">
+        <span v-if="step == 'calibration'" class="circleTxt flex-center ct1">1</span>
         <img v-else class="finishImg" src="@/assets/images/icon_finish.png" />
         <span>{{ $t("Calibration") }}</span>
       </div>
-      <div
-        :class="{
-          disableBtn: step == 'calibration',
-          startBtn: step == 'connect',
-        }"
-        class="btn"
-        @click="changeStep('startup')"
-      >
-        <img
-          v-if="step == 'connect' && connected"
-          class="finishImg"
-          src="@/assets/images/icon_finish2.png"
-        />
-        <img
-          v-else-if="step == 'startup' && connected"
-          class="finishImg"
-          src="@/assets/images/icon_finish.png"
-        />
-        <span
-          v-else
-          :class="step == 'connect' ? 'ct1' : 'ct4'"
-          class="circleTxt flex-center"
-          >2</span
-        >
-        <span v-if="connected && step != 'calibration'">{{
-          $t("deviceConnected")
-        }}</span>
-        <span v-else>{{ $t("connection") }}</span>
-      </div>
-      <div
-        v-if="!isReady"
-        :class="{
-          startBtn: step == 'startup',
-          disableBtn: step == 'calibration' || step == 'connect',
-        }"
-        class="btn"
-      >
-        <span
-          :class="step == 'startup' ? 'ct1' : 'ct4'"
-          class="circleTxt flex-center"
-          >3</span
-        >
+      <div v-if="!isReady" :class="{
+      startBtn: step == 'startup',
+      disableBtn: step == 'calibration',
+    }" class="btn">
+        <span :class="step == 'startup' ? 'ct1' : 'ct4'" class="circleTxt flex-center">2</span>
         <span>{{ $t("startup") }}</span>
       </div>
       <div v-else class="btn finishBtn noIconBtn" @click="promptBoxOpen()">
         <span>{{ $t("powerOff") }}</span>
       </div>
-      <div
-        v-if="isReady"
-        class="btn startBtn noIconBtn"
-        @click="startExplore()"
-      >
+      <div v-if="isReady" class="btn startBtn noIconBtn" @click="startExplore()">
         <span>{{ $t("beginToExplore") }}</span>
       </div>
     </div>
-    <prompt-box
-      v-if="promptVisible"
-      :prompt="'powerOff'"
-      @cancel="promptBoxOpen()"
-      @confirm="shutDown()"
-    ></prompt-box>
+    <prompt-box v-if="promptVisible" :prompt="'powerOff'" @cancel="promptBoxOpen()" @confirm="shutDown()"></prompt-box>
   </div>
 </template>
 
@@ -193,14 +104,12 @@ import rtcHeader from "@/components/rtcHeader.vue";
 import Heartbeat from "@/mixin/Heartbeat";
 import { mapState } from "vuex";
 import promptBox from "@/components/promptBox.vue";
-import { Human } from "rocs-client";
 import Bus from "@/utils/bus.js";
 import http from "@/http/axios.js";
 export default {
-  mixins: [Heartbeat],
   components: { rtcHeader, promptBox },
   computed: {
-    ...mapState(["connected"]),
+    ...mapState(["connected", "currRobot"]),
     tip3Style() {
       let style = { left: "-0.5vw" };
       if (this.$i18n.locale == "en") {
@@ -239,95 +148,32 @@ export default {
       promptVisible: false,
     };
   },
-  created() {},
-  mounted() {},
-  destroyed() {},
+  created() { },
+  mounted() { 
+    this.$bus.$emit("initWs",this.currRobot);
+   },
+  destroyed() { },
   methods: {
     closeDialog() {
       this.calibrationDialog = false;
     },
     //切换步骤
     changeStep(e) {
-      if (e == "connect" && this.step == "calibration") this.step = "connect";
-      if (e == "startup" && this.step == "connect") {
-        if (this.connected) {
-          this.robotWs.robot
-            .control_svr_status()
-            .then((res) => {
-              if (res.data.data) {
-                this.isReady = true;
-              } else {
-                this.getStartup();
-              }
-            })
-            .catch((err) => {})
-            .finally((f) => {
-              this.step = "startup";
-            });
-        } else {
-          let main = plus.android.runtimeMainActivity();
-          let Intent = plus.android.importClass("android.content.Intent");
-          let mIntent = new Intent("android.settings.WIFI_SETTINGS");
-          main.startActivity(mIntent);
-        }
+      console.log(e, this.step)
+      if (e == "startup" && this.step == "calibration") {
+        this.step = "startup"
+        this.getStartup();
       }
     },
     //程序启动
     async getStartup() {
-      let _this = this;
-      fetch(process.env.VUE_APP_URL + "/robot/sdk_ctrl/start")
-        .then((response) => {
-          const reader = response.body.getReader();
-          let result = "";
-          function process() {
-            reader.read().then(({ done, value }) => {
-              if (done) {
-                console.log("处理结束");
-                return;
-              }
-              result = new TextDecoder().decode(value);
-              console.log("reader---result", result);
-              if (
-                result.includes("init!") &&
-                !result.includes("start json init")
-              ) {
-                reader.cancel();
-                // setTimeout(() => {
-                //   _this.initRobotWs()
-                // }, 1500);
-                setTimeout(() => {
-                  _this.isReady = true;
-                }, 2000);
-              } else {
-                process();
-              }
-            });
-          }
-          process();
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    },
-    initRobotWs() {
-      var robot = new Human({
-        host: process.env.VUE_APP_URL.split("//")[1].split(":")[0],
-      });
-      this.robotWs.setWs(robot);
-      robot.on_connected(() => {
-        // console.log("robotWs成功！");
-        Bus.$emit("robotOnconnected");
-      });
-      robot.on_message((data) => {
-        var currData = JSON.parse(data.data);
-        Bus.$emit("robotOnmessage", currData);
-      });
-      robot.on_close(() => {
-        // console.log("robotWs关闭！");
-      });
-      robot.on_error(() => {
-        // console.log("robotWs出错！");
-      });
+      let data = {
+        "command": 'program_start'
+      }
+      this.robotWs.robot.send(JSON.stringify(data));
+      setTimeout(() => {
+        this.isReady = true;
+      }, 3000);
     },
     //打开开机初始示例图
     openDialog() {
@@ -345,14 +191,10 @@ export default {
     },
     //程序关闭
     shutDown() {
-      http
-        .get("/system/shutdown")
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((error) => {
-          console.error("Error shutdown:", error);
-        });
+      let data = {
+        "command": 'program_stop'
+      }
+      this.robotWs.robot.send(JSON.stringify(data));
       this.promptBoxOpen();
       this.step = "calibration";
       this.isReady = false;
@@ -382,7 +224,7 @@ export default {
 
 .openCalibration {
   position: absolute;
-  top: 6.4167vw;
+  top: 11.4167vw;
   left: 2.6667vw;
   width: 61.5833vw;
   height: 35.7083vw;
@@ -391,7 +233,7 @@ export default {
 .tips {
   position: relative;
   left: 46.25vw;
-  top: 11.6667vw;
+  top: 16.6667vw;
   width: 16.6667vw;
   height: 22.5vw;
   font-size: $size-30;
@@ -456,7 +298,7 @@ export default {
 .warning {
   position: absolute;
   left: 27.4583vw;
-  top: 37.75vw;
+  top: 42.75vw;
   width: 36.75vw;
   font-size: $size-30;
   color: $white;
@@ -503,6 +345,7 @@ export default {
   width: 94.8333vw;
   height: 35.7083vw;
   background: rgba(68, 216, 251, 0.1);
+
   .calibrationItem {
     position: absolute;
     top: 2.0417vw;
@@ -511,6 +354,7 @@ export default {
     align-items: center;
     flex-direction: column;
   }
+
   .calibrationImg {
     width: 24.625vw;
     height: 27.7083vw;
@@ -531,6 +375,7 @@ export default {
     font-size: $size-30;
     color: $light-blue;
   }
+
   .dialog2 {
     display: flex;
     justify-content: center;
@@ -540,7 +385,7 @@ export default {
 
 .startupBox {
   position: absolute;
-  top: 6.4167vw;
+  top: 11.4167vw;
   left: 2.6667vw;
   width: 61.5833vw;
   height: 35.7083vw;

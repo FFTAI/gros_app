@@ -27,6 +27,7 @@ export default {
     this.progressInterval = setInterval(() => {
       if (this.progress == 100) {
         clearInterval(this.progressInterval);
+        this.getStartup();
         setTimeout(() => {
           this.$router.push({
             name: "controller",
@@ -43,6 +44,14 @@ export default {
       progressInterval: undefined,
     };
   },
+  methods: {
+    getStartup() {
+      let data = {
+        "command": 'program_start'
+      }
+      this.robotWs.robot.send(JSON.stringify(data));
+    },
+  }
 };
 </script>
 

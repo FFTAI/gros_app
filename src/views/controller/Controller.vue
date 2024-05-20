@@ -149,8 +149,7 @@
       </div>
     </div>
     <!-- 当前状态提示 -->
-    <div class="stateMessage flex-center" v-if="(mode != '' && doAction) ||
-              (mode != '' && otherAction) ||
+    <div class="stateMessage flex-center" v-if="mode != '' ||
               mode == 'initial'
               ">
       <!-- <span>{{ $t(mode) }}{{ $t("ing") }}...</span> -->
@@ -177,10 +176,8 @@
 import RtcHeader from "@/components/rtcHeader.vue";
 import promptBox from "@/components/promptBox.vue";
 import { mapState } from "vuex";
-import Heartbeat from "@/mixin/Heartbeat";
 
 export default {
-  mixins: [Heartbeat],
   components: { RtcHeader, promptBox },
   computed: {
     ...mapState(["gamepadConnected", "connected"]),
@@ -215,8 +212,6 @@ export default {
       mode: "", //当前运动模式
       headBoxVisible: false, //模式选择框显隐
       camera: true, //是否开启视频
-      doAction: false,
-      otherAction: false,
       velocity: 0,
       direction: 0,
       interval: null,
@@ -281,7 +276,6 @@ export default {
     };
   },
   created() {
-    this.createWsInterval();
     document.addEventListener(
       "click",
       (e) => {
@@ -301,21 +295,11 @@ export default {
         this.screenWidth = document.body.clientWidth;
       })();
     };
-    // this.cameraOpen();
-    this.startGamepad();
-    this.$bus.$on("robotOnmessage", (data) => {
-      this.lastMessageReceivedTime = Date.now();
-      // console.log("robotOnmessage~~~~~~~~~~", data.data);
-      if (data.data) {
-        this.doAction = data.data.upper_action;
-        this.currentstatus = data.data.states.fsmstatename.currentstatus;
-      } else {
-        this.currentstatus = "";
-      }
-    });
     document.addEventListener('keydown', this.handleKeyDown);
     document.addEventListener('keyup', this.handleKeyUp);
     document.addEventListener('mousemove', this.onMouseMove);
+    this.createWsInterval();
+    this.startGamepad();
     this.$nextTick(() => {
       this.startPlay();
     });
@@ -337,9 +321,6 @@ export default {
   destroyed() {
     clearInterval(this.interval);
     clearInterval(this.wsInterval);
-    //关闭监听
-    this.robotWs.robot.disable_debug_state();
-    this.$bus.$off("robotOnmessage");
   },
   methods: {
     startPlay() {
@@ -385,9 +366,6 @@ export default {
               } else {
                 this.robotWs.robot.ws.close();
               }
-              setTimeout(() => {
-                this.robotWs.robot.enable_debug_state(2);
-              }, 1500);
               setTimeout(() => {
                 this.lastMessageReceivedTime = Date.now();
                 this.createWsInterval();
@@ -455,16 +433,18 @@ export default {
     },
     //鼠标移动
     onMouseMove(event) {
-      // console.log('onMouseMove', event, event.movementX, event.movementY)
+      console.log('onMouseMove', event, event.movementX, event.movementY)
+      console.log(this.lastX, this.lastY)
       event.preventDefault();
       if (this.currentstatus != "Stand") return
       if (this.lastX == 0 && this.lastY == 0) {
         this.lastX = event.clientX
         this.lastY = event.clientY
+        console.log(this.lastX, this.lastY)
       } else {
         const currPointX = (this.lastX / window.innerWidth - 0.5) * 2
         const currPointY = (this.lastY / window.innerHeight - 0.5) * 2
-        // console.log('横向', currPointX.toFixed(2), '竖向', currPointY.toFixed(2))
+        console.log('横向', currPointX.toFixed(2), '竖向', currPointY.toFixed(2))
         this.lastX = event.clientX;
         this.lastY = event.clientY;
         let pitch = currPointX * 17.1887;
@@ -550,10 +530,8 @@ export default {
       this.promptBoxOpen("calibration");
     },
     doCalibration() {
-      // this.isStand = false;
-      this.robotWs.robot.start();
+      this.robotWs.robot.send(JSON.stringify({ "command": 'zero' }));
       this.mode = "initial";
-      // this.isZero = true;
       setTimeout(() => {
         this.mode = "";
       }, 7000);
@@ -575,7 +553,14 @@ export default {
     //操控行走
     operateWalk(direction, velocity) {
       try {
-        this.robotWs.robot.walk(direction, velocity);
+        let data = {
+          "command": 'walk',
+          "data": {
+            angle: direction,
+            speed: velocity,
+          }
+        }
+        this.robotWs.robot.send(JSON.stringify(data));
         if (!this.walkingTimer) {
           this.walkingTimer = setTimeout(() => {
             this.changeControl("stand");
@@ -589,7 +574,15 @@ export default {
     operateHead(pitch, yaw) {
       console.log("头部。。。。。", pitch, yaw);
       try {
-        this.robotWs.robot.head(0, pitch, yaw);
+        let data = {
+          "command": 'head',
+          "data": {
+            roll: 0,
+            pitch: pitch,
+            yaw: yaw,
+          }
+        }
+        this.robotWs.robot.send(JSON.stringify(data));
       } catch (error) {
         console.log("Head错误。。。。。。", error);
       }
@@ -603,10 +596,6 @@ export default {
         console.log("Body错误。。。。。。", error);
       }
     },
-    //开启视频
-    cameraOpen() {
-
-    },
     //切换当前控制模式
     changeControl(e) {
       if (e == "stand") {
@@ -614,7 +603,8 @@ export default {
         if (this.walkingTimer) {
           clearTimeout(this.walkingTimer);
         }
-        this.robotWs.robot.stand();
+        this.robotWs.robot.send(JSON.stringify({ "command": 'stand' }));
+        this.currentstatus = "Stand";
         this.sideVisible = false;
       } else if (["inPlace", "grasping", "setup"].includes(e)) {
         this.sideVisible = true;
@@ -624,47 +614,50 @@ export default {
       this.controlModel = e;
     },
     async choseMode(e) {
-      if (this.doAction || this.otherAction) return;
       this.mode = e;
       //原地踏步，速度位置发0
       if (e == "markingTime") {
         // this.isStand = false;
         // this.isWalking = true;
-        this.robotWs.robot.walk(0, 0);
+        let data = {
+          "command": 'walk',
+          "data": {
+            angle: 0,
+            speed: 0,
+          }
+        }
+        this.robotWs.robot.send(JSON.stringify(data));
       } else {
         //上肢data
-        let upper_data = {
-          arm_action: "",
-          hand_action: "",
+        let arm_act = {
+          arm_mode: 0,
         };
-        //下肢data
         let lower_data = {
           lower_body_mode: "",
         };
-        setTimeout(() => {
-          this.doAction = true;
-        }, 500);
+        let hand_act = {
+          hand_mode: "",
+        };
         if (e == "zero") {
-          upper_data.arm_action = "RESET";
+          arm_act.arm_mode = "RESET";
         } else if (e == "raiseHand") {
-          upper_data.arm_action = "LEFT_ARM_WAVE";
+          arm_act.arm_mode = 1;
         } else if (e == "swingArms") {
-          upper_data.arm_action = "ARMS_SWING";
+          arm_act.arm_mode = 3;
         } else if (e == "greet") {
-          upper_data.arm_action = "HELLO";
+          arm_act.arm_mode = 5;
         } else if (e == "openHand") {
-          upper_data.hand_action = "OPEN";
+          hand_act.hand_mode = 2;
         } else if (e == "grasp") {
-          upper_data.hand_action = "GRASP";
+          hand_act.hand_mode = 4;
         } else if (e == "tremble") {
-          upper_data.hand_action = "TREMBLE";
+          hand_act.hand_mode = 5;
         } else if (e == "twist") {
-          lower_data.lower_body_mode = "ROTATE_WAIST";
+          lower_data.lower_body_mode = 2;
         } else if (e == "squat") {
-          lower_data.lower_body_mode = "SQUAT";
+          lower_data.lower_body_mode = 1;
         } else if (e == "nod") {
           //上下点头
-          this.otherAction = true;
           this.operateHead(17, 0);
           setTimeout(() => {
             this.operateHead(-17, 0);
@@ -674,7 +667,6 @@ export default {
           }, 3000);
         } else if (e == "shake") {
           //左右摇头
-          this.otherAction = true;
           this.operateHead(0, 17);
           setTimeout(() => {
             this.operateHead(0, -17);
@@ -683,47 +675,30 @@ export default {
             this.operateHead(0, 0);
           }, 3000);
         }
-        if (lower_data.lower_body_mode == "" && e != "nod" && e != "shake") {
-          try {
-            let res = await this.robotWs.robot.upper_body(
-              upper_data.arm_action,
-              upper_data.hand_action
-            );
-            if (res.data.code == 0 && res.data.msg == "ok") {
-              console.log("upper_body_OK", res);
-            } else {
-              console.log("upper_body_ERR", res);
+        if (arm_act.arm_mode != 0) {
+          let data = {
+            "command": 'arm_act',
+            "data": {
+              arm_mode: arm_act.arm_mode
             }
-          } catch (error) {
-            console.log("upper_body-error", error);
           }
-        } else if (
-          lower_data.lower_body_mode != "" &&
-          e != "nod" &&
-          e != "shake"
-        ) {
-          this.otherAction = true;
-          try {
-            let res = await this.robotWs.robot.lower_body(
-              lower_data.lower_body_mode
-            );
-            console.log("lower_body_OK........", res);
-            if (res.data.code == 0 && res.data.msg == "ok") {
-              console.log("lower_body_OK", res);
-              this.otherAction = false;
-            } else {
-              console.log("lower_body_ERR", res);
-              this.otherAction = false;
+          this.robotWs.robot.send(JSON.stringify(data));
+        } else if (lower_data.lower_body_mode != "") {
+          let data = {
+            "command": 'lower_act',
+            "data": {
+              lower_mode: lower_data.lower_body_mode
             }
-          } catch (error) {
-            console.log("lower_body-error", error);
-            this.otherAction = false;
           }
-        } else {
-          console.log("头头", e);
-          setTimeout(() => {
-            this.otherAction = false;
-          }, 4000);
+          this.robotWs.robot.send(JSON.stringify(data));
+        } else if (hand_act.hand_mode != "") {
+          let data = {
+            "command": 'hand_act',
+            "data": {
+              hand_mode: hand_act.hand_mode
+            }
+          }
+          this.robotWs.robot.send(JSON.stringify(data));
         }
       }
     },
@@ -768,19 +743,19 @@ export default {
     },
     //拍照(截屏)
     takeScreenshot() {
-      
+
       const video = this.$refs.rtc_media_player;
       const canvas = this.$refs.canvas;
       const ctx = canvas.getContext('2d');
 
       // 将视频帧绘制到Canvas上
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      console.log("takeScreenshot",ctx);
+      console.log("takeScreenshot", ctx);
       // 将Canvas保存为图片
       const dataURL = canvas.toDataURL('image/png');
       const img = document.createElement('img');
       img.src = dataURL;
-      console.log("takeScreenshot",dataURL);
+      console.log("takeScreenshot", dataURL);
       // 可以选择将img元素添加到文档中显示截图
       document.body.appendChild(img);
     },
@@ -876,6 +851,11 @@ export default {
         //停止websocket连接
         this.socket.close()
       }
+    },
+    routerReturn() {
+      this.$router.push({
+        name: "connectionManagement",
+      });
     }
   },
 };

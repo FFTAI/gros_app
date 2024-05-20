@@ -52,14 +52,6 @@ export default {
   components: { rtcHeader, promptBox },
   computed: {
     ...mapState(["connected"]),
-    // closeBoxWidth() {
-    //   let style = { "width": "12.4479vw","font-size": "1.7083vw" };
-    //   if (this.$i18n.locale == "en"){
-    //     style.width = "14.8229vw";
-    //     style["font-size"] = "1.4583vw";
-    //   }
-    //   return style;
-    // },
   },
   data() {
     return {

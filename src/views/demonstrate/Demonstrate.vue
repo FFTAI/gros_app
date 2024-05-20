@@ -64,14 +64,6 @@ export default {
           angle: 10,
         }
       }
-      // http
-      //   .get("/list")
-      //   .then((response) => {
-      //     console.log(response);
-      //   })
-      //   .catch((error) => {
-      //     console.error("Error:", error);
-      //   });
       this.robotWs.robot.send(JSON.stringify(data));
     }
   },

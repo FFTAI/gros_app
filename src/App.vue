@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { Human } from "rocs-client";
+
 export default {
   name: "app",
   data() {
@@ -14,7 +14,7 @@ export default {
     };
   },
   created() {
-    this.initRobotWs();
+    // this.initRobotWs();
   },
   mounted() {
     let lang = localStorage.getItem("lang");
@@ -28,9 +28,9 @@ export default {
     }
     window.addEventListener("gamepadconnected", this.gamepadcted);
     window.addEventListener("gamepaddisconnected", this.gamepaddiscted);
-    this.$bus.$on("initWs", () => {
-      console.log('bus-on-initws~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-      this.initRobotWs()
+    this.$bus.$on("initWs", (e) => {
+      console.log('bus-on-initws~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',e)
+      this.initRobotWs(e)
     })
   },
   beforeDestroy() {
@@ -40,30 +40,9 @@ export default {
   },
   methods: {
     //初始化Robot实例
-    initRobotWs() {
-      // var robot = new Human({
-      //   host: process.env.VUE_APP_URL.split("//")[1].split(":")[0],
-      // });
-      // this.robotWs.setWs(robot);
-      // robot.on_connected(() => {
-      //   // console.log('robotWs成功！')
-      //   this.$bus.$emit("robotOnconnected");
-      //   this.reWs = false;
-      // });
-      // robot.on_message((data) => {
-      //   var currData = JSON.parse(data.data);
-      //   this.$bus.$emit("robotOnmessage", currData);
-      // });
-      // robot.on_close(() => {
-      //   // console.log('robotWs关闭！')
-      //   this.reconnectWs();
-      // });
-      // robot.on_error(() => {
-      //   // console.log('robotWs出错！')
-      //   this.reconnectWs();
-      // });
-      let robot = new WebSocket('ws://192.168.9.101:8000/remote/fftai-test');
-      console.log(robot.onopen)
+    initRobotWs(e) {
+      console.log('initRobotWs',e)
+      let robot = new WebSocket('ws://192.168.9.101:8000/remote/' + e);
       this.robotWs.setWs(robot);
       robot.onopen = () => {
         console.log('robotWs成功！')

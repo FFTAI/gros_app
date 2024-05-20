@@ -49,7 +49,6 @@ export default {
   components: { rtcHeader },
   data() {
     return {
-      masterControl: true,
       robotList: [],
       carouselList: [],
     };
@@ -79,8 +78,10 @@ export default {
       });
     },
     choseCard(e) {
+      this.$store.commit("setCurrRobot", e);
+      this.$bus.$emit("initWs",e);
       this.$router.push({
-        name: "robotStartup",
+        name: "loading",
       });
     },
   },

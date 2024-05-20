@@ -10,7 +10,7 @@ export default {
     setTimeout(() => {
       this.$router.push({
         //首页logo3秒后跳转
-        name: "login",
+        name: "connectionManagement",
       });
     }, 3000);
   },
