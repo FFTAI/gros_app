@@ -30,6 +30,11 @@ const routes = [
     component: () => import("../views/robotStartup/RobotStartup.vue"),
   },
   {
+    path: "/connectionManagement",
+    name: "connectionManagement",
+    component: () => import("../views/connectionManagement/ConnectionManagement.vue"),
+  },
+  {
     path: "/demonstrate",
     name: "demonstrate",
     component: () => import("../views/demonstrate/Demonstrate.vue"),
