@@ -101,11 +101,11 @@
 
 <script>
 import rtcHeader from "@/components/rtcHeader.vue";
-import Heartbeat from "@/mixin/Heartbeat";
+// import Heartbeat from "@/mixin/Heartbeat";
 import { mapState } from "vuex";
 import promptBox from "@/components/promptBox.vue";
-import Bus from "@/utils/bus.js";
-import http from "@/http/axios.js";
+// import Bus from "@/utils/bus.js";
+// import http from "@/http/axios.js";
 export default {
   components: { rtcHeader, promptBox },
   computed: {

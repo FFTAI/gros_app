@@ -1,10 +1,12 @@
 <template>
-  <div>
+  <div ref="pageController">
     <div class="container">
       <div ref="videoContainer" align="center" class="video-container">
-        <div class="video-item common-bkg">
+        <div v-show="!cameraOff" class="video-item common-bkg">
           <video class="video-play" ref="rtc_media_player" width="1920" height="1080" autoplay muted
             v-show="mediaVisible"></video>
+        </div>
+        <div v-show="cameraOff" class="video-item1 common-bkg">
         </div>
       </div>
       <div class="headBkIn" :class="sideVisible ? 'shortWidth' : 'fullWidth'">
@@ -150,18 +152,14 @@
     </div>
     <!-- 当前状态提示 -->
     <div class="stateMessage flex-center" v-if="mode != '' ||
-              mode == 'initial'
-              ">
+          mode == 'initial'
+          ">
       <!-- <span>{{ $t(mode) }}{{ $t("ing") }}...</span> -->
-    </div>
-    <!-- 异常提示 -->
-    <div v-if="currentstatus == '' || currentstatus == 'Unknown'" class="stateMessageError flex-center">
-      <span>异常：无法获取当前状态！</span>
     </div>
     <!-- <prompt-box v-if="promptVisible || !connected" :prompt="connected ? promptVal : 'reconnect'" @cancel="cancel()"
       @confirm="confirm()"></prompt-box> -->
     <canvas ref="canvas" width="1920" height="1080" style="display:none;"></canvas>
-
+    <audio ref="audioElement"></audio>
     <!-- <div style="z-index: 99999;position: absolute;left: 1000px;top: 500px;">
       <button @click="joinRoom">Join Room</button>
       <div v-if="joined">
@@ -180,7 +178,7 @@ import { mapState } from "vuex";
 export default {
   components: { RtcHeader, promptBox },
   computed: {
-    ...mapState(["gamepadConnected", "connected"]),
+    ...mapState(["gamepadConnected", "connected", "currRobot"]),
     headBoxWidth() {
       let style = { width: "9.2083vw" };
       if (this.$i18n.locale == "en") {
@@ -237,6 +235,9 @@ export default {
       rc: null,
       sdk: null,
       mediaVisible: false,
+      audioUrl: '',
+      currentAudio: '',
+      localSocket: null,
       inPlaceList: [
         {
           name: 'raiseHand',
@@ -286,9 +287,10 @@ export default {
       },
       true
     );
-    this.initMediaWs();
+    this.initLocalMediaWs();
   },
   async mounted() {
+    this.$refs.pageController.style.cursor = 'none';
     this.videoContainer = this.$refs.videoContainer;
     window.onresize = () => {
       return (() => {
@@ -298,6 +300,7 @@ export default {
     document.addEventListener('keydown', this.handleKeyDown);
     document.addEventListener('keyup', this.handleKeyUp);
     document.addEventListener('mousemove', this.onMouseMove);
+    this.initMediaWs();
     this.createWsInterval();
     this.startGamepad();
     this.$nextTick(() => {
@@ -324,15 +327,14 @@ export default {
   },
   methods: {
     startPlay() {
-      let _this = this
       if (this.sdk) {
         this.sdk.close();
       }
       this.sdk = new SrsRtcWhipWhepAsync();
       this.mediaVisible = true
       this.$refs.rtc_media_player.srcObject = this.sdk.stream
-      // var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=livestream'
-      var url = 'http://192.168.9.84:1985/rtc/v1/whep/?app=live&stream=livestream'
+      var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=livestream'
+      // var url = 'http://112.64.126.30:1985/rtc/v1/whep/?app=live&stream=livestream'
       this.sdk.play(url)
         .then((session) => {
           console.log('成功拉流:', session);
@@ -353,7 +355,7 @@ export default {
           // console.log("websocketHeartBeat.............", timeSinceLastMessage);
           if (timeSinceLastMessage > 3000) {
             // 如果超过了阈值3秒，认为连接断开
-            console.log("WebSocket connection might be disconnected.");
+            // console.log("Ws connection might be disconnected.");
             if (this.connected) {
               clearInterval(this.wsInterval);
               this.wsInterval = null;
@@ -415,26 +417,25 @@ export default {
           this.direction * -45,
           (this.velocity * this.speed) / -6.25
         );
-      } else if (
-        this.currentstatus == "Stand" &&
-        this.currentstatus != "Walk"
-      ) {
-        let pitch = arr[1] * -17.1887;
-        let rotate_waist = arr[0] * -14.32;
-        if (Math.abs(pitch) < 1.71887) pitch = 0;
-        if (Math.abs(rotate_waist) < 1.432) rotate_waist = 0;
-        let squat = arr[3] * -0.15;
-        let yaw = arr[2] * 60;
-        if (squat > -0.015) squat = 0;
-        if (Math.abs(yaw) < 6) yaw = 0;
-        this.operateHead(pitch, yaw);
-        this.operateBody(squat, rotate_waist);
       }
+      // else if (
+      //   this.currentstatus == "Stand" &&
+      //   this.currentstatus != "Walk"
+      // ) {
+      //   let pitch = arr[1] * -17.1887;
+      //   let rotate_waist = arr[0] * -14.32;
+      //   if (Math.abs(pitch) < 1.71887) pitch = 0;
+      //   if (Math.abs(rotate_waist) < 1.432) rotate_waist = 0;
+      //   let squat = arr[3] * -0.15;
+      //   let yaw = arr[2] * 60;
+      //   if (squat > -0.015) squat = 0;
+      //   if (Math.abs(yaw) < 6) yaw = 0;
+      //   this.operateHead(pitch, yaw);
+      //   this.operateBody(squat, rotate_waist);
+      // }
     },
     //鼠标移动
     onMouseMove(event) {
-      console.log('onMouseMove', event, event.movementX, event.movementY)
-      console.log(this.lastX, this.lastY)
       event.preventDefault();
       if (this.currentstatus != "Stand") return
       if (this.lastX == 0 && this.lastY == 0) {
@@ -457,7 +458,6 @@ export default {
       // event.preventDefault();
       if (!this.isKeyHold) {
         console.log('keydown', event)
-
         const walkKeys = {
           87: { velocity: 1, direction: this.direction }, // W
           83: { velocity: -1, direction: this.direction },  // S
@@ -465,7 +465,8 @@ export default {
           68: { velocity: this.velocity, direction: 1 }, // D
         };
         const walkInfo = walkKeys[event.keyCode];
-        if (walkInfo) {
+        if (walkInfo && this.currentstatus == "Walk") {
+          console.log('walkInfo', walkInfo)
           if (event.keyCode == 87 || event.keyCode == 83) this.velocity = walkInfo.velocity * this.speed / 6.25;
           if (event.keyCode == 65 || event.keyCode == 68) this.direction = walkInfo.direction;
           console.log('方向', this.direction, '速度', this.velocity)
@@ -476,8 +477,9 @@ export default {
         }
         if (event.keyCode == 38) this.speedChange('add')
         if (event.keyCode == 40) this.speedChange('reduce')
-        if (event.keyCode == 17) this.doCalibration();
+        // if (event.keyCode == 17) this.doCalibration();
         if (event.keyCode == 32) this.changeControl("stand");
+        if (event.keyCode == 18) this.$refs.pageController.style.cursor = 'auto';
       }
     },
     handleKeyUp(event) {
@@ -490,7 +492,7 @@ export default {
       };
 
       const keyInfo = keyBindings[event.keyCode];
-      if (keyInfo) {
+      if (keyInfo && this.currentstatus == "Walk") {
         if (event.keyCode == 87 || event.keyCode == 83) this.velocity = keyInfo.velocity * this.speed / 6.25;
         if (event.keyCode == 65 || event.keyCode == 68) this.direction = keyInfo.direction;
         console.log('放开方向', this.direction, '放开速度', this.velocity)
@@ -499,6 +501,7 @@ export default {
           (this.velocity * this.speed) / 6.25
         );
       }
+      if (event.keyCode == 18) this.$refs.pageController.style.cursor = 'none';
     },
     // 手柄按键
     pressKey(arr) {
@@ -542,12 +545,11 @@ export default {
     },
     // 速度挡位调节
     speedChange(e) {
+      console.log(e, this.speed)
       if (e == "add" && this.speed < 3) {
         this.speed += 1;
       } else if (e == "reduce" && this.speed > 1) {
         this.speed -= 1;
-      } else {
-        this.speed = e
       }
     },
     //操控行走
@@ -606,6 +608,17 @@ export default {
         this.robotWs.robot.send(JSON.stringify({ "command": 'stand' }));
         this.currentstatus = "Stand";
         this.sideVisible = false;
+      } else if (e == "gait") {
+        let data = {
+          "command": 'walk',
+          "data": {
+            angle: 0,
+            speed: 0,
+          }
+        }
+        this.robotWs.robot.send(JSON.stringify(data));
+        this.currentstatus = 'Walk'
+        this.sideVisible = false;
       } else if (["inPlace", "grasping", "setup"].includes(e)) {
         this.sideVisible = true;
       } else {
@@ -615,91 +628,77 @@ export default {
     },
     async choseMode(e) {
       this.mode = e;
-      //原地踏步，速度位置发0
-      if (e == "markingTime") {
-        // this.isStand = false;
-        // this.isWalking = true;
+      //上肢data
+      let arm_act = {
+        arm_mode: 0,
+      };
+      let lower_data = {
+        lower_body_mode: "",
+      };
+      let hand_act = {
+        hand_mode: "",
+      };
+      if (e == "zero") {
+        arm_act.arm_mode = "RESET";
+      } else if (e == "raiseHand") {
+        arm_act.arm_mode = 1;
+      } else if (e == "swingArms") {
+        arm_act.arm_mode = 3;
+      } else if (e == "greet") {
+        arm_act.arm_mode = 5;
+      } else if (e == "openHand") {
+        hand_act.hand_mode = 2;
+      } else if (e == "grasp") {
+        hand_act.hand_mode = 4;
+      } else if (e == "tremble") {
+        hand_act.hand_mode = 5;
+      } else if (e == "twist") {
+        lower_data.lower_body_mode = 2;
+      } else if (e == "squat") {
+        lower_data.lower_body_mode = 1;
+      } else if (e == "nod") {
+        //上下点头
+        this.operateHead(17, 0);
+        setTimeout(() => {
+          this.operateHead(-17, 0);
+        }, 1000);
+        setTimeout(() => {
+          this.operateHead(0, 0);
+        }, 3000);
+      } else if (e == "shake") {
+        //左右摇头
+        this.operateHead(0, 17);
+        setTimeout(() => {
+          this.operateHead(0, -17);
+        }, 1000);
+        setTimeout(() => {
+          this.operateHead(0, 0);
+        }, 3000);
+      }
+      if (arm_act.arm_mode != 0) {
         let data = {
-          "command": 'walk',
+          "command": 'arm_act',
           "data": {
-            angle: 0,
-            speed: 0,
+            arm_mode: arm_act.arm_mode
           }
         }
         this.robotWs.robot.send(JSON.stringify(data));
-      } else {
-        //上肢data
-        let arm_act = {
-          arm_mode: 0,
-        };
-        let lower_data = {
-          lower_body_mode: "",
-        };
-        let hand_act = {
-          hand_mode: "",
-        };
-        if (e == "zero") {
-          arm_act.arm_mode = "RESET";
-        } else if (e == "raiseHand") {
-          arm_act.arm_mode = 1;
-        } else if (e == "swingArms") {
-          arm_act.arm_mode = 3;
-        } else if (e == "greet") {
-          arm_act.arm_mode = 5;
-        } else if (e == "openHand") {
-          hand_act.hand_mode = 2;
-        } else if (e == "grasp") {
-          hand_act.hand_mode = 4;
-        } else if (e == "tremble") {
-          hand_act.hand_mode = 5;
-        } else if (e == "twist") {
-          lower_data.lower_body_mode = 2;
-        } else if (e == "squat") {
-          lower_data.lower_body_mode = 1;
-        } else if (e == "nod") {
-          //上下点头
-          this.operateHead(17, 0);
-          setTimeout(() => {
-            this.operateHead(-17, 0);
-          }, 1000);
-          setTimeout(() => {
-            this.operateHead(0, 0);
-          }, 3000);
-        } else if (e == "shake") {
-          //左右摇头
-          this.operateHead(0, 17);
-          setTimeout(() => {
-            this.operateHead(0, -17);
-          }, 1000);
-          setTimeout(() => {
-            this.operateHead(0, 0);
-          }, 3000);
+      } else if (lower_data.lower_body_mode != "") {
+        let data = {
+          "command": 'lower_act',
+          "data": {
+            lower_mode: lower_data.lower_body_mode
+          }
         }
-        if (arm_act.arm_mode != 0) {
-          let data = {
-            "command": 'arm_act',
-            "data": {
-              arm_mode: arm_act.arm_mode
-            }
+        this.robotWs.robot.send(JSON.stringify(data));
+      } else if (hand_act.hand_mode != "") {
+        let data = {
+          "command": 'hand_act',
+          "data": {
+            hand_mode: hand_act.hand_mode
           }
-          this.robotWs.robot.send(JSON.stringify(data));
-        } else if (lower_data.lower_body_mode != "") {
-          let data = {
-            "command": 'lower_act',
-            "data": {
-              lower_mode: lower_data.lower_body_mode
-            }
-          }
-          this.robotWs.robot.send(JSON.stringify(data));
-        } else if (hand_act.hand_mode != "") {
-          let data = {
-            "command": 'hand_act',
-            "data": {
-              hand_mode: hand_act.hand_mode
-            }
-          }
-          this.robotWs.robot.send(JSON.stringify(data));
         }
+        this.robotWs.robot.send(JSON.stringify(data));
       }
     },
     openCamera() {
@@ -762,39 +761,80 @@ export default {
     recordingControl(e) {
       this.recording = !this.recording
     },
+    initLocalMediaWs() {
+      this.localSocket = new WebSocket('ws://localhost:8999');
+      this.localSocket.onopen = () => {
+        console.log('音频接收ws已打开');
+      };
+      this.localSocket.onmessage = (event) => {
+        console.log('音频接收onmessage',event.data);
+      };
+      this.localSocket.onerror = (error) => {
+        console.log('音频接收ws出错！！！',error);
+      };
+      this.localSocket.onclose = (event) => {
+        console.log('音频接收ws关闭~~~~~~',event);
+      };
+    },
     initMediaWs() {
-      this.socket = new WebSocket('ws://localhost:8999');
-
+      let ip = process.env.VUE_APP_URL.split("//")[1];
+      this.socket = new WebSocket('ws://' + ip + '/terminal_audio/' + this.currRobot);
       // 连接成功建立时触发
       this.socket.onopen = () => {
         this.isConnected = true;
-        console.log('WebSocket connection is open now.');
-        // 可以开始发送消息了
       };
 
       // 接收到消息时触发
       this.socket.onmessage = (event) => {
-        const message = event.data;
-        console.log('Message from server:', message);
-        // 处理收到的消息，可能需要根据不同的消息类型进行解析
+        this.localSocket.send(event.data);
+        // const audioBlob = event.data;
+        // const audioBlobUrl = URL.createObjectURL(audioBlob);
+        // // 设置音频元素的src属性并播放
+        // this.$refs.audioElement.src = audioBlobUrl;
+        // console.log('socket.onmessage', audioBlobUrl)
+        // this.$refs.audioElement.play();
+
+        // // 监听音频播放结束事件，释放Blob URL资源
+        // this.$refs.audioElement.addEventListener('ended', () => {
+        //   URL.revokeObjectURL(audioBlobUrl);
+        // }, { once: true });
+
+        // const audio = new Audio();
+
+        // // 设置Audio元素的源为新的Blob
+        // URL.revokeObjectURL(audio.src); // 撤销上一个Blob的URL
+        // audio.src = URL.createObjectURL(event.data);
+
+        // // 播放音频
+        // audio.play().catch(error => {
+        //   console.error('播放音频时出错:', error);
+        // });
+
+        // // 停止旧的音频播放
+        // if (this.currentAudio && this.currentAudio !== audio) {
+        //   this.currentAudio.pause();
+        //   this.currentAudio = null; // 释放旧的Audio元素
+        // }
+
+        // // 保存当前播放的Audio元素的引用
+        // this.currentAudio = audio;
       };
 
       // 发生错误时触发
       this.socket.onerror = (error) => {
         this.isConnected = false;
-        console.error('WebSocket error observed:', error);
-        // 处理 WebSocket 错误
+        console.error('Ws error observed:', error);
       };
 
       // 连接关闭时触发
       this.socket.onclose = (event) => {
         this.isConnected = false;
         if (event.wasClean) {
-          console.log(`WebSocket closed cleanly with code ${event.code}`);
+          console.log(`Ws closed cleanly with code ${event.code}`);
         } else {
-          console.log('WebSocket connection was closed abruptly');
+          console.log('Ws connection was closed abruptly');
         }
-        console.log('WebSocket was closed');
+        console.log('Ws was closed');
         // 连接关闭后可能需要重连的逻辑
       };
     },
@@ -802,7 +842,7 @@ export default {
       let that = this;
       //可以用下面的代码来边讲话边听
       const audio = new Audio()
-      audio.autoplay = true
+      // audio.autoplay = true
 
       navigator.mediaDevices.getUserMedia({
         audio: {
@@ -849,7 +889,7 @@ export default {
         this.audioContext.close()
         this.audioContext = null
         //停止websocket连接
-        this.socket.close()
+        // this.socket.close()
       }
     },
     routerReturn() {
@@ -861,17 +901,18 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-//鼠标
-body {
-  // cursor: none;
-}
-
 .video-container {
   display: flex;
   justify-content: center;
 }
 
 .video-item {
+  position: fixed;
+  z-index: 3;
+  background-image: url("../../assets/images/image_loadingMedia.png");
+}
+
+.video-item1 {
   position: fixed;
   z-index: 3;
   background-image: url("../../assets/images/image_cameraBk.jpg");
@@ -1003,7 +1044,7 @@ body {
 
 .sideBox {
   width: 19.7917vw;
-  height: 56.25vw;
+  height: 100%;
   background: rgba(23, 39, 55, 0.7);
   position: absolute;
   bottom: 0;
