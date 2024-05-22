@@ -42,31 +42,31 @@
 
       <div class="bottomBox flex-between" :class="sideVisible ? 'shortWidth' : 'fullWidth'">
         <div class="leftBox flex-between">
-          <div class="boxItem" v-if="mute" @click="micControl('on')">
+          <div class="boxItem" style="justify-content: space-around;" v-if="mute" @click="micControl('on')">
             <img class="inImg" src="@/assets/images/icon_mic.png" />
             <span>静音</span>
           </div>
-          <div class="boxItem" v-else @click="micControl('off')">
+          <div class="boxItem" style="justify-content: space-around;" v-else @click="micControl('off')">
             <img class="inImg" src="@/assets/images/icon_mute.png" />
             <span>解除静音</span>
           </div>
-          <div class="boxItem" v-if="!cameraOff" @click="cameraControl('on')">
+          <div class="boxItem" style="justify-content: space-around;" v-if="!cameraOff" @click="cameraControl('on')">
             <img class="inImg" src="@/assets/images/icon_video.png" />
             <span>开始视频</span>
           </div>
-          <div class="boxItem" v-else @click="cameraControl('off')">
+          <div class="boxItem" style="justify-content: space-around;" v-else @click="cameraControl('off')">
             <img class="inImg" src="@/assets/images/icon_videoOff.png" />
             <span>停止视频</span>
           </div>
-          <div class="boxItem" @click="takeScreenshot()">
+          <div class="boxItem" style="justify-content: space-around;" @click="takeScreenshot()">
             <img class="inImg" src="@/assets/images/icon_photo.png" />
             <span>拍照</span>
           </div>
-          <div class="boxItem" v-if="!recording" @click="recordingControl('on')">
+          <div class="boxItem" style="justify-content: space-around;" v-if="!recording" @click="recordingControl('on')">
             <img class="inImg" src="@/assets/images/icon_record.png" />
             <span>录像</span>
           </div>
-          <div class="boxItem" v-else @click="recordingControl('off')">
+          <div class="boxItem" style="justify-content: space-around;" v-else @click="recordingControl('off')">
             <img class="inImg" src="@/assets/images/icon_recording.png" />
             <span>录像中</span>
           </div>
@@ -75,35 +75,42 @@
           <div class="boxItem" :class="{ chosedItem: controlModel == 'stand' }" @click="changeControl('stand')">
             <img class="inImg" src="@/assets/images/icon_stand.png" />
             <span>站立</span>
+            <span>Space</span>
           </div>
           <div class="boxItem" :class="{ chosedItem: controlModel == 'gait' }" @click="changeControl('gait')">
             <img class="inImg" src="@/assets/images/icon_Stepping.png" />
             <span>踏步</span>
+            <span>①</span>
           </div>
           <div class="boxItem" :class="{ chosedItem: controlModel == 'inPlace' }" @click="changeControl('inPlace')">
             <img class="inImg" src="@/assets/images/icon_inPlace.png" />
             <span>原地</span>
+            <span>②</span>
           </div>
           <div class="boxItem" :class="{ chosedItem: controlModel == 'grasping' }" @click="changeControl('grasping')">
             <img class="inImg" src="@/assets/images/icon_grasping.png" />
             <span>抓取</span>
+            <span>③</span>
           </div>
           <div class="boxItem" :class="{ chosedItem: controlModel == 'face' }" @click="changeControl('face')">
             <img class="inImg" src="@/assets/images/icon_face.png" />
             <span>表情</span>
+            <span>④</span>
           </div>
           <div class="boxItem" :class="{ chosedItem: controlModel == 'ai' }" @click="changeControl('ai')">
             <img class="inImg" src="@/assets/images/icon_AI.png" />
             <span>AI托管</span>
+            <span>⑤</span>
           </div>
           <div class="boxItem" :class="{ chosedItem: controlModel == 'setup' }" @click="changeControl('setup')">
             <img class="inImg" src="@/assets/images/icon_setup.png" />
             <span>设置</span>
+            <span>⑥</span>
           </div>
         </div>
         <div class="rightBox flex-between">
-          <el-button type="warning" @click="doCalibration()">初始</el-button>
-          <el-button type="danger" @click="stop()">急停</el-button>
+          <el-button type="warning" @click="doCalibration()">初始⑧</el-button>
+          <el-button type="danger" @click="stop()">急停⑨</el-button>
         </div>
       </div>
       <div class="sideBox" v-if="sideVisible">
@@ -115,12 +122,12 @@
           <div v-if="controlModel == 'inPlace'" class="actionItem" :class="{ chosedAction: item.name == mode }"
             v-for="(item, index) in inPlaceList" :key="index" @click="choseMode(item.name)">
             <img class="actionImg" :src="item.src" />
-            <div>{{ $t(item.name) }}</div>
+            <div>{{ $t(item.name) }}{{ ' ( ' + item.keyCode + ' )' }}</div>
           </div>
           <div v-if="controlModel == 'grasping'" class="actionItem" :class="{ chosedAction: item.name == mode }"
             v-for="(item, index) in graspingList" :key="index" @click="choseMode(item.name)">
             <img class="actionImg" :src="item.src" />
-            <div>{{ $t(item.name) }}</div>
+            <div>{{ $t(item.name) }}{{ ' ( ' + item.keyCode + ' )' }}</div>
           </div>
           <div v-if="controlModel == 'setup'" style="width: 100%;">
             <div class="setTab">
@@ -224,7 +231,7 @@ export default {
       lastX: 0,
       lastY: 0,
       sideVisible: false,
-      mute: false,
+      mute: true,
       cameraOff: false,
       recording: false,
       currentSetup: "motion",
@@ -238,40 +245,51 @@ export default {
       audioUrl: '',
       currentAudio: '',
       localSocket: null,
+      currControl: '',
       inPlaceList: [
         {
           name: 'raiseHand',
           src: require('@/assets/images/icon_raiseHand.png'),
+          keyCode: 'e'
         }, {
           name: 'swingArms',
-          src: require('@/assets/images/icon_swingArms.png')
+          src: require('@/assets/images/icon_swingArms.png'),
+          keyCode: 'r'
         }, {
           name: 'greet',
-          src: require('@/assets/images/icon_greet.png')
+          src: require('@/assets/images/icon_greet.png'),
+          keyCode: 't'
         }, {
           name: 'twist',
-          src: require('@/assets/images/icon_twist.png')
+          src: require('@/assets/images/icon_twist.png'),
+          keyCode: 'y'
         }, {
           name: 'squat',
           src: require('@/assets/images/icon_squat.png'),
+          keyCode: 'u'
         }, {
           name: 'shake',
           src: require('@/assets/images/icon_shake.png'),
+          keyCode: 'i'
         }, {
           name: 'nod',
           src: require('@/assets/images/icon_nod.png'),
+          keyCode: 'o'
         }
       ],
       graspingList: [
         {
           name: 'openHand',
           src: require('@/assets/images/icon_grasping.png'),
+          keyCode: 'j'
         }, {
           name: 'grasp',
           src: require('@/assets/images/icon_graspPC.png'),
+          keyCode: 'k'
         }, {
           name: 'tremble',
           src: require('@/assets/images/icon_tremble.png'),
+          keyCode: 'l'
         }
       ]
     };
@@ -287,10 +305,10 @@ export default {
       },
       true
     );
-    this.initLocalMediaWs();
+    // this.initLocalMediaWs();
   },
   async mounted() {
-    this.$refs.pageController.style.cursor = 'none';
+    // this.$refs.pageController.style.cursor = 'none';
     this.videoContainer = this.$refs.videoContainer;
     window.onresize = () => {
       return (() => {
@@ -300,12 +318,13 @@ export default {
     document.addEventListener('keydown', this.handleKeyDown);
     document.addEventListener('keyup', this.handleKeyUp);
     document.addEventListener('mousemove', this.onMouseMove);
-    this.initMediaWs();
-    this.createWsInterval();
-    this.startGamepad();
-    this.$nextTick(() => {
-      this.startPlay();
-    });
+    // this.initMediaWs();
+    // this.createWsInterval();
+    // this.startGamepad();
+    // this.$nextTick(() => {
+    //   this.startPlay();
+    //   this.startRecording();
+    // });
   },
   beforeDestroy() {
     if (this.walkingTimer) {
@@ -456,31 +475,60 @@ export default {
     //键盘操控
     handleKeyDown(event) {
       // event.preventDefault();
-      if (!this.isKeyHold) {
-        console.log('keydown', event)
-        const walkKeys = {
-          87: { velocity: 1, direction: this.direction }, // W
-          83: { velocity: -1, direction: this.direction },  // S
-          65: { velocity: this.velocity, direction: -1 },  // A
-          68: { velocity: this.velocity, direction: 1 }, // D
-        };
-        const walkInfo = walkKeys[event.keyCode];
-        if (walkInfo && this.currentstatus == "Walk") {
-          console.log('walkInfo', walkInfo)
-          if (event.keyCode == 87 || event.keyCode == 83) this.velocity = walkInfo.velocity * this.speed / 6.25;
-          if (event.keyCode == 65 || event.keyCode == 68) this.direction = walkInfo.direction;
-          console.log('方向', this.direction, '速度', this.velocity)
-          this.operateWalk(
-            this.direction * -45,
-            (this.velocity * this.speed) / 6.25
-          );
-        }
-        if (event.keyCode == 38) this.speedChange('add')
-        if (event.keyCode == 40) this.speedChange('reduce')
-        // if (event.keyCode == 17) this.doCalibration();
-        if (event.keyCode == 32) this.changeControl("stand");
-        if (event.keyCode == 18) this.$refs.pageController.style.cursor = 'auto';
+      console.log('keydown', event.keyCode)
+      const walkKeys = {
+        87: { velocity: 1, direction: this.direction }, // W
+        83: { velocity: -1, direction: this.direction },  // S
+        65: { velocity: this.velocity, direction: -1 },  // A
+        68: { velocity: this.velocity, direction: 1 }, // D
+      };
+      const walkInfo = walkKeys[event.keyCode];
+      if (walkInfo && this.currentstatus == "Walk") {
+        console.log('walkInfo', walkInfo)
+        if (event.keyCode == 87 || event.keyCode == 83) this.velocity = walkInfo.velocity * this.speed / 6.25;
+        if (event.keyCode == 65 || event.keyCode == 68) this.direction = walkInfo.direction;
+        console.log('方向', this.direction, '速度', this.velocity)
+        this.operateWalk(
+          this.direction * -45,
+          (this.velocity * this.speed) / 6.25
+        );
       }
+      if (event.keyCode == 38) this.speedChange('add')
+      if (event.keyCode == 40) this.speedChange('reduce')
+      if (event.keyCode == 56) this.doCalibration();
+      if (event.keyCode == 57) this.stop();
+      if (event.keyCode == 8) this.routerReturn()
+      const controlKeys = {
+        32: "stand",
+        49: "gait",
+        50: "inPlace",
+        51: "grasping",
+        52: "face",
+        53: "ai",
+        54: "setup"
+      }
+      const controlInfo = controlKeys[event.keyCode];
+      if (controlInfo) this.changeControl(controlInfo);
+      const inPlaceKeys = {
+        69: { key: "e", value: "raiseHand" },
+        82: { key: "r", value: "swingArms" },
+        84: { key: "t", value: "greet" },
+        89: { key: "y", value: "twist" },
+        85: { key: "u", value: "squat" },
+        73: { key: "i", value: "shake" },
+        79: { key: "o", value: "nod" }
+      }
+      const inPlaceInfo = inPlaceKeys[event.keyCode];
+      if (inPlaceInfo && this.currControl == 'inPlace') this.choseMode(inPlaceInfo.value);
+      const graspingKeys = {
+        74: { key: "j", value: "openHand" },
+        75: { key: "k", value: "grasp" },
+        76: { key: "l", value: "tremble" }
+      }
+      const graspingInfo = graspingKeys[event.keyCode];
+      if (graspingInfo && this.currControl == 'grasping') this.choseMode(graspingInfo.value);
+      if (event.keyCode == 27) this.closeSide();
+      if (event.keyCode == 18) this.$refs.pageController.style.cursor = 'auto';
     },
     handleKeyUp(event) {
       event.preventDefault();
@@ -621,6 +669,7 @@ export default {
         this.sideVisible = false;
       } else if (["inPlace", "grasping", "setup"].includes(e)) {
         this.sideVisible = true;
+        this.currControl = e
       } else {
         this.sideVisible = false;
       }
@@ -767,13 +816,13 @@ export default {
         console.log('音频接收ws已打开');
       };
       this.localSocket.onmessage = (event) => {
-        console.log('音频接收onmessage',event.data);
+        console.log('音频接收onmessage', event.data);
       };
       this.localSocket.onerror = (error) => {
-        console.log('音频接收ws出错！！！',error);
+        console.log('音频接收ws出错！！！', error);
       };
       this.localSocket.onclose = (event) => {
-        console.log('音频接收ws关闭~~~~~~',event);
+        console.log('音频接收ws关闭~~~~~~', event);
       };
     },
     initMediaWs() {
@@ -1023,7 +1072,7 @@ export default {
     align-items: center;
     font-size: 1.0417vw;
     width: 4.1667vw;
-    height: 4.1667vw;
+    height: 5.1667vw;
     padding: .5208vw 0;
     color: rgba(255, 255, 255, 0.6);
   }
