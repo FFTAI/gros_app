@@ -3,7 +3,7 @@
     <div class="container">
       <div ref="videoContainer" align="center" class="video-container">
         <div v-show="!cameraOff" class="video-item common-bkg">
-          <video class="video-play" ref="rtc_media_player" width="1920" height="1080" autoplay muted
+          <video class="video-play" ref="rtc_media_player" width="1920" height="1080" autoplay
             v-show="mediaVisible"></video>
         </div>
         <div v-show="cameraOff" class="video-item1 common-bkg">
@@ -42,11 +42,11 @@
 
       <div class="bottomBox flex-between" :class="sideVisible ? 'shortWidth' : 'fullWidth'">
         <div class="leftBox flex-between">
-          <div class="boxItem" style="justify-content: space-around;" v-if="mute" @click="micControl('on')">
+          <div class="boxItem" style="justify-content: space-around;" v-if="!mute" @click="micControl('off')">
             <img class="inImg" src="@/assets/images/icon_mic.png" />
             <span>静音</span>
           </div>
-          <div class="boxItem" style="justify-content: space-around;" v-else @click="micControl('off')">
+          <div class="boxItem" style="justify-content: space-around;" v-else @click="micControl('on')">
             <img class="inImg" src="@/assets/images/icon_mute.png" />
             <span>解除静音</span>
           </div>
@@ -246,6 +246,7 @@ export default {
       currentAudio: '',
       localSocket: null,
       currControl: '',
+      mouseDown: false,
       inPlaceList: [
         {
           name: 'raiseHand',
@@ -308,7 +309,7 @@ export default {
     // this.initLocalMediaWs();
   },
   async mounted() {
-    // this.$refs.pageController.style.cursor = 'none';
+    this.$refs.pageController.style.cursor = 'none';
     this.videoContainer = this.$refs.videoContainer;
     window.onresize = () => {
       return (() => {
@@ -318,13 +319,14 @@ export default {
     document.addEventListener('keydown', this.handleKeyDown);
     document.addEventListener('keyup', this.handleKeyUp);
     document.addEventListener('mousemove', this.onMouseMove);
-    // this.initMediaWs();
-    // this.createWsInterval();
-    // this.startGamepad();
-    // this.$nextTick(() => {
-    //   this.startPlay();
-    //   this.startRecording();
-    // });
+    document.addEventListener('mousedown', this.onMousedown);
+    document.addEventListener('mouseup', this.onMouseup);
+    this.initMediaWs();
+    this.createWsInterval();
+    this.startGamepad();
+    this.$nextTick(() => {
+      this.startPlay();
+    });
   },
   beforeDestroy() {
     if (this.walkingTimer) {
@@ -333,6 +335,8 @@ export default {
     document.removeEventListener('keydown', this.handleKeyDown);
     document.removeEventListener('keyup', this.handleKeyUp);
     document.removeEventListener('mousemove', this.onMouseMove);
+    document.removeEventListener('mousedown', this.onMousedown);
+    document.removeEventListener('mouseup', this.onMouseup);
     if (this.mediaRecorder) {
       this.mediaRecorder.stop();
     }
@@ -455,7 +459,7 @@ export default {
     },
     //鼠标移动
     onMouseMove(event) {
-      event.preventDefault();
+      // event.preventDefault();
       if (this.currentstatus != "Stand") return
       if (this.lastX == 0 && this.lastY == 0) {
         this.lastX = event.clientX
@@ -469,8 +473,16 @@ export default {
         this.lastY = event.clientY;
         let pitch = currPointX * 17.1887;
         let yaw = currPointY * -17.1887;
-        this.operateHead(yaw, pitch);
+        if (this.mouseDown) this.operateHead(yaw, pitch);
       }
+    },
+    onMousedown(event) {
+      console.log('1', event)
+      if (event.button == 0 && event.buttons == 1) this.mouseDown = true;
+    },
+    onMouseup(event) {
+      console.log('2', event)
+      if (event.button == 0 && event.buttons == 0) this.mouseDown = false;
     },
     //键盘操控
     handleKeyDown(event) {
@@ -779,10 +791,14 @@ export default {
       this.sideVisible = false
     },
     micControl(e) {
-      this.mute = !this.mute
-      if (this.mute) {
+      if(e=='on'){
+        console.log("解除静音")
+        this.mute = false
+        this.$refs.rtc_media_player.volume = 1;
         this.startRecording()
-      } else {
+      }else{
+        console.log("静音")
+        this.mute = true
         this.stopRecording()
       }
     },
@@ -835,7 +851,7 @@ export default {
 
       // 接收到消息时触发
       this.socket.onmessage = (event) => {
-        this.localSocket.send(event.data);
+        // this.localSocket.send(event.data);
         // const audioBlob = event.data;
         // const audioBlobUrl = URL.createObjectURL(audioBlob);
         // // 设置音频元素的src属性并播放
