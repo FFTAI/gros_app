@@ -505,11 +505,6 @@ export default {
           (this.velocity * this.speed) / 6.25
         );
       }
-      if (event.keyCode == 38) this.speedChange('add')
-      if (event.keyCode == 40) this.speedChange('reduce')
-      if (event.keyCode == 56) this.doCalibration();
-      if (event.keyCode == 57) this.stop();
-      if (event.keyCode == 8) this.routerReturn()
       const controlKeys = {
         32: "stand",
         49: "gait",
@@ -539,6 +534,18 @@ export default {
       }
       const graspingInfo = graspingKeys[event.keyCode];
       if (graspingInfo && this.currControl == 'grasping') this.choseMode(graspingInfo.value);
+      if (event.keyCode == 38) this.speedChange('add')
+      if (event.keyCode == 40) this.speedChange('reduce')
+      if (event.keyCode == 56) this.doCalibration();
+      if (event.keyCode == 57) this.stop();
+      if (event.keyCode == 8) this.routerReturn()
+      if (event.keyCode == 192){
+        if(this.mute){
+          this.micControl('on')
+        }else{
+          this.micControl('off')
+        }
+      }
       if (event.keyCode == 27) this.closeSide();
       if (event.keyCode == 18) this.$refs.pageController.style.cursor = 'auto';
     },
