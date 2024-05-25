@@ -245,7 +245,6 @@ export default {
       audioUrl: '',
       currentAudio: '',
       localSocket: null,
-      currControl: '',
       mouseDown: false,
       inPlaceList: [
         {
@@ -361,7 +360,7 @@ export default {
       this.sdk.play(url)
         .then((session) => {
           console.log('成功拉流:', session);
-          this.$refs.rtc_media_player.srcObject = this.sdk.stream;
+          // this.$refs.rtc_media_player.srcObject = this.sdk.stream;
         })
         .catch((reason) => {
           console.error('错误拉流:', reason);
@@ -526,14 +525,14 @@ export default {
         79: { key: "o", value: "nod" }
       }
       const inPlaceInfo = inPlaceKeys[event.keyCode];
-      if (inPlaceInfo && this.currControl == 'inPlace') this.choseMode(inPlaceInfo.value);
+      if (inPlaceInfo && this.controlModel == 'inPlace') this.choseMode(inPlaceInfo.value);
       const graspingKeys = {
         74: { key: "j", value: "openHand" },
         75: { key: "k", value: "grasp" },
         76: { key: "l", value: "tremble" }
       }
       const graspingInfo = graspingKeys[event.keyCode];
-      if (graspingInfo && this.currControl == 'grasping') this.choseMode(graspingInfo.value);
+      if (graspingInfo && this.controlModel == 'grasping') this.choseMode(graspingInfo.value);
       if (event.keyCode == 38) this.speedChange('add')
       if (event.keyCode == 40) this.speedChange('reduce')
       if (event.keyCode == 56) this.doCalibration();
@@ -667,8 +666,8 @@ export default {
     },
     //切换当前控制模式
     changeControl(e) {
+      let model = e;
       if (e == "stand") {
-        console.log(e)
         if (this.walkingTimer) {
           clearTimeout(this.walkingTimer);
         }
@@ -687,12 +686,17 @@ export default {
         this.currentstatus = 'Walk'
         this.sideVisible = false;
       } else if (["inPlace", "grasping", "setup"].includes(e)) {
-        this.sideVisible = true;
-        this.currControl = e
+        this.sideVisible = !this.sideVisible;
+        if(this.sideVisible){
+          this.model = ''
+          this.sideVisible = false;
+        }else{
+          this.sideVisible = true;
+        }
       } else {
         this.sideVisible = false;
       }
-      this.controlModel = e;
+      this.controlModel = model;
     },
     async choseMode(e) {
       this.mode = e;
