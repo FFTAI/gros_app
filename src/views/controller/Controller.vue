@@ -686,9 +686,8 @@ export default {
         this.currentstatus = 'Walk'
         this.sideVisible = false;
       } else if (["inPlace", "grasping", "setup"].includes(e)) {
-        this.sideVisible = !this.sideVisible;
         if(this.sideVisible){
-          this.model = ''
+          model = ''
           this.sideVisible = false;
         }else{
           this.sideVisible = true;
@@ -916,9 +915,7 @@ export default {
     },
     startRecording() {
       let that = this;
-      //可以用下面的代码来边讲话边听
       const audio = new Audio()
-      // audio.autoplay = true
 
       navigator.mediaDevices.getUserMedia({
         audio: {
