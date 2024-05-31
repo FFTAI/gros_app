@@ -3,13 +3,13 @@
     <div class="container">
       <div ref="videoContainer" align="center" class="video-container">
         <div v-show="!cameraOff" class="video-item common-bkg">
-          <video class="video-play" ref="rtc_media_player" width="1920" height="1080" autoplay
+          <video class="video-play" ref="rtc_media_player" width="1920" height="1080" autoplay muted
             v-show="mediaVisible"></video>
         </div>
         <div v-show="cameraOff" class="video-item1 common-bkg">
         </div>
       </div>
-      <div class="headBkIn" :class="sideVisible ? 'shortWidth' : 'fullWidth'">
+      <div class="headBkIn fullWidth">
         <div class="headReturn" @click="routerReturn()">
           <img class="return" src="@/assets/images/icon_return.png" />
         </div>
@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <div class="bottomBox flex-between" :class="sideVisible ? 'shortWidth' : 'fullWidth'">
+      <div class="bottomBox flex-between fullWidth">
         <div class="leftBox flex-between">
           <div class="boxItem" style="justify-content: space-around;" v-if="!mute" @click="micControl('off')">
             <img class="inImg" src="@/assets/images/icon_mic.png" />
@@ -72,37 +72,48 @@
           </div>
         </div>
         <div class="midBox flex-between">
-          <div class="boxItem" :class="{ chosedItem: controlModel == 'stand' }" @click="changeControl('stand')">
+          <div class="boxItem" :class="{ chosedItem: currentstatus == 'Stand', opacity03: currentstatus == 'Start' }"
+            @click="doStand()">
             <img class="inImg" src="@/assets/images/icon_stand.png" />
             <span>站立</span>
             <span>Space</span>
           </div>
-          <div class="boxItem" :class="{ chosedItem: controlModel == 'gait' }" @click="changeControl('gait')">
+          <div class="boxItem" :class="{ chosedItem: currentstatus == 'Walk', opacity03: currentstatus == 'Start' }">
             <img class="inImg" src="@/assets/images/icon_Stepping.png" />
-            <span>踏步</span>
+            <span>行走</span>
             <span>①</span>
           </div>
-          <div class="boxItem" :class="{ chosedItem: controlModel == 'inPlace' }" @click="changeControl('inPlace')">
+          <div class="boxItem"
+            :class="{ chosedItem: controlModel == 'inPlace', opacity03: currentstatus == 'Walk' || currentstatus == 'Start' }"
+            @click="changeControl('inPlace')">
             <img class="inImg" src="@/assets/images/icon_inPlace.png" />
             <span>原地</span>
             <span>②</span>
           </div>
-          <div class="boxItem" :class="{ chosedItem: controlModel == 'grasping' }" @click="changeControl('grasping')">
+          <div class="boxItem"
+            :class="{ chosedItem: controlModel == 'grasping', opacity03: currentstatus == 'Walk' || currentstatus == 'Start' }"
+            @click="changeControl('grasping')">
             <img class="inImg" src="@/assets/images/icon_grasping.png" />
             <span>抓取</span>
             <span>③</span>
           </div>
-          <div class="boxItem" :class="{ chosedItem: controlModel == 'face' }" @click="changeControl('face')">
+          <div class="boxItem"
+            :class="{ chosedItem: controlModel == 'face', opacity03: currentstatus == 'Walk' || currentstatus == 'Start' }"
+            @click="changeControl('face')">
             <img class="inImg" src="@/assets/images/icon_face.png" />
             <span>表情</span>
             <span>④</span>
           </div>
-          <div class="boxItem" :class="{ chosedItem: controlModel == 'ai' }" @click="changeControl('ai')">
+          <div class="boxItem"
+            :class="{ chosedItem: controlModel == 'ai', opacity03: currentstatus == 'Walk' || currentstatus == 'Start' }"
+            @click="changeControl('ai')">
             <img class="inImg" src="@/assets/images/icon_AI.png" />
             <span>AI托管</span>
             <span>⑤</span>
           </div>
-          <div class="boxItem" :class="{ chosedItem: controlModel == 'setup' }" @click="changeControl('setup')">
+          <div class="boxItem"
+            :class="{ chosedItem: controlModel == 'setup', opacity03: currentstatus == 'Walk' || currentstatus == 'Start' }"
+            @click="changeControl('setup')">
             <img class="inImg" src="@/assets/images/icon_setup.png" />
             <span>设置</span>
             <span>⑥</span>
@@ -203,6 +214,8 @@ export default {
     titleName() {
       if (this.controlModel == 'inPlace') return '原地运动'
       if (this.controlModel == 'grasping') return '末端抓取'
+      if (this.controlModel == 'face') return '表情'
+      if (this.controlModel == 'ai') return 'AI托管'
       if (this.controlModel == 'setup') return '设置'
     }
   },
@@ -227,7 +240,6 @@ export default {
       wsInterval: null,
       reconnectWs: false,
       currentstatus: "Start", //当前状态: Unknown,Start,Zero,Zero2Stand,Stand,Stand2Walk,Walk,Stop
-      walkingTimer: null,
       lastX: 0,
       lastY: 0,
       sideVisible: false,
@@ -246,6 +258,8 @@ export default {
       currentAudio: '',
       localSocket: null,
       mouseDown: false,
+      keyVelocity: false,
+      keyDirection: false,
       inPlaceList: [
         {
           name: 'raiseHand',
@@ -308,7 +322,7 @@ export default {
     // this.initLocalMediaWs();
   },
   async mounted() {
-    this.$refs.pageController.style.cursor = 'none';
+    // this.$refs.pageController.style.cursor = 'none';
     this.videoContainer = this.$refs.videoContainer;
     window.onresize = () => {
       return (() => {
@@ -328,9 +342,6 @@ export default {
     });
   },
   beforeDestroy() {
-    if (this.walkingTimer) {
-      clearTimeout(this.walkingTimer);
-    }
     document.removeEventListener('keydown', this.handleKeyDown);
     document.removeEventListener('keyup', this.handleKeyUp);
     document.removeEventListener('mousemove', this.onMouseMove);
@@ -356,7 +367,7 @@ export default {
       this.mediaVisible = true
       this.$refs.rtc_media_player.srcObject = this.sdk.stream
       var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=livestream'
-      // var url = 'http://112.64.126.30:1985/rtc/v1/whep/?app=live&stream=livestream'
+      // var url = 'http://192.168.11.82:1985/rtc/v1/whep/?app=live&stream=livestream'
       this.sdk.play(url)
         .then((session) => {
           console.log('成功拉流:', session);
@@ -440,48 +451,42 @@ export default {
           (this.velocity * this.speed) / -6.25
         );
       }
-      // else if (
-      //   this.currentstatus == "Stand" &&
-      //   this.currentstatus != "Walk"
-      // ) {
-      //   let pitch = arr[1] * -17.1887;
-      //   let rotate_waist = arr[0] * -14.32;
-      //   if (Math.abs(pitch) < 1.71887) pitch = 0;
-      //   if (Math.abs(rotate_waist) < 1.432) rotate_waist = 0;
-      //   let squat = arr[3] * -0.15;
-      //   let yaw = arr[2] * 60;
-      //   if (squat > -0.015) squat = 0;
-      //   if (Math.abs(yaw) < 6) yaw = 0;
-      //   this.operateHead(pitch, yaw);
-      //   this.operateBody(squat, rotate_waist);
-      // }
     },
     //鼠标移动
     onMouseMove(event) {
       // event.preventDefault();
-      if (this.currentstatus != "Stand") return
+      // if (this.currentstatus == "Walk") return
       if (this.lastX == 0 && this.lastY == 0) {
         this.lastX = event.clientX
         this.lastY = event.clientY
         console.log(this.lastX, this.lastY)
       } else {
-        const currPointX = (this.lastX / window.innerWidth - 0.5) * 2
-        const currPointY = (this.lastY / window.innerHeight - 0.5) * 2
-        console.log('横向', currPointX.toFixed(2), '竖向', currPointY.toFixed(2))
+        let currPointX = (this.lastX / window.innerWidth - 0.5) * 2
+        let currPointY = (this.lastY / window.innerHeight - 0.5) * 2
         this.lastX = event.clientX;
         this.lastY = event.clientY;
-        let pitch = currPointX * 17.1887;
-        let yaw = currPointY * -17.1887;
-        if (this.mouseDown) this.operateHead(yaw, pitch);
+        if (currPointX > 1) currPointX = 1
+        if (currPointY > 1) currPointY = 1
+        if (currPointY < -1) currPointY = -1
+        console.log('横向', currPointX.toFixed(2), '竖向', currPointY.toFixed(2))
+        let yaw = currPointX * 40;
+        let pitch = currPointY * -17.1887;
+        if (this.mouseDown) this.operateHead(pitch, yaw);
       }
     },
     onMousedown(event) {
       console.log('1', event)
-      if (event.button == 0 && event.buttons == 1) this.mouseDown = true;
+      if (event.button == 0 && event.buttons == 1) {
+        this.mouseDown = true;
+        this.$refs.pageController.style.cursor = 'none';
+      }
     },
     onMouseup(event) {
       console.log('2', event)
-      if (event.button == 0 && event.buttons == 0) this.mouseDown = false;
+      if (event.button == 0 && event.buttons == 0) {
+        this.mouseDown = false;
+        this.$refs.pageController.style.cursor = 'auto';
+      }
     },
     //键盘操控
     handleKeyDown(event) {
@@ -494,10 +499,17 @@ export default {
         68: { velocity: this.velocity, direction: 1 }, // D
       };
       const walkInfo = walkKeys[event.keyCode];
-      if (walkInfo && this.currentstatus == "Walk") {
+      if (walkInfo) {
         console.log('walkInfo', walkInfo)
-        if (event.keyCode == 87 || event.keyCode == 83) this.velocity = walkInfo.velocity * this.speed / 6.25;
-        if (event.keyCode == 65 || event.keyCode == 68) this.direction = walkInfo.direction;
+        this.changeControl('gait')
+        if (event.keyCode == 87 || event.keyCode == 83) {
+          this.velocity = walkInfo.velocity * this.speed / 6.25;
+          this.keyVelocity = true
+        }
+        if (event.keyCode == 65 || event.keyCode == 68) {
+          this.direction = walkInfo.direction;
+          this.keyDirection = true
+        }
         console.log('方向', this.direction, '速度', this.velocity)
         this.operateWalk(
           this.direction * -45,
@@ -505,8 +517,8 @@ export default {
         );
       }
       const controlKeys = {
-        32: "stand",
-        49: "gait",
+        // 32: "stand",
+        // 49: "gait",
         50: "inPlace",
         51: "grasping",
         52: "face",
@@ -538,15 +550,19 @@ export default {
       if (event.keyCode == 56) this.doCalibration();
       if (event.keyCode == 57) this.stop();
       if (event.keyCode == 8) this.routerReturn()
-      if (event.keyCode == 192){
-        if(this.mute){
+      if (event.keyCode == 17) this.doSquat(-0.1)
+      if (event.keyCode == 32) {
+        this.doStand();
+      }
+      if (event.keyCode == 192) {
+        if (this.mute) {
           this.micControl('on')
-        }else{
+        } else {
           this.micControl('off')
         }
       }
       if (event.keyCode == 27) this.closeSide();
-      if (event.keyCode == 18) this.$refs.pageController.style.cursor = 'auto';
+      // if (event.keyCode == 18) this.$refs.pageController.style.cursor = 'auto';
     },
     handleKeyUp(event) {
       event.preventDefault();
@@ -556,18 +572,23 @@ export default {
         65: { velocity: this.velocity, direction: 0 },  // A
         68: { velocity: this.velocity, direction: 0 }, // D
       };
-
       const keyInfo = keyBindings[event.keyCode];
-      if (keyInfo && this.currentstatus == "Walk") {
-        if (event.keyCode == 87 || event.keyCode == 83) this.velocity = keyInfo.velocity * this.speed / 6.25;
-        if (event.keyCode == 65 || event.keyCode == 68) this.direction = keyInfo.direction;
-        console.log('放开方向', this.direction, '放开速度', this.velocity)
-        this.operateWalk(
-          this.direction * -45,
-          (this.velocity * this.speed) / 6.25
-        );
+      if (keyInfo) {
+        console.log('keyInfo...', event.keyCode)
+        if (event.keyCode == 87 || event.keyCode == 83) this.keyVelocity = false
+        if (event.keyCode == 65 || event.keyCode == 68) this.keyDirection = false
+        // console.log('放开方向', this.direction, '放开速度', this.velocity)
+        // this.operateWalk(
+        //   this.direction * -45,
+        //   (this.velocity * this.speed) / 6.25
+        // );
+        if (!this.keyVelocity && !this.keyDirection) {
+          this.changeControl("stand");
+          this.changeControl("inPlace");
+        }
       }
-      if (event.keyCode == 18) this.$refs.pageController.style.cursor = 'none';
+      if (event.keyCode == 17) this.doSquat(0)
+      // if (event.keyCode == 18) this.$refs.pageController.style.cursor = 'none';
     },
     // 手柄按键
     pressKey(arr) {
@@ -603,7 +624,8 @@ export default {
       this.mode = "initial";
       setTimeout(() => {
         this.mode = "";
-      }, 7000);
+        this.currentstatus = "Zero";
+      }, 6000);
     },
     //紧急停止
     stop() {
@@ -625,15 +647,11 @@ export default {
           "command": 'walk',
           "data": {
             angle: direction,
-            speed: velocity,
+            x_speed: velocity,
+            y_speed: 0,
           }
         }
         this.robotWs.robot.send(JSON.stringify(data));
-        if (!this.walkingTimer) {
-          this.walkingTimer = setTimeout(() => {
-            this.changeControl("stand");
-          }, 20 * 60 * 1000); //行走20分钟后强制站立
-        }
       } catch (error) {
         console.log("Walk错误。。。。。。", error);
       }
@@ -666,36 +684,28 @@ export default {
     },
     //切换当前控制模式
     changeControl(e) {
-      let model = e;
       if (e == "stand") {
-        if (this.walkingTimer) {
-          clearTimeout(this.walkingTimer);
-        }
         this.robotWs.robot.send(JSON.stringify({ "command": 'stand' }));
+        setTimeout(() => {
+          this.robotWs.robot.send(JSON.stringify({ "command": 'stand' }));
+        }, 200);
+        setTimeout(() => {
+          this.robotWs.robot.send(JSON.stringify({ "command": 'stand' }));
+        }, 400);
         this.currentstatus = "Stand";
-        this.sideVisible = false;
       } else if (e == "gait") {
-        let data = {
-          "command": 'walk',
-          "data": {
-            angle: 0,
-            speed: 0,
-          }
-        }
-        this.robotWs.robot.send(JSON.stringify(data));
         this.currentstatus = 'Walk'
+        this.controlModel = '';
         this.sideVisible = false;
-      } else if (["inPlace", "grasping", "setup"].includes(e)) {
-        if(this.sideVisible){
-          model = ''
-          this.sideVisible = false;
-        }else{
-          this.sideVisible = true;
-        }
-      } else {
-        this.sideVisible = false;
+      } else if (["inPlace", "grasping", "face", "ai", "setup"].includes(e) && this.currentstatus != 'Walk') {
+        // if (this.sideVisible) {
+        //   this.controlModel = '';
+        //   this.sideVisible = false;
+        // } else {
+        this.controlModel = e;
+        this.sideVisible = true;
+        // }
       }
-      this.controlModel = model;
     },
     async choseMode(e) {
       this.mode = e;
@@ -801,12 +811,12 @@ export default {
       this.sideVisible = false
     },
     micControl(e) {
-      if(e=='on'){
+      if (e == 'on') {
         console.log("解除静音")
         this.mute = false
-        this.$refs.rtc_media_player.volume = 1;
+        // this.$refs.rtc_media_player.volume = 1;
         this.startRecording()
-      }else{
+      } else {
         console.log("静音")
         this.mute = true
         this.stopRecording()
@@ -852,8 +862,8 @@ export default {
       };
     },
     initMediaWs() {
-      let ip = process.env.VUE_APP_URL.split("//")[1];
-      this.socket = new WebSocket('ws://' + ip + '/terminal_audio/' + this.currRobot);
+      let ip = process.env.VUE_APP_URL.split("//")[1].split(":")[0];
+      this.socket = new WebSocket('ws://' + ip + ':8008/terminal_audio/' + this.currRobot);
       // 连接成功建立时触发
       this.socket.onopen = () => {
         this.isConnected = true;
@@ -919,7 +929,7 @@ export default {
 
       navigator.mediaDevices.getUserMedia({
         audio: {
-          sampleRate: 48000, // 采样率，单位 Hz
+          sampleRate: 16000, // 采样率，单位 Hz
           numberOfChannels: 1 // 声道数，1 为单声道，2 为立体声
         }
       }).then((stream) => {
@@ -929,7 +939,7 @@ export default {
         that.audioContext = new AudioContext();
         const mediaStreamSource = that.audioContext.createMediaStreamSource(stream);
 
-        const bufferSize = 4096; // 根据需要选择缓冲区大小
+        const bufferSize = 0; // 根据需要选择缓冲区大小
         const scriptNode = that.audioContext.createScriptProcessor(bufferSize, 1, 1);
         // 当音频处理事件发生时
         scriptNode.onaudioprocess = (event) => {
@@ -969,11 +979,29 @@ export default {
       this.$router.push({
         name: "connectionManagement",
       });
+    },
+    doSquat(e) {
+      let data = {
+        "command": 'squat',
+        "data": {
+          height: e
+        }
+      }
+      this.robotWs.robot.send(JSON.stringify(data));
+    },
+    doStand() {
+      this.changeControl("stand");
+      this.changeControl("inPlace");
     }
   },
 };
 </script>
 <style lang="scss" scoped>
+.container {
+  width: 100%;
+  overflow: hidden;
+}
+
 .video-container {
   display: flex;
   justify-content: center;
@@ -1115,14 +1143,25 @@ export default {
   width: 100%;
 }
 
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
 .sideBox {
   width: 19.7917vw;
-  height: 100%;
+  height: calc(100% - 10.6944vw);
   background: rgba(23, 39, 55, 0.7);
   position: absolute;
-  bottom: 0;
+  top: 4.4444vw;
   right: 0;
   z-index: 9999;
+  animation: slideInFromRight 2s ease-out forwards;
 
   .title {
     width: 16.9792vw;
@@ -1363,5 +1402,9 @@ export default {
   height: 2.5vw;
   z-index: 99;
   vertical-align: middle;
+}
+
+.opacity03 {
+  opacity: 0.3;
 }
 </style>
