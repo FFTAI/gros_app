@@ -24,8 +24,8 @@ export default {
       let sdk = new SrsRtcWhipWhepAsync();
       console.log(this.$refs.rtc_media_player)
       this.$refs.rtc_media_player.srcObject = sdk.stream
-      // var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=livestream'
-      var url = 'http://192.168.9.84:1985/rtc/v1/whep/?app=live&stream=livestream'
+      var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=livestream'
+      // var url = 'http://192.168.9.84:1985/rtc/v1/whep/?app=live&stream=livestream'
       sdk.play(url).then(function (session) {
         console.log('media--play--success!!!!!!!')
         // $('#sessionid').html(session.sessionid);

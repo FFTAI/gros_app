@@ -334,6 +334,7 @@ export default {
     document.addEventListener('mousemove', this.onMouseMove);
     document.addEventListener('mousedown', this.onMousedown);
     document.addEventListener('mouseup', this.onMouseup);
+    window.addEventListener('contextmenu', this.disableContextMenu);
     this.initMediaWs();
     this.createWsInterval();
     this.startGamepad();
@@ -347,6 +348,7 @@ export default {
     document.removeEventListener('mousemove', this.onMouseMove);
     document.removeEventListener('mousedown', this.onMousedown);
     document.removeEventListener('mouseup', this.onMouseup);
+    window.removeEventListener('contextmenu', this.disableContextMenu);
     if (this.mediaRecorder) {
       this.mediaRecorder.stop();
     }
@@ -359,6 +361,9 @@ export default {
     clearInterval(this.wsInterval);
   },
   methods: {
+    disableContextMenu(event) {
+      event.preventDefault();
+    },
     startPlay() {
       if (this.sdk) {
         this.sdk.close();
@@ -468,7 +473,7 @@ export default {
         if (currPointX > 1) currPointX = 1
         if (currPointY > 1) currPointY = 1
         if (currPointY < -1) currPointY = -1
-        console.log('横向', currPointX.toFixed(2), '竖向', currPointY.toFixed(2))
+        // console.log('横向', currPointX.toFixed(2), '竖向', currPointY.toFixed(2))
         let yaw = currPointX * 40;
         let pitch = currPointY * -17.1887;
         if (this.mouseDown) this.operateHead(pitch, yaw);
@@ -658,7 +663,7 @@ export default {
     },
     //操控头部
     operateHead(pitch, yaw) {
-      console.log("头部。。。。。", pitch, yaw);
+      // console.log("头部。。。。。", pitch, yaw);
       try {
         let data = {
           "command": 'head',
@@ -675,7 +680,7 @@ export default {
     },
     //操控身体
     operateBody(squat, rotate_waist) {
-      console.log("身体。。。。。", squat, rotate_waist);
+      // console.log("身体。。。。。", squat, rotate_waist);
       try {
         this.robotWs.robot.body(squat, rotate_waist);
       } catch (error) {
@@ -929,7 +934,7 @@ export default {
 
       navigator.mediaDevices.getUserMedia({
         audio: {
-          sampleRate: 16000, // 采样率，单位 Hz
+          sampleRate: 48000, // 采样率，单位 Hz
           numberOfChannels: 1 // 声道数，1 为单声道，2 为立体声
         }
       }).then((stream) => {
@@ -939,7 +944,7 @@ export default {
         that.audioContext = new AudioContext();
         const mediaStreamSource = that.audioContext.createMediaStreamSource(stream);
 
-        const bufferSize = 0; // 根据需要选择缓冲区大小
+        const bufferSize = 1024; // 根据需要选择缓冲区大小
         const scriptNode = that.audioContext.createScriptProcessor(bufferSize, 1, 1);
         // 当音频处理事件发生时
         scriptNode.onaudioprocess = (event) => {
@@ -953,6 +958,7 @@ export default {
           //原数据的二进制数据
           const rtpBinary = rtpData.buffer;
           that.socket.send(rtpBinary);
+          // that.localSocket.send(rtpBinary);
         };
         mediaStreamSource.connect(scriptNode);
         scriptNode.connect(that.audioContext.destination);
