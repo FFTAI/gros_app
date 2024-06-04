@@ -182,7 +182,6 @@
     <!-- <prompt-box v-if="promptVisible || !connected" :prompt="connected ? promptVal : 'reconnect'" @cancel="cancel()"
       @confirm="confirm()"></prompt-box> -->
     <canvas ref="canvas" width="1920" height="1080" style="display:none;"></canvas>
-    <audio ref="audioElement"></audio>
     <!-- <div style="z-index: 99999;position: absolute;left: 1000px;top: 500px;">
       <button @click="joinRoom">Join Room</button>
       <div v-if="joined">
@@ -190,16 +189,15 @@
         <webrtc :stream="stream" @ready="onWebRTCReady" />
       </div>
     </div> -->
-
+    <robotCard></robotCard>
   </div>
 </template>
 <script>
-import RtcHeader from "@/components/rtcHeader.vue";
-import promptBox from "@/components/promptBox.vue";
+import robotCard from "@/components/robotCard.vue";
 import { mapState } from "vuex";
 
 export default {
-  components: { RtcHeader, promptBox },
+  components: { robotCard },
   computed: {
     ...mapState(["gamepadConnected", "connected", "currRobot"]),
     headBoxWidth() {
@@ -245,7 +243,7 @@ export default {
       lastMessageReceivedTime: Date.now(),
       wsInterval: null,
       reconnectWs: false,
-      currentstatus: "Zero", //当前状态: Unknown,Start,Zero,Zero2Stand,Stand,Stand2Walk,Walk,Stop
+      currentstatus: "Stand", //当前状态: Unknown,Start,Zero,Zero2Stand,Stand,Stand2Walk,Walk,Stop
       lastX: 0,
       lastY: 0,
       sideVisible: false,
