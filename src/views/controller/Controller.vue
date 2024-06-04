@@ -140,6 +140,11 @@
             <img class="actionImg" :src="item.src" />
             <div>{{ $t(item.name) }}{{ ' ( ' + item.keyCode + ' )' }}</div>
           </div>
+          <div v-if="controlModel == 'face'" class="actionItem" :class="{ chosedAction: item.name == mode }"
+            v-for="(item, index) in faceList" :key="index" @click="showFace(item.name)">
+            <img class="actionImg" :src="item.src" />
+            <div>{{ item.name }}{{ ' ( ' + item.keyCode + ' )' }}</div>
+          </div>
           <div v-if="controlModel == 'setup'" style="width: 100%;">
             <div class="setTab">
               <div class="tabItem">
@@ -214,7 +219,7 @@ export default {
     titleName() {
       if (this.controlModel == 'inPlace') return '原地运动'
       if (this.controlModel == 'grasping') return '末端抓取'
-      if (this.controlModel == 'face') return '表情'
+      if (this.controlModel == 'face') return '头部表情'
       if (this.controlModel == 'ai') return 'AI托管'
       if (this.controlModel == 'setup') return '设置'
     }
@@ -231,6 +236,7 @@ export default {
       headBoxVisible: false, //模式选择框显隐
       camera: true, //是否开启视频
       velocity: 0,
+      ySpeed: 0,
       direction: 0,
       interval: null,
       intervalCount: 0,
@@ -239,7 +245,7 @@ export default {
       lastMessageReceivedTime: Date.now(),
       wsInterval: null,
       reconnectWs: false,
-      currentstatus: "Start", //当前状态: Unknown,Start,Zero,Zero2Stand,Stand,Stand2Walk,Walk,Stop
+      currentstatus: "Zero", //当前状态: Unknown,Start,Zero,Zero2Stand,Stand,Stand2Walk,Walk,Stop
       lastX: 0,
       lastY: 0,
       sideVisible: false,
@@ -304,6 +310,33 @@ export default {
           name: 'tremble',
           src: require('@/assets/images/icon_tremble.png'),
           keyCode: 'l'
+        }
+      ],
+      faceList: [
+        {
+          name: '正常',
+          src: require('@/assets/images/icon_normal.png'),
+          keyCode: 'x'
+        }, {
+          name: '高兴',
+          src: require('@/assets/images/icon_happy.png'),
+          keyCode: 'c'
+        }, {
+          name: '难过',
+          src: require('@/assets/images/icon_sad.png'),
+          keyCode: 'v'
+        }, {
+          name: '加载',
+          src: require('@/assets/images/icon_loading.png'),
+          keyCode: 'b'
+        }, {
+          name: '输入中',
+          src: require('@/assets/images/icon_input.png'),
+          keyCode: 'n'
+        }, {
+          name: '输出',
+          src: require('@/assets/images/icon_output.png'),
+          keyCode: 'm'
         }
       ]
     };
@@ -371,8 +404,8 @@ export default {
       this.sdk = new SrsRtcWhipWhepAsync();
       this.mediaVisible = true
       this.$refs.rtc_media_player.srcObject = this.sdk.stream
-      var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=livestream'
-      // var url = 'http://192.168.11.82:1985/rtc/v1/whep/?app=live&stream=livestream'
+      // var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=livestream'
+      var url = 'http://192.168.11.82:1985/rtc/v1/whep/?app=live&stream=livestream'
       this.sdk.play(url)
         .then((session) => {
           console.log('成功拉流:', session);
@@ -453,7 +486,8 @@ export default {
         if (Math.abs(this.direction) < 0.1) this.direction = 0;
         this.operateWalk(
           this.direction * -45,
-          (this.velocity * this.speed) / -6.25
+          (this.velocity * this.speed) / -6.25,
+          0
         );
       }
     },
@@ -480,10 +514,11 @@ export default {
       }
     },
     onMousedown(event) {
-      console.log('1', event)
       if (event.button == 0 && event.buttons == 1) {
         this.mouseDown = true;
         this.$refs.pageController.style.cursor = 'none';
+      }else if (event.button == 2 && event.buttons == 2) {
+        console.log('右键')
       }
     },
     onMouseup(event) {
@@ -491,6 +526,8 @@ export default {
       if (event.button == 0 && event.buttons == 0) {
         this.mouseDown = false;
         this.$refs.pageController.style.cursor = 'auto';
+      }else if (event.button == 2 && event.buttons == 0) {
+        console.log('右键2')
       }
     },
     //键盘操控
@@ -500,8 +537,8 @@ export default {
       const walkKeys = {
         87: { velocity: 1, direction: this.direction }, // W
         83: { velocity: -1, direction: this.direction },  // S
-        65: { velocity: this.velocity, direction: -1 },  // A
-        68: { velocity: this.velocity, direction: 1 }, // D
+        65: { velocity: -1, direction: this.direction },  // A
+        68: { velocity: 1, direction: this.direction }, // D
       };
       const walkInfo = walkKeys[event.keyCode];
       if (walkInfo) {
@@ -510,16 +547,13 @@ export default {
         if (event.keyCode == 87 || event.keyCode == 83) {
           this.velocity = walkInfo.velocity * this.speed / 6.25;
           this.keyVelocity = true
+          this.operateWalk(this.direction * -45, this.velocity, 0);
         }
         if (event.keyCode == 65 || event.keyCode == 68) {
-          this.direction = walkInfo.direction;
-          this.keyDirection = true
+          this.ySpeed = walkInfo.velocity * this.speed / 10;
+          this.keyVelocity = true
+          this.operateWalk(this.direction * -45, 0, this.ySpeed);
         }
-        console.log('方向', this.direction, '速度', this.velocity)
-        this.operateWalk(
-          this.direction * -45,
-          (this.velocity * this.speed) / 6.25
-        );
       }
       const controlKeys = {
         // 32: "stand",
@@ -580,8 +614,8 @@ export default {
       const keyInfo = keyBindings[event.keyCode];
       if (keyInfo) {
         console.log('keyInfo...', event.keyCode)
-        if (event.keyCode == 87 || event.keyCode == 83) this.keyVelocity = false
-        if (event.keyCode == 65 || event.keyCode == 68) this.keyDirection = false
+        this.keyVelocity = false
+        // if (event.keyCode == 65 || event.keyCode == 68) this.keyDirection = false
         // console.log('放开方向', this.direction, '放开速度', this.velocity)
         // this.operateWalk(
         //   this.direction * -45,
@@ -646,14 +680,14 @@ export default {
       }
     },
     //操控行走
-    operateWalk(direction, velocity) {
+    operateWalk(direction, xSpeed, ySpeed) {
       try {
         let data = {
           "command": 'walk',
           "data": {
             angle: direction,
-            x_speed: velocity,
-            y_speed: 0,
+            x_speed: xSpeed,
+            y_speed: ySpeed,
           }
         }
         this.robotWs.robot.send(JSON.stringify(data));
@@ -689,7 +723,7 @@ export default {
     },
     //切换当前控制模式
     changeControl(e) {
-      if (e == "stand") {
+      if (e == "stand" && this.currentstatus != 'Start') {
         this.robotWs.robot.send(JSON.stringify({ "command": 'stand' }));
         setTimeout(() => {
           this.robotWs.robot.send(JSON.stringify({ "command": 'stand' }));
@@ -698,11 +732,11 @@ export default {
           this.robotWs.robot.send(JSON.stringify({ "command": 'stand' }));
         }, 400);
         this.currentstatus = "Stand";
-      } else if (e == "gait") {
+      } else if (e == "gait" && this.currentstatus == 'Stand') {
         this.currentstatus = 'Walk'
         this.controlModel = '';
         this.sideVisible = false;
-      } else if (["inPlace", "grasping", "face", "ai", "setup"].includes(e) && this.currentstatus != 'Walk') {
+      } else if (["inPlace", "grasping", "face", "ai", "setup"].includes(e) && this.currentstatus == 'Stand') {
         // if (this.sideVisible) {
         //   this.controlModel = '';
         //   this.sideVisible = false;
@@ -786,6 +820,9 @@ export default {
         }
         this.robotWs.robot.send(JSON.stringify(data));
       }
+    },
+    async showFace() {
+
     },
     openCamera() {
       this.camera = !this.camera;
@@ -944,7 +981,7 @@ export default {
         that.audioContext = new AudioContext();
         const mediaStreamSource = that.audioContext.createMediaStreamSource(stream);
 
-        const bufferSize = 1024; // 根据需要选择缓冲区大小
+        const bufferSize = 0; // 根据需要选择缓冲区大小
         const scriptNode = that.audioContext.createScriptProcessor(bufferSize, 1, 1);
         // 当音频处理事件发生时
         scriptNode.onaudioprocess = (event) => {
