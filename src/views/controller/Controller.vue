@@ -189,7 +189,7 @@
         <webrtc :stream="stream" @ready="onWebRTCReady" />
       </div>
     </div> -->
-    <robotCard></robotCard>
+    <!-- <robotCard></robotCard> -->
   </div>
 </template>
 <script>
@@ -243,7 +243,7 @@ export default {
       lastMessageReceivedTime: Date.now(),
       wsInterval: null,
       reconnectWs: false,
-      currentstatus: "Stand", //当前状态: Unknown,Start,Zero,Zero2Stand,Stand,Stand2Walk,Walk,Stop
+      currentstatus: "Start", //当前状态: Unknown,Start,Zero,Zero2Stand,Stand,Stand2Walk,Walk,Stop
       lastX: 0,
       lastY: 0,
       sideVisible: false,
@@ -261,9 +261,8 @@ export default {
       audioUrl: '',
       currentAudio: '',
       localSocket: null,
-      mouseDown: false,
-      keyVelocity: false,
-      keyDirection: false,
+      leftMouseDown: false,
+      rightMouseDown: false,
       inPlaceList: [
         {
           name: 'raiseHand',
@@ -402,8 +401,8 @@ export default {
       this.sdk = new SrsRtcWhipWhepAsync();
       this.mediaVisible = true
       this.$refs.rtc_media_player.srcObject = this.sdk.stream
-      // var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=livestream'
-      var url = 'http://192.168.11.82:1985/rtc/v1/whep/?app=live&stream=livestream'
+      var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=livestream'
+      // var url = 'http://192.168.11.82:1985/rtc/v1/whep/?app=live&stream=livestream'
       this.sdk.play(url)
         .then((session) => {
           console.log('成功拉流:', session);
@@ -471,24 +470,6 @@ export default {
         }
       }, 1);
     },
-    /**
-     * 手柄遥感 --- 圆心方案整改（新）
-     */
-    remoteSensing(arr) {
-      console.log(arr);
-      if (this.currentstatus != "Stand" && this.currentstatus == "Walk") {
-        this.velocity = arr[1];
-        console.log(arr[1], arr[2]);
-        if (Math.abs(this.velocity) < 0.1) this.velocity = 0;
-        this.direction = arr[2];
-        if (Math.abs(this.direction) < 0.1) this.direction = 0;
-        this.operateWalk(
-          this.direction * -45,
-          (this.velocity * this.speed) / -6.25,
-          0
-        );
-      }
-    },
     //鼠标移动
     onMouseMove(event) {
       // event.preventDefault();
@@ -508,24 +489,42 @@ export default {
         // console.log('横向', currPointX.toFixed(2), '竖向', currPointY.toFixed(2))
         let yaw = currPointX * 40;
         let pitch = currPointY * -17.1887;
-        if (this.mouseDown) this.operateHead(pitch, yaw);
+        if (this.leftMouseDown) this.operateHead(pitch, yaw);
+        //转向移动
+        console.log(this.currentstatus, this.ySpeed)
+        if (this.rightMouseDown && this.currentstatus == "Walk" && this.ySpeed == 0) {
+          let xMove = currPointX * 2;
+          if (xMove > 1) xMove = 1;
+          if (xMove < -1) xMove = -1;
+          this.direction = xMove
+          this.operateWalk(
+            this.direction * -45,
+            this.velocity,
+            this.ySpeed
+          );
+        }
       }
     },
     onMousedown(event) {
+      this.$refs.pageController.style.cursor = 'none';
       if (event.button == 0 && event.buttons == 1) {
-        this.mouseDown = true;
-        this.$refs.pageController.style.cursor = 'none';
-      }else if (event.button == 2 && event.buttons == 2) {
-        console.log('右键')
+        this.leftMouseDown = true;
+      } else if (event.button == 2 && event.buttons == 2) {
+        this.rightMouseDown = true;
       }
     },
     onMouseup(event) {
-      console.log('2', event)
+      this.$refs.pageController.style.cursor = 'auto';
       if (event.button == 0 && event.buttons == 0) {
-        this.mouseDown = false;
-        this.$refs.pageController.style.cursor = 'auto';
-      }else if (event.button == 2 && event.buttons == 0) {
-        console.log('右键2')
+        this.leftMouseDown = false;
+      } else if (event.button == 2 && event.buttons == 0) {
+        this.rightMouseDown = false;
+        this.direction = 0;
+        this.operateWalk(
+          this.direction,
+          this.velocity,
+          this.ySpeed
+        );
       }
     },
     //键盘操控
@@ -544,12 +543,10 @@ export default {
         this.changeControl('gait')
         if (event.keyCode == 87 || event.keyCode == 83) {
           this.velocity = walkInfo.velocity * this.speed / 6.25;
-          this.keyVelocity = true
           this.operateWalk(this.direction * -45, this.velocity, 0);
         }
         if (event.keyCode == 65 || event.keyCode == 68) {
-          this.ySpeed = walkInfo.velocity * this.speed / 10;
-          this.keyVelocity = true
+          this.ySpeed = walkInfo.velocity * this.speed / -10;
           this.operateWalk(this.direction * -45, 0, this.ySpeed);
         }
       }
@@ -612,17 +609,16 @@ export default {
       const keyInfo = keyBindings[event.keyCode];
       if (keyInfo) {
         console.log('keyInfo...', event.keyCode)
-        this.keyVelocity = false
         // if (event.keyCode == 65 || event.keyCode == 68) this.keyDirection = false
         // console.log('放开方向', this.direction, '放开速度', this.velocity)
         // this.operateWalk(
         //   this.direction * -45,
         //   (this.velocity * this.speed) / 6.25
         // );
-        if (!this.keyVelocity && !this.keyDirection) {
-          this.changeControl("stand");
-          this.changeControl("inPlace");
-        }
+        this.velocity = 0;
+        this.ySpeed = 0;
+        this.changeControl("stand");
+        this.changeControl("inPlace");
       }
       if (event.keyCode == 17) this.doSquat(0)
       // if (event.keyCode == 18) this.$refs.pageController.style.cursor = 'none';
@@ -685,7 +681,7 @@ export default {
           "data": {
             angle: direction,
             x_speed: xSpeed,
-            y_speed: ySpeed,
+            y_speed: ySpeed, //左正右负
           }
         }
         this.robotWs.robot.send(JSON.stringify(data));

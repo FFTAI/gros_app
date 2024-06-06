@@ -53,19 +53,19 @@ export default {
         var currData = JSON.parse(data.data);
         this.$bus.$emit("robotOnmessage", currData);
       };
-      robot.onclose = () => {
-        console.log('robotWs关闭！')
-        // this.reconnectWs();
+      robot.onclose = (error) => {
+        console.log('robotWs关闭！',error)
+        this.reconnectWs(e);
       };
       robot.onerror = () => {
         console.log('robotWs出错！')
-        // this.reconnectWs();
+        this.reconnectWs(e);
       };
     },
-    reconnectWs() {
+    reconnectWs(e) {
       if (!this.reWs) {
         setTimeout(() => {
-          this.initRobotWs();
+          this.initRobotWs(e);
           this.reWs = true;
         }, 2000);
       }

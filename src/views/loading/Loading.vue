@@ -27,7 +27,7 @@ export default {
     this.progressInterval = setInterval(() => {
       if (this.progress == 100) {
         clearInterval(this.progressInterval);
-        this.getStartup();
+        // this.getStartup();
         setTimeout(() => {
           this.$router.push({
             name: "controller",
