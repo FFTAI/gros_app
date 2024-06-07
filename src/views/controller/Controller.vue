@@ -263,6 +263,8 @@ export default {
       localSocket: null,
       leftMouseDown: false,
       rightMouseDown: false,
+      mouseFlag: true,
+      mouseCount: 0,
       inPlaceList: [
         {
           name: 'raiseHand',
@@ -474,6 +476,15 @@ export default {
     onMouseMove(event) {
       // event.preventDefault();
       // if (this.currentstatus == "Walk") return
+      if(this.mouseFlag){
+        this.mouseFunc(event);
+        this.mouseFlag = false;
+        setTimeout(() => {
+          this.mouseFlag = true;
+        }, 10);
+      }
+    },
+    mouseFunc(event) {
       if (this.lastX == 0 && this.lastY == 0) {
         this.lastX = event.clientX
         this.lastY = event.clientY
@@ -491,7 +502,7 @@ export default {
         let pitch = currPointY * -17.1887;
         if (this.leftMouseDown) this.operateHead(pitch, yaw);
         //转向移动
-        console.log(this.currentstatus, this.ySpeed)
+        // console.log(this.currentstatus, this.ySpeed)
         if (this.rightMouseDown && this.currentstatus == "Walk" && this.ySpeed == 0) {
           let xMove = currPointX * 2;
           if (xMove > 1) xMove = 1;
