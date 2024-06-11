@@ -3,7 +3,7 @@
     <div class="container">
       <div ref="videoContainer" align="center" class="video-container">
         <div v-show="!cameraOff" class="video-item common-bkg">
-          <video class="video-play" ref="rtc_media_player" width="1920" height="1080" autoplay muted
+          <video class="video-play" ref="rtc_media_player" width="1920" height="1080" autoplay
             v-show="mediaVisible"></video>
         </div>
         <div v-show="cameraOff" class="video-item1 common-bkg">
@@ -38,6 +38,20 @@
             <img class="inImg" style="height: 1.6667vw; width: 2.2917vw" src="@/assets/images/icon_Wifi.png" />
           </div>
         </div>
+      </div>
+
+      <div class="transverseRuler fullWidth">
+        <div class="tick" :class="{ longTick: index % 5 === 0 }" v-for="(tick, index) in 80" :key="index"
+          :style="{ left: index * 1.25 + 'vw' }"></div>
+        <span class="positionVal" :style="{ left: 48.7 + pointX * 49.4271 + 'vw' }">{{ pointX }}</span>
+        <div class="arrowSlider" :style="{ left: 49.4271 + pointX * 49.4271 + 'vw' }"></div>
+      </div>
+
+      <div class="verticalRuler">
+        <div class="tick" :class="{ longTick: index % 5 === 0 }" v-for="(tick, index) in 21" :key="index"
+          :style="{ top: index * 1.25 + 'vw' }"></div>
+          <span class="positionVal" :style="{ top: (24.4 + pointY * 25.2083)/2 + 'vw' }">{{ pointY }}</span>
+          <div class="arrowSlider" :style="{ top: (25.2083 + pointY * 25.2083)/2 + 'vw' }"></div>
       </div>
 
       <div class="bottomBox flex-between fullWidth">
@@ -81,6 +95,12 @@
           <div class="boxItem" :class="{ chosedItem: currentstatus == 'Walk', opacity03: currentstatus == 'Start' }">
             <img class="inImg" src="@/assets/images/icon_Stepping.png" />
             <span>行走</span>
+            <span style="flex-grow: 1;"></span>
+          </div>
+          <div class="boxItem" :class="{ chosedItem: currentstatus == 'Walk', opacity03: currentstatus == 'Start' }"
+            @click="returnHead()">
+            <img class="inImg" src="@/assets/images/icon_headReturn.png" />
+            <span>回正</span>
             <span>①</span>
           </div>
           <div class="boxItem"
@@ -243,9 +263,11 @@ export default {
       lastMessageReceivedTime: Date.now(),
       wsInterval: null,
       reconnectWs: false,
-      currentstatus: "Start", //当前状态: Unknown,Start,Zero,Zero2Stand,Stand,Stand2Walk,Walk,Stop
+      currentstatus: "Stand", //当前状态: Unknown,Start,Zero,Zero2Stand,Stand,Stand2Walk,Walk,Stop
       lastX: 0,
       lastY: 0,
+      pointX: 0,
+      pointY: 0,
       sideVisible: false,
       mute: true,
       cameraOff: false,
@@ -264,7 +286,6 @@ export default {
       leftMouseDown: false,
       rightMouseDown: false,
       mouseFlag: true,
-      mouseCount: 0,
       inPlaceList: [
         {
           name: 'raiseHand',
@@ -369,9 +390,8 @@ export default {
     window.addEventListener('contextmenu', this.disableContextMenu);
     this.initMediaWs();
     this.createWsInterval();
-    this.startGamepad();
     this.$nextTick(() => {
-      this.startPlay();
+      // this.startPlay();
     });
   },
   beforeDestroy() {
@@ -403,12 +423,11 @@ export default {
       this.sdk = new SrsRtcWhipWhepAsync();
       this.mediaVisible = true
       this.$refs.rtc_media_player.srcObject = this.sdk.stream
-      var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=livestream'
-      // var url = 'http://192.168.11.82:1985/rtc/v1/whep/?app=live&stream=livestream'
+      // var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=livestream'
+      var url = 'http://192.168.11.82:1985/rtc/v1/whep/?app=live&stream=livestream'
       this.sdk.play(url)
         .then((session) => {
           console.log('成功拉流:', session);
-          // this.$refs.rtc_media_player.srcObject = this.sdk.stream;
         })
         .catch((reason) => {
           console.error('错误拉流:', reason);
@@ -447,36 +466,11 @@ export default {
         }, 1000); // 每秒检查一次
       }
     },
-    // 启动手柄
-    startGamepad() {
-      const _this = this;
-      // 每10ms 获取一次手柄数据，查看是否按下手柄按键
-      this.interval = setInterval(function () {
-        if (_this.gamepadConnected) {
-          _this.intervalCount++;
-          let gamepad = null;
-          gamepad = navigator.getGamepads()[0]
-            ? navigator.getGamepads()[0]
-            : navigator.getGamepads()[1]
-              ? navigator.getGamepads()[1]
-              : navigator.getGamepads()[2]
-                ? navigator.getGamepads()[2]
-                : navigator.getGamepads()[3];
-          // console.log(navigator.getGamepads(), gamepad)
-          if (_this.intervalCount >= 50) {
-            // navigator.getGamepads()[0].axes[0],navigator.getGamepads()[0].axes[1],navigator.getGamepads()[0].axes[2],navigator.getGamepads()[0].axes[3]
-            _this.pressKey(gamepad.buttons);
-            _this.remoteSensing(gamepad.axes);
-            _this.intervalCount = 0;
-          }
-        }
-      }, 1);
-    },
     //鼠标移动
     onMouseMove(event) {
       // event.preventDefault();
       // if (this.currentstatus == "Walk") return
-      if(this.mouseFlag){
+      if (this.mouseFlag) {//节流，每10ms执行一次
         this.mouseFunc(event);
         this.mouseFlag = false;
         setTimeout(() => {
@@ -497,7 +491,9 @@ export default {
         if (currPointX > 1) currPointX = 1
         if (currPointY > 1) currPointY = 1
         if (currPointY < -1) currPointY = -1
-        // console.log('横向', currPointX.toFixed(2), '竖向', currPointY.toFixed(2))
+        console.log('横向', currPointX.toFixed(2), '竖向', currPointY.toFixed(2))
+        this.pointX = currPointX.toFixed(2)
+        this.pointY = currPointY.toFixed(2)
         let yaw = currPointX * 40;
         let pitch = currPointY * -17.1887;
         if (this.leftMouseDown) this.operateHead(pitch, yaw);
@@ -633,32 +629,6 @@ export default {
       }
       if (event.keyCode == 17) this.doSquat(0)
       // if (event.keyCode == 18) this.$refs.pageController.style.cursor = 'none';
-    },
-    // 手柄按键
-    pressKey(arr) {
-      let stopL = false;
-      let stopR = false;
-      for (let i = 0; i < arr.length; i++) {
-        if (arr[i].value === 1) {
-          if (i === 4) {
-            this.buttons = "左手1";
-            if (this.speed > 1) this.speed -= 1;
-          }
-          if (i === 5) {
-            this.buttons = "右手1";
-            if (this.speed < 3) this.speed += 1;
-          }
-          if (i === 6) {
-            this.buttons = "左手2";
-            stopL = true;
-          }
-          if (i === 7) {
-            this.buttons = "右手2";
-            stopR = true;
-          }
-        }
-      }
-      if (stopL && stopR) this.stop();
     },
     calibration() {
       this.promptBoxOpen("calibration");
@@ -861,7 +831,8 @@ export default {
       if (e == 'on') {
         console.log("解除静音")
         this.mute = false
-        // this.$refs.rtc_media_player.volume = 1;
+        this.$refs.rtc_media_player.volume = 1;
+        this.$refs.rtc_media_player.play()
         this.startRecording()
       } else {
         console.log("静音")
@@ -907,6 +878,17 @@ export default {
       this.localSocket.onclose = (event) => {
         console.log('音频接收ws关闭~~~~~~', event);
       };
+      // let ip = process.env.VUE_APP_URL.split("//")[1].split(":")[0];
+      // this.otherSocket = new WebSocket('ws://' + ip + ':8008/to_termial_audio/' + this.currRobot);
+      // // 连接成功建立时触发
+      // this.otherSocket.onopen = () => {
+
+      // };
+
+      // // 接收到消息时触发
+      // this.otherSocket.onmessage = (event) => {
+      //   this.localSocket.send(event.data);
+      // }
     },
     initMediaWs() {
       let ip = process.env.VUE_APP_URL.split("//")[1].split(":")[0];
@@ -977,7 +959,9 @@ export default {
       navigator.mediaDevices.getUserMedia({
         audio: {
           sampleRate: 48000, // 采样率，单位 Hz
-          numberOfChannels: 1 // 声道数，1 为单声道，2 为立体声
+          numberOfChannels: 1, // 声道数，1 为单声道，2 为立体声
+          echoCancellation: true, // 开启回音消除
+          noiseSuppression: true, // 开启降噪
         }
       }).then((stream) => {
         that.rc = stream
@@ -1040,6 +1024,10 @@ export default {
     doStand() {
       this.changeControl("stand");
       this.changeControl("inPlace");
+    },
+    //头部回正
+    returnHead() {
+
     }
   },
 };
@@ -1131,6 +1119,119 @@ export default {
     font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
     font-weight: normal;
     color: $white;
+  }
+}
+
+.transverseRuler {
+  height: 4.2708vw;
+  position: absolute;
+  bottom: 6.25vw;
+  z-index: 9999;
+  display: flex;
+  align-items: flex-end;
+
+  .tick {
+    width: .2083vw;
+    height: .8333vw;
+    background: #FFFFFF;
+    opacity: 0.42;
+    position: absolute;
+  }
+
+  .longTick {
+    height: 1.25vw;
+    opacity: 0.7;
+  }
+
+  .positionVal {
+    position: absolute;
+    bottom: 2.6042vw;
+    font-weight: bold;
+    font-size: 1.6667vw;
+    color: #FFFFFF;
+    opacity: 0.7;
+    width: 2.6042vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .arrowSlider {
+    width: 1.25vw;
+    height: 1.5625vw;
+    background: #FFFFFF;
+    opacity: 0.7;
+    position: absolute;
+    // transition: all 0.01s ease;
+  }
+
+  .arrowSlider::before {
+    content: '';
+    position: absolute;
+    top: -1vw;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 0.625vw solid transparent;
+    border-right: 0.625vw solid transparent;
+    border-bottom: 1vw solid #FFFFFF;
+  }
+}
+
+.verticalRuler {
+  width: 4.8958vw;
+  height: 25.2083vw;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translate(0, -50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: row-reverse;
+
+  .tick {
+    width: .8333vw;
+    height: .2083vw;
+    background: #FFFFFF;
+    opacity: 0.42;
+    position: absolute;
+  }
+
+  .longTick {
+    width: 1.25vw;
+    opacity: 0.7;
+  }
+
+  .positionVal {
+    position: absolute;
+    right: 3.6vw;
+    font-weight: bold;
+    font-size: 1.6667vw;
+    color: #FFFFFF;
+    opacity: 0.7;
+    width: 2.6042vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .arrowSlider {
+    height: 1.25vw;
+    width: 1.5625vw;
+    background: #FFFFFF;
+    opacity: 0.7;
+    position: absolute;
+  }
+
+  .arrowSlider::before {
+    content: '';
+    position: absolute;
+    left: -1vw;
+    width: 0;
+    height: 0;
+    border-top: 0.625vw solid transparent;
+    border-bottom: 0.625vw solid transparent;
+    border-right: 1vw solid #FFFFFF;
   }
 }
 
