@@ -43,15 +43,17 @@
       <div class="transverseRuler fullWidth">
         <div class="tick" :class="{ longTick: index % 5 === 0 }" v-for="(tick, index) in 80" :key="index"
           :style="{ left: index * 1.25 + 'vw' }"></div>
-        <span class="positionVal" :style="{ left: 48.7 + pointX * 49.4271 + 'vw' }">{{ pointX }}</span>
+        <span class="positionVal" :style="{ left: 48.7 + pointX * 49.4271 + 'vw' }">{{ (pointX *
+          40).toFixed(2) }}°</span>
         <div class="arrowSlider" :style="{ left: 49.4271 + pointX * 49.4271 + 'vw' }"></div>
       </div>
 
       <div class="verticalRuler">
         <div class="tick" :class="{ longTick: index % 5 === 0 }" v-for="(tick, index) in 21" :key="index"
           :style="{ top: index * 1.25 + 'vw' }"></div>
-          <span class="positionVal" :style="{ top: (24.4 + pointY * 25.2083)/2 + 'vw' }">{{ pointY }}</span>
-          <div class="arrowSlider" :style="{ top: (25.2083 + pointY * 25.2083)/2 + 'vw' }"></div>
+        <span class="positionVal" :style="{ top: (24.4 + pointY * 25.2083) / 2 + 'vw' }">{{ (pointY *
+          -17.1887).toFixed(2) }}°</span>
+        <div class="arrowSlider" :style="{ top: (25.2083 + pointY * 25.2083) / 2 + 'vw' }"></div>
       </div>
 
       <div class="bottomBox flex-between fullWidth">
@@ -97,7 +99,7 @@
             <span>行走</span>
             <span style="flex-grow: 1;"></span>
           </div>
-          <div class="boxItem" :class="{ chosedItem: currentstatus == 'Walk', opacity03: currentstatus == 'Start' }"
+          <div class="boxItem" :class="{ chosedItem: reHead, opacity03: currentstatus == 'Start' }"
             @click="returnHead()">
             <img class="inImg" src="@/assets/images/icon_headReturn.png" />
             <span>回正</span>
@@ -161,7 +163,7 @@
             <div>{{ $t(item.name) }}{{ ' ( ' + item.keyCode + ' )' }}</div>
           </div>
           <div v-if="controlModel == 'face'" class="actionItem" :class="{ chosedAction: item.name == mode }"
-            v-for="(item, index) in faceList" :key="index" @click="showFace(item.name)">
+            v-for="(item, index) in faceList" :key="index" @click="showFace(item.val)">
             <img class="actionImg" :src="item.src" />
             <div>{{ item.name }}{{ ' ( ' + item.keyCode + ' )' }}</div>
           </div>
@@ -286,6 +288,8 @@ export default {
       leftMouseDown: false,
       rightMouseDown: false,
       mouseFlag: true,
+      reHead: false,
+      faceTimeout: null,
       inPlaceList: [
         {
           name: 'raiseHand',
@@ -334,29 +338,30 @@ export default {
       ],
       faceList: [
         {
-          name: '正常',
-          src: require('@/assets/images/icon_normal.png'),
-          keyCode: 'x'
-        }, {
           name: '高兴',
           src: require('@/assets/images/icon_happy.png'),
-          keyCode: 'c'
+          keyCode: 'c',
+          val: 'roundedHappy'
         }, {
           name: '难过',
           src: require('@/assets/images/icon_sad.png'),
-          keyCode: 'v'
+          keyCode: 'v',
+          val: 'roundedError'
         }, {
           name: '加载',
           src: require('@/assets/images/icon_loading.png'),
-          keyCode: 'b'
-        }, {
-          name: '输入中',
-          src: require('@/assets/images/icon_input.png'),
-          keyCode: 'n'
+          keyCode: 'b',
+          val: 'roundedLoading'
         }, {
           name: '输出',
+          src: require('@/assets/images/icon_input.png'),
+          keyCode: 'n',
+          val: 'roundedOutput'
+        }, {
+          name: '输入中',
           src: require('@/assets/images/icon_output.png'),
-          keyCode: 'm'
+          keyCode: 'm',
+          val: 'roundedInput'
         }
       ]
     };
@@ -491,12 +496,14 @@ export default {
         if (currPointX > 1) currPointX = 1
         if (currPointY > 1) currPointY = 1
         if (currPointY < -1) currPointY = -1
-        console.log('横向', currPointX.toFixed(2), '竖向', currPointY.toFixed(2))
-        this.pointX = currPointX.toFixed(2)
-        this.pointY = currPointY.toFixed(2)
+        // console.log('横向', this.lastX, '竖向', this.pointX)
         let yaw = currPointX * 40;
         let pitch = currPointY * -17.1887;
-        if (this.leftMouseDown) this.operateHead(pitch, yaw);
+        if (this.leftMouseDown) {
+          this.pointX = currPointX.toFixed(2)
+          this.pointY = currPointY.toFixed(2)
+          this.operateHead(pitch, yaw);
+        }
         //转向移动
         // console.log(this.currentstatus, this.ySpeed)
         if (this.rightMouseDown && this.currentstatus == "Walk" && this.ySpeed == 0) {
@@ -592,6 +599,7 @@ export default {
       if (event.keyCode == 57) this.stop();
       if (event.keyCode == 8) this.routerReturn()
       if (event.keyCode == 17) this.doSquat(-0.1)
+      if (event.keyCode == 49) this.returnHead()
       if (event.keyCode == 32) {
         this.doStand();
       }
@@ -796,8 +804,24 @@ export default {
         this.robotWs.robot.send(JSON.stringify(data));
       }
     },
-    async showFace() {
-
+    async showFace(e) {
+      clearTimeout(this.faceTimeout)
+      let data = {
+        "command": "emotion",
+        "data": {
+          "emotion": e
+        }
+      }
+      this.robotWs.robot.send(JSON.stringify(data));
+      this.faceTimeout = setTimeout(() => {
+        let data = {
+          "command": "emotion",
+          "data": {
+            "emotion": 'roundedNormal'
+          }
+        }
+        this.robotWs.robot.send(JSON.stringify(data));
+      }, 10000);
     },
     openCamera() {
       this.camera = !this.camera;
@@ -995,16 +1019,15 @@ export default {
       // if (this.mediaRecorder) {
       //   this.mediaRecorder.stop();
       // }
-      const audioTrack = this.rc?.getAudioTracks()[0];
-      if (audioTrack) {
-        audioTrack.stop();
-      }
+      
+      // const audioTrack = this.rc?.getAudioTracks()[0];
+      // if (audioTrack) {
+      //   audioTrack.stop();
+      // }
       if (this.rc) {
         this.rc = null
-        this.audioContext.close()
+        // this.audioContext.close()
         this.audioContext = null
-        //停止websocket连接
-        // this.socket.close()
       }
     },
     routerReturn() {
@@ -1027,7 +1050,13 @@ export default {
     },
     //头部回正
     returnHead() {
-
+      this.reHead = true
+      setTimeout(() => {
+        this.reHead = false
+      }, 100);
+      this.pointX = 0
+      this.pointY = 0
+      this.operateHead(0, 0);
     }
   },
 };
