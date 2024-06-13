@@ -586,6 +586,15 @@ export default {
       }
       const inPlaceInfo = inPlaceKeys[event.keyCode];
       if (inPlaceInfo && this.controlModel == 'inPlace') this.choseMode(inPlaceInfo.value);
+      const faceKeys = {
+        67: { key: "c", value: "roundedHappy" },
+        86: { key: "v", value: "roundedError" },
+        66: { key: "b", value: "roundedLoading" },
+        78: { key: "n", value: "roundedOutput" },
+        77: { key: "m", value: "roundedInput" },
+      }
+      const faceInfo = faceKeys[event.keyCode];
+      if(faceInfo && this.controlModel == 'face') this.showFace(faceInfo.value);
       const graspingKeys = {
         74: { key: "j", value: "openHand" },
         75: { key: "k", value: "grasp" },
@@ -1020,13 +1029,13 @@ export default {
       //   this.mediaRecorder.stop();
       // }
       
-      // const audioTrack = this.rc?.getAudioTracks()[0];
-      // if (audioTrack) {
-      //   audioTrack.stop();
-      // }
+      const audioTrack = this.rc?.getAudioTracks()[0];
+      if (audioTrack) {
+        audioTrack.stop();
+      }
       if (this.rc) {
         this.rc = null
-        // this.audioContext.close()
+        this.audioContext.close()
         this.audioContext = null
       }
     },
