@@ -44,7 +44,7 @@
         <div class="tick" :class="{ longTick: index % 5 === 0 }" v-for="(tick, index) in 80" :key="index"
           :style="{ left: index * 1.25 + 'vw' }"></div>
         <span class="positionVal" :style="{ left: 48.7 + pointX * 49.4271 + 'vw' }">{{ (pointX *
-          40).toFixed(2) }}°</span>
+          40).toFixed(1) }}°</span>
         <div class="arrowSlider" :style="{ left: 49.4271 + pointX * 49.4271 + 'vw' }"></div>
       </div>
 
@@ -52,7 +52,7 @@
         <div class="tick" :class="{ longTick: index % 5 === 0 }" v-for="(tick, index) in 21" :key="index"
           :style="{ top: index * 1.25 + 'vw' }"></div>
         <span class="positionVal" :style="{ top: (24.4 + pointY * 25.2083) / 2 + 'vw' }">{{ (pointY *
-          -17.1887).toFixed(2) }}°</span>
+          -17.1887).toFixed(1) }}°</span>
         <div class="arrowSlider" :style="{ top: (25.2083 + pointY * 25.2083) / 2 + 'vw' }"></div>
       </div>
 
@@ -89,7 +89,7 @@
         </div>
         <div class="midBox flex-between">
           <div class="boxItem" :class="{ chosedItem: currentstatus == 'Stand', opacity03: currentstatus == 'Start' }"
-            @click="doStand()">
+            @click="changeControl('stand')">
             <img class="inImg" src="@/assets/images/icon_stand.png" />
             <span>站立</span>
             <span>Space</span>
@@ -265,7 +265,7 @@ export default {
       lastMessageReceivedTime: Date.now(),
       wsInterval: null,
       reconnectWs: false,
-      currentstatus: "Stand", //当前状态: Unknown,Start,Zero,Zero2Stand,Stand,Stand2Walk,Walk,Stop
+      currentstatus: "Start", //当前状态: Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
       lastX: 0,
       lastY: 0,
       pointX: 0,
@@ -395,9 +395,54 @@ export default {
     window.addEventListener('contextmenu', this.disableContextMenu);
     this.initMediaWs();
     this.createWsInterval();
+    this.getStates();
     this.$nextTick(() => {
-      // this.startPlay();
+      this.startPlay();
     });
+    this.$bus.$on('robotOnmessage', (data) => {
+      // Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
+      switch (data.data.states.fsmstatename.currentstatus) {
+        case 0:
+          this.currentstatus = 'Unknown'
+          break;
+        case 1:
+          this.currentstatus = 'Start'
+          break;
+        case 2:
+          this.currentstatus = 'Zero'
+          this.controlModel = ""
+          this.sideVisible = false;
+          break;
+        case 3:
+          this.currentstatus = 'Stand'
+          if (!this.controlModel) {
+            this.controlModel = 'inPlace'
+          }
+          this.changeControl(this.controlModel);
+          break;
+        case 4:
+          this.currentstatus = 'Walk'
+          break;
+        case 5:
+          this.currentstatus = 'Stop'
+          break;
+        case 6:
+          // this.currentstatus = 'Zero2Stand'
+          this.currentstatus = 'Stand'
+          if (!this.controlModel) {
+            this.controlModel = 'inPlace'
+          }
+          this.changeControl(this.controlModel);
+          break;
+        case 7:
+          // this.currentstatus = 'Stand2Walk'
+          this.currentstatus = 'Walk'
+          break;
+        default:
+          break;
+      }
+      console.log('robotOnmessage', this.currentstatus)
+    })
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.handleKeyDown);
@@ -406,6 +451,7 @@ export default {
     document.removeEventListener('mousedown', this.onMousedown);
     document.removeEventListener('mouseup', this.onMouseup);
     window.removeEventListener('contextmenu', this.disableContextMenu);
+    this.disableStates();
     if (this.mediaRecorder) {
       this.mediaRecorder.stop();
     }
@@ -421,6 +467,22 @@ export default {
     disableContextMenu(event) {
       event.preventDefault();
     },
+    getStates() {
+      let data = {
+        "command": "states",
+        "data": {
+          "frequency": 2
+        }
+      }
+      this.robotWs.robot.send(JSON.stringify(data));
+    },
+    disableStates() {
+      let data = {
+        "command": "disable_states",
+        "data": null
+      }
+      this.robotWs.robot.send(JSON.stringify(data));
+    },
     startPlay() {
       if (this.sdk) {
         this.sdk.close();
@@ -428,8 +490,8 @@ export default {
       this.sdk = new SrsRtcWhipWhepAsync();
       this.mediaVisible = true
       this.$refs.rtc_media_player.srcObject = this.sdk.stream
-      // var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=livestream'
-      var url = 'http://192.168.11.82:1985/rtc/v1/whep/?app=live&stream=livestream'
+      var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=livestream'
+      // var url = 'http://192.168.11.82:1985/rtc/v1/whep/?app=live&stream=livestream'
       this.sdk.play(url)
         .then((session) => {
           console.log('成功拉流:', session);
@@ -474,13 +536,12 @@ export default {
     //鼠标移动
     onMouseMove(event) {
       // event.preventDefault();
-      // if (this.currentstatus == "Walk") return
       if (this.mouseFlag) {//节流，每10ms执行一次
         this.mouseFunc(event);
         this.mouseFlag = false;
         setTimeout(() => {
           this.mouseFlag = true;
-        }, 10);
+        }, 15);
       }
     },
     mouseFunc(event) {
@@ -505,7 +566,6 @@ export default {
           this.operateHead(pitch, yaw);
         }
         //转向移动
-        // console.log(this.currentstatus, this.ySpeed)
         if (this.rightMouseDown && this.currentstatus == "Walk" && this.ySpeed == 0) {
           let xMove = currPointX * 2;
           if (xMove > 1) xMove = 1;
@@ -520,11 +580,17 @@ export default {
       }
     },
     onMousedown(event) {
-      this.$refs.pageController.style.cursor = 'none';
-      if (event.button == 0 && event.buttons == 1) {
-        this.leftMouseDown = true;
-      } else if (event.button == 2 && event.buttons == 2) {
-        this.rightMouseDown = true;
+      if (event.target.matches('.inImg') || event.target.matches('span')) {
+        // 阻止事件的进一步传播
+        console.log('mousedown----nonono', event)
+      } else {
+        console.log('mousedown', event)
+        this.$refs.pageController.style.cursor = 'none';
+        if (event.button == 0 && event.buttons == 1) {
+          this.leftMouseDown = true;
+        } else if (event.button == 2 && event.buttons == 2) {
+          this.rightMouseDown = true;
+        }
       }
     },
     onMouseup(event) {
@@ -594,7 +660,7 @@ export default {
         77: { key: "m", value: "roundedInput" },
       }
       const faceInfo = faceKeys[event.keyCode];
-      if(faceInfo && this.controlModel == 'face') this.showFace(faceInfo.value);
+      if (faceInfo && this.controlModel == 'face') this.showFace(faceInfo.value);
       const graspingKeys = {
         74: { key: "j", value: "openHand" },
         75: { key: "k", value: "grasp" },
@@ -610,7 +676,7 @@ export default {
       if (event.keyCode == 17) this.doSquat(-0.1)
       if (event.keyCode == 49) this.returnHead()
       if (event.keyCode == 32) {
-        this.doStand();
+        this.changeControl("stand");
       }
       if (event.keyCode == 192) {
         if (this.mute) {
@@ -642,7 +708,6 @@ export default {
         this.velocity = 0;
         this.ySpeed = 0;
         this.changeControl("stand");
-        this.changeControl("inPlace");
       }
       if (event.keyCode == 17) this.doSquat(0)
       // if (event.keyCode == 18) this.$refs.pageController.style.cursor = 'none';
@@ -653,10 +718,6 @@ export default {
     doCalibration() {
       this.robotWs.robot.send(JSON.stringify({ "command": 'zero' }));
       this.mode = "initial";
-      setTimeout(() => {
-        this.mode = "";
-        this.currentstatus = "Zero";
-      }, 6000);
     },
     //紧急停止
     stop() {
@@ -715,6 +776,7 @@ export default {
     },
     //切换当前控制模式
     changeControl(e) {
+      console.log('changeControl', e, this.currentstatus)
       if (e == "stand" && this.currentstatus != 'Start') {
         this.robotWs.robot.send(JSON.stringify({ "command": 'stand' }));
         setTimeout(() => {
@@ -723,12 +785,12 @@ export default {
         setTimeout(() => {
           this.robotWs.robot.send(JSON.stringify({ "command": 'stand' }));
         }, 400);
-        this.currentstatus = "Stand";
+        // this.currentstatus = "Stand";
       } else if (e == "gait" && this.currentstatus == 'Stand') {
-        this.currentstatus = 'Walk'
+        // this.currentstatus = 'Walk'
         this.controlModel = '';
         this.sideVisible = false;
-      } else if (["inPlace", "grasping", "face", "ai", "setup"].includes(e) && this.currentstatus == 'Stand') {
+      } else if (["inPlace", "grasping", "face", "ai", "setup"].includes(e)) {
         // if (this.sideVisible) {
         //   this.controlModel = '';
         //   this.sideVisible = false;
@@ -1028,7 +1090,7 @@ export default {
       // if (this.mediaRecorder) {
       //   this.mediaRecorder.stop();
       // }
-      
+
       const audioTrack = this.rc?.getAudioTracks()[0];
       if (audioTrack) {
         audioTrack.stop();
@@ -1052,10 +1114,6 @@ export default {
         }
       }
       this.robotWs.robot.send(JSON.stringify(data));
-    },
-    doStand() {
-      this.changeControl("stand");
-      this.changeControl("inPlace");
     },
     //头部回正
     returnHead() {
@@ -1348,7 +1406,7 @@ export default {
   top: 4.4444vw;
   right: 0;
   z-index: 9999;
-  animation: slideInFromRight 2s ease-out forwards;
+  animation: slideInFromRight 1s ease-out forwards;
 
   .title {
     width: 16.9792vw;
