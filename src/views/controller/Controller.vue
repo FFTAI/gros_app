@@ -445,7 +445,35 @@ export default {
       console.log("robotOnmessage~~~~~~~~~~", data.data);
       if (data.data) {
         this.doAction = data.data.upper_action;
-        this.currentstatus = data.data.states.fsmstatename.currentstatus;
+        // Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
+        switch (data.data.states.fsmstatename.currentstatus) {
+          case 0:
+            this.currentstatus = "Unknown";
+            break;
+          case 1:
+            this.currentstatus = "Start";
+            break;
+          case 2:
+            this.currentstatus = "Zero";
+            break;
+          case 3:
+            this.currentstatus = "Stand";
+            break;
+          case 4:
+            this.currentstatus = "Walk";
+            break;
+          case 5:
+            this.currentstatus = "Stop";
+            break;
+          case 6:
+            this.currentstatus = 'Zero2Stand'
+            break;
+          case 7:
+            this.currentstatus = 'Stand2Walk'
+            break;
+          default:
+            break;
+        }
       } else {
         this.currentstatus = "";
       }
