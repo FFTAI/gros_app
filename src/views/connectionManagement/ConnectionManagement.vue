@@ -59,27 +59,35 @@ export default {
   },
   methods: {
     initRobotList() {
+      // http
+      // .get("/list")
+      // .then((response) => {
+      //   console.log(response);
+      //   this.robotList = response.data.data
+      //   for (let i = 0; i < this.robotList.length; i += 4) {
+      //     if (i == 0) {
+      //       this.carouselList.push(this.robotList.slice(0, 4));
+      //     } else {
+      //       this.carouselList.push(this.robotList.slice(i - 1, i + 4));
+      //     }
+      //   }
+      //   console.log(this.carouselList);
+      // })
+      // .catch((error) => {
+      //   console.error("Error:", error);
+      // });
       http
-      .get("/list")
-      .then((response) => {
-        console.log(response);
-        this.robotList = response.data.data
-        for (let i = 0; i < this.robotList.length; i += 4) {
-          if (i == 0) {
-            this.carouselList.push(this.robotList.slice(0, 4));
-          } else {
-            this.carouselList.push(this.robotList.slice(i - 1, i + 4));
-          }
-        }
-        console.log(this.carouselList);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+        .get("/query", { params: { robotName: 'Jaxaxx1' } })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
     },
     choseCard(e) {
       this.$store.commit("setCurrRobot", e);
-      this.$bus.$emit("initWs",e);
+      this.$bus.$emit("initWs", e);
       this.$router.push({
         name: "loading",
       });

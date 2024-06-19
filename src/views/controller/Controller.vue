@@ -288,6 +288,7 @@ export default {
       leftMouseDown: false,
       rightMouseDown: false,
       mouseFlag: true,
+      keyFlag: true,
       reHead: false,
       faceTimeout: null,
       inPlaceList: [
@@ -536,12 +537,12 @@ export default {
     //鼠标移动
     onMouseMove(event) {
       // event.preventDefault();
-      if (this.mouseFlag) {//节流，每10ms执行一次
+      if (this.mouseFlag) {//节流，每秒发送30次
         this.mouseFunc(event);
         this.mouseFlag = false;
         setTimeout(() => {
           this.mouseFlag = true;
-        }, 15);
+        }, 33);
       }
     },
     mouseFunc(event) {
@@ -620,14 +621,20 @@ export default {
       const walkInfo = walkKeys[event.keyCode];
       if (walkInfo) {
         console.log('walkInfo', walkInfo)
-        this.changeControl('gait')
-        if (event.keyCode == 87 || event.keyCode == 83) {
-          this.velocity = walkInfo.velocity * this.speed / 6.25;
-          this.operateWalk(this.direction * -45, this.velocity, 0);
-        }
-        if (event.keyCode == 65 || event.keyCode == 68) {
-          this.ySpeed = walkInfo.velocity * this.speed / -10;
-          this.operateWalk(this.direction * -45, 0, this.ySpeed);
+        if (this.keyFlag) {
+          this.changeControl('gait')
+          if (event.keyCode == 87 || event.keyCode == 83) {
+            this.velocity = walkInfo.velocity * this.speed / 6.25;
+            this.operateWalk(this.direction * -45, this.velocity, 0);
+          }
+          if (event.keyCode == 65 || event.keyCode == 68) {
+            this.ySpeed = walkInfo.velocity * this.speed / -10;
+            this.operateWalk(this.direction * -45, 0, this.ySpeed);
+          }
+          this.keyFlag = false;
+          setTimeout(() => {
+            this.keyFlag = true;
+          }, 500);
         }
       }
       const controlKeys = {
@@ -734,6 +741,15 @@ export default {
     },
     //操控行走
     operateWalk(direction, xSpeed, ySpeed) {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      const milliseconds = String(now.getMilliseconds()).padStart(3, '0');
+      const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`
       try {
         let data = {
           "command": 'walk',
@@ -741,6 +757,7 @@ export default {
             angle: direction,
             x_speed: xSpeed,
             y_speed: ySpeed, //左正右负
+            time: formattedDate,
           }
         }
         this.robotWs.robot.send(JSON.stringify(data));
@@ -751,6 +768,15 @@ export default {
     //操控头部
     operateHead(pitch, yaw) {
       // console.log("头部。。。。。", pitch, yaw);
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      const milliseconds = String(now.getMilliseconds()).padStart(3, '0');
+      const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`
       try {
         let data = {
           "command": 'head',
@@ -758,8 +784,10 @@ export default {
             roll: 0,
             pitch: pitch,
             yaw: yaw,
+            time: formattedDate,
           }
         }
+        // console.log('发送时间',formattedDate)
         this.robotWs.robot.send(JSON.stringify(data));
       } catch (error) {
         console.log("Head错误。。。。。。", error);
@@ -781,10 +809,7 @@ export default {
         this.robotWs.robot.send(JSON.stringify({ "command": 'stand' }));
         setTimeout(() => {
           this.robotWs.robot.send(JSON.stringify({ "command": 'stand' }));
-        }, 200);
-        setTimeout(() => {
-          this.robotWs.robot.send(JSON.stringify({ "command": 'stand' }));
-        }, 400);
+        }, 300);
         // this.currentstatus = "Stand";
       } else if (e == "gait" && this.currentstatus == 'Stand') {
         // this.currentstatus = 'Walk'
