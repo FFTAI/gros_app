@@ -10,11 +10,6 @@ const routes = [
     component: () => import("../views/startUp/StartUp.vue"),
   },
   {
-    path: "/login",
-    name: "login",
-    component: () => import("../views/login/Login.vue"),
-  },
-  {
     path: "/loading",
     name: "loading",
     component: () => import("../views/loading/Loading.vue"),
@@ -23,11 +18,6 @@ const routes = [
     path: "/controller",
     name: "controller",
     component: () => import("../views/controller/Controller.vue"),
-  },
-  {
-    path: "/robotStartup",
-    name: "robotStartup",
-    component: () => import("../views/robotStartup/RobotStartup.vue"),
   },
   {
     path: "/connectionManagement",

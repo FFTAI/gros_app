@@ -11,6 +11,12 @@
         <el-carousel indicator-position="none" :autoplay="false" arrow="nerver" height="28.125vw">
           <el-carousel-item v-for="(list, i) in carouselList" :key="i">
             <div class="carouselItem">
+              <div class="addCard flex-center" @click="addRobot()">
+                <div class="add flex-center">
+                  <img class="addImg" src="@/assets/images/icon_add.png" />
+                </div>
+                <div class="addContent">添加机器人</div>
+              </div>
               <!-- 机器人列表 -->
               <div class="robotCard uncheckedCard" v-for="(item, index) in list" :key="index" @click="choseCard(item)">
                 <div class="cardTitle common-font flex-between">
@@ -39,6 +45,21 @@
         </el-carousel>
       </div>
     </div>
+    <div class="wrapper flex-center" v-if="addRobotVisible">
+      <div class="prompt vertically-centered common-font">
+        <div class="promptContent">
+          <div class="promptTxt">
+            <el-input v-model="robotName" placeholder="输入需绑定机器人名"></el-input>
+          </div>
+        </div>
+        <div class="btnBox flex-between">
+          <div class="btn blue" @click="promptCancel()">{{ $t("cancel") }}</div>
+          <div class="btn white01-bkg" @click="commitRobot()">
+            {{ $t("confirm") }}
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -51,6 +72,8 @@ export default {
     return {
       robotList: [],
       carouselList: [],
+      addRobotVisible: false,
+      robotName: ''
     };
   },
   created() { },
@@ -60,30 +83,37 @@ export default {
   methods: {
     initRobotList() {
       // http
-      // .get("/list")
-      // .then((response) => {
-      //   console.log(response);
-      //   this.robotList = response.data.data
-      //   for (let i = 0; i < this.robotList.length; i += 4) {
-      //     if (i == 0) {
-      //       this.carouselList.push(this.robotList.slice(0, 4));
-      //     } else {
-      //       this.carouselList.push(this.robotList.slice(i - 1, i + 4));
+      //   .get("/list")
+      //   .then((response) => {
+      //     console.log(response);
+      //     this.robotList = response.data.data
+      //     for (let i = 0; i < this.robotList.length; i += 4) {
+      //       if (i == 0) {
+      //         this.carouselList.push(this.robotList.slice(0, 4));
+      //       } else {
+      //         this.carouselList.push(this.robotList.slice(i - 1, i + 4));
+      //       }
       //     }
-      //   }
-      //   console.log(this.carouselList);
-      // })
-      // .catch((error) => {
-      //   console.error("Error:", error);
-      // });
-      http
-        .get("/query", { params: { robotName: 'Jaxaxx1' } })
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      //     console.log(this.carouselList);
+      //   })
+      //   .catch((error) => {
+      //     console.error("Error:", error);
+      //   });
+
+      // localStorage.removeItem('robotList')
+      this.robotList = JSON.parse(localStorage.getItem('robotList'))
+      console.log(this.robotList)
+      if (this.robotList == null) this.robotList = []
+      for (let i = 0; i < this.robotList.length; i += 4) {
+        if (i == 0) {
+          this.carouselList.push(this.robotList.slice(0, 4));
+        } else {
+          this.carouselList.push(this.robotList.slice(i - 1, i + 4));
+        }
+      }
+    },
+    addRobot() {
+      this.addRobotVisible = true;
     },
     choseCard(e) {
       this.$store.commit("setCurrRobot", e);
@@ -92,6 +122,27 @@ export default {
         name: "loading",
       });
     },
+    promptCancel() {
+      this.addRobotVisible = false;
+    },
+    commitRobot() {
+      http
+        .get("/query", { params: { robotName: this.robotName } })
+        .then((response) => {
+          if (response.data.data) {
+            console.log(this.robotList)
+            this.robotList.push(this.robotName)
+            console.log(this.robotList)
+            localStorage.setItem('robotList', JSON.stringify(this.robotList))
+            this.addRobotVisible = false;
+          } else {
+            this.$message.error('该机器人名不存在');
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
   },
 };
 </script>
@@ -413,5 +464,62 @@ export default {
   .cardPointSr {
     margin-top: 2.0833vw;
   }
+}
+
+//弹框
+.prompt {
+  z-index: 999;
+  width: 35.7083vw;
+  height: 20.9167vw;
+  background-image: url("../../assets/images/image_card.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  font-size: $size-41;
+  color: $white;
+  display: flex;
+  justify-content: center;
+}
+
+.title {
+  position: absolute;
+  top: 1.7917vw;
+}
+
+.promptContent {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  bottom: 11.2083vw;
+
+  .promptTxt {
+    font-size: $size-35;
+    display: inline-block;
+    margin: auto;
+  }
+}
+
+.warningIcon {
+  width: 4.9167vw;
+  height: 4.5417vw;
+  margin-right: $size-35;
+}
+
+.btnBox {
+  width: 27.0833vw;
+  font-size: 1.7083vw;
+  position: absolute;
+  bottom: 2.7083vw;
+}
+
+.btn {
+  width: 12.3333vw;
+  height: 4.1667vw;
+  border-radius: 2.2083vw;
+  line-height: 4.1667vw;
+  text-align: center;
+}
+
+.blue {
+  background: $base-bkg;
 }
 </style>
