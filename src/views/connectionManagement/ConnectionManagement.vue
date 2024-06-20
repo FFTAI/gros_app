@@ -36,7 +36,7 @@
                 <div class="cardDivider"></div>
                 <div class="cardContent flex-center">
                   <img style="width: 6.1849vw; height: 12.5vw" src="@/assets/images/image_robotModel.png" />
-                  <span style="font-size: 1.6667vw; margin-top: 1.25vw">{{ item }}</span>
+                  <span style="font-size: 1.6667vw; margin-top: 1.25vw">{{ item.name }}</span>
                   <span style="opacity: 0.5; margin-top: 0.625vw">GR-1</span>
                 </div>
               </div>
@@ -47,14 +47,15 @@
     </div>
     <div class="wrapper flex-center" v-if="addRobotVisible">
       <div class="prompt vertically-centered common-font">
-        <div class="promptContent">
-          <div class="promptTxt">
+        <div class="promptInputContent">
+          <span class="promtTitle">绑定机器人</span>
+          <div class="promptInput">
             <el-input v-model="robotName" placeholder="输入需绑定机器人名"></el-input>
           </div>
         </div>
         <div class="btnBox flex-between">
-          <div class="btn blue" @click="promptCancel()">{{ $t("cancel") }}</div>
-          <div class="btn white01-bkg" @click="commitRobot()">
+          <div class="btn white01-bkg" @click="promptCancel()">{{ $t("cancel") }}</div>
+          <div class="btn blue" @click="commitRobot()">
             {{ $t("confirm") }}
           </div>
         </div>
@@ -79,9 +80,10 @@ export default {
   created() { },
   mounted() {
     this.initRobotList();
+    // localStorage.setItem('robotList', JSON.stringify([{online:true,name:'Gr2'},{online:true,name:'Gr3'}]))
   },
   methods: {
-    initRobotList() {
+    async initRobotList() {
       // http
       //   .get("/list")
       //   .then((response) => {
@@ -103,12 +105,27 @@ export default {
       // localStorage.removeItem('robotList')
       this.robotList = JSON.parse(localStorage.getItem('robotList'))
       console.log(this.robotList)
-      if (this.robotList == null) this.robotList = []
-      for (let i = 0; i < this.robotList.length; i += 4) {
+      if (this.robotList == null) {
+        this.robotList = []
+        this.carouselList.push({})
+      } else {
+        const urls = this.robotList;
+        const promises = urls.map(url => http.get("/query", { params: { robotName: url.name } }));
+        Promise.all(promises)
+          .then(results => {
+            console.log('Promise',results);
+          })
+          .catch(errors => {
+            console.error('Errors occurred:', errors);
+          });
+      }
+      for (let i = 0; i < this.robotList.length; i += 3) {
         if (i == 0) {
-          this.carouselList.push(this.robotList.slice(0, 4));
+          this.carouselList.push({})
+          this.carouselList.push(this.robotList.slice(0, 3));
         } else {
-          this.carouselList.push(this.robotList.slice(i - 1, i + 4));
+          this.carouselList.push({})
+          this.carouselList.push(this.robotList.slice(i - 1, i + 3));
         }
       }
     },
@@ -130,9 +147,7 @@ export default {
         .get("/query", { params: { robotName: this.robotName } })
         .then((response) => {
           if (response.data.data) {
-            console.log(this.robotList)
-            this.robotList.push(this.robotName)
-            console.log(this.robotList)
+            this.robotList.push({ online: true, name: this.robotName })
             localStorage.setItem('robotList', JSON.stringify(this.robotList))
             this.addRobotVisible = false;
           } else {
@@ -480,30 +495,6 @@ export default {
   justify-content: center;
 }
 
-.title {
-  position: absolute;
-  top: 1.7917vw;
-}
-
-.promptContent {
-  display: flex;
-  align-items: center;
-  position: absolute;
-  bottom: 11.2083vw;
-
-  .promptTxt {
-    font-size: $size-35;
-    display: inline-block;
-    margin: auto;
-  }
-}
-
-.warningIcon {
-  width: 4.9167vw;
-  height: 4.5417vw;
-  margin-right: $size-35;
-}
-
 .btnBox {
   width: 27.0833vw;
   font-size: 1.7083vw;
@@ -521,5 +512,40 @@ export default {
 
 .blue {
   background: $base-bkg;
+}
+
+.promptInputContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .promtTitle {
+    font-family: AlibabaPuHuiTiM;
+    font-size: 1.6667vw;
+    color: #ffffff;
+    font-style: normal;
+    margin-top: 1.7917vw;
+  }
+
+  .promptInput {
+    width: 15.5833vw;
+    height: 2.3333vw;
+    padding: 1.2917vw 5.7083vw 1.2917vw 5.7917vw;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0.25vw;
+    margin-top: 1.9583vw;
+  }
+}
+
+.promptInputContent ::v-deep .el-input {
+  font-size: 1.4583vw;
+}
+
+.promptInputContent ::v-deep .el-input .el-input__inner {
+  height: 2.3333vw;
+  padding: 0;
+  background-color: rgba(255, 255, 255, 0);
+  color: #fff;
+  border: none;
 }
 </style>
