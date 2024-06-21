@@ -149,7 +149,7 @@ export default {
       http
         .get("/query", { params: { robotName: this.robotName } })
         .then((response) => {
-          if (response.data.data) {
+          if (response.data.data.status) {
             this.robotList.push({ online: true, name: this.robotName })
             localStorage.setItem('robotList', JSON.stringify(this.robotList))
             this.addRobotVisible = false;
