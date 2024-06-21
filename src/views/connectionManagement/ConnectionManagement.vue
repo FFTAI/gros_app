@@ -18,19 +18,20 @@
                 <div class="addContent">添加机器人</div>
               </div>
               <!-- 机器人列表 -->
-              <div class="robotCard uncheckedCard" v-for="(item, index) in list" :key="index" @click="choseCard(item)">
+              <div class="robotCard uncheckedCard" :class="{ checkedCard: item.online }" v-for="(item, index) in list"
+                :key="index" @click="choseCard(item)">
                 <div class="cardTitle common-font flex-between">
-                  <div v-if="true" class="flex-center">
+                  <div v-if="item.online" class="flex-center">
                     <img style="
                         width: 1.5417vw;
                         height: 1.125vw;
                         margin-right: 0.375vw;
                       " src="@/assets/images/icon_Wi-Fi.png" />
-                    <span>Wi-Fi连接</span>
+                    <span v-if="item.online">Wi-Fi连接</span>
                   </div>
                   <div v-else class="flex-center">
                     <div class="redPoint"></div>
-                    <span style="color: #ff6656">{{ $t("notConnected") }}</span>
+                    <span style="color: #FF6656;">未连接</span>
                   </div>
                 </div>
                 <div class="cardDivider"></div>
@@ -104,35 +105,37 @@ export default {
 
       // localStorage.removeItem('robotList')
       this.robotList = JSON.parse(localStorage.getItem('robotList'))
-      console.log(this.robotList)
       if (this.robotList == null) {
         this.robotList = []
         this.carouselList.push({})
       } else {
-        const urls = this.robotList;
-        const promises = urls.map(url => http.get("/query", { params: { robotName: url.name } }));
+        const names = this.robotList;
+        const promises = names.map(url => http.get("/query", { params: { robotName: url.name } }));
         Promise.all(promises)
           .then(results => {
-            console.log('Promise',results);
+            this.robotList = []
+            results.forEach((item) => {
+              this.robotList.push({ online: item.data.data.status, name: item.data.data.robotName })
+            })
+            for (let i = 0; i < this.robotList.length; i += 3) {
+              if (i == 0) {
+                this.carouselList.push(this.robotList.slice(0, 3));
+              } else {
+                this.carouselList.push({})
+                this.carouselList.push(this.robotList.slice(i - 1, i + 3));
+              }
+            }
           })
           .catch(errors => {
             console.error('Errors occurred:', errors);
           });
-      }
-      for (let i = 0; i < this.robotList.length; i += 3) {
-        if (i == 0) {
-          this.carouselList.push({})
-          this.carouselList.push(this.robotList.slice(0, 3));
-        } else {
-          this.carouselList.push({})
-          this.carouselList.push(this.robotList.slice(i - 1, i + 3));
-        }
       }
     },
     addRobot() {
       this.addRobotVisible = true;
     },
     choseCard(e) {
+      if (!e.online) return
       this.$store.commit("setCurrRobot", e);
       this.$bus.$emit("initWs", e);
       this.$router.push({
@@ -265,7 +268,7 @@ export default {
   }
 
   .robotCard {
-    width: 21.8229vw;
+    width: 21vw;
     height: 27.0313vw;
     border-radius: 0.8333vw;
     color: #ffffff;
@@ -279,7 +282,7 @@ export default {
     }
 
     .cardDivider {
-      width: 21.875vw;
+      width: 21vw;
       height: 0.0521vw;
       background: #44d8fb;
       opacity: 0.3;
