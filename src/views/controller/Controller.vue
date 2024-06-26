@@ -66,14 +66,14 @@
             <img class="inImg" src="@/assets/images/icon_mute.png" />
             <span>解除静音</span>
           </div>
-          <div class="boxItem" style="justify-content: space-around;" v-if="!cameraOff" @click="cameraControl('on')">
+          <div class="boxItem" style="justify-content: space-around;" v-if="!cameraOff" @click="cameraControl()">
             <img class="inImg" src="@/assets/images/icon_video.png" />
-            <span>开始视频</span>
+            <span>镜头切换</span>
           </div>
-          <div class="boxItem" style="justify-content: space-around;" v-else @click="cameraControl('off')">
+          <!-- <div class="boxItem" style="justify-content: space-around;" v-else @click="cameraControl('off')">
             <img class="inImg" src="@/assets/images/icon_videoOff.png" />
             <span>停止视频</span>
-          </div>
+          </div> -->
           <div class="boxItem" style="justify-content: space-around;" @click="takeScreenshot()">
             <img class="inImg" src="@/assets/images/icon_photo.png" />
             <span>拍照</span>
@@ -211,7 +211,7 @@
         <webrtc :stream="stream" @ready="onWebRTCReady" />
       </div>
     </div> -->
-    <!-- <robotCard></robotCard> -->
+    <robotCard :robotName="robotName"></robotCard>
   </div>
 </template>
 <script>
@@ -222,20 +222,6 @@ export default {
   components: { robotCard },
   computed: {
     ...mapState(["gamepadConnected", "connected", "currRobot"]),
-    headBoxWidth() {
-      let style = { width: "9.2083vw" };
-      if (this.$i18n.locale == "en") {
-        style.width = "17.6vw";
-      }
-      return style;
-    },
-    dividerWidth() {
-      let style = { width: "9.8333vw" };
-      if (this.$i18n.locale == "en") {
-        style.width = "18.4583vw";
-      }
-      return style;
-    },
     titleName() {
       if (this.controlModel == 'inPlace') return '原地运动'
       if (this.controlModel == 'grasping') return '末端抓取'
@@ -250,22 +236,16 @@ export default {
       buttons: "", //当前按键
       screenWidth: document.body.clientWidth, //当前屏幕宽度
       speed: 1, //当前速度档位 1-3
-      current_speed: 0, //当前速度，默认0
       controlModel: "", //当前运动 gait:步态 inPlace:原地 grasping:末端抓取
       mode: "", //当前运动模式
-      headBoxVisible: false, //模式选择框显隐
-      camera: true, //是否开启视频
       velocity: 0,
       ySpeed: 0,
       direction: 0,
-      interval: null,
-      intervalCount: 0,
       promptVisible: false,
       promptVal: "",
       lastMessageReceivedTime: Date.now(),
       wsInterval: null,
-      reconnectWs: false,
-      currentstatus: "Start", //当前状态: Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
+      currentstatus: "Zero", //当前状态: Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
       lastX: 0,
       lastY: 0,
       pointX: 0,
@@ -276,13 +256,11 @@ export default {
       recording: false,
       currentSetup: "motion",
       socket: null,
-      chunks: [],
       mediaRecorder: null,
       audioContext: null,
       rc: null,
       sdk: null,
       mediaVisible: false,
-      audioUrl: '',
       currentAudio: '',
       localSocket: null,
       leftMouseDown: false,
@@ -291,6 +269,7 @@ export default {
       keyFlag: true,
       reHead: false,
       faceTimeout: null,
+      robotName: "",
       inPlaceList: [
         {
           name: 'raiseHand',
@@ -364,7 +343,10 @@ export default {
           keyCode: 'm',
           val: 'roundedInput'
         }
-      ]
+      ],
+      cameraId: 0,
+      cameraList: [],
+      changeCamera: true
     };
   },
   created() {
@@ -382,6 +364,7 @@ export default {
   },
   async mounted() {
     // this.$refs.pageController.style.cursor = 'none';
+    this.robotName = this.$route.query.robotName;
     this.videoContainer = this.$refs.videoContainer;
     window.onresize = () => {
       return (() => {
@@ -394,53 +377,59 @@ export default {
     document.addEventListener('mousedown', this.onMousedown);
     document.addEventListener('mouseup', this.onMouseup);
     window.addEventListener('contextmenu', this.disableContextMenu);
-    this.initMediaWs();
+    this.getCameraList();
+    // this.initMediaWs();
     this.createWsInterval();
-    this.getStates();
+    // this.getStates();
     this.$nextTick(() => {
       this.startPlay();
     });
     this.$bus.$on('robotOnmessage', (data) => {
       // Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
-      switch (data.data.states.fsmstatename.currentstatus) {
-        case 0:
-          this.currentstatus = 'Unknown'
-          break;
-        case 1:
-          this.currentstatus = 'Start'
-          break;
-        case 2:
-          this.currentstatus = 'Zero'
-          this.controlModel = ""
-          this.sideVisible = false;
-          break;
-        case 3:
-          this.currentstatus = 'Stand'
-          if (!this.controlModel) {
-            this.controlModel = 'inPlace'
-          }
-          this.changeControl(this.controlModel);
-          break;
-        case 4:
-          this.currentstatus = 'Walk'
-          break;
-        case 5:
-          this.currentstatus = 'Stop'
-          break;
-        case 6:
-          // this.currentstatus = 'Zero2Stand'
-          this.currentstatus = 'Stand'
-          if (!this.controlModel) {
-            this.controlModel = 'inPlace'
-          }
-          this.changeControl(this.controlModel);
-          break;
-        case 7:
-          // this.currentstatus = 'Stand2Walk'
-          this.currentstatus = 'Walk'
-          break;
-        default:
-          break;
+      console.log('robotOnmessage', data)
+      if (data.function == "list_camera") {
+        this.cameraList = data.data
+      } else {
+        switch (data.data.states.fsmstatename.currentstatus) {
+          case 0:
+            this.currentstatus = 'Unknown'
+            break;
+          case 1:
+            this.currentstatus = 'Start'
+            break;
+          case 2:
+            this.currentstatus = 'Zero'
+            this.controlModel = ""
+            this.sideVisible = false;
+            break;
+          case 3:
+            this.currentstatus = 'Stand'
+            if (!this.controlModel) {
+              this.controlModel = 'inPlace'
+            }
+            this.changeControl(this.controlModel);
+            break;
+          case 4:
+            this.currentstatus = 'Walk'
+            break;
+          case 5:
+            this.currentstatus = 'Stop'
+            break;
+          case 6:
+            // this.currentstatus = 'Zero2Stand'
+            this.currentstatus = 'Stand'
+            if (!this.controlModel) {
+              this.controlModel = 'inPlace'
+            }
+            this.changeControl(this.controlModel);
+            break;
+          case 7:
+            // this.currentstatus = 'Stand2Walk'
+            this.currentstatus = 'Walk'
+            break;
+          default:
+            break;
+        }
       }
       console.log('robotOnmessage', this.currentstatus)
     })
@@ -461,7 +450,6 @@ export default {
     }
   },
   destroyed() {
-    clearInterval(this.interval);
     clearInterval(this.wsInterval);
   },
   methods: {
@@ -491,11 +479,14 @@ export default {
       this.sdk = new SrsRtcWhipWhepAsync();
       this.mediaVisible = true
       this.$refs.rtc_media_player.srcObject = this.sdk.stream
-      var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=livestream'
-      // var url = 'http://192.168.11.82:1985/rtc/v1/whep/?app=live&stream=livestream'
+      // var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=livestream'
+      var url = 'http://192.168.11.82:1985/rtc/v1/whep/?app=live&stream=livestream'
       this.sdk.play(url)
         .then((session) => {
           console.log('成功拉流:', session);
+          setTimeout(() => {
+            this.changeCamera = true
+          }, 1500);
         })
         .catch((reason) => {
           console.error('错误拉流:', reason);
@@ -521,7 +512,7 @@ export default {
                 !this.robotWs.robot.ws ||
                 this.robotWs.robot.ws.readyState != 1
               ) {
-                this.$bus.$emit("initWs");
+                this.$bus.$emit("initWs", this.robotName);
               } else {
                 this.robotWs.robot.ws.close();
               }
@@ -919,9 +910,6 @@ export default {
         this.robotWs.robot.send(JSON.stringify(data));
       }, 10000);
     },
-    openCamera() {
-      this.camera = !this.camera;
-    },
     promptBoxOpen(e) {
       this.promptVal = e;
       this.promptVisible = !this.promptVisible;
@@ -960,8 +948,36 @@ export default {
         this.stopRecording()
       }
     },
-    cameraControl(e) {
-      this.cameraOff = !this.cameraOff
+    getCameraList() {
+      let data = {
+        "command": "list_camera",
+        "data": null
+      }
+      this.robotWs.robot.send(JSON.stringify(data));
+    },
+    cameraControl() {
+      // this.cameraOff = !this.cameraOff
+      if(!this.changeCamera) return
+      console.log('切换镜头~~~~~~~~~~~',this.cameraList,this.cameraId)
+      this.changeCamera = false
+      let cameraType = "Defalut"
+      for (let i = 0; i < this.cameraList.length; i++) {
+        if(this.cameraList[i] != "Defalut" && i == (this.cameraId + 1)){
+          cameraType = this.cameraList[i]
+        }
+      }
+      this.cameraId++
+      let data = {
+        "command": "start_camera",
+        "data": {
+          "camera": cameraType
+        }
+      }
+      this.robotWs.robot.send(JSON.stringify(data));
+      setTimeout(() => {
+        this.startPlay();
+      }, 1000);
+
     },
     //拍照(截屏)
     takeScreenshot() {
@@ -998,17 +1014,6 @@ export default {
       this.localSocket.onclose = (event) => {
         console.log('音频接收ws关闭~~~~~~', event);
       };
-      // let ip = process.env.VUE_APP_URL.split("//")[1].split(":")[0];
-      // this.otherSocket = new WebSocket('ws://' + ip + ':8008/to_termial_audio/' + this.currRobot);
-      // // 连接成功建立时触发
-      // this.otherSocket.onopen = () => {
-
-      // };
-
-      // // 接收到消息时触发
-      // this.otherSocket.onmessage = (event) => {
-      //   this.localSocket.send(event.data);
-      // }
     },
     initMediaWs() {
       let ip = process.env.VUE_APP_URL.split("//")[1].split(":")[0];
@@ -1131,6 +1136,7 @@ export default {
         name: "connectionManagement",
       });
     },
+    //下蹲控制
     doSquat(e) {
       let data = {
         "command": 'squat',
@@ -1184,63 +1190,6 @@ export default {
 .buttons {
   display: flex;
   margin-top: 1.3889vw;
-}
-
-.controlStatus {
-  position: absolute;
-  left: 32.75vw;
-  bottom: 3.7083vw;
-  width: 31.75vw;
-  height: 3.4583vw;
-  border-radius: 2.7917vw;
-  padding: 0.9167vw 1.25vw;
-  border: 0.125vw solid rgba(255, 255, 255, 0.3);
-  z-index: 999;
-}
-
-.controlActivated {
-  position: absolute;
-  left: 32.75vw;
-  bottom: 3.7083vw;
-  width: 34.25vw;
-  height: 31.75vw;
-  border-radius: 3.0833vw;
-  border: 0.125vw solid rgba(255, 255, 255, 0.3);
-  background-color: rgba(0, 75, 133, 0.5);
-  z-index: 999;
-}
-
-.controlBox {
-  position: absolute;
-  left: 1.25vw;
-  bottom: 0.9167vw;
-  width: 31.75vw;
-  height: 3.4583vw;
-
-  .choseBox {
-    width: 8vw;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .chose {
-    background: rgba(0, 75, 133, 0.4);
-    border-radius: 2.2396vw;
-  }
-
-  .choseBk {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 2.2396vw;
-  }
-
-  .txt {
-    font-size: 1.4583vw;
-    font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
-    font-weight: normal;
-    color: $white;
-  }
 }
 
 .transverseRuler {
@@ -1405,10 +1354,6 @@ export default {
   }
 }
 
-.shortWidth {
-  width: 80.2083vw;
-}
-
 .fullWidth {
   width: 100%;
 }
@@ -1537,14 +1482,6 @@ export default {
   }
 }
 
-.actionBox {
-  height: 23vw;
-  width: 27.775vw;
-  padding: 3.125vw 3.1333vw 0 3.5917vw;
-  display: flex;
-  flex-wrap: wrap;
-}
-
 .headState {
   position: absolute;
   top: 1.25vw;
@@ -1573,41 +1510,6 @@ export default {
     margin-left: 2.0833vw;
   }
 }
-
-.headBox {
-  position: absolute;
-  top: 4.453123vw;
-  left: 10.9375vw;
-  height: 8.0417vw;
-  padding: 1.7917vw 2.1667vw;
-  background: rgba(0, 75, 133, 0.3);
-  border: 0.1042vw solid rgba(68, 216, 251, 0.3);
-  z-index: 99;
-  align-items: flex-start;
-  justify-content: space-between;
-  font-size: $size-41;
-  color: $white;
-
-  .divider {
-    height: 0.1042vw;
-    background: $white;
-    opacity: 0.3;
-  }
-}
-
-.stateMessageError {
-  position: absolute;
-  left: 50%;
-  top: 7.6042vw;
-  transform: translate(-50%, -50%);
-  background: rgba(255, 102, 86, 0.8);
-  padding: 0 2.2396vw;
-  height: 2.5521vw;
-  z-index: 999;
-  font-size: $size-30;
-  color: $white;
-}
-
 
 .headBkIn {
   position: absolute;

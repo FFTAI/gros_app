@@ -33,6 +33,10 @@
                     <div class="redPoint"></div>
                     <span style="color: #FF6656;">未连接</span>
                   </div>
+                  <img style="
+                        width: 1.1458vw;
+                        height: 1.3542vw;
+                      " src="@/assets/images/btn_del.png" @click.stop="delRobot(item.name)" />
                 </div>
                 <div class="cardDivider"></div>
                 <div class="cardContent flex-center">
@@ -55,8 +59,22 @@
           </div>
         </div>
         <div class="btnBox flex-between">
-          <div class="btn white01-bkg" @click="promptCancel()">{{ $t("cancel") }}</div>
-          <div class="btn blue" @click="commitRobot()">
+          <div class="btn white01-bkg" @click="promptCancel('a')">{{ $t("cancel") }}</div>
+          <div class="btn blue" @click="commitRobot('a')">
+            {{ $t("confirm") }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="wrapper flex-center" v-if="delRobotVisible">
+      <div class="prompt vertically-centered common-font">
+        <div class="promptInputContent" style="margin-top: 2.5vw;">
+          <img style="width: 4.1667vw; height: 3.8542vw;" src="@/assets/images/warning1.png" />
+          <span class="promtTitle">是否删除当前机器人?</span>
+        </div>
+        <div class="btnBox flex-between">
+          <div class="btn white01-bkg" @click="promptCancel('d')">{{ $t("cancel") }}</div>
+          <div class="btn blue" @click="commitRobot('d')">
             {{ $t("confirm") }}
           </div>
         </div>
@@ -75,13 +93,15 @@ export default {
       robotList: [],
       carouselList: [],
       addRobotVisible: false,
-      robotName: ''
+      robotName: '',
+      delRobotVisible: false,
+      delRobotName: '',
     };
   },
   created() { },
   mounted() {
     this.initRobotList();
-    // localStorage.setItem('robotList', JSON.stringify([{online:true,name:'Gr2'},{online:true,name:'Gr3'}]))
+    // localStorage.setItem('robotList', JSON.stringify([{online:true,name:'Gr2'},{online:false,name:'Gr3'},{online:false,name:'Gr4'}]))
   },
   methods: {
     async initRobotList() {
@@ -136,30 +156,56 @@ export default {
     },
     choseCard(e) {
       if (!e.online) return
-      this.$store.commit("setCurrRobot", e);
-      this.$bus.$emit("initWs", e);
+      this.$store.commit("setCurrRobot", e.name);
+      this.$bus.$emit("initWs", e.name);
       this.$router.push({
         name: "loading",
+        params: e
       });
     },
-    promptCancel() {
-      this.addRobotVisible = false;
+    promptCancel(e) {
+      switch (e) {
+        case 'a':
+          this.addRobotVisible = false;
+          this.robotName = ''
+          break;
+        case 'd':
+          this.delRobotVisible = false;
+          this.delRobotName = ''
+          break;
+        default:
+          break;
+      }
     },
-    commitRobot() {
-      http
-        .get("/query", { params: { robotName: this.robotName } })
-        .then((response) => {
-          if (response.data.data.status) {
-            this.robotList.push({ online: true, name: this.robotName })
-            localStorage.setItem('robotList', JSON.stringify(this.robotList))
-            this.addRobotVisible = false;
-          } else {
-            this.$message.error('该机器人名不存在');
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+    commitRobot(e) {
+      if (e == 'a') {
+        http
+          .get("/query", { params: { robotName: this.robotName } })
+          .then((response) => {
+            if (response.data.data.status) {
+              this.robotList.push({ online: true, name: this.robotName })
+              localStorage.setItem('robotList', JSON.stringify(this.robotList))
+              this.addRobotVisible = false;
+              this.robotName = ''
+            } else {
+              this.$message.error('该机器人名不存在');
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      } else if (e == 'd') {
+        console.log(this.delRobotName,this.robotList,localStorage.getItem('robotList'))
+        let list = this.robotList.filter(item => item.name != this.delRobotName)
+        this.robotList = list
+        localStorage.setItem('robotList', JSON.stringify(list))
+        this.delRobotVisible = false
+        this.delRobotName = ''
+      }
+    },
+    delRobot(e) {
+      this.delRobotName = e
+      this.delRobotVisible = true
     }
   },
 };
