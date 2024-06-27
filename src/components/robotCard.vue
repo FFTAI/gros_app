@@ -13,9 +13,17 @@
 export default {
     name: "",
     props: {
-        robotName: {
+        jointStates: {
             type: String,
             default: ""
+        }
+    },
+    watch: {
+        jointStates: {
+            handler(newVal, oldVal) {
+                const iframe = this.$refs.unityIfm.contentWindow;
+                iframe.postMessage({ jointStates: newVal }, '*');
+            },
         }
     },
     computed: {
@@ -26,9 +34,7 @@ export default {
         };
     },
     mounted() {
-        // setTimeout(() => {
         this.sendDataToIframe();
-        // }, 1000);
         window.addEventListener('message', this.receiveMessage, false);
     },
     beforeDestroy() {
@@ -38,10 +44,10 @@ export default {
     methods: {
         sendDataToIframe() {
             const iframe = this.$refs.unityIfm.contentWindow;
-            iframe.postMessage({ message: this.robotName }, '*');
+            iframe.postMessage({ connect: true }, '*');
         },
         receiveMessage(event) {
-            console.log('vue接收消息',event)
+            console.log('vue接收消息', event)
             this.sendDataToIframe()
         }
     },
@@ -60,12 +66,12 @@ export default {
 
 .rb-card {
     position: absolute;
-    top: 6.25vw;
-    left: 2.2396vw;
-    width: 20.8333vw;
-    height: 11.7188vw;
+    top: 0.25vw;
+    left: 1vw;
+    // width: 20.8333vw;
+    // height: 11.7188vw;
     // background: rgba(233, 246, 255, 0.6);
-    border-radius: .4167vw;
+    // border-radius: .4167vw;
     z-index: 888;
     // animation: slideFromRightToLeft 2s ease-out forwards; /* 设置动画名称、时长、缓动函数和填充模式 */
 }

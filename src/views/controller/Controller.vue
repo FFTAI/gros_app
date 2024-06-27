@@ -211,7 +211,7 @@
         <webrtc :stream="stream" @ready="onWebRTCReady" />
       </div>
     </div> -->
-    <robotCard :robotName="robotName"></robotCard>
+    <robotCard :jointStates="jointStates"></robotCard>
   </div>
 </template>
 <script>
@@ -245,7 +245,7 @@ export default {
       promptVal: "",
       lastMessageReceivedTime: Date.now(),
       wsInterval: null,
-      currentstatus: "Zero", //当前状态: Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
+      currentstatus: "Start", //当前状态: Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
       lastX: 0,
       lastY: 0,
       pointX: 0,
@@ -346,7 +346,8 @@ export default {
       ],
       cameraId: 0,
       cameraList: [],
-      changeCamera: true
+      changeCamera: true,
+      jointStates: null
     };
   },
   created() {
@@ -377,16 +378,16 @@ export default {
     document.addEventListener('mousedown', this.onMousedown);
     document.addEventListener('mouseup', this.onMouseup);
     window.addEventListener('contextmenu', this.disableContextMenu);
-    this.getCameraList();
+    // this.getCameraList();
     // this.initMediaWs();
-    this.createWsInterval();
-    // this.getStates();
+    // this.createWsInterval();
+    this.getStates();
     this.$nextTick(() => {
       this.startPlay();
     });
     this.$bus.$on('robotOnmessage', (data) => {
       // Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
-      console.log('robotOnmessage', data)
+      // console.log('robotOnmessage', data)
       if (data.function == "list_camera") {
         this.cameraList = data.data
       } else {
@@ -430,8 +431,11 @@ export default {
           default:
             break;
         }
+        let obj = data
+        delete obj.data
+        this.jointStates = JSON.stringify(obj)
       }
-      console.log('robotOnmessage', this.currentstatus)
+      // console.log('robotOnmessage', this.currentstatus)
     })
   },
   beforeDestroy() {
@@ -460,7 +464,7 @@ export default {
       let data = {
         "command": "states",
         "data": {
-          "frequency": 2
+          "frequency": 10
         }
       }
       this.robotWs.robot.send(JSON.stringify(data));
@@ -479,14 +483,14 @@ export default {
       this.sdk = new SrsRtcWhipWhepAsync();
       this.mediaVisible = true
       this.$refs.rtc_media_player.srcObject = this.sdk.stream
-      // var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=livestream'
-      var url = 'http://192.168.11.82:1985/rtc/v1/whep/?app=live&stream=livestream'
+      var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=livestream'
+      // var url = 'http://192.168.11.82:1985/rtc/v1/whep/?app=live&stream=livestream'
       this.sdk.play(url)
         .then((session) => {
           console.log('成功拉流:', session);
           setTimeout(() => {
             this.changeCamera = true
-          }, 1500);
+          }, 5000);
         })
         .catch((reason) => {
           console.error('错误拉流:', reason);
@@ -966,7 +970,12 @@ export default {
           cameraType = this.cameraList[i]
         }
       }
-      this.cameraId++
+      if(this.cameraId == this.cameraList.length - 1){
+        this.cameraId = 1
+        cameraType = this.cameraList[1]
+      }else{
+        this.cameraId++
+      }
       let data = {
         "command": "start_camera",
         "data": {
@@ -1155,7 +1164,7 @@ export default {
       this.pointX = 0
       this.pointY = 0
       this.operateHead(0, 0);
-    }
+    },
   },
 };
 </script>

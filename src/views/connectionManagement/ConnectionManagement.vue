@@ -101,7 +101,7 @@ export default {
   created() { },
   mounted() {
     this.initRobotList();
-    // localStorage.setItem('robotList', JSON.stringify([{online:true,name:'Gr2'},{online:false,name:'Gr3'},{online:false,name:'Gr4'}]))
+    // localStorage.setItem('robotList', JSON.stringify([{online:false,name:'Gr2'},{online:true,name:'jaxaxx'},{online:false,name:'fftai-5g-test'}]))
   },
   methods: {
     async initRobotList() {
@@ -137,14 +137,7 @@ export default {
             results.forEach((item) => {
               this.robotList.push({ online: item.data.data.status, name: item.data.data.robotName })
             })
-            for (let i = 0; i < this.robotList.length; i += 3) {
-              if (i == 0) {
-                this.carouselList.push(this.robotList.slice(0, 3));
-              } else {
-                this.carouselList.push({})
-                this.carouselList.push(this.robotList.slice(i - 1, i + 3));
-              }
-            }
+            this.getCarouselList()
           })
           .catch(errors => {
             console.error('Errors occurred:', errors);
@@ -184,6 +177,8 @@ export default {
           .then((response) => {
             if (response.data.data.status) {
               this.robotList.push({ online: true, name: this.robotName })
+              this.carouselList = []
+              this.getCarouselList()
               localStorage.setItem('robotList', JSON.stringify(this.robotList))
               this.addRobotVisible = false;
               this.robotName = ''
@@ -195,9 +190,11 @@ export default {
             console.error("Error:", error);
           });
       } else if (e == 'd') {
-        console.log(this.delRobotName,this.robotList,localStorage.getItem('robotList'))
+        console.log(this.delRobotName, this.robotList, localStorage.getItem('robotList'))
         let list = this.robotList.filter(item => item.name != this.delRobotName)
         this.robotList = list
+        this.carouselList = []
+        this.getCarouselList()
         localStorage.setItem('robotList', JSON.stringify(list))
         this.delRobotVisible = false
         this.delRobotName = ''
@@ -206,6 +203,17 @@ export default {
     delRobot(e) {
       this.delRobotName = e
       this.delRobotVisible = true
+    },
+    getCarouselList() {
+      for (let i = 0; i < this.robotList.length; i += 3) {
+        if (i == 0) {
+          this.carouselList.push(this.robotList.slice(0, 3));
+        } else {
+          this.carouselList.push({})
+          this.carouselList.push(this.robotList.slice(i - 1, i + 3));
+        }
+      }
+      console.log('carouselList',this.carouselList);
     }
   },
 };
