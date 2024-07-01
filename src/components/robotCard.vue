@@ -3,8 +3,8 @@
         <iframe ref="unityIfm" style="
             border: none;
             margin-top: 6vw;
-            width: 20.8333vw;
-            height: 32.4583vw;
+            width: 15vw;
+            height: 12vw;
           " :src="iframeUrl"></iframe>
     </div>
 </template>

@@ -347,7 +347,8 @@ export default {
       cameraId: 0,
       cameraList: [],
       changeCamera: true,
-      jointStates: null
+      jointStates: null,
+      standInterval: null,
     };
   },
   created() {
@@ -378,8 +379,8 @@ export default {
     document.addEventListener('mousedown', this.onMousedown);
     document.addEventListener('mouseup', this.onMouseup);
     window.addEventListener('contextmenu', this.disableContextMenu);
-    // this.getCameraList();
-    // this.initMediaWs();
+    this.getCameraList();
+    this.initMediaWs();
     // this.createWsInterval();
     this.getStates();
     this.$nextTick(() => {
@@ -412,6 +413,7 @@ export default {
             break;
           case 4:
             this.currentstatus = 'Walk'
+            this.changeControl('gait')
             break;
           case 5:
             this.currentstatus = 'Stop'
@@ -532,12 +534,12 @@ export default {
     //鼠标移动
     onMouseMove(event) {
       // event.preventDefault();
-      if (this.mouseFlag) {//节流，每秒发送30次
+      if (this.mouseFlag) {//节流，每秒发送25次
         this.mouseFunc(event);
         this.mouseFlag = false;
         setTimeout(() => {
           this.mouseFlag = true;
-        }, 33);
+        }, 40);
       }
     },
     mouseFunc(event) {
@@ -615,10 +617,10 @@ export default {
       };
       const walkInfo = walkKeys[event.keyCode];
       if (walkInfo) {
-        console.log('walkInfo', walkInfo)
+        // console.log('walkInfo', walkInfo)
         if (this.keyFlag) {
           this.changeControl('gait')
-          if (event.keyCode == 87 || event.keyCode == 83) {
+          if ((event.keyCode == 87 || event.keyCode == 83) && !this.standInterval) {
             this.velocity = walkInfo.velocity * this.speed / 6.25;
             this.operateWalk(this.direction * -45, this.velocity, 0);
           }
@@ -707,8 +709,6 @@ export default {
         //   this.direction * -45,
         //   (this.velocity * this.speed) / 6.25
         // );
-        this.velocity = 0;
-        this.ySpeed = 0;
         this.changeControl("stand");
       }
       if (event.keyCode == 17) this.doSquat(0)
@@ -745,6 +745,7 @@ export default {
       const seconds = String(now.getSeconds()).padStart(2, '0');
       const milliseconds = String(now.getMilliseconds()).padStart(3, '0');
       const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`
+      console.log("Walk。。。。。", direction, xSpeed, ySpeed);
       try {
         let data = {
           "command": 'walk',
@@ -799,12 +800,27 @@ export default {
     },
     //切换当前控制模式
     changeControl(e) {
-      console.log('changeControl', e, this.currentstatus)
+      console.log('changeControl', e, this.currentstatus, this.velocity)
       if (e == "stand" && this.currentstatus != 'Start') {
-        this.robotWs.robot.send(JSON.stringify({ "command": 'stand' }));
-        setTimeout(() => {
-          this.robotWs.robot.send(JSON.stringify({ "command": 'stand' }));
-        }, 300);
+        if (!this.standInterval) {
+          let intervalIndex = 1
+          this.standInterval = setInterval(() => {
+            console.log('standInterval', intervalIndex)
+            this.operateWalk(0, this.velocity * intervalIndex.toFixed(1), 0);
+            if (intervalIndex.toFixed(1) == 0) {
+              clearInterval(this.standInterval)
+              this.standInterval = null
+              this.robotWs.robot.send(JSON.stringify({ "command": 'stand' }));
+              this.velocity = 0;
+              this.ySpeed = 0;
+              setTimeout(() => {
+                this.robotWs.robot.send(JSON.stringify({ "command": 'stand' }));
+              }, 100);
+            } else {
+              intervalIndex = intervalIndex.toFixed(1) - 0.1
+            }
+          }, 100);
+        }
         // this.currentstatus = "Stand";
       } else if (e == "gait" && this.currentstatus == 'Stand') {
         // this.currentstatus = 'Walk'
@@ -958,22 +974,23 @@ export default {
         "data": null
       }
       this.robotWs.robot.send(JSON.stringify(data));
+      // this.cameraList = ["Default", "FishEye", "Left", "Right", "Double", "Realsense"]
     },
     cameraControl() {
       // this.cameraOff = !this.cameraOff
-      if(!this.changeCamera) return
-      console.log('切换镜头~~~~~~~~~~~',this.cameraList,this.cameraId)
+      if (!this.changeCamera) return
+      console.log('切换镜头~~~~~~~~~~~', this.cameraList, this.cameraId)
       this.changeCamera = false
       let cameraType = "Defalut"
       for (let i = 0; i < this.cameraList.length; i++) {
-        if(this.cameraList[i] != "Defalut" && i == (this.cameraId + 1)){
+        if (this.cameraList[i] != "Defalut" && i == (this.cameraId + 1)) {
           cameraType = this.cameraList[i]
         }
       }
-      if(this.cameraId == this.cameraList.length - 1){
+      if (this.cameraId == this.cameraList.length - 1) {
         this.cameraId = 1
         cameraType = this.cameraList[1]
-      }else{
+      } else {
         this.cameraId++
       }
       let data = {
