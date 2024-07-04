@@ -1,12 +1,41 @@
 <template>
   <div ref="pageController">
-    <div class="container">
-      <div ref="videoContainer" align="center" class="video-container">
-        <div v-show="!cameraOff" class="video-item common-bkg">
-          <video class="video-play" ref="rtc_media_player" width="1920" height="1080" autoplay
-            v-show="mediaVisible"></video>
+    <div class="container common-bkg">
+      <div align="center" class="videoContainer">
+        <video class="video-play" ref="rtc_media_player" width="1920" height="1080" autoplay></video>
+        <div class="topScale">
+          <img class="turningHead" src="@/assets/images/icon_turningHead.png" />
+          <span class="leftAngle">-40°</span>
+          <div class="transverseRuler">
+            <div class="tick" :class="{ longTick: (index % 6 - 5) === 0 }" v-for="(tick, index) in 47" :key="index"
+              :style="{ left: index * .7292 + 'vw' }"></div>
+            <span class="positionVal" :style="{ left: 15.75 + pointX * 16 + 'vw' }">{{ (pointX *
+              40).toFixed(1) }}°</span>
+          </div>
+          <span class="rightAngle">40°</span>
         </div>
-        <div v-show="cameraOff" class="video-item1 common-bkg">
+        <div class="rightScale">
+          <img class="raiseHead" src="@/assets/images/icon_raiseHead.png" />
+          <span class="topAngle">17°</span>
+          <div class="verticalRuler">
+            <div class="tick" :class="{ longTick: (index % 6 - 5) === 0 }" v-for="(tick, index) in 23" :key="index"
+              :style="{ top: index * .7292 + 'vw' }"></div>
+            <span class="positionVal" :style="{ top: (14.7 + pointY * 15) / 2 + 'vw' }">{{ (pointY *
+              -17).toFixed(1) }}°</span>
+          </div>
+          <span class="bottomAngle">-17°</span>
+        </div>
+        <div class="indication">
+          <span class="font" style="left: 0;">L</span>
+          <span class="angleFont" style="left: 1.0417vw;">-45°</span>
+          <img class="indicationImg" src="@/assets/images/image_indication.png" />
+          <img class="pointer" src="@/assets/images/image_pointer.png" />
+          <span class="angleFont" style="right: 1.0417vw;">45°</span>
+          <span class="font" style="right: 0;">R</span>
+          <div class="angleVal">
+            <img class="turningImg" src="@/assets/images/icon_turningBody.png" />
+            <span>12°</span>
+          </div>
         </div>
       </div>
       <div class="headBkIn fullWidth">
@@ -19,8 +48,9 @@
           <span class="actionTxt">{{ mode ? $t(mode) : '闲置' }}{{ $t("ing") }}…</span>
         </div>
         <div class="spacing flex-center">
+          <div class="divider spacing"></div>
           <div>
-            <img class="inImg" style="width: 2.7604vw;height: 2.3438vw;" src="@/assets/images/icon_sRob.png" />
+            <img class="inImg" style="width: 1.4583vw;height: 1.3542vw;" src="@/assets/images/icon_sRob.png" />
             <span class="inTxt title-font">80°C</span>
           </div>
           <div class="divider spacing"></div>
@@ -35,25 +65,9 @@
           </div>
           <div class="divider spacing"></div>
           <div>
-            <img class="inImg" style="height: 1.6667vw; width: 2.2917vw" src="@/assets/images/icon_Wifi.png" />
+            <img class="inImg" style="height: 1.25vw; width: 1.6667vw;" src="@/assets/images/icon_Wifi.png" />
           </div>
         </div>
-      </div>
-
-      <div class="transverseRuler fullWidth">
-        <div class="tick" :class="{ longTick: index % 5 === 0 }" v-for="(tick, index) in 80" :key="index"
-          :style="{ left: index * 1.25 + 'vw' }"></div>
-        <span class="positionVal" :style="{ left: 48.7 + pointX * 49.4271 + 'vw' }">{{ (pointX *
-          40).toFixed(1) }}°</span>
-        <div class="arrowSlider" :style="{ left: 49.4271 + pointX * 49.4271 + 'vw' }"></div>
-      </div>
-
-      <div class="verticalRuler">
-        <div class="tick" :class="{ longTick: index % 5 === 0 }" v-for="(tick, index) in 21" :key="index"
-          :style="{ top: index * 1.25 + 'vw' }"></div>
-        <span class="positionVal" :style="{ top: (24.4 + pointY * 25.2083) / 2 + 'vw' }">{{ (pointY *
-          -17.1887).toFixed(1) }}°</span>
-        <div class="arrowSlider" :style="{ top: (25.2083 + pointY * 25.2083) / 2 + 'vw' }"></div>
       </div>
 
       <div class="bottomBox flex-between fullWidth">
@@ -66,14 +80,10 @@
             <img class="inImg" src="@/assets/images/icon_mute.png" />
             <span>解除静音</span>
           </div>
-          <div class="boxItem" style="justify-content: space-around;" v-if="!cameraOff" @click="cameraControl()">
+          <div class="boxItem" style="justify-content: space-around;" @click="cameraControl()">
             <img class="inImg" src="@/assets/images/icon_video.png" />
             <span>镜头切换</span>
           </div>
-          <!-- <div class="boxItem" style="justify-content: space-around;" v-else @click="cameraControl('off')">
-            <img class="inImg" src="@/assets/images/icon_videoOff.png" />
-            <span>停止视频</span>
-          </div> -->
           <div class="boxItem" style="justify-content: space-around;" @click="takeScreenshot()">
             <img class="inImg" src="@/assets/images/icon_photo.png" />
             <span>拍照</span>
@@ -97,7 +107,7 @@
           <div class="boxItem" :class="{ chosedItem: currentstatus == 'Walk', opacity03: currentstatus == 'Start' }">
             <img class="inImg" src="@/assets/images/icon_Stepping.png" />
             <span>行走</span>
-            <span style="flex-grow: 1;"></span>
+            <span>W</span>
           </div>
           <div class="boxItem" :class="{ chosedItem: reHead, opacity03: currentstatus == 'Start' }"
             @click="returnHead()">
@@ -146,50 +156,30 @@
           <el-button type="danger" @click="stop()">急停⑨</el-button>
         </div>
       </div>
-      <div class="sideBox" v-if="sideVisible">
-        <div class="title">
-          <span>{{ titleName }}</span>
-          <img style="width: 1.25vw;height: 1.25vw;" src="@/assets/images/icon_sClose.png" @click="closeSide()" />
+
+      <div class="popDialog">
+        <div v-if="controlModel == 'inPlace'" class="actionItem" :class="{ chosedAction: item.name == mode }"
+          v-for="(item, index) in inPlaceList" :key="index" @click="choseMode(item.name)">
+          <img class="actionImg" :src="item.src" />
+          <div>{{ $t(item.name) }}{{ ' ( ' + item.keyCode + ' )' }}</div>
         </div>
-        <div class="sideContent">
-          <div v-if="controlModel == 'inPlace'" class="actionItem" :class="{ chosedAction: item.name == mode }"
-            v-for="(item, index) in inPlaceList" :key="index" @click="choseMode(item.name)">
-            <img class="actionImg" :src="item.src" />
-            <div>{{ $t(item.name) }}{{ ' ( ' + item.keyCode + ' )' }}</div>
-          </div>
-          <div v-if="controlModel == 'grasping'" class="actionItem" :class="{ chosedAction: item.name == mode }"
-            v-for="(item, index) in graspingList" :key="index" @click="choseMode(item.name)">
-            <img class="actionImg" :src="item.src" />
-            <div>{{ $t(item.name) }}{{ ' ( ' + item.keyCode + ' )' }}</div>
-          </div>
-          <div v-if="controlModel == 'face'" class="actionItem" :class="{ chosedAction: item.name == mode }"
-            v-for="(item, index) in faceList" :key="index" @click="showFace(item.val)">
-            <img class="actionImg" :src="item.src" />
-            <div>{{ item.name }}{{ ' ( ' + item.keyCode + ' )' }}</div>
-          </div>
-          <div v-if="controlModel == 'setup'" style="width: 100%;">
-            <div class="setTab">
-              <div class="tabItem">
-                <span class="chosed">运动控制</span>
-                <div class="cDivider" v-if="currentSetup == 'motion'"></div>
-              </div>
-              <div class="tabItem">
-                <span>感知交互</span>
-                <div class="cDivider" v-if="currentSetup == 'perceptual'"></div>
-              </div>
-              <div class="tabItem">
-                <span>感知交互</span>
-                <div class="cDivider" v-if="currentSetup == 'power'"></div>
-              </div>
-            </div>
-            <div class="divider"></div>
-            <div class="speedControl">
-              <span>行走速度</span>
-              <div class="controlTag">
-                <div class="tag" :class="{ chosedTag: speed == 1 }" @click="speedChange(1)">慢</div>
-                <div class="tag" :class="{ chosedTag: speed == 2 }" @click="speedChange(2)">中</div>
-                <div class="tag" :class="{ chosedTag: speed == 3 }" @click="speedChange(3)">快</div>
-              </div>
+        <div v-if="controlModel == 'grasping'" class="actionItem" :class="{ chosedAction: item.name == mode }"
+          v-for="(item, index) in graspingList" :key="index" @click="choseMode(item.name)">
+          <img class="actionImg" :src="item.src" />
+          <div>{{ $t(item.name) }}{{ ' ( ' + item.keyCode + ' )' }}</div>
+        </div>
+        <div v-if="controlModel == 'face'" class="actionItem" :class="{ chosedAction: item.name == mode }"
+          v-for="(item, index) in faceList" :key="index" @click="showFace(item.val)">
+          <img class="actionImg" :src="item.src" />
+          <div>{{ item.name }}{{ ' ( ' + item.keyCode + ' )' }}</div>
+        </div>
+        <div v-if="controlModel == 'setup'" style="width: 100%;">
+          <div class="speedControl">
+            <span>行走速度</span>
+            <div class="controlTag">
+              <div class="tag" :class="{ chosedTag: speed == 1 }" @click="speedChange(1)">慢</div>
+              <div class="tag" :class="{ chosedTag: speed == 2 }" @click="speedChange(2)">中</div>
+              <div class="tag" :class="{ chosedTag: speed == 3 }" @click="speedChange(3)">快</div>
             </div>
           </div>
         </div>
@@ -197,8 +187,8 @@
     </div>
     <!-- 当前状态提示 -->
     <div class="stateMessage flex-center" v-if="mode != '' ||
-          mode == 'initial'
-          ">
+              mode == 'initial'
+              ">
       <!-- <span>{{ $t(mode) }}{{ $t("ing") }}...</span> -->
     </div>
     <!-- <prompt-box v-if="promptVisible || !connected" :prompt="connected ? promptVal : 'reconnect'" @cancel="cancel()"
@@ -232,7 +222,6 @@ export default {
   },
   data() {
     return {
-      videoContainer: "", //视频
       buttons: "", //当前按键
       screenWidth: document.body.clientWidth, //当前屏幕宽度
       speed: 1, //当前速度档位 1-3
@@ -252,15 +241,12 @@ export default {
       pointY: 0,
       sideVisible: false,
       mute: true,
-      cameraOff: false,
       recording: false,
-      currentSetup: "motion",
       socket: null,
       mediaRecorder: null,
       audioContext: null,
       rc: null,
       sdk: null,
-      mediaVisible: false,
       currentAudio: '',
       localSocket: null,
       leftMouseDown: false,
@@ -367,7 +353,6 @@ export default {
   async mounted() {
     // this.$refs.pageController.style.cursor = 'none';
     this.robotName = this.$route.query.robotName;
-    this.videoContainer = this.$refs.videoContainer;
     window.onresize = () => {
       return (() => {
         this.screenWidth = document.body.clientWidth;
@@ -379,16 +364,16 @@ export default {
     document.addEventListener('mousedown', this.onMousedown);
     document.addEventListener('mouseup', this.onMouseup);
     window.addEventListener('contextmenu', this.disableContextMenu);
-    this.getCameraList();
-    this.initMediaWs();
+    // this.getCameraList();
+    // this.initMediaWs();
     // this.createWsInterval();
-    this.getStates();
+    // this.getStates();
     this.$nextTick(() => {
       this.startPlay();
     });
     this.$bus.$on('robotOnmessage', (data) => {
       // Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
-      // console.log('robotOnmessage', data)
+      console.log('robotOnmessage', data)
       if (data.function == "list_camera") {
         this.cameraList = data.data
       } else {
@@ -437,7 +422,7 @@ export default {
         delete obj.data
         this.jointStates = JSON.stringify(obj)
       }
-      // console.log('robotOnmessage', this.currentstatus)
+      console.log('robotOnmessage', this.currentstatus)
     })
   },
   beforeDestroy() {
@@ -483,9 +468,8 @@ export default {
         this.sdk.close();
       }
       this.sdk = new SrsRtcWhipWhepAsync();
-      this.mediaVisible = true
       this.$refs.rtc_media_player.srcObject = this.sdk.stream
-      var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=livestream'
+      var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=fftai-5g-test'
       // var url = 'http://192.168.11.82:1985/rtc/v1/whep/?app=live&stream=livestream'
       this.sdk.play(url)
         .then((session) => {
@@ -553,11 +537,12 @@ export default {
         this.lastX = event.clientX;
         this.lastY = event.clientY;
         if (currPointX > 1) currPointX = 1
+        if (currPointX < -1) currPointX = -1
         if (currPointY > 1) currPointY = 1
         if (currPointY < -1) currPointY = -1
-        // console.log('横向', this.lastX, '竖向', this.pointX)
+        // console.log('横向', currPointX, '竖向', this.pointX)
         let yaw = currPointX * 40;
-        let pitch = currPointY * -17.1887;
+        let pitch = currPointY * -17;
         if (this.leftMouseDown) {
           this.pointX = currPointX.toFixed(2)
           this.pointY = currPointY.toFixed(2)
@@ -732,6 +717,8 @@ export default {
         this.speed += 1;
       } else if (e == "reduce" && this.speed > 1) {
         this.speed -= 1;
+      } else {
+        this.speed = e
       }
     },
     //操控行走
@@ -977,7 +964,6 @@ export default {
       // this.cameraList = ["Default", "FishEye", "Left", "Right", "Double", "Realsense"]
     },
     cameraControl() {
-      // this.cameraOff = !this.cameraOff
       if (!this.changeCamera) return
       console.log('切换镜头~~~~~~~~~~~', this.cameraList, this.cameraId)
       this.changeCamera = false
@@ -1189,28 +1175,232 @@ export default {
 .container {
   width: 100%;
   overflow: hidden;
+  background-image: url("../../assets/images/bg_loading.png");
 }
 
-.video-container {
-  display: flex;
-  justify-content: center;
-}
+.videoContainer {
+  position: absolute;
+  top: 9.26vh;
+  right: 2.0833vw;
+  width: 62.5vw;
+  height: 35.1563vw;
 
-.video-item {
-  position: fixed;
-  z-index: 3;
-  background-image: url("../../assets/images/image_loadingMedia.png");
-}
+  .video-play {
+    width: 62.5vw;
+    // height: 62.47vh;
+    height: 35.1563vw;
+    // background: #282828;
+    background-image: url("../../assets/images/bg_loading1.png");
+    background-size: contain;
+  }
 
-.video-item1 {
-  position: fixed;
-  z-index: 3;
-  background-image: url("../../assets/images/image_cameraBk.jpg");
-}
+  .topScale {
+    position: absolute;
+    top: .8333vw;
+    left: 9.8958vw;
+    width: 40.625vw;
+    height: 2.0833vw;
+    background: rgba(25, 0, 73, 0.3);
+    border-radius: .2083vw;
+    z-index: 8888;
+    font-size: 16px;
+    color: #FFFFFF;
 
-.video-play {
-  width: 100%;
-  height: 100%;
+    .turningHead {
+      width: 1.5625vw;
+      height: 1.1458vw;
+      position: absolute;
+      left: .7292vw;
+      top: .5729vw;
+    }
+
+    .leftAngle {
+      position: absolute;
+      left: 2.7604vw;
+      top: .4688vw;
+      opacity: 0.6;
+    }
+
+    .rightAngle {
+      position: absolute;
+      right: .9375vw;
+      top: .4688vw;
+      opacity: 0.6;
+    }
+
+    .transverseRuler {
+      height: .625vw;
+      position: absolute;
+      top: .7292vw;
+      left: 4.5313vw;
+      z-index: 9999;
+      display: flex;
+      align-items: flex-end;
+
+      .tick {
+        width: .1042vw;
+        height: .4167vw;
+        background: #FFFFFF;
+        opacity: 0.4;
+        position: absolute;
+      }
+
+      .longTick {
+        height: .625vw;
+        opacity: 0.8;
+      }
+
+      .positionVal {
+        width: 2.0833vw;
+        height: 1.4583vw;
+        background: #FFFFFF;
+        border-radius: .2083vw;
+        position: absolute;
+        top: -0.5vw;
+        font-size: .63vw;
+        color: #190049;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+  }
+
+  .rightScale {
+    position: absolute;
+    top: 5.5729vw;
+    right: .8333vw;
+    width: 2.0833vw;
+    height: 21.6146vw;
+    background: rgba(25, 0, 73, 0.3);
+    border-radius: .2083vw;
+    z-index: 8888;
+    font-size: 16px;
+    color: #FFFFFF;
+
+    .raiseHead {
+      width: 1.1458vw;
+      height: .9896vw;
+      position: absolute;
+      right: .4688vw;
+      top: .7813vw;
+    }
+
+    .topAngle {
+      position: absolute;
+      right: .4167vw;
+      top: 2.1354vw;
+      opacity: 0.6;
+    }
+
+    .bottomAngle {
+      position: absolute;
+      right: .2604vw;
+      bottom: .4688vw;
+      opacity: 0.6;
+    }
+
+    .verticalRuler {
+      position: absolute;
+      right: .8333vw;
+      top: 3.5417vw;
+      z-index: 9999;
+      display: flex;
+      flex-direction: row-reverse;
+
+      .tick {
+        width: .4167vw;
+        height: .1042vw;
+        background: #FFFFFF;
+        opacity: 0.4;
+        position: absolute;
+      }
+
+      .longTick {
+        width: .625vw;
+        opacity: 0.8;
+      }
+
+      .positionVal {
+        width: 2.0833vw;
+        height: 1.4583vw;
+        background: #FFFFFF;
+        border-radius: .2083vw;
+        position: absolute;
+        right: -0.85vw;
+        font-size: .63vw;
+        color: #190049;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+  }
+
+  .indication {
+    width: 22.8646vw;
+    height: 6.1599vw;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+
+    .indicationImg {
+      width: 22.1875vw;
+      height: 6.1979vw;
+    }
+
+    .pointer {
+      width: .4167vw;
+      height: 2.6563vw;
+      position: absolute;
+      bottom: 0;
+      left: 10.9375vw;
+    }
+
+    .angleFont {
+      font-weight: bold;
+      font-size: 16px;
+      color: #FFFFFF;
+      position: absolute;
+      bottom: .6771vw;
+      opacity: 0.5;
+    }
+
+    .font {
+      font-size: 1.0417vw;
+      color: #FFFFFF;
+      font-weight: bold;
+      position: absolute;
+      bottom: 0;
+    }
+
+    .angleVal {
+      position: absolute;
+      top: 1.3021vw;
+      left: 50%;
+      transform: translateX(-50%);
+      font-weight: bold;
+      font-size: 20px;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+
+      .turningImg {
+        width: 1.5625vw;
+        height: 1.3021vw;
+      }
+    }
+
+  }
+
+  .loadingLogo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+  }
 }
 
 .buttons {
@@ -1218,122 +1408,9 @@ export default {
   margin-top: 1.3889vw;
 }
 
-.transverseRuler {
-  height: 4.2708vw;
-  position: absolute;
-  bottom: 6.25vw;
-  z-index: 9999;
-  display: flex;
-  align-items: flex-end;
-
-  .tick {
-    width: .2083vw;
-    height: .8333vw;
-    background: #FFFFFF;
-    opacity: 0.42;
-    position: absolute;
-  }
-
-  .longTick {
-    height: 1.25vw;
-    opacity: 0.7;
-  }
-
-  .positionVal {
-    position: absolute;
-    bottom: 2.6042vw;
-    font-weight: bold;
-    font-size: 1.6667vw;
-    color: #FFFFFF;
-    opacity: 0.7;
-    width: 2.6042vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .arrowSlider {
-    width: 1.25vw;
-    height: 1.5625vw;
-    background: #FFFFFF;
-    opacity: 0.7;
-    position: absolute;
-    // transition: all 0.01s ease;
-  }
-
-  .arrowSlider::before {
-    content: '';
-    position: absolute;
-    top: -1vw;
-    left: 0;
-    width: 0;
-    height: 0;
-    border-left: 0.625vw solid transparent;
-    border-right: 0.625vw solid transparent;
-    border-bottom: 1vw solid #FFFFFF;
-  }
-}
-
-.verticalRuler {
-  width: 4.8958vw;
-  height: 25.2083vw;
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translate(0, -50%);
-  z-index: 9999;
-  display: flex;
-  flex-direction: row-reverse;
-
-  .tick {
-    width: .8333vw;
-    height: .2083vw;
-    background: #FFFFFF;
-    opacity: 0.42;
-    position: absolute;
-  }
-
-  .longTick {
-    width: 1.25vw;
-    opacity: 0.7;
-  }
-
-  .positionVal {
-    position: absolute;
-    right: 3.6vw;
-    font-weight: bold;
-    font-size: 1.6667vw;
-    color: #FFFFFF;
-    opacity: 0.7;
-    width: 2.6042vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .arrowSlider {
-    height: 1.25vw;
-    width: 1.5625vw;
-    background: #FFFFFF;
-    opacity: 0.7;
-    position: absolute;
-  }
-
-  .arrowSlider::before {
-    content: '';
-    position: absolute;
-    left: -1vw;
-    width: 0;
-    height: 0;
-    border-top: 0.625vw solid transparent;
-    border-bottom: 0.625vw solid transparent;
-    border-right: 1vw solid #FFFFFF;
-  }
-}
-
 .bottomBox {
-  height: 6.25vw;
-  background: rgba(13, 44, 68, 0.7);
+  height: 3.5417vw;
+  background: linear-gradient(274deg, rgba(25, 0, 73, 0.2) 0%, rgba(25, 0, 73, 0.2) 100%);
   position: absolute;
   bottom: 0;
   left: 0;
@@ -1346,16 +1423,17 @@ export default {
 
   .midBox {
     width: 28.0729vw;
+    margin-right: 11.875vw;
   }
 
   .rightBox {
-    width: 13.5417vw;
-    margin-right: 1.4063vw;
+    width: 8.5417vw;
+    margin-right: 2.0833vw;
 
     ::v-deep .el-button {
-      width: 6.25vw;
-      height: 2.7083vw;
-      font-size: 1.25vw;
+      width: 3.8542vw;
+      height: 1.6667vw;
+      font-size: .8333vw;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -1367,15 +1445,14 @@ export default {
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    font-size: 1.0417vw;
+    font-size: .625vw;
     width: 4.1667vw;
-    height: 5.1667vw;
-    padding: .5208vw 0;
+    // padding: .5208vw 0;
     color: rgba(255, 255, 255, 0.6);
   }
 
   .chosedItem {
-    background: linear-gradient(230deg, #198BFF 0%, #0086D1 100%);
+    background: #AB76FF;
     border-radius: .2083vw;
   }
 }
@@ -1399,7 +1476,7 @@ export default {
   height: calc(100% - 10.6944vw);
   background: rgba(23, 39, 55, 0.7);
   position: absolute;
-  top: 4.4444vw;
+  top: 3.125vw;
   right: 0;
   z-index: 9999;
   animation: slideInFromRight 1s ease-out forwards;
@@ -1436,10 +1513,7 @@ export default {
       height: 2.7083vw;
     }
 
-    .chosedAction {
-      background: linear-gradient(230deg, #198BFF 0%, #0086D1 100%);
-      border-radius: .4167vw;
-    }
+
 
     .setTab {
       height: 5.3646vw;
@@ -1475,65 +1549,35 @@ export default {
       background: rgba(255, 255, 255, 0.2);
     }
 
-    .speedControl {
-      height: 6.3542vw;
-      padding: 0 1.4063vw 0 1.4583vw;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 1.0417vw;
-      color: #FFFFFF;
 
-      .controlTag {
-        width: 10.7292vw;
-        height: 2.0833vw;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: .2083vw;
-        display: flex;
-
-        .tag {
-          width: 3.5417vw;
-          height: 2.0833vw;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        .chosedTag {
-          background: linear-gradient(230deg, #198BFF 0%, #0086D1 100%);
-          border-radius: .2083vw;
-        }
-      }
-    }
   }
 }
 
 .headState {
   position: absolute;
-  top: 1.25vw;
+  top: .7292vw;
   left: 10.9375vw;
   z-index: 99;
   display: flex;
   align-items: center;
 
   .headTxt {
-    font-size: 1.5vw;
+    font-size: 1.25vw;
     color: $white;
     font-style: normal;
-    font-weight: 550;
   }
 
   .cDivider {
-    width: .0833vw;
-    height: 1.5vw;
+    width: .0521vw;
+    height: 1.25vw;
     background: #FFFFFF;
-    margin-left: 2.0833vw;
+    margin-left: 1.4583vw;
   }
 
   .actionTxt {
-    font-size: 1.3333vw;
+    font-size: 1.0417vw;
     color: #FFFFFF;
-    margin-left: 2.0833vw;
+    margin-left: 1.4583vw;
   }
 }
 
@@ -1541,24 +1585,22 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  height: 4.4444vw;
+  height: 3.125vw;
   display: flex;
   justify-content: space-between;
   align-items: center;
   z-index: 99;
-  background: linear-gradient(274deg,
-      rgba(26, 25, 25, 0.4) 0%,
-      rgba(0, 76, 129, 0.4) 100%);
+  background: linear-gradient(274deg, rgba(25, 0, 73, 0) 0%, rgba(122, 36, 253, 0.2) 100%);
 
   .return {
-    width: 2.0833vw;
-    height: 1.7708vw;
+    width: 1.6667vw;
+    height: 1.4167vw;
   }
 
   .headReturn {
-    height: 4.4444vw;
+    height: 3.125vw;
     width: 5.6667vw;
-    background: #004B85;
+    background: #542C89;
     padding-left: 1.24vw;
     display: flex;
     justify-content: center;
@@ -1568,41 +1610,105 @@ export default {
   .headReturn::after {
     position: absolute;
     content: " ";
-    left: 4.6667vw;
+    left: 5.6vw;
     top: 0.0vw;
-    border-width: 4.4444vw 2.3021vw;
+    border-width: 3.125vw 1.3021vw;
     border-style: solid;
-    border-color: #004c81 transparent transparent transparent;
+    border-color: #542C89 transparent transparent transparent;
   }
 
   .spacing {
-    margin-right: 1.5625vw;
+    margin-right: 1.1458vw;
   }
 
   .divider {
-    width: 0.1042vw;
-    height: 4.4271vw;
+    width: .1042vw;
+    height: 3.125vw;
     background: $white;
-    opacity: 0.3;
+    opacity: 0.1;
   }
 
   .inTxt {
-    font-size: 1.4583vw;
+    font-size: 1.25vw;
     color: $white;
-    margin-right: 1.9444vw;
+    margin-right: 1.1458vw;
     margin-left: 0.6944vw;
     vertical-align: middle;
   }
 }
 
 .inImg {
-  width: 2.5vw;
-  height: 2.5vw;
+  width: 1.3542vw;
+  height: 1.3542vw;
   z-index: 99;
   vertical-align: middle;
 }
 
 .opacity03 {
   opacity: 0.3;
+}
+
+.popDialog {
+  width: 95.8333vw;
+  height: 8.0729vw;
+  position: absolute;
+  left: 2.0833vw;
+  bottom: 4.6875vw;
+  z-index: 9999;
+  background-image: url("../../assets/images/image_pop.png");
+  background-size: contain;
+  display: flex;
+  align-items: center;
+
+  .actionItem {
+    margin-left: 3.5417vw;
+    font-size: .8333vw;
+    color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .actionImg {
+      width: 2.2917vw;
+      height: 2.2917vw;
+      margin-bottom: 0.6vw;
+    }
+  }
+
+  .chosedAction {
+    // background: #AB76FF;
+    // border-radius: .4167vw;
+  }
+
+  .speedControl {
+    height: 6.3542vw;
+    padding: 0 1.4063vw 0 1.4583vw;
+    display: flex;
+    gap: 1.25vw;
+    align-items: center;
+    font-size: 1.0417vw;
+    color: #FFFFFF;
+
+    .controlTag {
+      width: 10.7292vw;
+      height: 2.0833vw;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: .2083vw;
+      display: flex;
+
+      .tag {
+        width: 3.5417vw;
+        height: 2.0833vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .chosedTag {
+        background: #AB76FF;
+        border-radius: .2083vw;
+      }
+    }
+  }
 }
 </style>
