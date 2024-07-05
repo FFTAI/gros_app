@@ -4,16 +4,26 @@
     <meta charset="utf-8" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Unity WebGL Player | WebGLProject</title>
+    <!-- <style>
+      body {
+        cursor: none;
+      }
+    </style> -->
   </head>
   <body style="text-align: center">
-    <canvas id="unity-canvas" width="317" height="723" style="background: transparent"></canvas>
+    <canvas
+      id="unity-canvas"
+      width="640"
+      height="723"
+      style="background: transparent"
+    ></canvas>
     <script src="Build/Build.loader.js"></script>
     <script>
       var canvas = document.getElementById("unity-canvas");
-      canvas.width = window.innerWidth * 0.5;
-      canvas.style.width = window.innerWidth * 0.5 + "px";
-      canvas.height = window.innerHeight * 0.7;
-      canvas.style.height = window.innerHeight * 0.7 + "px";
+      canvas.width = window.innerWidth * 0.9 + "px";
+      canvas.style.width = window.innerWidth * 0.9 + "px";
+      canvas.height = window.innerHeight * 0.8;
+      canvas.style.height = window.innerHeight * 0.8 + "px";
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         // Mobile device style: fill the whole browser client area with the game canvas:
         var meta = document.createElement("meta");
@@ -35,34 +45,32 @@
         // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
         // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
       }).then(function (instance) {
+        canvas.style.cursor = "none";
+        document.body.style.cursor = "none";
         gameInstance = instance;
         window.parent.postMessage("complete", "*");
+      });
+
+      // iframe 内部页面中的脚本
+      document.addEventListener("mousemove", (event) => {
+        const message = {
+          type: "mousemove",
+          data: {
+            clientX: event.clientX,
+            clientY: event.clientY,
+          },
+        };
+        console.log('横向11111', event.clientX, '竖向11111', event.clientY)
+        window.parent.postMessage(message, "*");
       });
 
       window.addEventListener(
         "message",
         function (event) {
-          if (event.data.connect) {
-            callUnityFunctionStartConnect();
-          } else {
-            callUnityFunctionRoteJoint(event.data.jointStates);
-          }
+          callUnityFunctionRoteJoint(event.data.jointStates);
         },
         false
       );
-
-      function callUnityFunctionStartConnect() {
-        console.log("index---T2T2T2T2T2T2T2T2T2T2");
-        if (gameInstance) {
-          gameInstance.SendMessage(
-            "UnityJsCommunication",
-            "StartConnect",
-            "T2"
-          );
-        } else {
-          console.error("Unity instance is not initialized yet.");
-        }
-      }
 
       function callUnityFunctionRoteJoint(msg) {
         let joint_states = JSON.parse(msg).joint_states;

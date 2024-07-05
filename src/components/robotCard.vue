@@ -3,8 +3,8 @@
         <iframe ref="unityIfm" style="
             border: none;
             margin-top: 6vw;
-            width: 15vw;
-            height: 12vw;
+            width: 28.5104vw;
+            height: 40.6563vw;
           " :src="iframeUrl"></iframe>
     </div>
 </template>
@@ -28,29 +28,13 @@ export default {
     },
     computed: {
     },
+    mounted() {
+    },
     data() {
         return {
             iframeUrl: "Build/index.html",
         };
-    },
-    mounted() {
-        this.sendDataToIframe();
-        window.addEventListener('message', this.receiveMessage, false);
-    },
-    beforeDestroy() {
-        // 组件销毁前移除事件监听器
-        window.removeEventListener('message', this.receiveMessage);
-    },
-    methods: {
-        sendDataToIframe() {
-            const iframe = this.$refs.unityIfm.contentWindow;
-            iframe.postMessage({ connect: true }, '*');
-        },
-        receiveMessage(event) {
-            console.log('vue接收消息', event)
-            this.sendDataToIframe()
-        }
-    },
+    }
 };
 </script>
 

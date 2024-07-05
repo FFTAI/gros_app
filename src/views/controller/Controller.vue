@@ -28,13 +28,14 @@
         <div class="indication">
           <span class="font" style="left: 0;">L</span>
           <span class="angleFont" style="left: 1.0417vw;">-45°</span>
-          <img class="indicationImg" src="@/assets/images/image_indication.png" />
-          <img class="pointer" src="@/assets/images/image_pointer.png" />
+          <img class="indicationImg" src="@/assets/images/image_indication.png" draggable="false" />
+          <img class="pointer" src="@/assets/images/image_pointer.png" draggable="false"
+            :style="{ transform: pointerTransform }" />
           <span class="angleFont" style="right: 1.0417vw;">45°</span>
           <span class="font" style="right: 0;">R</span>
           <div class="angleVal">
             <img class="turningImg" src="@/assets/images/icon_turningBody.png" />
-            <span>12°</span>
+            <span>{{ (direction * 45).toFixed(0) }}°</span>
           </div>
         </div>
       </div>
@@ -115,36 +116,31 @@
             <span>回正</span>
             <span>①</span>
           </div>
-          <div class="boxItem"
-            :class="{ chosedItem: controlModel == 'inPlace', opacity03: currentstatus == 'Walk' || currentstatus == 'Start' }"
+          <div class="boxItem" :class="{ chosedItem: controlModel == 'inPlace', opacity03: currentstatus == 'Start' }"
             @click="changeControl('inPlace')">
             <img class="inImg" src="@/assets/images/icon_inPlace.png" />
             <span>原地</span>
             <span>②</span>
           </div>
-          <div class="boxItem"
-            :class="{ chosedItem: controlModel == 'grasping', opacity03: currentstatus == 'Walk' || currentstatus == 'Start' }"
+          <div class="boxItem" :class="{ chosedItem: controlModel == 'grasping', opacity03: currentstatus == 'Start' }"
             @click="changeControl('grasping')">
             <img class="inImg" src="@/assets/images/icon_grasping.png" />
             <span>抓取</span>
             <span>③</span>
           </div>
-          <div class="boxItem"
-            :class="{ chosedItem: controlModel == 'face', opacity03: currentstatus == 'Walk' || currentstatus == 'Start' }"
+          <div class="boxItem" :class="{ chosedItem: controlModel == 'face', opacity03: currentstatus == 'Start' }"
             @click="changeControl('face')">
             <img class="inImg" src="@/assets/images/icon_face.png" />
             <span>表情</span>
             <span>④</span>
           </div>
-          <div class="boxItem"
-            :class="{ chosedItem: controlModel == 'ai', opacity03: currentstatus == 'Walk' || currentstatus == 'Start' }"
+          <div class="boxItem" :class="{ chosedItem: controlModel == 'ai', opacity03: currentstatus == 'Start' }"
             @click="changeControl('ai')">
             <img class="inImg" src="@/assets/images/icon_AI.png" />
             <span>AI托管</span>
             <span>⑤</span>
           </div>
-          <div class="boxItem"
-            :class="{ chosedItem: controlModel == 'setup', opacity03: currentstatus == 'Walk' || currentstatus == 'Start' }"
+          <div class="boxItem" :class="{ chosedItem: controlModel == 'setup', opacity03: currentstatus == 'Start' }"
             @click="changeControl('setup')">
             <img class="inImg" src="@/assets/images/icon_setup.png" />
             <span>设置</span>
@@ -212,20 +208,13 @@ export default {
   components: { robotCard },
   computed: {
     ...mapState(["gamepadConnected", "connected", "currRobot"]),
-    titleName() {
-      if (this.controlModel == 'inPlace') return '原地运动'
-      if (this.controlModel == 'grasping') return '末端抓取'
-      if (this.controlModel == 'face') return '头部表情'
-      if (this.controlModel == 'ai') return 'AI托管'
-      if (this.controlModel == 'setup') return '设置'
-    }
   },
   data() {
     return {
       buttons: "", //当前按键
       screenWidth: document.body.clientWidth, //当前屏幕宽度
       speed: 1, //当前速度档位 1-3
-      controlModel: "", //当前运动 gait:步态 inPlace:原地 grasping:末端抓取
+      controlModel: "", //当前运动
       mode: "", //当前运动模式
       velocity: 0,
       ySpeed: 0,
@@ -239,7 +228,6 @@ export default {
       lastY: 0,
       pointX: 0,
       pointY: 0,
-      sideVisible: false,
       mute: true,
       recording: false,
       socket: null,
@@ -335,23 +323,13 @@ export default {
       changeCamera: true,
       jointStates: null,
       standInterval: null,
+      pointerTransform: "translate(-50%, -100%) rotate(0deg)",
     };
   },
   created() {
-    document.addEventListener(
-      "click",
-      (e) => {
-        let controlRef = this.$refs.controlRef;
-        if (controlRef && !controlRef.contains(e.target)) {
-          this.sideVisible = false;
-        }
-      },
-      true
-    );
     // this.initLocalMediaWs();
   },
   async mounted() {
-    // this.$refs.pageController.style.cursor = 'none';
     this.robotName = this.$route.query.robotName;
     window.onresize = () => {
       return (() => {
@@ -364,16 +342,16 @@ export default {
     document.addEventListener('mousedown', this.onMousedown);
     document.addEventListener('mouseup', this.onMouseup);
     window.addEventListener('contextmenu', this.disableContextMenu);
-    // this.getCameraList();
-    // this.initMediaWs();
-    // this.createWsInterval();
-    // this.getStates();
+    this.getCameraList();
+    this.initMediaWs();
+    this.createWsInterval();
+    this.getStates();
     this.$nextTick(() => {
       this.startPlay();
     });
     this.$bus.$on('robotOnmessage', (data) => {
       // Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
-      console.log('robotOnmessage', data)
+      // console.log('robotOnmessage', data)
       if (data.function == "list_camera") {
         this.cameraList = data.data
       } else {
@@ -387,7 +365,6 @@ export default {
           case 2:
             this.currentstatus = 'Zero'
             this.controlModel = ""
-            this.sideVisible = false;
             break;
           case 3:
             this.currentstatus = 'Stand'
@@ -418,12 +395,19 @@ export default {
           default:
             break;
         }
-        let obj = data
-        delete obj.data
-        this.jointStates = JSON.stringify(obj)
+        let obj = data.data.joint_states
+        console.log('robotOnmessage', { joint_states: obj })
+        this.jointStates = JSON.stringify({ joint_states: obj })
       }
       console.log('robotOnmessage', this.currentstatus)
     })
+    window.addEventListener('message', (event) => {
+      if (event.data.type === 'mousemove') {
+        const { clientX, clientY } = event.data.data;
+        console.log('Mouse moved in iframe:', clientX, clientY);
+        this.onMouseMove({clientX:clientX,clientY:clientY})
+      }
+    });
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.handleKeyDown);
@@ -451,7 +435,7 @@ export default {
       let data = {
         "command": "states",
         "data": {
-          "frequency": 10
+          "frequency": 30
         }
       }
       this.robotWs.robot.send(JSON.stringify(data));
@@ -469,8 +453,8 @@ export default {
       }
       this.sdk = new SrsRtcWhipWhepAsync();
       this.$refs.rtc_media_player.srcObject = this.sdk.stream
-      var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=fftai-5g-test'
-      // var url = 'http://192.168.11.82:1985/rtc/v1/whep/?app=live&stream=livestream'
+      // var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=' + this.robotName
+      var url = 'http://192.168.11.64:1985/rtc/v1/whep/?app=live&stream=' + this.robotName
       this.sdk.play(url)
         .then((session) => {
           console.log('成功拉流:', session);
@@ -540,7 +524,8 @@ export default {
         if (currPointX < -1) currPointX = -1
         if (currPointY > 1) currPointY = 1
         if (currPointY < -1) currPointY = -1
-        // console.log('横向', currPointX, '竖向', this.pointX)
+        // console.log('横向', this.lastX, '竖向', this.lastY)
+        console.log('横向', event.clientX, '竖向', event.clientY)
         let yaw = currPointX * 40;
         let pitch = currPointY * -17;
         if (this.leftMouseDown) {
@@ -549,11 +534,13 @@ export default {
           this.operateHead(pitch, yaw);
         }
         //转向移动
-        if (this.rightMouseDown && this.currentstatus == "Walk" && this.ySpeed == 0) {
+        if (this.rightMouseDown && this.ySpeed == 0) {
           let xMove = currPointX * 2;
           if (xMove > 1) xMove = 1;
           if (xMove < -1) xMove = -1;
           this.direction = xMove
+          const rotation = this.direction * 90;
+          this.pointerTransform = `translate(-50%, -100%) rotate(${rotation}deg)`;
           this.operateWalk(
             this.direction * -45,
             this.velocity,
@@ -583,6 +570,7 @@ export default {
       } else if (event.button == 2 && event.buttons == 0) {
         this.rightMouseDown = false;
         this.direction = 0;
+        this.pointerTransform = `translate(-50%, -100%) rotate(${0}deg)`;
         this.operateWalk(
           this.direction,
           this.velocity,
@@ -674,8 +662,6 @@ export default {
           this.micControl('off')
         }
       }
-      if (event.keyCode == 27) this.closeSide();
-      // if (event.keyCode == 18) this.$refs.pageController.style.cursor = 'auto';
     },
     handleKeyUp(event) {
       event.preventDefault();
@@ -697,7 +683,6 @@ export default {
         this.changeControl("stand");
       }
       if (event.keyCode == 17) this.doSquat(0)
-      // if (event.keyCode == 18) this.$refs.pageController.style.cursor = 'none';
     },
     calibration() {
       this.promptBoxOpen("calibration");
@@ -788,6 +773,7 @@ export default {
     //切换当前控制模式
     changeControl(e) {
       console.log('changeControl', e, this.currentstatus, this.velocity)
+      if (this.currentstatus == 'Start') return;
       if (e == "stand" && this.currentstatus != 'Start') {
         if (!this.standInterval) {
           let intervalIndex = 1
@@ -809,18 +795,8 @@ export default {
           }, 100);
         }
         // this.currentstatus = "Stand";
-      } else if (e == "gait" && this.currentstatus == 'Stand') {
-        // this.currentstatus = 'Walk'
-        this.controlModel = '';
-        this.sideVisible = false;
       } else if (["inPlace", "grasping", "face", "ai", "setup"].includes(e)) {
-        // if (this.sideVisible) {
-        //   this.controlModel = '';
-        //   this.sideVisible = false;
-        // } else {
         this.controlModel = e;
-        this.sideVisible = true;
-        // }
       }
     },
     async choseMode(e) {
@@ -939,9 +915,6 @@ export default {
     cancel() {
       this.promptVisible = !this.promptVisible;
     },
-    closeSide() {
-      this.sideVisible = false
-    },
     micControl(e) {
       if (e == 'on') {
         console.log("解除静音")
@@ -956,12 +929,12 @@ export default {
       }
     },
     getCameraList() {
-      let data = {
-        "command": "list_camera",
-        "data": null
-      }
-      this.robotWs.robot.send(JSON.stringify(data));
-      // this.cameraList = ["Default", "FishEye", "Left", "Right", "Double", "Realsense"]
+      // let data = {
+      //   "command": "list_camera",
+      //   "data": null
+      // }
+      // this.robotWs.robot.send(JSON.stringify(data));
+      this.cameraList = ["Default", "Left", "Right", "Double"]
     },
     cameraControl() {
       if (!this.changeCamera) return
@@ -1354,8 +1327,10 @@ export default {
       width: .4167vw;
       height: 2.6563vw;
       position: absolute;
-      bottom: 0;
-      left: 10.9375vw;
+      bottom: -2.4vw;
+      left: 11.15vw;
+      transform-origin: bottom;
+      transition: transform 0.2s ease-in-out;
     }
 
     .angleFont {
@@ -1385,6 +1360,8 @@ export default {
       color: #FFFFFF;
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      width: 3.3333vw;
 
       .turningImg {
         width: 1.5625vw;
@@ -1468,88 +1445,6 @@ export default {
 
   to {
     transform: translateX(0);
-  }
-}
-
-.sideBox {
-  width: 19.7917vw;
-  height: calc(100% - 10.6944vw);
-  background: rgba(23, 39, 55, 0.7);
-  position: absolute;
-  top: 3.125vw;
-  right: 0;
-  z-index: 9999;
-  animation: slideInFromRight 1s ease-out forwards;
-
-  .title {
-    width: 16.9792vw;
-    height: 4.1667vw;
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 100%);
-    font-size: 1.4583vw;
-    color: #FFFFFF;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-right: 1.3021vw;
-    padding-left: 1.5104vw;
-  }
-
-  .sideContent {
-    font-size: .8333vw;
-    font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
-    font-weight: normal;
-    color: $white;
-    display: flex;
-    flex-wrap: wrap;
-
-    .actionItem {
-      text-align: center;
-      flex-basis: 33.33%;
-      padding: 1.0417vw 0;
-    }
-
-    .actionImg {
-      width: 2.7083vw;
-      height: 2.7083vw;
-    }
-
-
-
-    .setTab {
-      height: 5.3646vw;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 1.4063vw 0 1.5104vw;
-
-      .tabItem {
-        font-size: 1.0417vw;
-        color: rgba(255, 255, 255, 0.2);
-        display: flex;
-        align-items: center;
-        flex-direction: column;
-        height: 1.9271vw;
-        justify-content: space-between;
-
-        .chosed {
-          color: #FFFFFF;
-        }
-      }
-
-      .cDivider {
-        width: .8333vw;
-        height: .2083vw;
-        background: #FFFFFF;
-      }
-
-    }
-
-    .divider {
-      height: .0521vw;
-      background: rgba(255, 255, 255, 0.2);
-    }
-
-
   }
 }
 
