@@ -10,11 +10,6 @@ const routes = [
     component: () => import("../views/startUp/StartUp.vue"),
   },
   {
-    path: "/login",
-    name: "login",
-    component: () => import("../views/login/Login.vue"),
-  },
-  {
     path: "/loading",
     name: "loading",
     component: () => import("../views/loading/Loading.vue"),
@@ -25,29 +20,14 @@ const routes = [
     component: () => import("../views/controller/Controller.vue"),
   },
   {
-    path: "/development",
-    name: "development",
-    component: () => import("../views/development/Development.vue"),
-  },
-  {
-    path: "/setting",
-    name: "setting",
-    component: () => import("../views/setting/Setting.vue"),
-  },
-  {
-    path: "/robotStartup",
-    name: "robotStartup",
-    component: () => import("../views/robotStartup/RobotStartup.vue"),
+    path: "/connectionManagement",
+    name: "connectionManagement",
+    component: () => import("../views/connectionManagement/ConnectionManagement.vue"),
   },
   {
     path: "/demonstrate",
     name: "demonstrate",
     component: () => import("../views/demonstrate/Demonstrate.vue"),
-  },
-  {
-    path: "/graphicProgramming",
-    name: "graphicProgramming",
-    component: () => import("../views/graphicProgramming/GraphicProgramming.vue"),
   },
   {
     path: "/",

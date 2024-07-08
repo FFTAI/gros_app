@@ -1,23 +1,20 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { Human } from "rocs-client";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    // robot: new Human({
-    //   host: process.env.VUE_APP_URL.split("//")[1].split(":")[0],
-    // }),
     controlType: 0,
     connected: false,
     gamepadConnected: false,
+    currRobot: ""
   },
   getters: {
-    // robot: (state) => state.robot,
     controlType: (state) => state.controlType,
     connected: (state) => state.connected,
     gamepadConnected: (state) => state.gamepadConnected,
+    currRobot: (state) => state.currRobot,
   },
   mutations: {
     setControlType(state, type) {
@@ -26,13 +23,11 @@ export default new Vuex.Store({
     setConnected(state, connected) {
       state.connected = connected;
     },
-    // setRobot(state) {
-    //   state.robot = new Human({
-    //     host: process.env.VUE_APP_URL.split("//")[1].split(":")[0],
-    //   });
-    // },
     setGamepadConnected(state, gamepadConnected) {
       state.gamepadConnected = gamepadConnected;
+    },
+    setCurrRobot(state, currRobot) {
+      state.currRobot = currRobot;
     },
   },
   actions: {},

@@ -1,35 +1,16 @@
 <template>
   <div class="wrapper flex-center">
     <div class="prompt vertically-centered common-font">
-      <div class="title" v-if="prompt == 'returnMain'">
-        {{ $t("tip") }}
-      </div>
       <div class="promptContent" :style="promptContentWidth">
-        <img
-          v-if="prompt != 'returnMain'"
-          class="warningIcon"
-          src="@/assets/images/warning1.png"
-        />
         <div class="promptTxt">
-          <span v-if="prompt == 'closeProgram'">{{ $t("closeShPrompt") }}</span>
-          <span v-else-if="prompt == 'returnMain'">{{ $t("returnMain") }}</span>
-          <span v-else-if="prompt == 'reconnect'">{{
-            $t("reconnectPrompt")
-          }}</span>
-          <span v-else-if="prompt == 'powerOff'">{{ $t("powerOffTip") }}</span>
-          <span v-else-if="prompt == 'calibration'">{{
-            $t("calibrationTips")
-          }}</span>
+          <el-input v-model="robotVal" placeholder="输入需绑定机器人名"></el-input>
         </div>
       </div>
-      <div v-if="prompt != 'reconnect'" class="btnBox flex-between">
+      <div class="btnBox flex-between">
         <div class="btn blue" @click="cancel()">{{ $t("cancel") }}</div>
         <div class="btn white01-bkg" @click="confirm()">
           {{ $t("confirm") }}
         </div>
-      </div>
-      <div v-else class="btnBox flex-between" style="left: 11.7083vw">
-        <div class="btn blue" @click="reconnect()">{{ $t("reconnect") }}</div>
       </div>
       <slot></slot>
     </div>
@@ -40,7 +21,7 @@
 export default {
   name: "promptBox",
   props: {
-    prompt: {
+    robotVal: {
       type: String,
       default: "",
     },
@@ -68,7 +49,9 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      
+    };
   },
   methods: {
     cancel() {

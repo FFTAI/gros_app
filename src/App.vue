@@ -5,8 +5,7 @@
 </template>
 
 <script>
-import { Human } from "rocs-client";
-import Bus from "@/utils/bus.js";
+
 export default {
   name: "app",
   data() {
@@ -15,7 +14,7 @@ export default {
     };
   },
   created() {
-    this.initRobotWs();
+    // this.initRobotWs();
   },
   mounted() {
     let lang = localStorage.getItem("lang");
@@ -29,40 +28,44 @@ export default {
     }
     window.addEventListener("gamepadconnected", this.gamepadcted);
     window.addEventListener("gamepaddisconnected", this.gamepaddiscted);
+    this.$bus.$on("initWs", (e) => {
+      console.log('bus-on-initws~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',e)
+      this.initRobotWs(e)
+    })
   },
   beforeDestroy() {
     window.removeEventListener("gamepadconnected", this.gamepadcted);
     window.removeEventListener("gamepaddisconnected", this.gamepaddiscted);
+    this.$bus.$off("initWs");
   },
   methods: {
     //初始化Robot实例
-    initRobotWs() {
-      var robot = new Human({
-        host: process.env.VUE_APP_URL.split("//")[1].split(":")[0],
-      });
+    initRobotWs(e) {
+      let ip = process.env.VUE_APP_URL.split("//")[1];
+      let robot = new WebSocket('ws://' + ip + '/remote/' + e);
       this.robotWs.setWs(robot);
-      robot.on_connected(() => {
+      robot.onopen = () => {
         console.log('robotWs成功！')
-        Bus.$emit("robotOnconnected");
+        this.$bus.$emit("robotOnconnected");
         this.reWs = false;
-      });
-      robot.on_message((data) => {
+      };
+      robot.onmessage = (data) => {
         var currData = JSON.parse(data.data);
-        Bus.$emit("robotOnmessage", currData);
-      });
-      robot.on_close(() => {
-        console.log('robotWs关闭！')
-        this.reconnectWs();
-      });
-      robot.on_error(() => {
+        this.$bus.$emit("robotOnmessage", currData);
+      };
+      robot.onclose = (error) => {
+        console.log('robotWs关闭！',error)
+        this.reconnectWs(e);
+      };
+      robot.onerror = () => {
         console.log('robotWs出错！')
-        this.reconnectWs();
-      });
+        this.reconnectWs(e);
+      };
     },
-    reconnectWs() {
+    reconnectWs(e) {
       if (!this.reWs) {
         setTimeout(() => {
-          this.initRobotWs();
+          this.initRobotWs(e);
           this.reWs = true;
         }, 2000);
       }

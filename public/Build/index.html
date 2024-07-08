@@ -1,26 +1,39 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Unity WebGL Player | WebGLProject</title>
+    <!-- <style>
+      body {
+        cursor: none;
+      }
+    </style> -->
   </head>
   <body style="text-align: center">
-    <canvas id="unity-canvas" width=558 height=558 style="width: 558px; height: 558px; background: #121E29"></canvas>
+    <canvas
+      id="unity-canvas"
+      width="640"
+      height="723"
+      style="background: transparent"
+    ></canvas>
     <script src="Build/Build.loader.js"></script>
     <script>
-      var canvas = document.getElementById('unity-canvas')
-      canvas.width = window.innerWidth * 0.9
-      canvas.style.width = window.innerWidth * 0.9 + 'px'
-      canvas.height = window.innerHeight * 0.75
-      canvas.style.height = window.innerHeight * 0.75 + 'px'
+      var canvas = document.getElementById("unity-canvas");
+      canvas.width = window.innerWidth * 0.9 + "px";
+      canvas.style.width = window.innerWidth * 0.9 + "px";
+      canvas.height = window.innerHeight * 0.8;
+      canvas.style.height = window.innerHeight * 0.8 + "px";
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         // Mobile device style: fill the whole browser client area with the game canvas:
-        var meta = document.createElement('meta');
-        meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-        document.getElementsByTagName('head')[0].appendChild(meta);
+        var meta = document.createElement("meta");
+        meta.name = "viewport";
+        meta.content =
+          "width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes";
+        document.getElementsByTagName("head")[0].appendChild(meta);
       }
+      var gameInstance;
+      // var robotName = null;
       createUnityInstance(document.querySelector("#unity-canvas"), {
         dataUrl: "Build/Build.data",
         frameworkUrl: "Build/Build.framework.js",
@@ -31,7 +44,52 @@
         productVersion: "0.1",
         // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
         // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
-      })
+      }).then(function (instance) {
+        canvas.style.cursor = "none";
+        document.body.style.cursor = "none";
+        gameInstance = instance;
+        window.parent.postMessage("complete", "*");
+      });
+
+      // iframe 内部页面中的脚本
+      document.addEventListener("mousemove", (event) => {
+        const message = {
+          type: "mousemove",
+          data: {
+            clientX: event.clientX,
+            clientY: event.clientY,
+          },
+        };
+        console.log('横向11111', event.clientX, '竖向11111', event.clientY)
+        window.parent.postMessage(message, "*");
+      });
+
+      window.addEventListener(
+        "message",
+        function (event) {
+          callUnityFunctionRoteJoint(event.data.jointStates);
+        },
+        false
+      );
+
+      function callUnityFunctionRoteJoint(msg) {
+        let joint_states = JSON.parse(msg).joint_states;
+        for (const key in joint_states) {
+          if (Object.hasOwnProperty.call(joint_states, key) && gameInstance) {
+            const element = joint_states[key];
+            let msg = key + "," + element;
+            gameInstance.SendMessage("UnityJsCommunication", "JointRote", msg);
+          }
+        }
+      }
+
+      function callUnityFunctionEndConnect() {
+        if (gameInstance) {
+          gameInstance.SendMessage("UnityJsCommunication", "EndConnect");
+        } else {
+          console.error("Unity instance is not initialized yet.");
+        }
+      }
     </script>
   </body>
 </html>
