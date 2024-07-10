@@ -1,9 +1,6 @@
 <template>
   <div class="mainBox">
-    <rtc-header>
-      <div class="headStateSr">
-        <span class="headTxtSr common-font">连接管理</span>
-      </div>
+    <rtc-header :connection="true">
     </rtc-header>
     <div class="cmContent flex-center">
       <!-- 正常情况下的机器人列表 -->
@@ -27,11 +24,11 @@
                         height: 1.125vw;
                         margin-right: 0.375vw;
                       " src="@/assets/images/icon_Wi-Fi.png" />
-                    <span v-if="item.online">Wi-Fi连接</span>
+                    <span v-if="item.online">已连接</span>
                   </div>
                   <div v-else class="flex-center">
                     <div class="redPoint"></div>
-                    <span style="color: #FF6656;">未连接</span>
+                    <span>未连接</span>
                   </div>
                   <img style="
                         width: 1.1458vw;
@@ -50,36 +47,40 @@
         </el-carousel>
       </div>
     </div>
-    <div class="wrapper flex-center" v-if="addRobotVisible">
-      <div class="prompt vertically-centered common-font">
-        <div class="promptInputContent">
-          <span class="promtTitle">绑定机器人</span>
-          <div class="promptInput">
-            <el-input v-model="robotName" placeholder="输入需绑定机器人名"></el-input>
+    <transition name="fade">
+      <div class="wrapper flex-center" v-if="addRobotVisible">
+        <div class="prompt vertically-centered common-font">
+          <div class="promptInputContent">
+            <span class="promtTitle">绑定机器人</span>
+            <div class="promptInput">
+              <el-input v-model="robotName" placeholder="输入需绑定机器人名"></el-input>
+            </div>
           </div>
-        </div>
-        <div class="btnBox flex-between">
-          <div class="btn white01-bkg" @click="promptCancel('a')">{{ $t("cancel") }}</div>
-          <div class="btn blue" @click="commitRobot('a')">
-            {{ $t("confirm") }}
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="wrapper flex-center" v-if="delRobotVisible">
-      <div class="prompt vertically-centered common-font">
-        <div class="promptInputContent" style="margin-top: 2.5vw;">
-          <img style="width: 4.1667vw; height: 3.8542vw;" src="@/assets/images/warning1.png" />
-          <span class="promtTitle">是否删除当前机器人?</span>
-        </div>
-        <div class="btnBox flex-between">
-          <div class="btn white01-bkg" @click="promptCancel('d')">{{ $t("cancel") }}</div>
-          <div class="btn blue" @click="commitRobot('d')">
-            {{ $t("confirm") }}
+          <div class="btnBox flex-between">
+            <div class="btn white01-bkg" @click="promptCancel('a')">{{ $t("cancel") }}</div>
+            <div class="btn purple" @click="commitRobot('a')">
+              {{ $t("confirm") }}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </transition>
+    <transition name="fade">
+      <div class="wrapper flex-center" v-if="delRobotVisible">
+        <div class="prompt vertically-centered common-font">
+          <div class="promptInputContent" style="margin-top: 2.5vw;">
+            <img style="width: 4.1667vw; height: 3.8542vw;" src="@/assets/images/warning1.png" />
+            <span class="promtTitle">是否删除当前机器人?</span>
+          </div>
+          <div class="btnBox flex-between">
+            <div class="btn white01-bkg" @click="promptCancel('d')">{{ $t("cancel") }}</div>
+            <div class="btn purple" @click="commitRobot('d')">
+              {{ $t("confirm") }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -105,25 +106,6 @@ export default {
   },
   methods: {
     async initRobotList() {
-      // http
-      //   .get("/list")
-      //   .then((response) => {
-      //     console.log(response);
-      //     this.robotList = response.data.data
-      //     for (let i = 0; i < this.robotList.length; i += 4) {
-      //       if (i == 0) {
-      //         this.carouselList.push(this.robotList.slice(0, 4));
-      //       } else {
-      //         this.carouselList.push(this.robotList.slice(i - 1, i + 4));
-      //       }
-      //     }
-      //     console.log(this.carouselList);
-      //   })
-      //   .catch((error) => {
-      //     console.error("Error:", error);
-      //   });
-
-      // localStorage.removeItem('robotList')
       this.robotList = JSON.parse(localStorage.getItem('robotList'))
       if (this.robotList == null) {
         this.robotList = []
@@ -242,17 +224,17 @@ export default {
 }
 
 .addCard {
-  width: 21.7708vw;
-  height: 26.9792vw;
+  width: 21.875vw;
+  height: 27.0833vw;
   border-radius: 0.625vw;
-  border: 0.0521vw dashed #0075b8;
+  border: 0.0521vw dashed #D71AFF;
   order: -2;
   flex-direction: column;
 
   .add {
     width: 10.4167vw;
     height: 10.4167vw;
-    background: rgba(68, 216, 251, 0.1);
+    background: rgba(218, 195, 255, 0.1);
     border-radius: 50%;
 
     .addImg {
@@ -269,37 +251,6 @@ export default {
   }
 }
 
-.addCardMore {
-  width: 21.5417vw;
-  height: 12.3333vw;
-  border-radius: 0.625vw;
-  border: 0.0417vw dashed #0075b8;
-  order: -2;
-
-  .add {
-    width: 8.625vw;
-    height: 7.0833vw;
-    background: rgba(68, 216, 251, 0.1);
-    border-radius: 0 0 100% 0;
-
-    .addImg {
-      position: absolute;
-      left: 2.1667vw;
-      top: 1.5833vw;
-      width: 2.9583vw;
-      height: 2.9583vw;
-    }
-  }
-
-  .addContent {
-    position: absolute;
-    left: 9.1667vw;
-    top: 5.5417vw;
-    font-family: AlibabaPuHuiTiM;
-    font-size: 1.9583vw;
-    color: #ffffff;
-  }
-}
 
 .cmContent {
   position: absolute;
@@ -337,8 +288,8 @@ export default {
     .cardDivider {
       width: 21vw;
       height: 0.0521vw;
-      background: #44d8fb;
-      opacity: 0.3;
+      background: #FFFFFF;
+      opacity: 0.2;
     }
 
     .cardContent {
@@ -347,99 +298,22 @@ export default {
     }
   }
 
-  .robotCardMore {
-    width: 21.5417vw;
-    height: 12.25vw;
-    border-radius: 0.625vw;
-
-    .cardTitle {
-      width: 17vw;
-      padding: 0.875vw 2.0833vw 0.7917vw 2.4583vw;
-      font-size: 1vw;
-      color: #ffffff;
-    }
-
-    .cardDivider {
-      width: 21.5417vw;
-      height: 0.0417vw;
-      background: #44d8fb;
-      opacity: 0.3;
-    }
-
-    .cardContent {
-      position: relative;
-      height: 9.25vw;
-      width: 19.0833vw;
-      padding-left: 2.4583vw;
-
-      .img {
-        position: absolute;
-        top: 2.4583vw;
-        left: 2.4583vw;
-        width: 3.9583vw;
-        height: 3.9583vw;
-      }
-
-      .name {
-        position: absolute;
-        top: 2.4583vw;
-        left: 7.625vw;
-        font-family: AlibabaPuHuiTiM;
-        font-size: 1.9583vw;
-        color: #ffffff;
-      }
-
-      .type {
-        position: absolute;
-        top: 5.1667vw;
-        left: 7.625vw;
-        font-family: Alibaba-PuHuiTi, Alibaba-PuHuiTi;
-        font-weight: normal;
-        font-size: 1vw;
-        color: rgba(255, 255, 255, 0.5);
-      }
-    }
-  }
-
   .uncheckedCard {
-    background: rgba(0, 75, 133, 0.3);
-    border: 0.0417vw solid #0075b8;
+    background: linear-gradient(180deg,
+        #484154 0%,
+        #30293F 100%);
+    border: 0.0417vw solid #484154;
   }
 
   .checkedCard {
     background: linear-gradient(180deg,
-        rgba(0, 130, 187, 0.9) 0%,
-        rgba(0, 75, 133, 0.8) 100%);
-    border: 0.0417vw solid #0075b8;
+        rgba(139, 62, 255, 0.7) 0%,
+        rgba(122, 36, 253, 0.7) 100%);
+    border: 0.0417vw solid #484154;
   }
 
   .top {
     order: -1;
-  }
-}
-
-.completeBtn {
-  // position: absolute;
-  // bottom: 3.9583vw;
-  // left: 50%;
-  // transform: translate(
-  //   -50%,
-  //   0
-  // );
-  margin-top: 4.6875vw;
-  width: 18.4583vw;
-  height: 4.1667vw;
-  background: linear-gradient(230deg, #198bff 0%, #0086d1 100%);
-  border-radius: 2.0833vw;
-  font-family: Alibaba-PuHuiTi, Alibaba-PuHuiTi;
-  font-weight: normal;
-  font-size: 1.7083vw;
-  color: #ffffff;
-}
-
-@media screen and (min-width: 2400px) and (max-height: 1080px) {
-  .completeBtn {
-    margin-top: 3.125vw;
   }
 }
 
@@ -449,84 +323,6 @@ export default {
   background: #ff6656;
   border-radius: 50%;
   margin-right: 0.625vw;
-}
-
-.modeChoseDialog {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 62.5vw;
-  height: 39.0625vw;
-  background-image: url("../../assets/images/image_modeBkg.png");
-  background-repeat: no-repeat;
-  background-size: cover;
-  z-index: 999;
-  display: flex;
-  justify-content: center;
-  font-family: AlibabaPuHuiTiM;
-  font-size: 1.4583vw;
-  color: #ffffff;
-
-  .title {
-    position: absolute;
-    top: 2.8125vw;
-    font-size: 1.6667vw;
-  }
-
-  .content {
-    position: absolute;
-    top: 10.625vw;
-    width: 56.25vw;
-    display: flex;
-    gap: 3.125vw;
-
-    .mode {
-      width: 26.5625vw;
-      height: 17.8125vw;
-      background-repeat: no-repeat;
-      background-size: cover;
-      display: flex;
-      justify-content: center;
-
-      .modeTxt {
-        position: absolute;
-        bottom: 3.4375vw;
-        font-size: 1.25vw;
-        opacity: 0.7;
-      }
-
-      .modeName {
-        position: absolute;
-        bottom: -4.0625vw;
-      }
-    }
-  }
-}
-
-.cardPointSr {
-  width: 5.1667vw;
-  height: 0.75vw;
-  margin-top: 3.125vw;
-
-  .pointSr {
-    width: 0.75vw;
-    height: 0.75vw;
-    background: #44d8fb;
-    border-radius: 0.5vw;
-    opacity: 0.2;
-  }
-
-  .pointSrActivity {
-    opacity: 1;
-    width: 2.4583vw;
-  }
-}
-
-@media screen and (min-width: 2400px) and (max-height: 1080px) {
-  .cardPointSr {
-    margin-top: 2.0833vw;
-  }
 }
 
 //弹框
@@ -545,21 +341,23 @@ export default {
 
 .btnBox {
   width: 27.0833vw;
-  font-size: 1.7083vw;
+  font-size: 1.4583vw;
   position: absolute;
   bottom: 2.7083vw;
 }
 
 .btn {
-  width: 12.3333vw;
+  width: 12.5vw;
   height: 4.1667vw;
   border-radius: 2.2083vw;
   line-height: 4.1667vw;
   text-align: center;
 }
 
-.blue {
-  background: $base-bkg;
+.purple {
+  background: linear-gradient(180deg,
+      rgba(139, 62, 255, 0.7) 0%,
+      rgba(122, 36, 253, 0.7) 100%);
 }
 
 .promptInputContent {
@@ -595,5 +393,15 @@ export default {
   background-color: rgba(255, 255, 255, 0);
   color: #fff;
   border: none;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity .3s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

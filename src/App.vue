@@ -1,6 +1,10 @@
 <template>
   <div id="app">
-    <router-view />
+    <div class="mainBody">
+      <transition name="fade">
+        <router-view />
+      </transition>
+    </div>
   </div>
 </template>
 
@@ -14,7 +18,6 @@ export default {
     };
   },
   created() {
-    // this.initRobotWs();
   },
   mounted() {
     let lang = localStorage.getItem("lang");
@@ -29,7 +32,7 @@ export default {
     window.addEventListener("gamepadconnected", this.gamepadcted);
     window.addEventListener("gamepaddisconnected", this.gamepaddiscted);
     this.$bus.$on("initWs", (e) => {
-      console.log('bus-on-initws~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',e)
+      console.log('bus-on-initws~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', e)
       this.initRobotWs(e)
     })
   },
@@ -50,11 +53,14 @@ export default {
         this.reWs = false;
       };
       robot.onmessage = (data) => {
-        var currData = JSON.parse(data.data);
-        this.$bus.$emit("robotOnmessage", currData);
+        console.log('robotWs收到数据：', data.data)
+        if(data.data){
+          var currData = JSON.parse(data.data);
+          this.$bus.$emit("robotOnmessage", currData);
+        }
       };
       robot.onclose = (error) => {
-        console.log('robotWs关闭！',error)
+        console.log('robotWs关闭！', error)
         this.reconnectWs(e);
       };
       robot.onerror = () => {
@@ -80,4 +86,23 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.mainBody {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background-image: url("assets/images/image_bkg.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity .3s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

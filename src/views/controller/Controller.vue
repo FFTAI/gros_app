@@ -39,37 +39,8 @@
           </div>
         </div>
       </div>
-      <div class="headBkIn fullWidth">
-        <div class="headReturn" @click="routerReturn()">
-          <img class="return" src="@/assets/images/icon_return.png" />
-        </div>
-        <div class="headState">
-          <span class="headTxt common-font">{{ $t("remoteMode") }}</span>
-          <div class="cDivider"></div>
-          <span class="actionTxt">{{ mode ? $t(mode) : '闲置' }}{{ $t("ing") }}…</span>
-        </div>
-        <div class="spacing flex-center">
-          <div class="divider spacing"></div>
-          <div>
-            <img class="inImg" style="width: 1.4583vw;height: 1.3542vw;" src="@/assets/images/icon_sRob.png" />
-            <span class="inTxt title-font">80°C</span>
-          </div>
-          <div class="divider spacing"></div>
-          <div>
-            <img class="inImg" src="@/assets/images/icon_chipTem.png" />
-            <span class="inTxt title-font">60°C</span>
-          </div>
-          <div class="divider spacing"></div>
-          <div>
-            <img class="inImg" src="@/assets/images/icon_battery2.png" />
-            <span class="inTxt title-font">43%</span>
-          </div>
-          <div class="divider spacing"></div>
-          <div>
-            <img class="inImg" style="height: 1.25vw; width: 1.6667vw;" src="@/assets/images/icon_Wifi.png" />
-          </div>
-        </div>
-      </div>
+      <rtc-header>
+      </rtc-header>
 
       <div class="bottomBox flex-between fullWidth">
         <div class="leftBox flex-between">
@@ -103,53 +74,45 @@
             @click="changeControl('stand')">
             <img class="inImg" src="@/assets/images/icon_stand.png" />
             <span>站立</span>
-            <span>Space</span>
           </div>
           <div class="boxItem" :class="{ chosedItem: currentstatus == 'Walk', opacity03: currentstatus == 'Start' }">
             <img class="inImg" src="@/assets/images/icon_Stepping.png" />
             <span>行走</span>
-            <span>W</span>
           </div>
-          <div class="boxItem" :class="{ chosedItem: reHead, opacity03: currentstatus == 'Start' }"
+          <!-- <div class="boxItem" :class="{ chosedItem: reHead, opacity03: currentstatus == 'Start' }"
             @click="returnHead()">
             <img class="inImg" src="@/assets/images/icon_headReturn.png" />
             <span>回正</span>
-            <span>①</span>
-          </div>
+          </div> -->
           <div class="boxItem" :class="{ chosedItem: controlModel == 'inPlace', opacity03: currentstatus == 'Start' }"
             @click="changeControl('inPlace')">
             <img class="inImg" src="@/assets/images/icon_inPlace.png" />
             <span>原地</span>
-            <span>②</span>
           </div>
           <div class="boxItem" :class="{ chosedItem: controlModel == 'grasping', opacity03: currentstatus == 'Start' }"
             @click="changeControl('grasping')">
             <img class="inImg" src="@/assets/images/icon_grasping.png" />
             <span>抓取</span>
-            <span>③</span>
           </div>
           <div class="boxItem" :class="{ chosedItem: controlModel == 'face', opacity03: currentstatus == 'Start' }"
             @click="changeControl('face')">
             <img class="inImg" src="@/assets/images/icon_face.png" />
             <span>表情</span>
-            <span>④</span>
           </div>
           <div class="boxItem" :class="{ chosedItem: controlModel == 'ai', opacity03: currentstatus == 'Start' }"
             @click="changeControl('ai')">
             <img class="inImg" src="@/assets/images/icon_AI.png" />
             <span>AI托管</span>
-            <span>⑤</span>
           </div>
           <div class="boxItem" :class="{ chosedItem: controlModel == 'setup', opacity03: currentstatus == 'Start' }"
             @click="changeControl('setup')">
             <img class="inImg" src="@/assets/images/icon_setup.png" />
             <span>设置</span>
-            <span>⑥</span>
           </div>
         </div>
         <div class="rightBox flex-between">
-          <el-button type="warning" @click="doCalibration()">初始⑧</el-button>
-          <el-button type="danger" @click="stop()">急停⑨</el-button>
+          <el-button type="warning" @click="doCalibration()">初始</el-button>
+          <el-button type="danger" @click="stop()">急停</el-button>
         </div>
       </div>
 
@@ -157,17 +120,17 @@
         <div v-if="controlModel == 'inPlace'" class="actionItem" :class="{ chosedAction: item.name == mode }"
           v-for="(item, index) in inPlaceList" :key="index" @click="choseMode(item.name)">
           <img class="actionImg" :src="item.src" />
-          <div>{{ $t(item.name) }}{{ ' ( ' + item.keyCode + ' )' }}</div>
+          <div>{{ $t(item.name) }}</div>
         </div>
         <div v-if="controlModel == 'grasping'" class="actionItem" :class="{ chosedAction: item.name == mode }"
           v-for="(item, index) in graspingList" :key="index" @click="choseMode(item.name)">
           <img class="actionImg" :src="item.src" />
-          <div>{{ $t(item.name) }}{{ ' ( ' + item.keyCode + ' )' }}</div>
+          <div>{{ $t(item.name) }}</div>
         </div>
         <div v-if="controlModel == 'face'" class="actionItem" :class="{ chosedAction: item.name == mode }"
           v-for="(item, index) in faceList" :key="index" @click="showFace(item.val)">
           <img class="actionImg" :src="item.src" />
-          <div>{{ item.name }}{{ ' ( ' + item.keyCode + ' )' }}</div>
+          <div>{{ item.name }}</div>
         </div>
         <div v-if="controlModel == 'setup'" style="width: 100%;">
           <div class="speedControl">
@@ -203,9 +166,10 @@
 <script>
 import robotCard from "@/components/robotCard.vue";
 import { mapState } from "vuex";
+import rtcHeader from "@/components/rtcHeader.vue";
 
 export default {
-  components: { robotCard },
+  components: { robotCard, rtcHeader },
   computed: {
     ...mapState(["gamepadConnected", "connected", "currRobot"]),
   },
@@ -223,7 +187,7 @@ export default {
       promptVal: "",
       lastMessageReceivedTime: Date.now(),
       wsInterval: null,
-      currentstatus: "Start", //当前状态: Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
+      currentstatus: "Stand", //当前状态: Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
       lastX: 0,
       lastY: 0,
       pointX: 0,
@@ -360,6 +324,7 @@ export default {
     this.$bus.$on('robotOnmessage', (data) => {
       // Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
       // console.log('robotOnmessage', data)
+
       if (data.function == "list_camera") {
         this.cameraList = data.data
       } else {
@@ -938,25 +903,26 @@ export default {
       this.cameraList = ["Default", "Left", "Right", "Double"]
     },
     cameraControl() {
-      if (!this.changeCamera) return
-      console.log('切换镜头~~~~~~~~~~~', this.cameraList, this.cameraId)
-      this.changeCamera = false
-      let cameraType = "Defalut"
-      for (let i = 0; i < this.cameraList.length; i++) {
-        if (this.cameraList[i] != "Defalut" && i == (this.cameraId + 1)) {
-          cameraType = this.cameraList[i]
-        }
-      }
-      if (this.cameraId == this.cameraList.length - 1) {
-        this.cameraId = 1
-        cameraType = this.cameraList[1]
-      } else {
-        this.cameraId++
-      }
+      // if (!this.changeCamera) return
+      // console.log('切换镜头~~~~~~~~~~~', this.cameraList, this.cameraId)
+      // this.changeCamera = false
+      // let cameraType = "Defalut"
+      // for (let i = 0; i < this.cameraList.length; i++) {
+      //   if (this.cameraList[i] != "Defalut" && i == (this.cameraId + 1)) {
+      //     cameraType = this.cameraList[i]
+      //   }
+      // }
+      // if (this.cameraId == this.cameraList.length - 1) {
+      //   this.cameraId = 1
+      //   cameraType = this.cameraList[1]
+      // } else {
+      //   this.cameraId++
+      // }
       let data = {
         "command": "start_camera",
         "data": {
-          "camera": cameraType
+          // "camera": cameraType
+          "camera": "Defalut"
         }
       }
       this.robotWs.robot.send(JSON.stringify(data));
@@ -1149,7 +1115,7 @@ export default {
 .container {
   width: 100%;
   overflow: hidden;
-  background-image: url("../../assets/images/bg_loading.png");
+  background-image: url("../../assets/images/image_bkg.png");
 }
 
 .videoContainer {
@@ -1166,6 +1132,7 @@ export default {
     // background: #282828;
     background-image: url("../../assets/images/bg_videoLoading.png");
     background-size: contain;
+    border-radius: .4167vw;
   }
 
   .topScale {
@@ -1230,6 +1197,7 @@ export default {
         background: #FFFFFF;
         border-radius: .2083vw;
         position: absolute;
+        font-weight: 700;
         top: -0.5vw;
         font-size: .63vw;
         color: #190049;
@@ -1301,6 +1269,7 @@ export default {
         background: #FFFFFF;
         border-radius: .2083vw;
         position: absolute;
+        font-weight: 700;
         right: -0.85vw;
         font-size: .63vw;
         color: #190049;
@@ -1400,8 +1369,8 @@ export default {
   }
 
   .midBox {
-    width: 28.0729vw;
-    margin-right: 11.875vw;
+    width: 21.9vw;
+    margin-right: 9.6vw;
   }
 
   .rightBox {
@@ -1430,8 +1399,9 @@ export default {
   }
 
   .chosedItem {
-    background: #AB76FF;
+    background: rgba(171, 118, 255, 0.4);
     border-radius: .2083vw;
+    padding: .3125vw 0;
   }
 }
 
@@ -1534,8 +1504,8 @@ export default {
 }
 
 .inImg {
-  width: 1.3542vw;
-  height: 1.3542vw;
+  width: 1.6667vw;
+  height: 1.6667vw;
   z-index: 99;
   vertical-align: middle;
 }
@@ -1565,9 +1535,9 @@ export default {
     align-items: center;
 
     .actionImg {
-      width: 2.2917vw;
-      height: 2.2917vw;
-      margin-bottom: 0.6vw;
+      width: 1.875vw;
+      height: 1.875vw;
+      margin-bottom: .5208vw;
     }
   }
 

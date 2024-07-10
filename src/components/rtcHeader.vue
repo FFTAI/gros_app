@@ -1,60 +1,43 @@
 <template>
   <div class="main">
-    <div class="headBk"></div>
-    <div class="headBkIn">
-      <!-- Logo -->
-      <div class="headLogo" v-if="isLogin">
-        <img class="leftSlot" src="@/assets/images/image_logo.png" />
-      </div>
-      <div class="headAfter" v-if="isLogin"></div>
-      <!-- 返回 -->
-      <div class="headReturn" v-else @click="routerReturn()">
+    <div class="headBkIn fullWidth">
+      <div class="headReturn" @click="routerReturn()" v-if="!connection">
         <img class="return" src="@/assets/images/icon_return.png" />
+      </div>
+      <div class="headLogo" v-else>
+        <img class="logo" src="@/assets/images/logo.png" />
+      </div>
+      <div class="headState" v-if="!connection">
+        <span class="headTxt common-font">{{ $t("remoteMode") }}</span>
+        <div class="cDivider"></div>
+        <span class="actionTxt">{{ mode ? $t(mode) : '闲置' }}{{ $t("ing") }}…</span>
+      </div>
+      <div class="headState" style="left: 13.6458vw;" v-else>
+        <span class="headTxt common-font">连接管理</span>
+      </div>s
+      <div class="spacing flex-center" v-if="!connection">
+        <div class="divider spacing"></div>
+        <div>
+          <img class="inImg" style="width: 1.4583vw;height: 1.3542vw;" src="@/assets/images/icon_sRob.png" />
+          <span class="inTxt title-font">80°C</span>
+        </div>
+        <div class="divider spacing"></div>
+        <div>
+          <img class="inImg" src="@/assets/images/icon_chipTem.png" />
+          <span class="inTxt title-font">60°C</span>
+        </div>
+        <div class="divider spacing"></div>
+        <div>
+          <img class="inImg" src="@/assets/images/icon_battery2.png" />
+          <span class="inTxt title-font">43%</span>
+        </div>
+        <div class="divider spacing"></div>
+        <div>
+          <img class="inImg" style="height: 1.25vw; width: 1.6667vw;" src="@/assets/images/icon_Wifi.png" />
+        </div>
       </div>
     </div>
     <slot></slot>
-    <div
-      class="headButtonIn flex-between"
-      v-if="(connected || isController) && !isLoading && !isStartup"
-    >
-      <!-- 电量和wifi -->
-      <div class="spacing">
-        <!-- <img class="inImg" src="@/assets/images/icon_battery2.png" />
-        <span class="inTxt title-font">43%</span> -->
-        <img
-          class="inImg"
-          style="height: 1.6667vw; width: 2.2917vw"
-          src="@/assets/images/icon_Wifi.png"
-        />
-      </div>
-      <div class="divider spacing" v-if="camera"></div>
-      <!-- 视频显示开关 -->
-      <div class="spacing" @click="openCamera()" v-if="camera">
-        <img
-          class="inImg"
-          src="@/assets/images/icon_cameraOn.png"
-          v-if="cameraOn"
-        />
-        <img class="inImg" src="@/assets/images/icon_cameraOff.png" v-else />
-      </div>
-      <div class="divider spacing" v-if="!isSetting"></div>
-      <!-- 设置 -->
-      <div class="spacing" v-if="!isSetting" @click="setting()">
-        <img class="inImg" src="@/assets/images/icon_setting.png" />
-      </div>
-      <div class="divider spacing" v-if="isLogin"></div>
-      <div class="spacing" v-if="isLogin" @click="shutDown()">
-        <img class="inImg" src="@/assets/images/btn_shutDown.png" />
-      </div>
-    </div>
-    <!-- 连接 -->
-    <div
-      class="rightSlot flex-center"
-      @click="toConnect()"
-      v-if="!connected && (isLogin || isSetting) && !isLoading && !isStartup"
-    >
-      <span class="connect common-font">{{ $t("connect") }}</span>
-    </div>
   </div>
 </template>
 
@@ -64,48 +47,24 @@ export default {
   name: "rtcHeader",
   props: {
     currentSpeed: Number,
-    camera: {
+    connection: {
       type: Boolean,
       default: false,
     },
-    isLogin: {
-      type: Boolean,
-      default: false,
-    },
-    isLoading: {
-      type: Boolean,
-      default: false,
-    },
-    isController: {
-      type: Boolean,
-      default: false,
-    },
-    isSetting: {
-      type: Boolean,
-      default: false,
-    },
-    isStartup: {
-      type: Boolean,
-      default: false,
-    },
+    mode: {
+      type: String,
+      default: '',
+    }
   },
   computed: {
     ...mapState(["connected"]),
   },
   data() {
     return {
-      cameraOn: true,
+
     };
   },
   methods: {
-    toConnect() {
-      this.$emit("connect");
-    },
-    setting() {
-      this.$router.push({
-        name: "setting",
-      });
-    },
     routerReturn() {
       //如果是控制页跳过loading返回
       if (this.isController) {
@@ -113,14 +72,7 @@ export default {
       } else {
         this.$router.go(-1);
       }
-    },
-    openCamera() {
-      this.cameraOn = !this.cameraOn;
-      this.$emit("cameraOn");
-    },
-    shutDown() {
-      this.$emit("shutDown");
-    },
+    }
   },
 };
 </script>
@@ -130,123 +82,123 @@ export default {
   position: relative;
 }
 
-.headBk {
-  position: absolute;
-  width: 100%;
-  top: 0;
-  left: 0;
-  height: 4.4444vw;
-  z-index: 10;
-  background: linear-gradient(
-    274deg,
-    rgba(26, 25, 25, 0.4) 0%,
-    rgba(0, 76, 129, 0.4) 100%
-  );
-}
-
 .headBkIn {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 4.4444vw;
+  height: 3.125vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   z-index: 99;
+  background: linear-gradient(274deg, rgba(25, 0, 73, 0) 0%, rgba(122, 36, 253, 0.2) 100%);
 
-  .leftSlot {
-    width: 9.97vw;
-    height: 2.604vw;
-    position: absolute;
-    left: 1.8333vw;
-    top: 0.9167vw;
-  }
 
-  .headLogo {
-    height: 4.4167vw;
-    width: 13.25vw;
-    background: #004b85;
-  }
-
-  .headAfter {
-    width: 0;
-    height: 0;
-    border-right: 2vw solid transparent;
-    border-top: 4.45vw solid #004b85;
-    position: absolute;
-    left: 13.2083vw;
-    top: 0;
-  }
-
-  .return {
-    width: 2.0833vw;
-    height: 1.7708vw;
-    margin-left: 0.9375vw;
-  }
 
   .headReturn {
-    height: 4.4444vw;
-    width: 5.24vw;
-    background: #004c81;
-    padding-left: 1.24vw;
-    line-height: 5.8vw;
+    height: 3.125vw;
+    width: 6.8229vw;
+    background: #542C89;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .return {
+      width: 1.6667vw;
+      height: 1.4167vw;
+    }
   }
 
   .headReturn::after {
     position: absolute;
     content: " ";
-    left: 4.218vw;
-    border-width: 4.4444vw 2.3021vw;
+    left: 5.73vw;
+    top: 0.0vw;
+    border-width: 3.125vw 1.0938vw;
     border-style: solid;
-    border-color: #004c81 transparent transparent transparent;
-  }
-}
-
-.headButtonIn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  line-height: 4.4vw;
-  z-index: 99;
-
-  .divider {
-    width: 0.1042vw;
-    height: 4.4271vw;
-    background: $white;
-    opacity: 0.3;
+    border-color: #542C89 transparent transparent transparent;
   }
 
-  .inImg {
-    width: 2.2222vw;
-    height: 2.2222vw;
-    z-index: 99;
-    vertical-align: middle;
+  .headLogo {
+    height: 3.125vw;
+    width: 10.8854vw;
+    background: #7A24FD;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .logo {
+      width: 8.75vw;
+      height: 1.0417vw;
+    }
   }
 
-  .inTxt {
-    font-size: $size-41;
-    color: $white;
-    margin-right: 1.9444vw;
-    margin-left: 0.6944vw;
-    vertical-align: middle;
+  .headLogo::after {
+    position: absolute;
+    content: " ";
+    left: 9.8vw;
+    top: 0.0vw;
+    border-width: 3.125vw 1.0938vw;
+    border-style: solid;
+    border-color: #7A24FD transparent transparent transparent;
   }
 
   .spacing {
-    margin-right: 2.6042vw;
+    margin-right: 1.1458vw;
+  }
+
+  .divider {
+    width: .1042vw;
+    height: 3.125vw;
+    background: $white;
+    opacity: 0.1;
+  }
+
+  .inTxt {
+    font-size: 1.25vw;
+    color: $white;
+    margin-right: 1.1458vw;
+    margin-left: 0.6944vw;
+    vertical-align: middle;
   }
 }
 
-.rightSlot {
+.headState {
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 7.5vw;
-  height: 4.375vw;
-  background: #0075b8;
-  float: right;
+  top: .7292vw;
+  left: 10.9375vw;
+  z-index: 99;
+  display: flex;
+  align-items: center;
 
-  .connect {
-    font-size: $size-35;
+  .headTxt {
+    font-size: 1.25vw;
     color: $white;
-    z-index: 99;
+    font-style: normal;
   }
+
+  .cDivider {
+    width: .0521vw;
+    height: 1.25vw;
+    background: #FFFFFF;
+    margin-left: 1.4583vw;
+  }
+
+  .actionTxt {
+    font-size: 1.0417vw;
+    color: #FFFFFF;
+    margin-left: 1.4583vw;
+  }
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.inImg {
+  width: 1.3542vw;
+  height: 1.3542vw;
+  z-index: 99;
+  vertical-align: middle;
 }
 </style>
