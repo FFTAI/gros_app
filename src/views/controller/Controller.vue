@@ -328,9 +328,17 @@ export default {
   },
   created() {
     // this.initLocalMediaWs();
+    this.robotName = this.$route.query.robotName;
+    this.$bus.$emit("initWs", this.robotName);
   },
   async mounted() {
-    this.robotName = this.$route.query.robotName;
+    this.$bus.$on('robotOnconnected', () => {
+      this.getCameraList();
+      this.initMediaWs();
+      this.createWsInterval();
+      this.getStates();
+      this.startPlay();
+    })
     window.onresize = () => {
       return (() => {
         this.screenWidth = document.body.clientWidth;
@@ -342,12 +350,12 @@ export default {
     document.addEventListener('mousedown', this.onMousedown);
     document.addEventListener('mouseup', this.onMouseup);
     window.addEventListener('contextmenu', this.disableContextMenu);
-    this.getCameraList();
-    this.initMediaWs();
-    this.createWsInterval();
-    this.getStates();
-    this.$nextTick(() => {
-      this.startPlay();
+    window.addEventListener('message', (event) => {
+      if (event.data.type === 'mousemove') {
+        const { clientX, clientY } = event.data.data;
+        console.log('Mouse moved in iframe:', clientX, clientY);
+        this.onMouseMove({ clientX: clientX, clientY: clientY })
+      }
     });
     this.$bus.$on('robotOnmessage', (data) => {
       // Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
@@ -395,19 +403,12 @@ export default {
           default:
             break;
         }
+        console.log('robotOnmessage', data)
         let obj = data.data.joint_states
-        console.log('robotOnmessage', { joint_states: obj })
         this.jointStates = JSON.stringify({ joint_states: obj })
       }
       console.log('robotOnmessage', this.currentstatus)
     })
-    window.addEventListener('message', (event) => {
-      if (event.data.type === 'mousemove') {
-        const { clientX, clientY } = event.data.data;
-        console.log('Mouse moved in iframe:', clientX, clientY);
-        this.onMouseMove({clientX:clientX,clientY:clientY})
-      }
-    });
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.handleKeyDown);
@@ -453,8 +454,8 @@ export default {
       }
       this.sdk = new SrsRtcWhipWhepAsync();
       this.$refs.rtc_media_player.srcObject = this.sdk.stream
-      // var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=' + this.robotName
-      var url = 'http://192.168.11.64:1985/rtc/v1/whep/?app=live&stream=' + this.robotName
+      var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=' + this.robotName
+      // var url = 'http://192.168.11.64:1985/rtc/v1/whep/?app=live&stream=' + this.robotName
       this.sdk.play(url)
         .then((session) => {
           console.log('成功拉流:', session);
@@ -1163,7 +1164,7 @@ export default {
     // height: 62.47vh;
     height: 35.1563vw;
     // background: #282828;
-    background-image: url("../../assets/images/bg_loading1.png");
+    background-image: url("../../assets/images/bg_videoLoading.png");
     background-size: contain;
   }
 
@@ -1324,11 +1325,11 @@ export default {
     }
 
     .pointer {
-      width: .4167vw;
-      height: 2.6563vw;
+      width: .4688vw;
+      height: 2.7083vw;
       position: absolute;
-      bottom: -2.4vw;
-      left: 11.15vw;
+      bottom: -2.6vw;
+      left: 11.45vw;
       transform-origin: bottom;
       transition: transform 0.2s ease-in-out;
     }

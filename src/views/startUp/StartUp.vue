@@ -1,6 +1,6 @@
 <template>
   <div class="main flex-center common-bkg">
-    <img src="../../assets/images/image_logo.png" />
+    <img class="logobk" src="../../assets/images/image_logo.png" />
   </div>
 </template>
 
@@ -12,7 +12,7 @@ export default {
         //首页logo3秒后跳转
         name: "connectionManagement",
       });
-    }, 3000);
+    }, 2000);
   },
   data() {
     return {};
@@ -23,5 +23,9 @@ export default {
 <style lang="scss" scoped>
 .main {
   background-image: url("../../assets/images/image_bkg.png");
+}
+.logobk{
+  width: 100vw;
+  height: 56.25vw;
 }
 </style>

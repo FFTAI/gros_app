@@ -150,10 +150,9 @@ export default {
     choseCard(e) {
       if (!e.online) return
       this.$store.commit("setCurrRobot", e.name);
-      this.$bus.$emit("initWs", e.name);
       this.$router.push({
-        name: "loading",
-        params: e
+        name: "controller",
+        query: { robotName: e.name }
       });
     },
     promptCancel(e) {
@@ -213,7 +212,7 @@ export default {
           this.carouselList.push(this.robotList.slice(i - 1, i + 3));
         }
       }
-      console.log('carouselList',this.carouselList);
+      console.log('carouselList', this.carouselList);
     }
   },
 };
@@ -501,14 +500,6 @@ export default {
         position: absolute;
         bottom: -4.0625vw;
       }
-    }
-
-    .left {
-      background-image: url("../../assets/images/image_Wi-Fimode.png");
-    }
-
-    .right {
-      background-image: url("../../assets/images/image_apmode.png");
     }
   }
 }
