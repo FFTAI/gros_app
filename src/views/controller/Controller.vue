@@ -29,6 +29,7 @@
           <span class="font" style="left: 0;">L</span>
           <span class="angleFont" style="left: 1.0417vw;">-45°</span>
           <img class="indicationImg" src="@/assets/images/image_indication.png" draggable="false" />
+          <img class="shadowImg" src="@/assets/images/image_shadow.png" draggable="false" />
           <img class="pointer" src="@/assets/images/image_pointer.png" draggable="false"
             :style="{ transform: pointerTransform }" />
           <span class="angleFont" style="right: 1.0417vw;">45°</span>
@@ -116,7 +117,7 @@
         </div>
       </div>
 
-      <div class="popDialog">
+      <div class="popDialog" v-show="currentstatus == 'Zero'">
         <div v-if="controlModel == 'inPlace'" class="actionItem" :class="{ chosedAction: item.name == mode }"
           v-for="(item, index) in inPlaceList" :key="index" @click="choseMode(item.name)">
           <img class="actionImg" :src="item.src" />
@@ -187,7 +188,7 @@ export default {
       promptVal: "",
       lastMessageReceivedTime: Date.now(),
       wsInterval: null,
-      currentstatus: "Stand", //当前状态: Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
+      currentstatus: "Zero", //当前状态: Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
       lastX: 0,
       lastY: 0,
       pointX: 0,
@@ -337,7 +338,7 @@ export default {
             break;
           case 2:
             this.currentstatus = 'Zero'
-            this.controlModel = ""
+            this.controlModel = "inPlace"
             break;
           case 3:
             this.currentstatus = 'Stand'
@@ -906,7 +907,7 @@ export default {
       // if (!this.changeCamera) return
       // console.log('切换镜头~~~~~~~~~~~', this.cameraList, this.cameraId)
       // this.changeCamera = false
-      // let cameraType = "Defalut"
+      // let cameraType = "Default"
       // for (let i = 0; i < this.cameraList.length; i++) {
       //   if (this.cameraList[i] != "Defalut" && i == (this.cameraId + 1)) {
       //     cameraType = this.cameraList[i]
@@ -922,13 +923,13 @@ export default {
         "command": "start_camera",
         "data": {
           // "camera": cameraType
-          "camera": "Defalut"
+          "camera": "Default"
         }
       }
       this.robotWs.robot.send(JSON.stringify(data));
       setTimeout(() => {
         this.startPlay();
-      }, 1000);
+      }, 2000);
 
     },
     //拍照(截屏)
@@ -1291,6 +1292,14 @@ export default {
     .indicationImg {
       width: 22.1875vw;
       height: 6.1979vw;
+    }
+
+    .shadowImg {
+      position: absolute;
+      bottom: 1.25vw;
+      right: 3.8vw;
+      width: 15vw;
+      height: 1.7708vw;
     }
 
     .pointer {

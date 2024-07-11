@@ -2,8 +2,8 @@
     <div class="rb-card">
         <iframe ref="unityIfm" style="
             border: none;
-            margin-top: 6vw;
-            width: 28.5104vw;
+            margin-top: 2vw;
+            width: 34vw;
             height: 40.6563vw;
           " :src="iframeUrl"></iframe>
     </div>
