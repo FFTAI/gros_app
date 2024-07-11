@@ -76,10 +76,6 @@
             <img class="inImg" src="@/assets/images/icon_stand.png" />
             <span>站立</span>
           </div>
-          <div class="boxItem" :class="{ chosedItem: currentstatus == 'Walk', opacity03: currentstatus == 'Start' }">
-            <img class="inImg" src="@/assets/images/icon_Stepping.png" />
-            <span>行走</span>
-          </div>
           <!-- <div class="boxItem" :class="{ chosedItem: reHead, opacity03: currentstatus == 'Start' }"
             @click="returnHead()">
             <img class="inImg" src="@/assets/images/icon_headReturn.png" />
@@ -223,20 +219,16 @@ export default {
           src: require('@/assets/images/icon_greet.png'),
           keyCode: 't'
         }, {
-          name: 'twist',
-          src: require('@/assets/images/icon_twist.png'),
-          keyCode: 'y'
-        }, {
-          name: 'squat',
-          src: require('@/assets/images/icon_squat.png'),
-          keyCode: 'u'
-        }, {
           name: 'shake',
           src: require('@/assets/images/icon_shake.png'),
           keyCode: 'i'
         }, {
           name: 'nod',
           src: require('@/assets/images/icon_nod.png'),
+          keyCode: 'o'
+        }, {
+          name: 'returnHead',
+          src: require('@/assets/images/icon_headReturn.png'),
           keyCode: 'o'
         }
       ],
@@ -299,10 +291,10 @@ export default {
   async mounted() {
     this.$bus.$on('robotOnconnected', () => {
       this.getCameraList();
+      this.cameraControl();
       this.initMediaWs();
       this.createWsInterval();
       this.getStates();
-      this.startPlay();
     })
     window.onresize = () => {
       return (() => {
@@ -500,20 +492,6 @@ export default {
           this.pointY = currPointY.toFixed(2)
           this.operateHead(pitch, yaw);
         }
-        //转向移动
-        if (this.rightMouseDown && this.ySpeed == 0) {
-          let xMove = currPointX * 2;
-          if (xMove > 1) xMove = 1;
-          if (xMove < -1) xMove = -1;
-          this.direction = xMove
-          const rotation = this.direction * 90;
-          this.pointerTransform = `translate(-50%, -100%) rotate(${rotation}deg)`;
-          this.operateWalk(
-            this.direction * -45,
-            this.velocity,
-            this.ySpeed
-          );
-        }
       }
     },
     onMousedown(event) {
@@ -534,46 +512,12 @@ export default {
       this.$refs.pageController.style.cursor = 'auto';
       if (event.button == 0 && event.buttons == 0) {
         this.leftMouseDown = false;
-      } else if (event.button == 2 && event.buttons == 0) {
-        this.rightMouseDown = false;
-        this.direction = 0;
-        this.pointerTransform = `translate(-50%, -100%) rotate(${0}deg)`;
-        this.operateWalk(
-          this.direction,
-          this.velocity,
-          this.ySpeed
-        );
       }
     },
     //键盘操控
     handleKeyDown(event) {
       // event.preventDefault();
       console.log('keydown', event.keyCode)
-      const walkKeys = {
-        87: { velocity: 1, direction: this.direction }, // W
-        83: { velocity: -1, direction: this.direction },  // S
-        65: { velocity: -1, direction: this.direction },  // A
-        68: { velocity: 1, direction: this.direction }, // D
-      };
-      const walkInfo = walkKeys[event.keyCode];
-      if (walkInfo) {
-        // console.log('walkInfo', walkInfo)
-        if (this.keyFlag) {
-          this.changeControl('gait')
-          if ((event.keyCode == 87 || event.keyCode == 83) && !this.standInterval) {
-            this.velocity = walkInfo.velocity * this.speed / 6.25;
-            this.operateWalk(this.direction * -45, this.velocity, 0);
-          }
-          if (event.keyCode == 65 || event.keyCode == 68) {
-            this.ySpeed = walkInfo.velocity * this.speed / -10;
-            this.operateWalk(this.direction * -45, 0, this.ySpeed);
-          }
-          this.keyFlag = false;
-          setTimeout(() => {
-            this.keyFlag = true;
-          }, 500);
-        }
-      }
       const controlKeys = {
         // 32: "stand",
         // 49: "gait",
@@ -589,8 +533,6 @@ export default {
         69: { key: "e", value: "raiseHand" },
         82: { key: "r", value: "swingArms" },
         84: { key: "t", value: "greet" },
-        89: { key: "y", value: "twist" },
-        85: { key: "u", value: "squat" },
         73: { key: "i", value: "shake" },
         79: { key: "o", value: "nod" }
       }
@@ -617,7 +559,6 @@ export default {
       if (event.keyCode == 56) this.doCalibration();
       if (event.keyCode == 57) this.stop();
       if (event.keyCode == 8) this.routerReturn()
-      if (event.keyCode == 17) this.doSquat(-0.1)
       if (event.keyCode == 49) this.returnHead()
       if (event.keyCode == 32) {
         this.changeControl("stand");
@@ -632,24 +573,6 @@ export default {
     },
     handleKeyUp(event) {
       event.preventDefault();
-      const keyBindings = {
-        87: { velocity: 0, direction: this.direction }, // W
-        83: { velocity: 0, direction: this.direction },  // S
-        65: { velocity: this.velocity, direction: 0 },  // A
-        68: { velocity: this.velocity, direction: 0 }, // D
-      };
-      const keyInfo = keyBindings[event.keyCode];
-      if (keyInfo) {
-        console.log('keyInfo...', event.keyCode)
-        // if (event.keyCode == 65 || event.keyCode == 68) this.keyDirection = false
-        // console.log('放开方向', this.direction, '放开速度', this.velocity)
-        // this.operateWalk(
-        //   this.direction * -45,
-        //   (this.velocity * this.speed) / 6.25
-        // );
-        this.changeControl("stand");
-      }
-      if (event.keyCode == 17) this.doSquat(0)
     },
     calibration() {
       this.promptBoxOpen("calibration");
@@ -671,33 +594,6 @@ export default {
         this.speed -= 1;
       } else {
         this.speed = e
-      }
-    },
-    //操控行走
-    operateWalk(direction, xSpeed, ySpeed) {
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, '0');
-      const day = String(now.getDate()).padStart(2, '0');
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      const seconds = String(now.getSeconds()).padStart(2, '0');
-      const milliseconds = String(now.getMilliseconds()).padStart(3, '0');
-      const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`
-      console.log("Walk。。。。。", direction, xSpeed, ySpeed);
-      try {
-        let data = {
-          "command": 'walk',
-          "data": {
-            angle: direction,
-            x_speed: xSpeed,
-            y_speed: ySpeed, //左正右负
-            time: formattedDate,
-          }
-        }
-        this.robotWs.robot.send(JSON.stringify(data));
-      } catch (error) {
-        console.log("Walk错误。。。。。。", error);
       }
     },
     //操控头部
@@ -728,45 +624,21 @@ export default {
         console.log("Head错误。。。。。。", error);
       }
     },
-    //操控身体
-    operateBody(squat, rotate_waist) {
-      // console.log("身体。。。。。", squat, rotate_waist);
-      try {
-        this.robotWs.robot.body(squat, rotate_waist);
-      } catch (error) {
-        console.log("Body错误。。。。。。", error);
-      }
-    },
     //切换当前控制模式
     changeControl(e) {
       console.log('changeControl', e, this.currentstatus, this.velocity)
       if (this.currentstatus == 'Start') return;
       if (e == "stand" && this.currentstatus != 'Start') {
-        if (!this.standInterval) {
-          let intervalIndex = 1
-          this.standInterval = setInterval(() => {
-            console.log('standInterval', intervalIndex)
-            this.operateWalk(0, this.velocity * intervalIndex.toFixed(1), 0);
-            if (intervalIndex.toFixed(1) == 0) {
-              clearInterval(this.standInterval)
-              this.standInterval = null
-              this.robotWs.robot.send(JSON.stringify({ "command": 'stand' }));
-              this.velocity = 0;
-              this.ySpeed = 0;
-              setTimeout(() => {
-                this.robotWs.robot.send(JSON.stringify({ "command": 'stand' }));
-              }, 100);
-            } else {
-              intervalIndex = intervalIndex.toFixed(1) - 0.1
-            }
-          }, 100);
-        }
-        // this.currentstatus = "Stand";
+        this.robotWs.robot.send(JSON.stringify({ "command": 'stand' }));
       } else if (["inPlace", "grasping", "face", "ai", "setup"].includes(e)) {
         this.controlModel = e;
       }
     },
     async choseMode(e) {
+      if (e == 'returnHead') {
+        this.returnHead()
+        return
+      }
       this.mode = e;
       //上肢data
       let arm_act = {
@@ -792,10 +664,6 @@ export default {
         hand_act.hand_mode = 4;
       } else if (e == "tremble") {
         hand_act.hand_mode = 5;
-      } else if (e == "twist") {
-        lower_data.lower_body_mode = 2;
-      } else if (e == "squat") {
-        lower_data.lower_body_mode = 1;
       } else if (e == "nod") {
         //上下点头
         this.operateHead(17, 0);
@@ -1089,16 +957,6 @@ export default {
         name: "connectionManagement",
       });
     },
-    //下蹲控制
-    doSquat(e) {
-      let data = {
-        "command": 'squat',
-        "data": {
-          height: e
-        }
-      }
-      this.robotWs.robot.send(JSON.stringify(data));
-    },
     //头部回正
     returnHead() {
       this.reHead = true
@@ -1379,7 +1237,7 @@ export default {
 
   .midBox {
     width: 21.9vw;
-    margin-right: 9.6vw;
+    margin-right: 5vw;
   }
 
   .rightBox {
