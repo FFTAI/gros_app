@@ -131,5 +131,6 @@
     "administration": "管理",
     "workflowName": "工作流名称",
     "startUp": "启动",
-    "terminate": "终止"
+    "terminate": "终止",
+    "returnHead": "回正"
 }

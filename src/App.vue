@@ -53,7 +53,7 @@ export default {
         this.reWs = false;
       };
       robot.onmessage = (data) => {
-        console.log('robotWs收到数据：', data.data)
+        // console.log('robotWs收到数据：', data.data)
         if(data.data){
           var currData = JSON.parse(data.data);
           this.$bus.$emit("robotOnmessage", currData);
@@ -61,7 +61,6 @@ export default {
       };
       robot.onclose = (error) => {
         console.log('robotWs关闭！', error)
-        this.reconnectWs(e);
       };
       robot.onerror = () => {
         console.log('robotWs出错！')

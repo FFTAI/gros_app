@@ -16,6 +16,10 @@ export default {
         jointStates: {
             type: String,
             default: ""
+        },
+        mouseAction: {
+            type: String,
+            default: ""
         }
     },
     watch: {
@@ -24,7 +28,14 @@ export default {
                 const iframe = this.$refs.unityIfm.contentWindow;
                 iframe.postMessage({ jointStates: newVal }, '*');
             },
-        }
+        },
+        mouseAction: {
+            handler(newVal, oldVal) {
+                console.log('mouseAction',newVal)
+                const iframe = this.$refs.unityIfm.contentWindow;
+                iframe.postMessage({ mouseAction: newVal }, '*');
+            },
+        },
     },
     computed: {
     },

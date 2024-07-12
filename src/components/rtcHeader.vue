@@ -14,7 +14,7 @@
       </div>
       <div class="headState" style="left: 13.6458vw;" v-else>
         <span class="headTxt common-font">连接管理</span>
-      </div>s
+      </div>
       <div class="spacing flex-center" v-if="!connection">
         <div class="divider spacing"></div>
         <div>

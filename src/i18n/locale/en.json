@@ -132,5 +132,6 @@
     "administration": "Administration",
     "workflowName": "Workflow Name",
     "startUp": "StartUp",
-    "terminate": "Terminate"
+    "terminate": "Terminate",
+    "returnHead": "Return Head"
 }

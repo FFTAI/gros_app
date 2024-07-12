@@ -45,8 +45,6 @@
         // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
         // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
       }).then(function (instance) {
-        canvas.style.cursor = "none";
-        document.body.style.cursor = "none";
         gameInstance = instance;
         window.parent.postMessage("complete", "*");
       });
@@ -60,16 +58,41 @@
             clientY: event.clientY,
           },
         };
-        // canvas.style.cursor = "none";
-        // document.body.style.cursor = "none";
-        console.log('横向11111', event.clientX, '竖向11111', event.clientY)
+        window.parent.postMessage(message, "*");
+      });
+
+      document.addEventListener("mouseup", (event) => {
+        canvas.style.cursor = "auto";
+        document.body.style.cursor = "auto";
+        const message = {
+          type: "mouseup",
+          data: {
+            button: event.button,
+            buttons: event.buttons
+          },
+        };
+        window.parent.postMessage(message, "*");
+      });
+
+      document.addEventListener("mousedown", (event) => {
+        canvas.style.cursor = "none";
+        document.body.style.cursor = "none";
+        const message = {
+          type: "mousedown",
+          data: {
+            button: event.button,
+            buttons: event.buttons
+          },
+        };
         window.parent.postMessage(message, "*");
       });
 
       window.addEventListener(
         "message",
         function (event) {
-          callUnityFunctionRoteJoint(event.data.jointStates);
+          if (event.data.jointStates) {
+            callUnityFunctionRoteJoint(event.data.jointStates);
+          }
         },
         false
       );

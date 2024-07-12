@@ -40,7 +40,7 @@
           </div>
         </div>
       </div>
-      <rtc-header>
+      <rtc-header :mode="mode">
       </rtc-header>
 
       <div class="bottomBox flex-between fullWidth">
@@ -116,34 +116,35 @@
           <el-button type="danger" @click="stop()">急停</el-button>
         </div>
       </div>
-
-      <div class="popDialog" v-show="currentstatus == 'Zero'">
-        <div v-if="controlModel == 'inPlace'" class="actionItem" :class="{ chosedAction: item.name == mode }"
-          v-for="(item, index) in inPlaceList" :key="index" @click="choseMode(item.name)">
-          <img class="actionImg" :src="item.src" />
-          <div>{{ $t(item.name) }}</div>
-        </div>
-        <div v-if="controlModel == 'grasping'" class="actionItem" :class="{ chosedAction: item.name == mode }"
-          v-for="(item, index) in graspingList" :key="index" @click="choseMode(item.name)">
-          <img class="actionImg" :src="item.src" />
-          <div>{{ $t(item.name) }}</div>
-        </div>
-        <div v-if="controlModel == 'face'" class="actionItem" :class="{ chosedAction: item.name == mode }"
-          v-for="(item, index) in faceList" :key="index" @click="showFace(item.val)">
-          <img class="actionImg" :src="item.src" />
-          <div>{{ item.name }}</div>
-        </div>
-        <div v-if="controlModel == 'setup'" style="width: 100%;">
-          <div class="speedControl">
-            <span>行走速度</span>
-            <div class="controlTag">
-              <div class="tag" :class="{ chosedTag: speed == 1 }" @click="speedChange(1)">慢</div>
-              <div class="tag" :class="{ chosedTag: speed == 2 }" @click="speedChange(2)">中</div>
-              <div class="tag" :class="{ chosedTag: speed == 3 }" @click="speedChange(3)">快</div>
+      <transition name="fade">
+        <div class="popDialog" v-show="currentstatus == 'Zero'">
+          <div v-if="controlModel == 'inPlace'" class="actionItem" :class="{ chosedAction: item.name == mode }"
+            v-for="(item, index) in inPlaceList" :key="index" @click="choseMode(item.name)">
+            <img class="actionImg" :src="item.src" />
+            <div>{{ $t(item.name) }}</div>
+          </div>
+          <div v-if="controlModel == 'grasping'" class="actionItem" :class="{ chosedAction: item.name == mode }"
+            v-for="(item, index) in graspingList" :key="index" @click="choseMode(item.name)">
+            <img class="actionImg" :src="item.src" />
+            <div>{{ $t(item.name) }}</div>
+          </div>
+          <div v-if="controlModel == 'face'" class="actionItem" :class="{ chosedAction: item.name == mode }"
+            v-for="(item, index) in faceList" :key="index" @click="showFace(item.val)">
+            <img class="actionImg" :src="item.src" />
+            <div>{{ item.name }}</div>
+          </div>
+          <div v-if="controlModel == 'setup'" style="width: 100%;">
+            <div class="speedControl">
+              <span>行走速度</span>
+              <div class="controlTag">
+                <div class="tag" :class="{ chosedTag: speed == 1 }" @click="speedChange(1)">慢</div>
+                <div class="tag" :class="{ chosedTag: speed == 2 }" @click="speedChange(2)">中</div>
+                <div class="tag" :class="{ chosedTag: speed == 3 }" @click="speedChange(3)">快</div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </transition>
     </div>
     <!-- 当前状态提示 -->
     <div class="stateMessage flex-center" v-if="mode != '' ||
@@ -161,21 +162,28 @@
         <webrtc :stream="stream" @ready="onWebRTCReady" />
       </div>
     </div> -->
-    <robotCard :jointStates="jointStates"></robotCard>
+    <div class="rb-card">
+      <iframe ref="unityIfm" style="
+            border: none;
+            margin-top: 2vw;
+            width: 34vw;
+            height: 40.6563vw;
+          " :src="iframeUrl"></iframe>
+    </div>
   </div>
 </template>
 <script>
-import robotCard from "@/components/robotCard.vue";
 import { mapState } from "vuex";
 import rtcHeader from "@/components/rtcHeader.vue";
 
 export default {
-  components: { robotCard, rtcHeader },
+  components: { rtcHeader },
   computed: {
     ...mapState(["gamepadConnected", "connected", "currRobot"]),
   },
   data() {
     return {
+      iframeUrl: "Build/index.html",
       buttons: "", //当前按键
       screenWidth: document.body.clientWidth, //当前屏幕宽度
       speed: 1, //当前速度档位 1-3
@@ -188,11 +196,13 @@ export default {
       promptVal: "",
       lastMessageReceivedTime: Date.now(),
       wsInterval: null,
-      currentstatus: "Zero", //当前状态: Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
+      currentstatus: "Start", //当前状态: Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
       lastX: 0,
       lastY: 0,
       pointX: 0,
       pointY: 0,
+      yaw: 0,
+      pitch: 0,
       mute: true,
       recording: false,
       socket: null,
@@ -237,6 +247,10 @@ export default {
         }, {
           name: 'nod',
           src: require('@/assets/images/icon_nod.png'),
+          keyCode: 'o'
+        }, {
+          name: 'returnHead',
+          src: require('@/assets/images/icon_headReturn.png'),
           keyCode: 'o'
         }
       ],
@@ -289,7 +303,18 @@ export default {
       jointStates: null,
       standInterval: null,
       pointerTransform: "translate(-50%, -100%) rotate(0deg)",
+      mouseAction: "none",
     };
+  },
+  watch: {
+    jointStates: {
+      handler(newVal, oldVal) {
+        if (this.$refs.unityIfm) {
+          const iframe = this.$refs.unityIfm.contentWindow;
+          iframe.postMessage({ jointStates: newVal }, '*');
+        }
+      },
+    }
   },
   created() {
     // this.initLocalMediaWs();
@@ -302,7 +327,7 @@ export default {
       this.initMediaWs();
       this.createWsInterval();
       this.getStates();
-      this.startPlay();
+      this.cameraControl();
     })
     window.onresize = () => {
       return (() => {
@@ -316,17 +341,31 @@ export default {
     document.addEventListener('mouseup', this.onMouseup);
     window.addEventListener('contextmenu', this.disableContextMenu);
     window.addEventListener('message', (event) => {
+      // console.log('收到iframe的message', event, this.mouseAction)
       if (event.data.type === 'mousemove') {
         const { clientX, clientY } = event.data.data;
-        console.log('Mouse moved in iframe:', clientX, clientY);
+        // console.log('Mouse moved in iframe:', clientX, clientY);
         this.onMouseMove({ clientX: clientX, clientY: clientY })
+        if (this.mouseAction != 'none') {
+          if (this.$refs.unityIfm) {
+            const iframe = this.$refs.unityIfm.contentWindow;
+            iframe.postMessage({ mouseAction: this.mouseAction }, '*');
+          }
+        }
+      } else if (event.data.type === 'mouseup') {
+        console.log('鼠标放开')
+        this.onMouseup(event.data.data)
+      } else if (event.data.type === 'mousedown') {
+        console.log('鼠标按下', event)
+        this.onMousedown(event.data.data)
       }
     });
     this.$bus.$on('robotOnmessage', (data) => {
       // Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
       // console.log('robotOnmessage', data)
-
-      if (data.function == "list_camera") {
+      if (data.errorMsg) {
+        this.$message.error('错误:' + data.errorMsg);
+      } else if (data.function == "list_camera") {
         this.cameraList = data.data
       } else {
         switch (data.data.states.fsmstatename.currentstatus) {
@@ -338,12 +377,12 @@ export default {
             break;
           case 2:
             this.currentstatus = 'Zero'
-            this.controlModel = "inPlace"
+            // this.controlModel = "inPlace"
             break;
           case 3:
             this.currentstatus = 'Stand'
             if (!this.controlModel) {
-              this.controlModel = 'inPlace'
+              // this.controlModel = 'inPlace'
             }
             this.changeControl(this.controlModel);
             break;
@@ -369,11 +408,12 @@ export default {
           default:
             break;
         }
-        console.log('robotOnmessage', data)
+        // console.log('robotOnmessage', data)
         let obj = data.data.joint_states
+        console.log('robotOnmessage', obj.head_pitch, obj.head_yaw)
         this.jointStates = JSON.stringify({ joint_states: obj })
       }
-      console.log('robotOnmessage', this.currentstatus)
+      // console.log('robotOnmessage', this.currentstatus)
     })
   },
   beforeDestroy() {
@@ -389,6 +429,9 @@ export default {
     }
     if (this.socket) {
       this.socket.close();
+    }
+    if (this.robotWs.robot) {
+      this.robotWs.robot.close();
     }
   },
   destroyed() {
@@ -419,9 +462,15 @@ export default {
         this.sdk.close();
       }
       this.sdk = new SrsRtcWhipWhepAsync();
+      console.log('sdk', this.$refs.rtc_media_player);
+      if (!this.$refs.rtc_media_player) {
+        this.$message.error('视频流加载出错');
+        return
+      }
       this.$refs.rtc_media_player.srcObject = this.sdk.stream
       var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=' + this.robotName
       // var url = 'http://192.168.11.64:1985/rtc/v1/whep/?app=live&stream=' + this.robotName
+      // var url = 'http://114.80.41.97:1985/rtc/v1/whep/?app=live&stream=fftai'
       this.sdk.play(url)
         .then((session) => {
           console.log('成功拉流:', session);
@@ -478,63 +527,59 @@ export default {
       }
     },
     mouseFunc(event) {
-      if (this.lastX == 0 && this.lastY == 0) {
-        this.lastX = event.clientX
-        this.lastY = event.clientY
-        console.log(this.lastX, this.lastY)
-      } else {
-        let currPointX = (this.lastX / window.innerWidth - 0.5) * 2
-        let currPointY = (this.lastY / window.innerHeight - 0.5) * 2
-        this.lastX = event.clientX;
-        this.lastY = event.clientY;
-        if (currPointX > 1) currPointX = 1
-        if (currPointX < -1) currPointX = -1
-        if (currPointY > 1) currPointY = 1
-        if (currPointY < -1) currPointY = -1
-        // console.log('横向', this.lastX, '竖向', this.lastY)
-        console.log('横向', event.clientX, '竖向', event.clientY)
-        let yaw = currPointX * 40;
-        let pitch = currPointY * -17;
-        if (this.leftMouseDown) {
-          this.pointX = currPointX.toFixed(2)
-          this.pointY = currPointY.toFixed(2)
-          this.operateHead(pitch, yaw);
-        }
-        //转向移动
-        if (this.rightMouseDown && this.ySpeed == 0) {
-          let xMove = currPointX * 2;
-          if (xMove > 1) xMove = 1;
-          if (xMove < -1) xMove = -1;
-          this.direction = xMove
-          const rotation = this.direction * 90;
-          this.pointerTransform = `translate(-50%, -100%) rotate(${rotation}deg)`;
-          this.operateWalk(
-            this.direction * -45,
-            this.velocity,
-            this.ySpeed
-          );
-        }
+      let currPointX = (event.clientX / window.innerWidth - 0.5) * 2
+      let currPointY = (event.clientY / window.innerHeight - 0.5) * 2
+      console.log('横向', currPointX, '竖向', currPointY)
+      if (currPointX > 1) currPointX = 1
+      if (currPointX < -1) currPointX = -1
+      if (currPointY > 1) currPointY = 1
+      if (currPointY < -1) currPointY = -1
+      if (this.leftMouseDown) {
+        this.pointX = currPointX
+        this.pointY = currPointY
+        this.yaw = this.pointX * 40;
+        this.pitch = this.pointY * -17;
+        // this.lastX = currPointX
+        // this.lastY = currPointY
+        this.operateHead();
+      }
+      //转向移动
+      if (this.rightMouseDown && this.ySpeed == 0) {
+        let xMove = currPointX * 2;
+        if (xMove > 1) xMove = 1;
+        if (xMove < -1) xMove = -1;
+        this.direction = xMove
+        const rotation = this.direction * 90;
+        this.pointerTransform = `translate(-50%, -100%) rotate(${rotation}deg)`;
+        this.operateWalk(
+          this.direction * -45,
+          this.velocity,
+          this.ySpeed
+        );
       }
     },
     onMousedown(event) {
-      if (event.target.matches('.inImg') || event.target.matches('span')) {
+      if (event.target && (event.target.matches('.inImg') || event.target.matches('span'))) {
         // 阻止事件的进一步传播
         console.log('mousedown----nonono', event)
       } else {
-        console.log('mousedown', event)
-        this.$refs.pageController.style.cursor = 'none';
-        if (event.button == 0 && event.buttons == 1) {
+        // console.log('mousedown', event.button,event.buttons)
+        this.mouseAction = "down"
+        if (this.$refs.pageController) this.$refs.pageController.style.cursor = 'none';
+        if (event.button == 0) {
           this.leftMouseDown = true;
-        } else if (event.button == 2 && event.buttons == 2) {
+        } else if (event.button == 2) {
           this.rightMouseDown = true;
         }
       }
     },
     onMouseup(event) {
-      this.$refs.pageController.style.cursor = 'auto';
-      if (event.button == 0 && event.buttons == 0) {
+      console.log('onMouseup----upupup', event.button, event.buttons)
+      this.mouseAction = "up"
+      if (this.$refs.pageController) this.$refs.pageController.style.cursor = 'auto';
+      if (event.button == 0) {
         this.leftMouseDown = false;
-      } else if (event.button == 2 && event.buttons == 0) {
+      } else if (event.button == 2) {
         this.rightMouseDown = false;
         this.direction = 0;
         this.pointerTransform = `translate(-50%, -100%) rotate(${0}deg)`;
@@ -657,6 +702,7 @@ export default {
     doCalibration() {
       this.robotWs.robot.send(JSON.stringify({ "command": 'zero' }));
       this.mode = "initial";
+      this.controlModel = "inPlace"
     },
     //紧急停止
     stop() {
@@ -701,8 +747,7 @@ export default {
       }
     },
     //操控头部
-    operateHead(pitch, yaw) {
-      // console.log("头部。。。。。", pitch, yaw);
+    operateHead() {
       const now = new Date();
       const year = now.getFullYear();
       const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -717,8 +762,8 @@ export default {
           "command": 'head',
           "data": {
             roll: 0,
-            pitch: pitch,
-            yaw: yaw,
+            pitch: this.pitch,
+            yaw: this.yaw,
             time: formattedDate,
           }
         }
@@ -753,6 +798,7 @@ export default {
               this.robotWs.robot.send(JSON.stringify({ "command": 'stand' }));
               this.velocity = 0;
               this.ySpeed = 0;
+              this.controlModel = "inPlace"
               setTimeout(() => {
                 this.robotWs.robot.send(JSON.stringify({ "command": 'stand' }));
               }, 100);
@@ -767,6 +813,10 @@ export default {
       }
     },
     async choseMode(e) {
+      if (e == "returnHead") {
+        this.returnHead()
+        return
+      }
       this.mode = e;
       //上肢data
       let arm_act = {
@@ -1117,6 +1167,13 @@ export default {
   width: 100%;
   overflow: hidden;
   background-image: url("../../assets/images/image_bkg.png");
+}
+
+.rb-card {
+  position: absolute;
+  top: 0.25vw;
+  left: 1vw;
+  z-index: 888;
 }
 
 .videoContainer {
@@ -1585,5 +1642,15 @@ export default {
       }
     }
   }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity .3s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
