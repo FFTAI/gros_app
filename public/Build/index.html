@@ -46,6 +46,8 @@
         // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
       }).then(function (instance) {
         gameInstance = instance;
+        canvas.style.cursor = "none";
+        document.body.style.cursor = "none";
         window.parent.postMessage("complete", "*");
       });
 
@@ -62,8 +64,8 @@
       });
 
       document.addEventListener("mouseup", (event) => {
-        canvas.style.cursor = "auto";
-        document.body.style.cursor = "auto";
+        // canvas.style.cursor = "auto";
+        // document.body.style.cursor = "auto";
         const message = {
           type: "mouseup",
           data: {
@@ -75,8 +77,8 @@
       });
 
       document.addEventListener("mousedown", (event) => {
-        canvas.style.cursor = "none";
-        document.body.style.cursor = "none";
+        // canvas.style.cursor = "none";
+        // document.body.style.cursor = "none";
         const message = {
           type: "mousedown",
           data: {

@@ -9,22 +9,22 @@ server.listen(8080, async () => {
 });
 
 // const dgram = require("dgram");
-const Speaker = require("speaker");
-const WebSocket = require("ws");
+// const Speaker = require("speaker");
+// const WebSocket = require("ws");
 // const udpServer = dgram.createSocket("udp4");
-const wss = new WebSocket.Server({ port: 8999 });
+// const wss = new WebSocket.Server({ port: 8999 });
 // const HOST = "192.168.9.185";
 // const PORT = 8998; // 接收端口
 
-const audioFormat = {
-  channels: 1,// 声道数
-  sampleRate: 48000,// 采样率
-  bitDepth: 16,
-  signed: true,
-  float: false,
-  endian: "little",
-};
-const speaker = new Speaker(audioFormat);
+// const audioFormat = {
+//   channels: 1,// 声道数
+//   sampleRate: 48000,// 采样率
+//   bitDepth: 16,
+//   signed: true,
+//   float: false,
+//   endian: "little",
+// };
+// const speaker = new Speaker(audioFormat);
 
 // udpServer.on("error", (err) => {
 //   console.error(`UDP server error:\n${err.stack}`);
@@ -42,9 +42,9 @@ const speaker = new Speaker(audioFormat);
 // });
 // udpServer.bind(PORT);
 
-wss.on("connection", function connection(ws) {
+// wss.on("connection", function connection(ws) {
   // 当接收到来自客户端的消息时触发
-  ws.on("message", function incoming(message) {
+  // ws.on("message", function incoming(message) {
   //   udpServer.send(message, 0, message.length, PORT, HOST, (err) => {
   //     if (err) {
   //       console.error(err);
@@ -54,6 +54,6 @@ wss.on("connection", function connection(ws) {
   //   });
   //   // console.log('接收的音频',message);
   //   // console.log('接收的音频',new Date().getTime());
-    speaker.write(message);
-  });
-});
+//     speaker.write(message);
+//   });
+// });

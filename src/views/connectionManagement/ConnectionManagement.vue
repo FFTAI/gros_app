@@ -130,6 +130,7 @@ export default {
       this.addRobotVisible = true;
     },
     choseCard(e) {
+      console.log(e)
       if (!e.online) return
       this.$store.commit("setCurrRobot", e.name);
       this.$router.push({

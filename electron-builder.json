@@ -1,0 +1,27 @@
+{
+  "appId": "com.fftai.rocs",
+  "productName": "Rocs",
+  "publish": [
+      {
+      "provider": "generic",
+      "url":"https://fsa-1302548221.cos.ap-shanghai.myqcloud.com/"
+      }
+  ],
+  "directories": {
+    "output": "dist_electron"
+  },
+  "extraFiles": [
+    "dist"
+  ],
+  "win": {
+    "icon": "dist/icon.png",
+    "target": [
+      "nsis",
+      "zip"
+    ]
+  },
+  "mac": {
+    "icon": "dist/icon.png",
+    "target": "dmg"
+  }
+}

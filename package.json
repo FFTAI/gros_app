@@ -2,11 +2,17 @@
   "name": "gros_web",
   "version": "0.1.0",
   "private": true,
+  "main": "main.js",
+  "bin": {
+    "rocs": "server.js"
+  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "start": "node server.js"
+    "start": "node server.js",
+    "electron:serve": "electron .",
+    "electron:build": "electron-builder"
   },
   "dependencies": {
     "axios": "^1.5.1",
@@ -17,7 +23,6 @@
     "rocs-client": "^1.2.9",
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5",
-    "speaker": "^0.5.5",
     "three": "^0.162.0",
     "vue": "^2.6.14",
     "vue-i18n": "^8.27.1",
@@ -32,7 +37,7 @@
     "@vue/cli-plugin-router": "~5.0.0",
     "@vue/cli-plugin-vuex": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
-    "electron": "^30.0.7",
+    "electron": "^31.2.0",
     "electron-builder": "^24.13.3",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",

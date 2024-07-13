@@ -117,7 +117,7 @@
         </div>
       </div>
       <transition name="fade">
-        <div class="popDialog" v-show="currentstatus == 'Zero'">
+        <div class="popDialog" v-show="currentstatus != 'Start'">
           <div v-if="controlModel == 'inPlace'" class="actionItem" :class="{ chosedAction: item.name == mode }"
             v-for="(item, index) in inPlaceList" :key="index" @click="choseMode(item.name)">
             <img class="actionImg" :src="item.src" />
@@ -304,6 +304,7 @@ export default {
       standInterval: null,
       pointerTransform: "translate(-50%, -100%) rotate(0deg)",
       mouseAction: "none",
+      isConnected: false,
     };
   },
   watch: {
@@ -324,11 +325,11 @@ export default {
   async mounted() {
     this.$bus.$on('robotOnconnected', () => {
       this.getCameraList();
-      this.initMediaWs();
       this.createWsInterval();
       this.getStates();
       this.cameraControl();
     })
+    this.initMediaWs();
     window.onresize = () => {
       return (() => {
         this.screenWidth = document.body.clientWidth;
@@ -469,7 +470,7 @@ export default {
       }
       this.$refs.rtc_media_player.srcObject = this.sdk.stream
       var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=' + this.robotName
-      // var url = 'http://192.168.11.64:1985/rtc/v1/whep/?app=live&stream=' + this.robotName
+      // var url = 'https://devfris.fftai.com/gr-rtc/rtc/v1/whep/?app=live&stream=' + this.robotName
       // var url = 'http://114.80.41.97:1985/rtc/v1/whep/?app=live&stream=fftai'
       this.sdk.play(url)
         .then((session) => {
@@ -529,18 +530,28 @@ export default {
     mouseFunc(event) {
       let currPointX = (event.clientX / window.innerWidth - 0.5) * 2
       let currPointY = (event.clientY / window.innerHeight - 0.5) * 2
-      console.log('横向', currPointX, '竖向', currPointY)
+      console.log('横向', event, '竖向', currPointY)
       if (currPointX > 1) currPointX = 1
       if (currPointX < -1) currPointX = -1
       if (currPointY > 1) currPointY = 1
       if (currPointY < -1) currPointY = -1
       if (this.leftMouseDown) {
+        // if ((this.lastX - currPointX) < 0 && this.pointX <= 0.9) {
+        //   this.pointX + 0.1
+        // } else {
+        //   this.pointX - 0.1
+        // }
+        // if ((this.lastY - currPointY) < 0 && this.pointY <= 0.9) {
+        //   this.pointY + 0.1
+        // } else {
+        //   this.pointY - 0.1
+        // }
         this.pointX = currPointX
         this.pointY = currPointY
         this.yaw = this.pointX * 40;
         this.pitch = this.pointY * -17;
-        // this.lastX = currPointX
-        // this.lastY = currPointY
+        this.lastX = currPointX
+        this.lastY = currPointY
         this.operateHead();
       }
       //转向移动
@@ -934,10 +945,10 @@ export default {
     },
     micControl(e) {
       if (e == 'on') {
-        console.log("解除静音")
+        console.log("解除静音",this.isConnected)
         this.mute = false
-        this.$refs.rtc_media_player.volume = 1;
-        this.$refs.rtc_media_player.play()
+        // this.$refs.rtc_media_player.volume = 1;
+        // this.$refs.rtc_media_player.play()
         this.startRecording()
       } else {
         console.log("静音")
@@ -1020,10 +1031,13 @@ export default {
     },
     initMediaWs() {
       let ip = process.env.VUE_APP_URL.split("//")[1].split(":")[0];
-      this.socket = new WebSocket('ws://' + ip + ':8008/terminal_audio/' + this.currRobot);
+      this.socket = new WebSocket('ws://' + ip + ':8008/terminal_audio/' + this.robotName);
+      // let ip = process.env.VUE_APP_URL.split("//")[1];
+      // this.socket = new WebSocket('wss://' + ip + '/terminal_audio/' + this.robotName);
       // 连接成功建立时触发
       this.socket.onopen = () => {
         this.isConnected = true;
+        console.log('音频websocket链接已建立');
       };
 
       // 接收到消息时触发
@@ -1065,7 +1079,7 @@ export default {
       // 发生错误时触发
       this.socket.onerror = (error) => {
         this.isConnected = false;
-        console.error('Ws error observed:', error);
+        console.error('音频websocket发生错误:', error);
       };
 
       // 连接关闭时触发
@@ -1076,7 +1090,7 @@ export default {
         } else {
           console.log('Ws connection was closed abruptly');
         }
-        console.log('Ws was closed');
+        console.log('音频websocket链接已断开');
         // 连接关闭后可能需要重连的逻辑
       };
     },
