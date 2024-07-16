@@ -133,5 +133,12 @@
     "workflowName": "Workflow Name",
     "startUp": "StartUp",
     "terminate": "Terminate",
-    "returnHead": "Return Head"
+    "returnHead": "Return Head",
+    "hugUp": "Hug up",
+    "handHeart": "Hand heart",
+    "great": "Great",
+    "fighting": "Fighting",
+    "ok": "OK",
+    "waveRHand": "Wave right hand",
+    "waveLHand": "Wave left hand"
 }

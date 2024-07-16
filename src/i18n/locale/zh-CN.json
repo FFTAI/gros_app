@@ -132,5 +132,12 @@
     "workflowName": "工作流名称",
     "startUp": "启动",
     "terminate": "终止",
-    "returnHead": "回正"
+    "returnHead": "回正",
+    "hugUp": "抱拳",
+    "handHeart": "比心",
+    "great": "点赞",
+    "fighting": "加油",
+    "ok": "OK",
+    "waveRHand": "右挥手",
+    "waveLHand": "左挥手"
 }

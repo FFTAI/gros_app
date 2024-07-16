@@ -165,7 +165,6 @@
     <div class="rb-card">
       <iframe ref="unityIfm" style="
             border: none;
-            margin-top: 2vw;
             width: 34vw;
             height: 40.6563vw;
           " :src="iframeUrl"></iframe>
@@ -196,7 +195,7 @@ export default {
       promptVal: "",
       lastMessageReceivedTime: Date.now(),
       wsInterval: null,
-      currentstatus: "Start", //当前状态: Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
+      currentstatus: "Zero", //当前状态: Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
       lastX: 0,
       lastY: 0,
       pointX: 0,
@@ -229,10 +228,6 @@ export default {
           src: require('@/assets/images/icon_swingArms.png'),
           keyCode: 'r'
         }, {
-          name: 'greet',
-          src: require('@/assets/images/icon_greet.png'),
-          keyCode: 't'
-        }, {
           name: 'twist',
           src: require('@/assets/images/icon_twist.png'),
           keyCode: 'y'
@@ -241,12 +236,32 @@ export default {
           src: require('@/assets/images/icon_squat.png'),
           keyCode: 'u'
         }, {
-          name: 'shake',
-          src: require('@/assets/images/icon_shake.png'),
-          keyCode: 'i'
+          name: 'hugUp',
+          src: require('@/assets/images/icon_hugUp.png'),
+          keyCode: 'o'
         }, {
-          name: 'nod',
-          src: require('@/assets/images/icon_nod.png'),
+          name: 'handHeart',
+          src: require('@/assets/images/icon_handHeart.png'),
+          keyCode: 'o'
+        }, {
+          name: 'great',
+          src: require('@/assets/images/icon_great.png'),
+          keyCode: 'o'
+        }, {
+          name: 'fighting',
+          src: require('@/assets/images/icon_fighting.png'),
+          keyCode: 'o'
+        }, {
+          name: 'ok',
+          src: require('@/assets/images/icon_OK.png'),
+          keyCode: 'o'
+        }, {
+          name: 'waveRHand',
+          src: require('@/assets/images/icon_waveRHand.png'),
+          keyCode: 'o'
+        }, {
+          name: 'waveLHand',
+          src: require('@/assets/images/icon_waveLHand.png'),
           keyCode: 'o'
         }, {
           name: 'returnHead',
@@ -469,8 +484,9 @@ export default {
         return
       }
       this.$refs.rtc_media_player.srcObject = this.sdk.stream
-      var url = 'http://101.133.149.215:1985/rtc/v1/whep/?app=live&stream=' + this.robotName
-      // var url = 'https://devfris.fftai.com/gr-rtc/rtc/v1/whep/?app=live&stream=' + this.robotName
+      // let ip = process.env.VUE_APP_URL.split("//")[1].split(":")[0];
+      // var url = 'http://' + ip + ':1985/rtc/v1/whep/?app=live&stream=' + this.robotName
+      var url = 'https://devfris.fftai.com/gr-rtc/rtc/v1/whep/?app=live&stream=' + this.robotName
       // var url = 'http://114.80.41.97:1985/rtc/v1/whep/?app=live&stream=fftai'
       this.sdk.play(url)
         .then((session) => {
@@ -537,14 +553,14 @@ export default {
       if (currPointY < -1) currPointY = -1
       if (this.leftMouseDown) {
         // if ((this.lastX - currPointX) < 0 && this.pointX <= 0.9) {
-        //   this.pointX + 0.1
-        // } else {
-        //   this.pointX - 0.1
+        //   this.pointX += 0.05
+        // } else if ((this.lastX - currPointX) > 0 && this.pointX <= 0.9){
+        //   this.pointX -= 0.05
         // }
         // if ((this.lastY - currPointY) < 0 && this.pointY <= 0.9) {
-        //   this.pointY + 0.1
-        // } else {
-        //   this.pointY - 0.1
+        //   this.pointY += 0.05
+        // } else if ((this.lastY - currPointY) > 0 && this.pointY <= 0.9){
+        //   this.pointY -= 0.05
         // }
         this.pointX = currPointX
         this.pointY = currPointY
@@ -644,11 +660,8 @@ export default {
       const inPlaceKeys = {
         69: { key: "e", value: "raiseHand" },
         82: { key: "r", value: "swingArms" },
-        84: { key: "t", value: "greet" },
         89: { key: "y", value: "twist" },
         85: { key: "u", value: "squat" },
-        73: { key: "i", value: "shake" },
-        79: { key: "o", value: "nod" }
       }
       const inPlaceInfo = inPlaceKeys[event.keyCode];
       if (inPlaceInfo && this.controlModel == 'inPlace') this.choseMode(inPlaceInfo.value);
@@ -842,11 +855,9 @@ export default {
       if (e == "zero") {
         arm_act.arm_mode = "RESET";
       } else if (e == "raiseHand") {
-        arm_act.arm_mode = 1;
+        arm_act.arm_mode = 5;
       } else if (e == "swingArms") {
         arm_act.arm_mode = 3;
-      } else if (e == "greet") {
-        arm_act.arm_mode = 5;
       } else if (e == "openHand") {
         hand_act.hand_mode = 2;
       } else if (e == "grasp") {
@@ -857,24 +868,6 @@ export default {
         lower_data.lower_body_mode = 2;
       } else if (e == "squat") {
         lower_data.lower_body_mode = 1;
-      } else if (e == "nod") {
-        //上下点头
-        this.operateHead(17, 0);
-        setTimeout(() => {
-          this.operateHead(-17, 0);
-        }, 1000);
-        setTimeout(() => {
-          this.operateHead(0, 0);
-        }, 3000);
-      } else if (e == "shake") {
-        //左右摇头
-        this.operateHead(0, 17);
-        setTimeout(() => {
-          this.operateHead(0, -17);
-        }, 1000);
-        setTimeout(() => {
-          this.operateHead(0, 0);
-        }, 3000);
       }
       if (arm_act.arm_mode != 0) {
         let data = {
@@ -1030,10 +1023,10 @@ export default {
       };
     },
     initMediaWs() {
-      let ip = process.env.VUE_APP_URL.split("//")[1].split(":")[0];
-      this.socket = new WebSocket('ws://' + ip + ':8008/terminal_audio/' + this.robotName);
-      // let ip = process.env.VUE_APP_URL.split("//")[1];
-      // this.socket = new WebSocket('wss://' + ip + '/terminal_audio/' + this.robotName);
+      // let ip = process.env.VUE_APP_URL.split("//")[1].split(":")[0];
+      // this.socket = new WebSocket('ws://' + ip + ':8008/terminal_audio/' + this.robotName);
+      let ip = process.env.VUE_APP_URL.split("//")[1];
+      this.socket = new WebSocket('wss://' + ip + '/terminal_audio/' + this.robotName);
       // 连接成功建立时触发
       this.socket.onopen = () => {
         this.isConnected = true;
@@ -1185,7 +1178,7 @@ export default {
 
 .rb-card {
   position: absolute;
-  top: 0.25vw;
+  top: 5vh;
   left: 1vw;
   z-index: 888;
 }

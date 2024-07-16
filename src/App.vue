@@ -45,8 +45,8 @@ export default {
     //初始化Robot实例
     initRobotWs(e) {
       let ip = process.env.VUE_APP_URL.split("//")[1];
-      let robot = new WebSocket('ws://' + ip + '/remote/' + e);
-      // let robot = new WebSocket('wss://' + ip + '/remote/' + e);
+      // let robot = new WebSocket('ws://' + ip + '/remote/' + e);
+      let robot = new WebSocket('wss://' + ip + '/remote/' + e);
       this.robotWs.setWs(robot);
       robot.onopen = () => {
         console.log('robotWs成功！')
