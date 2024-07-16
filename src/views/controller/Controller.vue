@@ -855,9 +855,23 @@ export default {
       if (e == "zero") {
         arm_act.arm_mode = "RESET";
       } else if (e == "raiseHand") {
-        arm_act.arm_mode = 5;
+        arm_act.arm_mode = 1;
       } else if (e == "swingArms") {
+        arm_act.arm_mode = 2;
+      } else if (e == "hugUp") {
         arm_act.arm_mode = 3;
+      } else if (e == "handHeart") {
+        arm_act.arm_mode = 4;
+      } else if (e == "great") {
+        arm_act.arm_mode = 5;
+      } else if (e == "fighting") {
+        arm_act.arm_mode = 6;
+      } else if (e == "ok") {
+        arm_act.arm_mode = 7;
+      } else if (e == "waveRHand") {
+        arm_act.arm_mode = 8;
+      } else if (e == "waveLHand") {
+        arm_act.arm_mode = 9;
       } else if (e == "openHand") {
         hand_act.hand_mode = 2;
       } else if (e == "grasp") {
