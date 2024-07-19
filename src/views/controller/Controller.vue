@@ -195,7 +195,7 @@ export default {
       promptVal: "",
       lastMessageReceivedTime: Date.now(),
       wsInterval: null,
-      currentstatus: "Zero", //当前状态: Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
+      currentstatus: "Start", //当前状态: Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
       lastX: 0,
       lastY: 0,
       pointX: 0,
@@ -238,7 +238,7 @@ export default {
         }, {
           name: 'hugUp',
           src: require('@/assets/images/icon_hugUp.png'),
-          keyCode: 'o'
+          keyCode: 'i'
         }, {
           name: 'handHeart',
           src: require('@/assets/images/icon_handHeart.png'),
@@ -246,42 +246,42 @@ export default {
         }, {
           name: 'great',
           src: require('@/assets/images/icon_great.png'),
-          keyCode: 'o'
+          keyCode: 'p'
         }, {
           name: 'fighting',
           src: require('@/assets/images/icon_fighting.png'),
-          keyCode: 'o'
+          keyCode: 'f'
         }, {
           name: 'ok',
           src: require('@/assets/images/icon_OK.png'),
-          keyCode: 'o'
+          keyCode: 'g'
         }, {
           name: 'waveRHand',
           src: require('@/assets/images/icon_waveRHand.png'),
-          keyCode: 'o'
+          keyCode: 'h'
         }, {
           name: 'waveLHand',
           src: require('@/assets/images/icon_waveLHand.png'),
-          keyCode: 'o'
+          keyCode: 'j'
         }, {
           name: 'returnHead',
           src: require('@/assets/images/icon_headReturn.png'),
-          keyCode: 'o'
+          keyCode: 'k'
         }
       ],
       graspingList: [
         {
           name: 'openHand',
           src: require('@/assets/images/icon_grasping.png'),
-          keyCode: 'j'
+          keyCode: 'l'
         }, {
           name: 'grasp',
           src: require('@/assets/images/icon_graspPC.png'),
-          keyCode: 'k'
+          keyCode: 'z'
         }, {
           name: 'tremble',
           src: require('@/assets/images/icon_tremble.png'),
-          keyCode: 'l'
+          keyCode: 'x'
         }
       ],
       faceList: [
@@ -566,13 +566,13 @@ export default {
         this.pointY = currPointY
         this.yaw = this.pointX * 40;
         this.pitch = this.pointY * -17;
-        this.lastX = currPointX
-        this.lastY = currPointY
+        // this.lastX = currPointX
+        // this.lastY = currPointY
         this.operateHead();
       }
       //转向移动
       if (this.rightMouseDown && this.ySpeed == 0) {
-        let xMove = currPointX * 2;
+        let xMove = currPointX;
         if (xMove > 1) xMove = 1;
         if (xMove < -1) xMove = -1;
         this.direction = xMove
