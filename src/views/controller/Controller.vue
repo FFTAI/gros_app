@@ -103,7 +103,7 @@
           <div class="boxItem" :class="{ chosedItem: controlModel == 'ai', opacity03: currentstatus == 'Start' }"
             @click="changeControl('ai')">
             <img class="inImg" src="@/assets/images/icon_AI.png" />
-            <span>AI托管</span>
+            <span>语音</span>
           </div>
           <div class="boxItem" :class="{ chosedItem: controlModel == 'setup', opacity03: currentstatus == 'Start' }"
             @click="changeControl('setup')">
@@ -130,6 +130,11 @@
           </div>
           <div v-if="controlModel == 'face'" class="actionItem" :class="{ chosedAction: item.name == mode }"
             v-for="(item, index) in faceList" :key="index" @click="showFace(item.val)">
+            <img class="actionImg" :src="item.src" />
+            <div>{{ item.name }}</div>
+          </div>
+          <div v-if="controlModel == 'ai'" class="actionItem" :class="{ chosedAction: item.name == mode }"
+            v-for="(item, index) in voiceList" :key="index" @click="getVoice(item.val)">
             <img class="actionImg" :src="item.src" />
             <div>{{ item.name }}</div>
           </div>
@@ -195,7 +200,7 @@ export default {
       promptVal: "",
       lastMessageReceivedTime: Date.now(),
       wsInterval: null,
-      currentstatus: "Start", //当前状态: Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
+      currentstatus: "Zero", //当前状态: Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
       lastX: 0,
       lastY: 0,
       pointX: 0,
@@ -312,6 +317,23 @@ export default {
           val: 'roundedInput'
         }
       ],
+      voiceList: [
+        {
+          name: '语音1',
+          src: require('@/assets/images/icon_input.png'),
+          val: 'test.mp3'
+        },
+        {
+          name: '语音2',
+          src: require('@/assets/images/icon_input.png'),
+          val: '5118.wav'
+        },
+        {
+          name: '语音3',
+          src: require('@/assets/images/icon_input.png'),
+          val: '5118.wav'
+        }
+      ],
       cameraId: 0,
       cameraList: [],
       changeCamera: true,
@@ -342,7 +364,7 @@ export default {
       this.getCameraList();
       this.createWsInterval();
       this.getStates();
-      this.cameraControl();
+      //this.cameraControl();
     })
     this.initMediaWs();
     window.onresize = () => {
@@ -928,6 +950,15 @@ export default {
         this.robotWs.robot.send(JSON.stringify(data));
       }, 10000);
     },
+    getVoice(e) {
+      let data = {
+        "command": "audio",
+        "data": {
+          "name": e
+        }
+      }
+      this.robotWs.robot.send(JSON.stringify(data));
+    },
     promptBoxOpen(e) {
       this.promptVal = e;
       this.promptVisible = !this.promptVisible;
@@ -952,7 +983,7 @@ export default {
     },
     micControl(e) {
       if (e == 'on') {
-        console.log("解除静音",this.isConnected)
+        console.log("解除静音", this.isConnected)
         this.mute = false
         // this.$refs.rtc_media_player.volume = 1;
         // this.$refs.rtc_media_player.play()
