@@ -1285,7 +1285,7 @@ export default {
     initSpeedCharts() {},
     // 格式化当前数据
     assignData(data) {
-      let states = data.jointStates;
+      let states = data.joint_states;
       //上肢部分
       this.leftPitchShoulder_qa = this.toDegrees(
         states.find((obj) => obj.name === "left_pitch_shoulder").qa
