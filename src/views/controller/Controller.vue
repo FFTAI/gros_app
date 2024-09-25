@@ -33,9 +33,22 @@
           </div>
         </div>
         <!-- Stop按钮 -->
-        <!-- <div class="stopControl">
-          <img class="stopImg" src="@/assets/images/icon_chStop.png" @click="stop()" />
-        </div> -->
+        <div class="stopControl">
+          <el-button
+            style="
+              height: 4.1667vw;
+              width: 8.3333vw;
+              font-size: 1.5vw;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            "
+            size="large"
+            type="danger"
+            @click="openDance()"
+            >语音播放</el-button
+          >
+        </div>
         <!--初始-->
         <div class="calibration">
           <img
@@ -281,6 +294,205 @@
           <span class="directonTxt">{{ $t("adjustPosture") }}</span>
         </div>
       </div>
+      <el-dialog title="语音播放" fullscreen :visible.sync="danceDialog">
+        <div class="flex-center" style="gap: 3vw;">
+          <el-button
+            class="danceBtn"
+            type="primary"
+            @click="playAudio('21世纪什么最贵')"
+            >21世纪什么最贵</el-button
+          >
+          <el-button
+            class="danceBtn"
+            type="warning"
+            @click="playAudio('阿难说')"
+            >阿难说</el-button
+          >
+          <el-button
+            class="danceBtn"
+            type="success"
+            @click="playAudio('不重要')"
+            >不重要</el-button
+          >
+          <el-button
+            class="danceBtn"
+            type="danger"
+            @click="playAudio('曾经')"
+            >曾经</el-button
+          >
+        </div>
+        <div class="flex-center" style="gap: 3vw;margin-top: 3vw">
+          <el-button
+            class="danceBtn"
+            type="info"
+            @click="playAudio('迟早要还的')"
+            >迟早要还的</el-button
+          >
+          <el-button
+            class="danceBtn"
+            type="primary"
+            @click="playAudio('得加钱')"
+            >得加钱</el-button
+          >
+        
+          <el-button
+            class="danceBtn"
+            type="warning"
+            @click="playAudio('顶得住吗')"
+            >顶得住吗</el-button
+          >
+          <el-button
+            class="danceBtn"
+            type="primary"
+            @click="playAudio('给个机会')"
+            >给个机会</el-button
+          >
+        </div>
+        <div class="flex-center" style="gap: 3vw;margin-top: 3vw">
+          <el-button
+            class="danceBtn"
+            type="warning"
+            @click="playAudio('骨骼清奇')"
+            >骨骼清奇
+          </el-button>
+          <el-button
+            class="danceBtn"
+            type="success"
+            @click="playAudio('广告词-绕口令')"
+            >广告词-绕口令</el-button
+          >
+          <el-button
+            class="danceBtn"
+            type="danger"
+            @click="playAudio('很润')"
+            >很润</el-button
+          >
+          <el-button
+            class="danceBtn"
+            type="info"
+            @click="playAudio('很生气后果很严重')"
+            >很生气后果很严重</el-button
+          >
+        </div>
+        <div class="flex-center" style="gap: 3vw;margin-top: 3vw">
+          <el-button
+            class="danceBtn"
+            type="success"
+            @click="playAudio('红绿灯')"
+            >红绿灯</el-button
+          >
+          <el-button
+            class="danceBtn"
+            type="danger"
+            @click="playAudio('胡汉三')"
+            >胡汉三</el-button
+          >
+          <el-button
+            class="danceBtn"
+            type="info"
+            @click="playAudio('滑稽的揽客')"
+            >滑稽的揽客</el-button
+          >
+          <el-button
+            class="danceBtn"
+            type="success"
+            @click="playAudio('回头率太高')"
+            >回头率太高</el-button
+          >
+        </div>
+        <div class="flex-center" style="gap: 3vw;margin-top: 3vw">
+          <el-button
+            class="danceBtn"
+            type="danger"
+            @click="playAudio('揽客-大帅比')"
+            >揽客-大帅比</el-button
+          >
+          <el-button
+            class="danceBtn"
+            type="info"
+            @click="playAudio('配上风采')"
+            >配上风采</el-button
+          >
+        
+          <el-button
+            class="danceBtn"
+            type="success"
+            @click="playAudio('绕口令')"
+            >绕口令</el-button
+          >
+          <el-button
+            class="danceBtn"
+            type="danger"
+            @click="playAudio('三年又三年')"
+            >三年又三年</el-button
+          >
+        </div>
+        <div class="flex-center" style="gap: 3vw;margin-top: 3vw">
+          <el-button
+            class="danceBtn"
+            type="info"
+            @click="playAudio('社牛夸夸小姐姐')"
+            >社牛夸夸小姐姐</el-button
+          >
+          <el-button
+            class="danceBtn"
+            type="success"
+            @click="playAudio('帅得连红绿灯')"
+            >帅得连红绿灯</el-button
+          >
+          <el-button
+            class="danceBtn"
+            type="danger"
+            @click="playAudio('帅的跟智己汽车似的')"
+            >帅的跟智己汽车似的</el-button
+          >
+        
+          <el-button
+            class="danceBtn"
+            type="info"
+            @click="playAudio('说好的')"
+            >说好的</el-button
+          >
+        </div>
+        <div class="flex-center" style="gap: 3vw;margin-top: 3vw">
+          <el-button
+            class="danceBtn"
+            type="success"
+            @click="playAudio('太低调')"
+            >太低调</el-button
+          >
+          <el-button
+            class="danceBtn"
+            type="danger"
+            @click="playAudio('我想做好人')"
+            >我想做好人</el-button
+          >
+          <el-button
+            class="danceBtn"
+            type="info"
+            @click="playAudio('智己汽车')"
+            >智己汽车</el-button
+          >
+          <el-button
+            class="danceBtn"
+            type="danger"
+            @click="playAudio('自我介绍')"
+            >自我介绍</el-button
+          >
+          <el-button
+            class="danceBtn"
+            type="info"
+            @click="playAudio('走过路过不要错过')"
+            >走过路过不要错过</el-button
+          >
+        </div>
+        <!-- <span slot="footer" class="dialog-footer">
+            <el-button @click="danceDialog = false">取 消</el-button>
+            <el-button type="primary" @click="danceDialog = false"
+              >确 定</el-button
+            >
+          </span> -->
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -290,6 +502,7 @@ import RtcHeader from "@/components/rtcHeader.vue";
 import promptBox from "@/components/promptBox.vue";
 import { mapState } from "vuex";
 import Heartbeat from "@/mixin/Heartbeat";
+import http from "@/http/axios.js";
 export default {
   mixins: [Heartbeat],
   components: { RtcHeader, promptBox },
@@ -377,6 +590,7 @@ export default {
       bodyEnd: true, //监听body停止
       currentstatus: "Start", //当前状态: Unknown,Start,Zero,Zero2Stand,Stand,Stand2Walk,Walk,Stop
       walkingTimer: null,
+      danceDialog: false,
     };
   },
   created() {
@@ -466,10 +680,10 @@ export default {
             this.currentstatus = "Stop";
             break;
           case 6:
-            this.currentstatus = 'Zero2Stand'
+            this.currentstatus = "Zero2Stand";
             break;
           case 7:
-            this.currentstatus = 'Stand2Walk'
+            this.currentstatus = "Stand2Walk";
             break;
           default:
             break;
@@ -1011,6 +1225,19 @@ export default {
     cancel() {
       this.promptVisible = !this.promptVisible;
     },
+    openDance() {
+      this.danceDialog = !this.danceDialog;
+    },
+    playAudio(val) {
+      http
+        .post("http://192.168.12.1:8003/audio/play",{name: val + '.wav'})
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.error("Error shutdown:", error);
+        });
+    },
   },
 };
 </script>
@@ -1338,5 +1565,13 @@ export default {
     color: $white;
     margin-top: 3.375vw;
   }
+}
+.danceBtn {
+  height: 3.3333vw;
+  width: 12vw;
+  font-size: 1.3333vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
