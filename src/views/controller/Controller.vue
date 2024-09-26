@@ -113,62 +113,86 @@
           class="actionBox"
           v-else-if="controlExpand && controlModel == 'inPlace'"
         >
-          <!-- <div class="actionItem">
-            <img
-              class="actionImg"
-              src="@/assets/images/icon_zero.png"
-              @click="choseMode('zero')"
-            />
-            <div>{{ $t("zero") }}</div>
-          </div> -->
           <div class="actionItem">
             <img
               class="actionImg"
               src="@/assets/images/icon_raiseHand.png"
-              @click="choseMode('raiseHand')"
+              @click="choseMode('WAVE_HAND')"
             />
-            <div>{{ $t("raiseHand") }}</div>
+            <div>点赞</div>
           </div>
           <div class="actionItem">
             <img
               class="actionImg"
-              src="@/assets/images/icon_swingArms.png"
-              @click="choseMode('swingArms')"
+              src="@/assets/images/icon_raiseHand.png"
+              @click="choseMode('ARM_SWING')"
             />
-            <div>{{ $t("swingArms") }}</div>
+            <div>转手腕</div>
           </div>
           <div class="actionItem">
             <img
               class="actionImg"
-              src="@/assets/images/icon_greet.png"
-              @click="choseMode('greet')"
+              src="@/assets/images/icon_raiseHand.png"
+              @click="choseMode('HANDSHAKE')"
             />
-            <div>{{ $t("greet") }}</div>
+            <div>ok手势</div>
           </div>
           <div class="actionItem">
             <img
               class="actionImg"
-              src="@/assets/images/icon_twist.png"
-              @click="choseMode('twist')"
+              src="@/assets/images/icon_raiseHand.png"
+              @click="choseMode('SPEAK_WAVE')"
             />
-            <div>{{ $t("twist") }}</div>
+            <div>拍胸口装逼</div>
           </div>
           <div class="actionItem">
             <img
               class="actionImg"
-              src="@/assets/images/icon_squat.png"
-              @click="choseMode('squat')"
+              src="@/assets/images/icon_raiseHand.png"
+              @click="choseMode('WATER_DELIVERY')"
             />
-            <div>{{ $t("squat") }}</div>
+            <div>击掌</div>
           </div>
           <div class="actionItem">
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_raiseHand.png"
+              @click="choseMode('GUIDING_DIRECTION')"
+            />
+            <div>数手指</div>
+          </div>
+          <div class="actionItem">
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_raiseHand.png"
+              @click="choseMode('LEFT_ARM_WAVE')"
+            />
+            <div>打招呼</div>
+          </div>
+          <div class="actionItem">
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_raiseHand.png"
+              @click="choseMode('ARMS_SWING')"
+            />
+            <div>甩胳膊</div>
+          </div>
+          <div class="actionItem">
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_raiseHand.png"
+              @click="choseMode('HELLO')"
+            />
+            <div>抬手打招呼</div>
+          </div>
+          <!-- <div class="actionItem">
             <img
               class="actionImg"
               src="@/assets/images/icon_shake.png"
               @click="choseMode('shake')"
             />
             <div>{{ $t("shake") }}</div>
-          </div>
+          </div> -->
           <div class="actionItem">
             <img
               class="actionImg"
@@ -260,7 +284,7 @@
         </div>
       </div>
       <!-- 当前状态提示 -->
-      <div
+      <!-- <div
         class="stateMessage flex-center"
         v-if="
           (mode != '' && doAction) ||
@@ -269,7 +293,7 @@
         "
       >
         <span>{{ $t(mode) }}{{ $t("ing") }}...</span>
-      </div>
+      </div> -->
       <!-- 异常提示 -->
       <div
         v-if="currentstatus == '' || currentstatus == 'Unknown'"
@@ -594,7 +618,7 @@ export default {
     };
   },
   created() {
-    this.createWsInterval();
+    // this.createWsInterval();
     document.addEventListener(
       "click",
       (e) => {
@@ -617,81 +641,6 @@ export default {
     this.startJoystickL(); //生成虚拟摇杆
     this.startJoystickR();
     this.startGamepad();
-    // setTimeout(() => {
-    //   this.createWsInterval();
-    // }, 2000);
-    // this.$nextTick(() => {
-    //   this.robotWs.robot.enable_debug_state(2);
-    // });
-    this.$bus.$on("robotOnmessage", (data) => {
-      this.lastMessageReceivedTime = Date.now();
-      console.log(
-        "监测底层数据～～～",
-        this.currentstatus,
-        data.data.imu.x,
-        data.data.imu.y
-      );
-      if (this.currentstatus == "Zero" && data.data.imu) {
-        this.ImuX = data.data.imu.x;
-        this.ImuY = data.data.imu.y;
-        // console.log(
-        //   "controller===========",
-        //   this.ImuX,
-        //   this.ImuY
-        // );
-        // console.log(
-        //   "controller===========",
-        //   (data.data.imu.x * 180) / Math.PI,
-        //   (data.data.imu.y * 180) / Math.PI
-        // );
-        if (
-          (this.ImuX >= 3.054 && this.ImuX <= 3.1416) ||
-          (this.ImuX >= -3.1416 &&
-            this.ImuX <= -3.054 &&
-            this.ImuY >= -0.087 &&
-            this.ImuY <= 0.087)
-        ) {
-          this.adjustVisible = false;
-        } else {
-          this.adjustVisible = true;
-        }
-      }
-      console.log("robotOnmessage~~~~~~~~~~", data.data);
-      if (data.data) {
-        this.doAction = data.data.upper_action;
-        // Unknown=0,Start=1,Zero=2,Zero2Stand=6,Stand=3,Stand2Walk=7,Walk=4,Stop=5
-        switch (data.data.states.fsmstatename.currentstatus) {
-          case 0:
-            this.currentstatus = "Unknown";
-            break;
-          case 1:
-            this.currentstatus = "Start";
-            break;
-          case 2:
-            this.currentstatus = "Zero";
-            break;
-          case 3:
-            this.currentstatus = "Stand";
-            break;
-          case 4:
-            this.currentstatus = "Walk";
-            break;
-          case 5:
-            this.currentstatus = "Stop";
-            break;
-          case 6:
-            this.currentstatus = "Zero2Stand";
-            break;
-          case 7:
-            this.currentstatus = "Stand2Walk";
-            break;
-          default:
-            break;
-        }
-      } else {
-        this.currentstatus = "";
-      }
-    });
   },
   beforeDestroy() {
     if (this.walkingTimer) {
@@ -700,10 +649,7 @@ export default {
   },
   destroyed() {
     clearInterval(this.interval);
-    clearInterval(this.wsInterval);
-    //关闭监听
-    this.robotWs.robot.disable_debug_state();
-    this.$bus.$off("robotOnmessage");
+    // clearInterval(this.wsInterval);
   },
   watch: {
     //屏幕尺寸变化后，重新生成joystick适配当前尺寸
@@ -742,9 +688,9 @@ export default {
               } else {
                 this.robotWs.robot.ws.close();
               }
-              setTimeout(() => {
-                this.robotWs.robot.enable_debug_state(2);
-              }, 1500);
+              // setTimeout(() => {
+              //   this.robotWs.robot.enable_debug_state(2);
+              // }, 1500);
               setTimeout(() => {
                 this.lastMessageReceivedTime = Date.now();
                 this.createWsInterval();
@@ -1084,7 +1030,6 @@ export default {
       this.controlModel = e;
     },
     async choseMode(e) {
-      if (this.doAction || this.otherAction) return;
       this.controlExpand = false;
       this.mode = e;
       //原地踏步，速度位置发0
@@ -1102,16 +1047,23 @@ export default {
         let lower_data = {
           lower_body_mode: "",
         };
-        setTimeout(() => {
-          this.doAction = true;
-        }, 500);
-        if (e == "zero") {
-          upper_data.arm_action = "RESET";
-        } else if (e == "raiseHand") {
+        if (e == "WAVE_HAND") {
+          upper_data.arm_action = "WAVE_HAND";
+        } else if (e == "ARM_SWING") {
+          upper_data.arm_action = "ARM_SWING";
+        } else if (e == "HANDSHAKE") {
+          upper_data.arm_action = "HANDSHAKE";
+        } else if (e == "SPEAK_WAVE") {
+          upper_data.arm_action = "SPEAK_WAVE";
+        } else if (e == "WATER_DELIVERY") {
+          upper_data.arm_action = "WATER_DELIVERY";
+        } else if (e == "GUIDING_DIRECTION") {
+          upper_data.arm_action = "GUIDING_DIRECTION";
+        } else if (e == "LEFT_ARM_WAVE") {
           upper_data.arm_action = "LEFT_ARM_WAVE";
-        } else if (e == "swingArms") {
+        } else if (e == "ARMS_SWING") {
           upper_data.arm_action = "ARMS_SWING";
-        } else if (e == "greet") {
+        } else if (e == "HELLO") {
           upper_data.arm_action = "HELLO";
         } else if (e == "openHand") {
           upper_data.hand_action = "OPEN";
@@ -1126,9 +1078,9 @@ export default {
         } else if (e == "nod") {
           //上下点头
           this.otherAction = true;
-          this.operateHead(17, 0);
+          this.operateHead(-17, 0);
           setTimeout(() => {
-            this.operateHead(-17, 0);
+            this.operateHead(17, 0);
           }, 1000);
           setTimeout(() => {
             this.operateHead(0, 0);
@@ -1434,7 +1386,7 @@ export default {
   flex-wrap: wrap;
   .actionItem {
     text-align: center;
-    flex-basis: 33.33%;
+    flex-basis: 25%;
     font-size: 1.25vw;
     font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
     font-weight: normal;
