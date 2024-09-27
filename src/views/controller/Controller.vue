@@ -185,6 +185,38 @@
             />
             <div>抬手打招呼</div>
           </div>
+          <div class="actionItem">
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_raiseHand.png"
+              @click="choseMode('RAISE_HANDS')"
+            />
+            <div>双手演讲</div>
+          </div>
+          <div class="actionItem">
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_raiseHand.png"
+              @click="choseMode('FINGER_HEART')"
+            />
+            <div>高调演讲</div>
+          </div>
+          <div class="actionItem">
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_raiseHand.png"
+              @click="choseMode('BOWING')"
+            />
+            <div>左边请</div>
+          </div>
+          <!-- <div class="actionItem">
+            <img
+              class="actionImg"
+              src="@/assets/images/icon_raiseHand.png"
+              @click="choseMode('DRAW_CYRTAIN')"
+            />
+            <div>左边请</div>
+          </div> -->
           <!-- <div class="actionItem">
             <img
               class="actionImg"
@@ -612,7 +644,7 @@ export default {
       walkEnd: true, //监听walk停止
       headEnd: true, //监听head停止
       bodyEnd: true, //监听body停止
-      currentstatus: "Start", //当前状态: Unknown,Start,Zero,Zero2Stand,Stand,Stand2Walk,Walk,Stop
+      currentstatus: "Walk", //当前状态: Unknown,Start,Zero,Zero2Stand,Stand,Stand2Walk,Walk,Stop
       walkingTimer: null,
       danceDialog: false,
     };
@@ -1065,6 +1097,14 @@ export default {
           upper_data.arm_action = "ARMS_SWING";
         } else if (e == "HELLO") {
           upper_data.arm_action = "HELLO";
+        } else if (e == "RAISE_HANDS") {
+          upper_data.arm_action = "RAISE_HANDS";
+        } else if (e == "FINGER_HEART") {
+          upper_data.arm_action = "FINGER_HEART";
+        } else if (e == "BOWING") {
+          upper_data.arm_action = "BOWING";
+        } else if (e == "DRAW_CYRTAIN") {
+          upper_data.arm_action = "DRAW_CYRTAIN";
         } else if (e == "openHand") {
           upper_data.hand_action = "OPEN";
         } else if (e == "grasp") {
@@ -1384,13 +1424,16 @@ export default {
   padding: 3.125vw 3.1333vw 0 3.5917vw;
   display: flex;
   flex-wrap: wrap;
+  overflow: scroll;
   .actionItem {
     text-align: center;
-    flex-basis: 25%;
+    flex-basis: 33.33%;
     font-size: 1.25vw;
     font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
     font-weight: normal;
     color: $white;
+    height: 7.6667vw;
+    width: 9.2571vw;
   }
 
   .actionImg {
@@ -1398,6 +1441,10 @@ export default {
     height: 2.7083vw;
   }
 }
+.actionBox::-webkit-scrollbar {
+  width: 0;
+}
+
 
 .headState {
   position: absolute;
