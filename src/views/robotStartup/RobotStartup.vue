@@ -202,6 +202,7 @@ import { mapState } from "vuex";
 import promptBox from "@/components/promptBox.vue";
 import { Human } from "rocs-client";
 import Bus from "@/utils/bus.js";
+import http from "@/http/axios.js";
 export default {
   mixins: [Heartbeat],
   components: { rtcHeader, promptBox },
@@ -230,12 +231,12 @@ export default {
       return style;
     },
     tip2SpanStyle() {
-      let style = { };
+      let style = {};
       if (this.$i18n.locale == "en") {
         style.width = "15.75vw";
       }
       return style;
-    }
+    },
   },
   data() {
     return {
@@ -320,7 +321,7 @@ export default {
       });
       this.robotWs.setWs(robot);
       robot.on_connected(() => {
-        console.log('robotWs成功！')
+        console.log("robotWs成功！");
         Bus.$emit("robotOnconnected");
       });
       robot.on_message((data) => {
@@ -328,10 +329,10 @@ export default {
         Bus.$emit("robotOnmessage", currData);
       });
       robot.on_close(() => {
-        console.log('robotWs关闭！')
+        console.log("robotWs关闭！");
       });
       robot.on_error(() => {
-        console.log('robotWs出错！')
+        console.log("robotWs出错！");
       });
     },
     //打开开机初始示例图
@@ -350,13 +351,13 @@ export default {
     },
     //程序关闭
     shutDown() {
-      this.robotWs.robot
-        .control_svr_close()
+      http
+        .get("/system/shutdown")
         .then((response) => {
-          console.log("close...", response);
+          console.log(response);
         })
         .catch((error) => {
-          console.error(error);
+          console.error("Error shutdown:", error);
         });
       this.promptBoxOpen();
       this.step = "calibration";
