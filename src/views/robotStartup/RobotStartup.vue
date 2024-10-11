@@ -295,7 +295,7 @@ export default {
               let newTxt = new TextDecoder().decode(value)
               result += newTxt + "<br>";
               _this.shValue = result;
-              if (newTxt.includes("init!")&&newTxt.includes("start json init")) {
+              if (newTxt.includes("init!")&&!newTxt.includes("start json init")) {
                 reader.cancel();
                 // setTimeout(() => {
                 //   _this.initRobotWs()

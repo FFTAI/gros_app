@@ -51,7 +51,6 @@
   <script>
 import RtcHeader from "@/components/rtcHeader.vue";
 import { mapState } from "vuex";
-import axios from "@/http/axios";
 export default {
   components: { RtcHeader },
   computed: {
